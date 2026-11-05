@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Pidi - Sổ Lớp Nhỏ</title>
+  <title>DiPi - Sổ Lớp Nhỏ</title>
   
   <!-- Mobile & iOS PWA Optimization -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -63,30 +63,19 @@
         
         <!-- Logo Pidi (Hoa trắng mầm cây trên nền cam ấm) & Tên "Pidi - Sổ Lớp Nhỏ" -->
         <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
-          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shrink-0 shadow-sm flex items-center justify-center p-0.5" style="background: linear-gradient(145deg, #f97316 0%, #ea580c 45%, #475569 100%);">
-            <svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Thân cây -->
-              <path d="M51 40 C 50 60, 48 70, 49 76" stroke="#2a5a52" stroke-width="5" stroke-linecap="round"/>
-              <!-- Lá trái -->
-              <path d="M49 53 C 33 50, 31 38, 48 39 C 48 46, 49 50, 49 53 Z" fill="#3d6f65"/>
-              <!-- Lá phải -->
-              <path d="M51 51 C 67 47, 66 35, 52 35 C 50 43, 50 48, 51 51 Z" fill="#3d6f65"/>
-              <!-- Bông hoa trắng 5 cánh -->
-              <circle cx="50" cy="31" r="3.2" fill="#eab308"/>
-              <ellipse cx="50" cy="24" rx="2.8" ry="4" fill="#ffffff"/>
-              <ellipse cx="50" cy="38" rx="2.8" ry="4" fill="#ffffff"/>
-              <ellipse cx="43" cy="28" rx="3.8" ry="2.6" transform="rotate(-30 43 28)" fill="#ffffff"/>
-              <ellipse cx="57" cy="28" rx="3.8" ry="2.6" transform="rotate(30 57 28)" fill="#ffffff"/>
-              <ellipse cx="44" cy="35" rx="3.8" ry="2.6" transform="rotate(30 44 35)" fill="#ffffff"/>
-              <ellipse cx="56" cy="35" rx="3.8" ry="2.6" transform="rotate(-30 56 35)" fill="#ffffff"/>
-              <circle cx="50" cy="31" r="2.2" fill="#f59e0b"/>
-            </svg>
+          <!-- Sử dụng trực tiếp file ảnh logo tải lên của bạn với bo góc mềm mại -->
+          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shrink-0 shadow-sm border border-slate-200/60 bg-amber-50">
+            <img 
+              src="logo.jfif" 
+              alt="Logo DiPi - Sổ Lớp Nhỏ" 
+              class="w-full h-full object-cover object-center"
+              onerror="if(this.src.indexOf('logo_2.jfif') === -1){ this.src = 'logo_2.jfif'; } else if(this.src.indexOf('logo.png') === -1){ this.src = 'logo.png'; } else { this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-400 to-amber-600 text-white font-black text-xs\'>DiPi</div>'; }"
+            />
           </div>
           <div class="min-w-0">
             <h1 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap leading-tight tracking-tight">
-              Pidi - Sổ Lớp Nhỏ
+              DiPi - Sổ Lớp Nhỏ
             </h1>
-            <p class="text-[10px] text-slate-400 font-medium hidden sm:block">Quản lý lớp học & điểm danh tiện lợi</p>
           </div>
         </div>
 
@@ -278,17 +267,20 @@
 
       <!-- 2. TAB BÀI TẬP VỀ NHÀ -->
       <div id="tabContent-homework" class="hidden space-y-5">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div>
-            <h3 class="font-bold text-slate-900 text-base">Bài tập về nhà & Luyện thi</h3>
-            <p class="text-xs text-slate-500">Giao bài rèn luyện và theo dõi tình hình nộp bài của học sinh</p>
+            <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+              <span>Bài tập về nhà & Tự động chấm điểm</span>
+            </h3>
+            <p class="text-xs text-slate-500">Tạo đề trắc nghiệm trực tuyến hoặc đính kèm tài liệu, học sinh làm và có kết quả ngay</p>
           </div>
           <button
             onclick="openNewHomeworkModal()"
-            class="flex items-center space-x-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm"
+            class="flex items-center space-x-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm self-start sm:self-auto active:scale-95"
           >
             <i data-lucide="plus" class="w-4 h-4"></i>
-            <span>Giao bài mới</span>
+            <span>Tạo đề bài tập mới</span>
           </button>
         </div>
 
@@ -465,10 +457,13 @@
 
       <!-- Bài tập về nhà của con -->
       <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
-        <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
-          <i data-lucide="book-open" class="w-4 h-4 text-blue-600"></i>
-          <span>Bài tập về nhà & Luyện tập</span>
-        </h4>
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+            <i data-lucide="book-open" class="w-4 h-4 text-blue-600"></i>
+            <span>Bài tập về nhà & Luyện tập trực tuyến</span>
+          </h4>
+          <span class="text-xs text-blue-600 font-semibold hidden sm:inline">Học sinh làm bài trực tiếp & nhận kết quả ngay</span>
+        </div>
         <div id="parentHomeworkList" class="space-y-3">
           <!-- Render bằng JS -->
         </div>
@@ -798,142 +793,142 @@
 
       <form onsubmit="handleSaveIndividualFee(event)" class="space-y-3">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Cách tính tiền</label>
-          <select id="editFeePricingType" onchange="toggleEditFeeFields(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
-            <option value="per_session">Theo số buổi thực tế đã học</option>
-            <option value="monthly">Trọn gói theo tháng cố định</option>
-          </select>
-        </div>
-
-        <div id="editFeePerSessionField">
-          <label class="block text-xs font-bold text-slate-700 mb-1">Đơn giá / buổi (VNĐ)</label>
-          <input id="editFeePricePerSession" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
-        </div>
-
-        <div id="editFeeMonthlyField" class="hidden">
-          <label class="block text-xs font-bold text-slate-700 mb-1">Tiền trọn gói tháng (VNĐ)</label>
-          <input id="editFeeMonthlyPrice" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Phụ thu (+) hoặc Giảm trừ (-)</label>
-          <input id="editFeeDiscountOrExtra" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-1">
-            <label class="block text-xs font-bold text-slate-700">Tiền phụ huynh ĐÃ ĐÓNG (VNĐ)</label>
-            <button type="button" onclick="document.getElementById('editFeePaidAmount').value = 0" class="text-[11px] text-rose-600 hover:underline font-bold">
-              Đặt lại 0đ (Chưa nộp)
-            </button>
-          </div>
-          <input id="editFeePaidAmount" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-emerald-300 bg-emerald-50/40 text-emerald-900 font-extrabold">
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modalEditIndividualFee')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold">Lưu thay đổi</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 5. MODAL XUẤT TIN NHẮN ZALO BÁO HỌC PHÍ -->
-  <div id="modalZaloInvoice" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-5 border border-slate-200 shadow-xl space-y-4">
+  <!-- 7. MODAL GIAO BÀI TẬP MỚI THÔNG MINH (KÈM FILE & SOẠN CÂU HỎI TRẮC NGHIỆM) -->
+  <div id="modalNewHomework" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-4 sm:p-5 border border-slate-200 shadow-xl space-y-4 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
-          <h3 class="font-bold text-slate-900 text-base">Tin nhắn đối soát Zalo</h3>
-          <p id="zaloModalTargetName" class="text-xs text-slate-500 font-medium">Gửi phụ huynh</p>
+          <h3 class="font-bold text-slate-900 text-base flex items-center gap-1.5">
+            <i data-lucide="file-plus-2" class="w-4 h-4 text-blue-600"></i>
+            <span>Soạn bài tập & Đề tự động chấm</span>
+          </h3>
+          <p class="text-xs text-slate-500">Tạo câu hỏi trắc nghiệm hoặc đính kèm file đề bài</p>
         </div>
-        <button onclick="closeModal('modalZaloInvoice')" class="text-slate-400 hover:text-slate-700">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <textarea id="zaloMessageContent" readonly rows="9" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed focus:outline-none"></textarea>
-
-      <div id="zaloCopiedAlert" class="hidden text-xs bg-emerald-100 text-emerald-800 p-2 rounded-lg font-bold flex items-center gap-1.5">
-        <i data-lucide="check" class="w-4 h-4"></i> Đã sao chép nội dung! Bạn có thể dán ngay vào tin nhắn Zalo của phụ huynh.
-      </div>
-
-      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-        <button type="button" onclick="closeModal('modalZaloInvoice')" class="px-3.5 py-1.5 text-xs text-slate-600">Đóng</button>
-        <button type="button" onclick="copyZaloMessage()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
-          <i data-lucide="copy" class="w-4 h-4"></i>
-          <span>Sao chép tin nhắn Zalo</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6. MODAL THÊM HỌC SINH MỚI -->
-  <div id="modalAddStudent" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-slate-900 text-base">Thêm học sinh mới vào lớp</h3>
-        <button onclick="closeModal('modalAddStudent')" class="text-slate-400 hover:text-slate-700">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <form onsubmit="handleCreateStudent(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên học sinh *</label>
-          <input id="addStudentName" type="text" required placeholder="VD: Nguyễn Văn An" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Trường đang học</label>
-          <input id="addStudentSchool" type="text" placeholder="VD: THCS Giảng Võ" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Họ tên phụ huynh</label>
-          <input id="addStudentParentName" type="text" placeholder="VD: Bác Tuấn" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại phụ huynh *</label>
-          <input id="addStudentPhone" type="text" required placeholder="VD: 0988 123 456" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modalAddStudent')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm">Lưu học sinh</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- 7. MODAL GIAO BÀI TẬP MỚI -->
-  <div id="modalNewHomework" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-bold text-slate-900 text-base">Giao bài tập buổi học</h3>
         <button onclick="closeModal('modalNewHomework')" class="text-slate-400 hover:text-slate-700">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <form onsubmit="handleCreateHomework(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Tên bài tập *</label>
-          <input id="newHwTitle" type="text" required placeholder="VD: Unit 6: Passive Voice & Vocab" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Ghi chú dạng bài</label>
-          <input id="newHwLessonNote" type="text" placeholder="VD: Câu bị động & từ vựng chủ đề công nghệ" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Hạn nộp bài *</label>
-          <input id="newHwDeadline" type="date" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Nội dung chi tiết</label>
-          <textarea id="newHwContent" rows="3" placeholder="Ghi số bài trong sách hoặc link đề..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300"></textarea>
+      <form onsubmit="handleCreateHomework(event)" class="space-y-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tiêu đề bài tập *</label>
+            <input id="newHwTitle" type="text" required placeholder="VD: Unit 7: Conditionals & Vocabulary Test" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500 font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Chủ đề / Dạng bài</label>
+            <input id="newHwLessonNote" type="text" placeholder="VD: Câu điều kiện loại 1 & 2" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Hạn chót nộp bài *</label>
+            <input id="newHwDeadline" type="date" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-medium">
+          </div>
         </div>
 
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Dặn dò / Hướng dẫn làm bài</label>
+          <textarea id="newHwContent" rows="2" placeholder="VD: Các con làm bài trắc nghiệm bên dưới hoặc xem thêm tài liệu đính kèm..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300"></textarea>
+        </div>
+
+        <!-- Đính kèm file đề bài hoặc tài liệu -->
+        <div class="p-3 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <i data-lucide="paperclip" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>File đính kèm (PDF, Word, Ảnh đề bài)</span>
+            </span>
+            <span id="attachedFileName" class="text-[11px] text-blue-600 font-medium truncate max-w-[200px]">Chưa đính kèm file</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="cursor-pointer px-3 py-1.5 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 inline-flex items-center gap-1 shadow-2xs">
+              <i data-lucide="upload" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Chọn file từ thiết bị</span>
+              <input type="file" id="hwFileInput" onchange="handleFileSelected(this)" class="hidden" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+            </label>
+            <button type="button" onclick="clearAttachedFile()" id="btnClearFile" class="hidden text-xs text-rose-500 hover:underline">Xóa file</button>
+          </div>
+        </div>
+
+        <!-- Trình soạn câu hỏi trắc nghiệm tự động chấm -->
+        <div class="space-y-2 border-t border-slate-100 pt-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <i data-lucide="check-square" class="w-4 h-4 text-emerald-600"></i>
+              <span class="text-xs font-extrabold text-slate-900">Danh sách câu hỏi trắc nghiệm trực tuyến</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="addSampleQuizQuestions()" class="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg hover:bg-amber-100">
+                + Thêm đề mẫu
+              </button>
+              <button type="button" onclick="addNewBlankQuestion()" class="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-lg hover:bg-blue-100">
+                + Thêm câu hỏi
+              </button>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-400">Học sinh tích chọn đáp án trên điện thoại, hệ thống sẽ tự động tính điểm và gửi về cho cô Diễm.</p>
+
+          <div id="quizQuestionsContainer" class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+            <!-- Render động danh sách câu hỏi đang soạn -->
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
           <button type="button" onclick="closeModal('modalNewHomework')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm">Giao bài ngay</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
+            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+            <span>Giao bài ngay</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. MODAL HỌC SINH/PHỤ HUYNH LÀM BÀI TRỰC TUYẾN & TỰ ĐỘNG CHẤM ĐIỂM -->
+  <div id="modalTakeQuiz" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-5 border border-slate-200 shadow-xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <span id="quizModalBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">LÀM BÀI TRỰC TUYẾN</span>
+          <h3 id="quizModalTitle" class="font-bold text-slate-900 text-base mt-1">Tên bài tập</h3>
+          <p id="quizModalStudentName" class="text-xs text-slate-500 font-medium">Học sinh: --</p>
+        </div>
+        <button onclick="closeModal('modalTakeQuiz')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- File đính kèm của bài nếu có -->
+      <div id="quizAttachedFileBox" class="hidden p-2.5 bg-blue-50/70 border border-blue-200 rounded-xl text-xs flex items-center justify-between">
+        <div class="flex items-center gap-2 text-blue-900 font-semibold truncate">
+          <i data-lucide="file-text" class="w-4 h-4 text-blue-600 shrink-0"></i>
+          <span id="quizAttachedFileNameText" class="truncate">tailieu.pdf</span>
+        </div>
+        <button type="button" onclick="viewAttachedMockFile()" class="px-2.5 py-1 bg-white text-blue-700 font-bold rounded-lg border border-blue-200 text-[11px] shrink-0 hover:bg-blue-50">
+          Mở xem file
+        </button>
+      </div>
+
+      <!-- Khu vực hiển thị kết quả sau khi nộp bài -->
+      <div id="quizResultSummaryBox" class="hidden p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-900 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">KẾT QUẢ TỰ ĐỘNG CHẤM</span>
+          <span id="quizScoreNumberBadge" class="text-base font-black px-3 py-0.5 rounded-full bg-emerald-600 text-white">10 / 10 điểm</span>
+        </div>
+        <p id="quizResultFeedbackText" class="text-xs font-medium">Con làm bài rất xuất sắc! Đã làm đúng toàn bộ câu hỏi.</p>
+      </div>
+
+      <!-- Danh sách câu hỏi để học sinh chọn đáp án -->
+      <form id="quizForm" onsubmit="handleSubmitQuiz(event)" class="space-y-4">
+        <div id="quizQuestionsList" class="space-y-3.5">
+          <!-- Render danh sách câu hỏi bằng JS -->
+        </div>
+
+        <div id="quizSubmitFooter" class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalTakeQuiz')" class="px-3.5 py-1.5 text-xs text-slate-600">Đóng</button>
+          <button type="submit" id="btnSubmitQuiz" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Nộp bài & Chấm điểm</span>
+          </button>
         </div>
       </form>
     </div>
@@ -1115,6 +1110,30 @@
         lessonNote: 'Bài tập rèn luyện đảo ngữ và mệnh đề quan hệ',
         deadline: '2026-11-07',
         content: 'Hoàn thành 30 câu viết lại câu và bài đọc hiểu Reading Comprehension trang 45-47.',
+        attachedFile: 'De_kiem_tra_Unit5_ChuyenAnh.pdf',
+        questions: [
+          {
+            id: 'q1',
+            text: 'Not only ______ late, but he also forgot his homework notebook.',
+            options: ['A. he was', 'B. was he', 'C. did he', 'D. he did'],
+            correct: 1, // B
+            explanation: 'Đảo ngữ với "Not only" đứng đầu câu: Not only + Trợ động từ/To be + S + V'
+          },
+          {
+            id: 'q2',
+            text: 'The girl ______ brother won the national English contest is my best friend.',
+            options: ['A. whose', 'B. who', 'C. whom', 'D. which'],
+            correct: 0, // A
+            explanation: '"Whose" là đại từ quan hệ chỉ quyền sở hữu bổ nghĩa cho danh từ brother.'
+          },
+          {
+            id: 'q3',
+            text: 'Hardly ______ home when the torrential rain started.',
+            options: ['A. had arrived I', 'B. I had arrived', 'C. had I arrived', 'D. did I arrive'],
+            correct: 2, // C
+            explanation: 'Cấu trúc đảo ngữ: Hardly + had + S + V(pII) + when + S + V(quá khứ)'
+          }
+        ],
         submissions: {
           HS01: { submitted: true, score: 9.5, feedback: 'Áp dụng cấu trúc đảo ngữ với Not only... but also rất nhuần nhuyễn.' },
           HS02: { submitted: true, score: 10, feedback: 'Bài làm xuất sắc, ngữ pháp và từ vựng chuẩn xác.' },
@@ -1130,6 +1149,23 @@
         lessonNote: 'Từ vựng chủ đề Môi trường và phát âm đuôi -ed/-s',
         deadline: '2026-11-04',
         content: 'Học thuộc 25 từ vựng mới, làm bài tập tìm lỗi sai trong đoạn văn ngắn.',
+        attachedFile: null,
+        questions: [
+          {
+            id: 'q1',
+            text: 'Choose the word with different pronunciation of "-ed":',
+            options: ['A. played', 'B. watched', 'C. planned', 'D. lived'],
+            correct: 1, // B (đuôi /t/)
+            explanation: '"watched" phát âm là /t/, các từ còn lại phát âm là /d/.'
+          },
+          {
+            id: 'q2',
+            text: 'Deforestation causes severe damage to the local ______.',
+            options: ['A. ecosystem', 'B. ecology', 'C. ecologist', 'D. ecological'],
+            correct: 0, // A
+            explanation: 'Cần danh từ "ecosystem" (hệ sinh thái) sau tính từ local.'
+          }
+        ],
         submissions: {
           HS01: { submitted: true, score: 9.0, feedback: 'Nhớ từ vựng tốt, phát âm có tiến bộ rõ rệt.' },
           HS02: { submitted: true, score: 9.5, feedback: 'Tốt.' },
@@ -1187,6 +1223,13 @@
     let lastUndoAction = null;
     let undoToastTimer = null;
 
+    // Biến phụ trách soạn câu hỏi và làm bài thi
+    let draftQuestions = [];
+    let currentDraftFile = null;
+    let takingHomework = null;
+    let takingStudent = null;
+    let quizSelectedAnswers = {};
+
     // TÍNH TOÁN SỐ BUỔI ĐI HỌC VÀ HỌC PHÍ CỦA HỌC SINH
     function getAttendanceSummary(student) {
       const history = student.attendanceHistory || {};
@@ -1218,7 +1261,7 @@
     }
 
     // =========================================================
-    // RENDER TAB 1: ĐIỂM DANH (ĐÃ ĐƯỢC TỐI ƯU SIÊU GỌN CHO 15-20 HS)
+    // RENDER TAB 1: ĐIỂM DANH (ĐI HỌC / VẮNG & SỬA HỌC PHÍ TỪNG EM TRỰC TIẾP)
     // =========================================================
     function renderAttendanceTab() {
       const presentCount = students.filter(s => s.status === 'present').length;
@@ -1234,9 +1277,9 @@
 
       students.forEach((student, idx) => {
         const summary = getAttendanceSummary(student);
+        const fee = calculateStudentFee(student);
         const isPresent = student.status === 'present';
         const div = document.createElement('div');
-        // Thiết kế thanh mảnh: chiều cao dòng gọn (py-2), chữ vừa mắt, nút bấm 1 chạm nhanh
         div.className = `px-2.5 sm:px-3.5 py-2 sm:py-2.5 flex items-center justify-between transition-colors ${
           isPresent ? 'hover:bg-slate-50/80' : 'bg-rose-50/25 hover:bg-rose-50/40'
         }`;
@@ -1255,7 +1298,21 @@
                 <span class="text-[10px] font-extrabold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-100 shrink-0">
                   ${summary.presentCount}/${summary.totalRecorded}b
                 </span>
-                ${summary.absentCount > 0 ? `<span class="text-[10px] text-rose-500 font-semibold shrink-0 sm:inline hidden">(V${summary.absentCount})</span>` : ''}
+                
+                <!-- NÚT ĐIỀU CHỈNH HỌC PHÍ TỪNG EM NGAY TẠI ĐÂY -->
+                <button
+                  onclick="openEditIndividualFeeModal('${student.id}')"
+                  title="Điều chỉnh học phí của ${student.name} (cập nhật đồng bộ sang tab Học phí)"
+                  class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 transition active:scale-95 shrink-0"
+                >
+                  <span>${student.pricingType === 'monthly' ? `${(student.monthlyFixedPrice/1000)}k/tháng` : `${(student.pricePerSession/1000)}k/b`}</span>
+                  <i data-lucide="pencil" class="w-2.5 h-2.5 text-amber-600"></i>
+                </button>
+
+                ${fee.remaining > 0 
+                  ? `<span class="text-[10px] text-rose-600 font-bold bg-rose-50 px-1.5 py-0.2 rounded border border-rose-100 shrink-0">Chưa nộp: ${(fee.remaining).toLocaleString('vi-VN')}đ</span>` 
+                  : `<span class="text-[10px] text-emerald-700 font-semibold shrink-0 sm:inline hidden">✓ Đã đủ</span>`
+                }
               </div>
               <div class="text-[10px] sm:text-xs text-slate-400 truncate">
                 ${student.school} ${student.parentPhone ? `• ${student.parentPhone}` : ''}
@@ -1328,7 +1385,7 @@
     }
 
     // =========================================================
-    // RENDER TAB 2: BÀI TẬP VỀ NHÀ
+    // RENDER TAB 2: BÀI TẬP VỀ NHÀ (THÔNG MINH & TỰ ĐỘNG CHẤM)
     // =========================================================
     function renderHomeworkTab() {
       const container = document.getElementById('homeworkListContainer');
@@ -1337,6 +1394,7 @@
 
       homeworks.forEach(hw => {
         const submittedCount = Object.values(hw.submissions).filter(s => s.submitted).length;
+        const qCount = hw.questions ? hw.questions.length : 0;
         const card = document.createElement('div');
         card.className = "bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm";
 
@@ -1351,10 +1409,17 @@
                   ${sub.submitted ? '<span class="text-emerald-600 font-medium">✓ Đã nộp</span>' : '<span class="text-rose-500 font-medium">Chưa làm</span>'}
                 </div>
               </div>
-              <div>
+              <div class="flex items-center gap-1.5">
                 ${sub.score !== null && sub.score !== undefined 
                   ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-extrabold text-xs rounded">${sub.score}đ</span>`
                   : sub.submitted ? '<span class="text-[11px] text-amber-700 font-medium">Chờ chấm</span>' : '<span class="text-slate-300">-</span>'}
+                <button
+                  onclick="openTakeQuizModal('${hw.id}', '${s.id}')"
+                  title="Mở giao diện làm bài hoặc xem lại bài làm của ${s.name}"
+                  class="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-blue-600 transition"
+                >
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                </button>
               </div>
             </div>
           `;
@@ -1363,16 +1428,36 @@
         card.innerHTML = `
           <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700">${hw.id}</span>
                 <span class="text-xs text-rose-600 font-semibold">Hạn: ${hw.deadline}</span>
                 <span class="text-xs text-slate-400">• ${hw.lessonNote}</span>
+                ${qCount > 0 ? `<span class="text-[11px] px-2 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded font-bold">${qCount} câu trắc nghiệm tự chấm</span>` : ''}
               </div>
               <h4 class="font-bold text-sm text-slate-900 mt-1">${hw.title}</h4>
               <p class="text-xs text-slate-600 mt-0.5">${hw.content}</p>
+              
+              ${hw.attachedFile ? `
+                <div class="mt-2 inline-flex items-center gap-1.5 text-xs text-blue-700 font-semibold bg-white border border-blue-200 px-2.5 py-1 rounded-lg">
+                  <i data-lucide="paperclip" class="w-3.5 h-3.5 text-blue-500"></i>
+                  <span>File đính kèm: <strong>${hw.attachedFile}</strong></span>
+                  <button type="button" onclick="viewAttachedMockFile('${hw.attachedFile}')" class="text-blue-600 underline ml-1 hover:text-blue-800">Tải về / Xem</button>
+                </div>
+              ` : ''}
             </div>
-            <div class="text-xs bg-white px-3 py-1.5 rounded-lg border border-slate-200 self-start sm:self-auto font-semibold">
-              Tỉ lệ nộp: <strong class="text-blue-600">${submittedCount}/${students.length}</strong>
+
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+              <div class="text-xs bg-white px-3 py-1.5 rounded-lg border border-slate-200 font-semibold">
+                Đã nộp: <strong class="text-blue-600">${submittedCount}/${students.length}</strong>
+              </div>
+              <button
+                onclick="openTakeQuizModal('${hw.id}', 'HS01')"
+                class="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition flex items-center gap-1"
+                title="Làm thử bài thi này"
+              >
+                <i data-lucide="play" class="w-3 h-3"></i>
+                <span>Xem thử đề</span>
+              </button>
             </div>
           </div>
           <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
@@ -1381,368 +1466,6 @@
         `;
         container.appendChild(card);
       });
-    }
-
-    // =========================================================
-    // RENDER TAB 3: NHẬN XÉT BUỔI HỌC
-    // =========================================================
-    function renderRemarksTab() {
-      const container = document.getElementById('remarksListContainer');
-      container.innerHTML = '';
-
-      remarks.forEach(item => {
-        const student = students.find(s => s.id === item.studentId);
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-2.5";
-        card.innerHTML = `
-          <div class="flex items-start justify-between">
-            <div>
-              <div class="flex items-center space-x-2">
-                <span class="font-bold text-slate-900 text-sm">${student?.name || 'Học sinh'}</span>
-                <span class="text-xs text-slate-400">(${student?.school || 'THCS'})</span>
-              </div>
-              <div class="text-xs text-slate-500 mt-0.5">
-                ${item.sessionName} • ${item.date}
-              </div>
-            </div>
-            <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium border border-blue-200 text-xs">
-              ${item.understanding}
-            </span>
-          </div>
-
-          <div class="p-3 bg-slate-50 rounded-lg text-xs text-slate-700 border border-slate-100">
-            ${item.content}
-          </div>
-
-          ${item.parentReply ? `
-            <div class="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-100 text-xs text-emerald-900">
-              <div class="font-bold text-[11px] text-emerald-700 flex justify-between">
-                <span>Phụ huynh phản hồi:</span>
-                <span class="font-normal text-slate-400">${item.replyDate || ''}</span>
-              </div>
-              <p class="italic mt-0.5">"${item.parentReply}"</p>
-            </div>
-          ` : ''}
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // =========================================================
-    // RENDER TAB 4: QUẢN LÝ TÍNH HỌC PHÍ (NẰM Ở CUỐI CÙNG)
-    // =========================================================
-    function renderFinanceTab() {
-      let totalExpected = 0;
-      let totalCollected = 0;
-      let totalDebt = 0;
-
-      const tbody = document.getElementById('financeTableBody');
-      tbody.innerHTML = '';
-
-      students.forEach(student => {
-        const fee = calculateStudentFee(student);
-        totalExpected += fee.finalAmount;
-        totalCollected += fee.paid;
-        if (fee.remaining > 0) totalDebt += fee.remaining;
-
-        const isSelected = selectedStudentIds.includes(student.id);
-        const tr = document.createElement('tr');
-        tr.className = `hover:bg-slate-50 transition ${isSelected ? 'bg-blue-50/40' : ''}`;
-
-        tr.innerHTML = `
-          <td class="p-3 text-center">
-            <input
-              type="checkbox"
-              ${isSelected ? 'checked' : ''}
-              onchange="toggleSelectStudent('${student.id}', this.checked)"
-              class="rounded text-blue-600 cursor-pointer"
-            >
-          </td>
-
-          <td class="py-3 px-3">
-            <button
-              onclick="openStudentDetailModal('${student.id}')"
-              class="font-bold text-slate-900 text-left hover:text-blue-600 hover:underline block"
-            >
-              ${student.name}
-            </button>
-            <span class="text-[11px] text-slate-400 font-mono">${student.parentPhone}</span>
-          </td>
-
-          <td class="py-3 px-3">
-            <span class="font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
-              ${fee.presentCount} buổi
-            </span>
-          </td>
-
-          <td class="py-3 px-3">
-            ${student.pricingType === 'monthly'
-              ? `<div><span class="font-bold text-slate-700">Trọn gói:</span> ${Number(student.monthlyFixedPrice).toLocaleString('vi-VN')} đ/tháng</div>`
-              : `<div><span class="font-bold text-slate-700">${Number(student.pricePerSession).toLocaleString('vi-VN')} đ/buổi</span></div>`
-            }
-            ${student.discountOrExtra !== 0 ? `
-              <span class="text-[11px] block font-medium ${student.discountOrExtra > 0 ? 'text-rose-600' : 'text-emerald-600'}">
-                ${student.discountOrExtra > 0 ? `+ Phụ thu: ${student.discountOrExtra.toLocaleString('vi-VN')}đ` : `- Học bổng: ${Math.abs(student.discountOrExtra).toLocaleString('vi-VN')}đ`}
-              </span>
-            ` : ''}
-          </td>
-
-          <td class="py-3 px-3 font-extrabold text-slate-900">
-            ${fee.finalAmount.toLocaleString('vi-VN')} đ
-          </td>
-
-          <td class="py-3 px-3 font-bold text-emerald-700">
-            ${fee.paid.toLocaleString('vi-VN')} đ
-          </td>
-
-          <td class="py-3 px-3">
-            ${fee.remaining > 0
-              ? `<span class="font-extrabold text-rose-600">${fee.remaining.toLocaleString('vi-VN')} đ</span>`
-              : `<span class="text-slate-400 font-medium">0 đ</span>`
-            }
-          </td>
-
-          <td class="py-3 px-3 text-center">
-            ${fee.isFullyPaid
-              ? `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">Đã nộp đủ</span>`
-              : fee.paid > 0
-                ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">Thu 1 phần (${fee.paid.toLocaleString('vi-VN')} đ)</span>`
-                : `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800">Chưa nộp</span>`
-            }
-          </td>
-
-          <td class="py-3 px-3 text-right">
-            <div class="flex items-center justify-end gap-1.5">
-              <!-- Thu 1 phần -->
-              <button
-                onclick="openPartialPaymentModal('${student.id}')"
-                title="Thu 1 phần tiền"
-                class="px-2 py-1 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300 font-bold text-[11px] flex items-center gap-1 transition"
-              >
-                <i data-lucide="coins" class="w-3 h-3 text-amber-600"></i>
-                <span>Thu 1 phần</span>
-              </button>
-
-              <!-- Nút toggle ĐÃ THU ĐỦ <-> HỦY THU (hoàn tác 2 chiều) -->
-              ${fee.isFullyPaid
-                ? `<button
-                    onclick="togglePaymentStatus('${student.id}')"
-                    title="Bấm để hủy thu về Chưa nộp (nếu ấn nhầm)"
-                    class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-bold text-[11px] flex items-center gap-1 transition"
-                  >
-                    <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
-                    <span>Hủy thu</span>
-                  </button>`
-                : `<button
-                    onclick="togglePaymentStatus('${student.id}')"
-                    title="Đánh dấu đã nộp đủ tiền"
-                    class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 font-bold text-[11px] flex items-center gap-1 shadow-sm transition"
-                  >
-                    <i data-lucide="check" class="w-3 h-3"></i>
-                    <span>Đã thu đủ</span>
-                  </button>`
-              }
-
-              <!-- Chỉnh sửa -->
-              <button
-                onclick="openEditIndividualFeeModal('${student.id}')"
-                title="Chỉnh sửa học phí em này"
-                class="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
-              >
-                <i data-lucide="edit-3" class="w-4 h-4"></i>
-              </button>
-
-              <!-- Gửi Zalo -->
-              <button
-                onclick="openZaloInvoiceModal('${student.id}')"
-                title="Tạo tin nhắn gửi Zalo"
-                class="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
-              >
-                <i data-lucide="send" class="w-4 h-4"></i>
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      document.getElementById('statTotalExpectedFee').textContent = `${totalExpected.toLocaleString('vi-VN')} đ`;
-      document.getElementById('statTotalCollectedFee').textContent = `${totalCollected.toLocaleString('vi-VN')} đ`;
-      document.getElementById('statTotalUnpaidFee').textContent = `${totalDebt.toLocaleString('vi-VN')} đ`;
-
-      // Cập nhật nút Áp dụng hàng loạt
-      const count = selectedStudentIds.length;
-      document.getElementById('selectedStudentsCountDisplay').textContent = count;
-      const btnBatch = document.getElementById('btnApplyBatchSelected');
-      const btnBatchText = document.getElementById('btnApplyBatchSelectedText');
-      if (count > 0) {
-        btnBatch.disabled = false;
-        btnBatch.className = "px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer";
-        btnBatchText.textContent = `Áp dụng cho (${count}) em đã chọn`;
-      } else {
-        btnBatch.disabled = true;
-        btnBatch.className = "px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-100 text-slate-400 cursor-not-allowed";
-        btnBatchText.textContent = `Áp dụng cho (0) em đã chọn`;
-      }
-    }
-
-    // TOGGLE ĐÃ THU ĐỦ / HỦY THU (BẢO VỆ KHI BẤM NHẦM)
-    function togglePaymentStatus(studentId) {
-      const student = students.find(s => s.id === studentId);
-      if (!student) return;
-
-      const fee = calculateStudentFee(student);
-      const wasPaid = fee.isFullyPaid;
-      const prevAmount = student.paidAmount;
-
-      student.paidAmount = wasPaid ? 0 : fee.finalAmount;
-
-      // Kích hoạt Toast hoàn tác
-      showUndoToast({
-        studentId: student.id,
-        previousAmount: prevAmount,
-        message: wasPaid 
-          ? `Đã hủy thu tiền của ${student.name} về Chưa nộp`
-          : `Đã đánh dấu ${student.name} đóng đủ ${fee.finalAmount.toLocaleString('vi-VN')} đ`
-      });
-
-      renderAll();
-    }
-
-    // =========================================================
-    // RENDER GIAO DIỆN PHỤ HUYNH
-    // =========================================================
-    function renderParentView() {
-      const parentSelect = document.getElementById('parentStudentSelect');
-      parentSelect.innerHTML = '';
-      students.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = `${s.name} (${s.school})`;
-        opt.className = 'text-slate-900';
-        if (s.id === selectedParentStudentId) opt.selected = true;
-        parentSelect.appendChild(opt);
-      });
-
-      const student = students.find(s => s.id === selectedParentStudentId) || students[0];
-      if (!student) return;
-
-      document.getElementById('parentStudentHeaderName').innerHTML = `
-        ${student.name}
-        <span class="text-xs font-normal text-slate-500">(${student.school})</span>
-      `;
-      document.getElementById('parentStudentHeaderContact').textContent = `Phụ huynh: ${student.parentName} • ${student.parentPhone}`;
-
-      // Huy hiệu hôm nay
-      const todayBadge = document.getElementById('parentTodayStatusBadge');
-      if (student.status === 'present') {
-        todayBadge.innerHTML = `
-          <span class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 flex items-center gap-1.5">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Hôm nay ĐI HỌC
-          </span>
-        `;
-      } else {
-        todayBadge.innerHTML = `
-          <span class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-rose-100 text-rose-800 flex items-center gap-1.5">
-            <i data-lucide="x-circle" class="w-4 h-4"></i> Hôm nay VẮNG
-          </span>
-        `;
-      }
-
-      // Khối đối soát học phí
-      const fee = calculateStudentFee(student);
-      const summary = getAttendanceSummary(student);
-      const feeBadge = document.getElementById('parentFeeStatusBadge');
-      if (fee.isFullyPaid) {
-        feeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800";
-        feeBadge.textContent = "Đã hoàn tất học phí";
-      } else {
-        feeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-bold bg-rose-100 text-rose-800";
-        feeBadge.textContent = "Chưa nộp đủ";
-      }
-
-      document.getElementById('parentBoxSessions').textContent = `${summary.presentCount} buổi`;
-      document.getElementById('parentBoxTotal').textContent = `${fee.finalAmount.toLocaleString('vi-VN')} đ`;
-      document.getElementById('parentBoxPaid').textContent = `${fee.paid.toLocaleString('vi-VN')} đ`;
-      document.getElementById('parentBoxUnpaid').textContent = `${fee.remaining.toLocaleString('vi-VN')} đ`;
-
-      // Lưới các ngày học trong tháng
-      const grid = document.getElementById('parentSessionsGrid');
-      grid.innerHTML = '';
-      SESSION_DATES.forEach((dateStr, idx) => {
-        const isPresent = (student.attendanceHistory?.[dateStr] || 'absent') === 'present';
-        const item = document.createElement('div');
-        item.className = `p-3 rounded-xl border text-xs flex flex-col justify-between ${
-          isPresent ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950' : 'bg-rose-50/70 border-rose-200 text-rose-950'
-        }`;
-        item.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="font-bold text-slate-700">Buổi ${idx + 1}</span>
-            ${isPresent ? '<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>' : '<i data-lucide="x-circle" class="w-4 h-4 text-rose-600"></i>'}
-          </div>
-          <div class="font-mono text-xs text-slate-600 mt-1">${dateStr}</div>
-          <div class="mt-2 font-bold text-[11px]">
-            ${isPresent ? '<span class="text-emerald-700">✓ Đi học</span>' : '<span class="text-rose-600">✗ Vắng mặt</span>'}
-          </div>
-        `;
-        grid.appendChild(item);
-      });
-
-      // Bài tập về nhà của con
-      const hwList = document.getElementById('parentHomeworkList');
-      hwList.innerHTML = '';
-      homeworks.forEach(hw => {
-        const sub = hw.submissions[student.id] || { submitted: false };
-        const d = document.createElement('div');
-        d.className = "p-3.5 rounded-lg border border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
-        d.innerHTML = `
-          <div>
-            <div class="text-xs font-bold text-slate-900">${hw.title}</div>
-            <p class="text-xs text-slate-500 mt-0.5">${hw.content}</p>
-            <div class="text-[11px] text-rose-600 font-semibold mt-1">Hạn nộp: ${hw.deadline}</div>
-            ${sub.feedback ? `<div class="mt-1.5 text-xs text-slate-700 bg-white p-2 rounded border border-slate-200"><strong>Cô Diễm nhận xét:</strong> "${sub.feedback}"</div>` : ''}
-          </div>
-          <div class="self-end sm:self-center">
-            ${sub.submitted
-              ? `<span class="px-3 py-1 rounded bg-emerald-100 text-emerald-800 font-bold text-xs">${sub.score !== null ? `${sub.score} điểm` : 'Đã nộp bài'}</span>`
-              : `<span class="px-3 py-1 rounded bg-rose-100 text-rose-800 font-bold text-xs">Chưa hoàn thành</span>`
-            }
-          </div>
-        `;
-        hwList.appendChild(d);
-      });
-
-      // Nhận xét của cô Diễm
-      const remList = document.getElementById('parentRemarksList');
-      remList.innerHTML = '';
-      const stuRemarks = remarks.filter(r => r.studentId === student.id);
-      if (stuRemarks.length === 0) {
-        remList.innerHTML = '<div class="text-xs text-slate-400 p-2">Chưa có nhận xét nào cho buổi này.</div>';
-      } else {
-        stuRemarks.forEach(rm => {
-          const rDiv = document.createElement('div');
-          rDiv.className = "p-3.5 rounded-lg border border-slate-200 bg-white space-y-2.5";
-          rDiv.innerHTML = `
-            <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-slate-800">${rm.sessionName}</span>
-              <span class="text-slate-400">${rm.date}</span>
-            </div>
-            <div class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-100">${rm.content}</div>
-            ${rm.parentReply ? `
-              <div class="text-xs bg-blue-50/70 p-2.5 rounded border border-blue-100">
-                <span class="font-bold text-blue-800">Phụ huynh đã phản hồi: </span>
-                <span class="italic text-slate-700">"${rm.parentReply}"</span>
-              </div>
-            ` : `
-              <button onclick="promptParentReply('${rm.id}')" class="text-xs text-blue-600 hover:underline font-bold">
-                + Trả lời / Trao đổi với cô Diễm
-              </button>
-            `}
-          `;
-          remList.appendChild(rDiv);
-        });
-      }
-
       lucide.createIcons();
     }
 
@@ -1753,59 +1476,59 @@
 
     function promptParentReply(remarkId) {
       const text = prompt("Nhập lời nhắn trao đổi gửi cô Diễm:");
-      if (!text || !text.trim()) return;
-      const rm = remarks.find(r => r.id === remarkId);
-      if (rm) {
-        rm.parentReply = text.trim();
-        rm.replyDate = "Vừa xong";
-        renderParentView();
-      }
-    }
+      // Bài tập về nhà của con (Phụ huynh xem & con làm trực tiếp tại đây)
+      const hwList = document.getElementById('parentHomeworkList');
+      hwList.innerHTML = '';
+      homeworks.forEach(hw => {
+        const sub = hw.submissions[student.id] || { submitted: false };
+        const qCount = hw.questions ? hw.questions.length : 0;
+        const d = document.createElement('div');
+        d.className = "p-3.5 rounded-lg border border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+        d.innerHTML = `
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-xs font-bold text-slate-900">${hw.title}</span>
+              ${qCount > 0 ? `<span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded">Trắc nghiệm Online (${qCount} câu)</span>` : ''}
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">${hw.content}</p>
+            <div class="text-[11px] text-rose-600 font-semibold mt-1">Hạn nộp: ${hw.deadline}</div>
+            
+            ${hw.attachedFile ? `
+              <div class="mt-1.5 inline-flex items-center gap-1.5 text-xs text-blue-700 font-medium">
+                <i data-lucide="paperclip" class="w-3 h-3 text-blue-500"></i>
+                <span>Đề bài: ${hw.attachedFile}</span>
+                <button type="button" onclick="viewAttachedMockFile('${hw.attachedFile}')" class="underline text-blue-600 font-bold ml-1">Xem file</button>
+              </div>
+            ` : ''}
 
-    // =========================================================
-    // MODAL XEM CHI TIẾT HỌC SINH (KHI BẤM VÀO TÊN)
-    // =========================================================
-    function openStudentDetailModal(studentId) {
-      const student = students.find(s => s.id === studentId);
-      if (!student) return;
-      detailedStudent = student;
-
-      const summary = getAttendanceSummary(student);
-      const fee = calculateStudentFee(student);
-
-      document.getElementById('modalDetailName').innerHTML = `
-        ${student.name}
-        <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold">${student.id}</span>
-      `;
-      document.getElementById('modalDetailSubtext').textContent = `${student.school} • PH: ${student.parentName} (${student.parentPhone})`;
-      document.getElementById('modalDetailPresentCount').textContent = `${summary.presentCount}/${summary.totalRecorded} buổi`;
-      document.getElementById('modalDetailPaidAmount').textContent = `${fee.paid.toLocaleString('vi-VN')} đ`;
-      document.getElementById('modalDetailUnpaidAmount').textContent = fee.remaining > 0 ? `${fee.remaining.toLocaleString('vi-VN')} đ` : '0 đ';
-
-      // Lưới bấm đổi từng ngày
-      const grid = document.getElementById('modalDetailDatesGrid');
-      grid.innerHTML = '';
-      SESSION_DATES.forEach((dateStr, idx) => {
-        const isPresent = (student.attendanceHistory?.[dateStr] || 'absent') === 'present';
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.onclick = () => toggleDayInModal(student.id, dateStr);
-        btn.className = `p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
-          isPresent
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-900 hover:bg-emerald-100'
-            : 'bg-rose-50 border-rose-200 text-rose-900 hover:bg-rose-100'
-        }`;
-        btn.innerHTML = `
-          <div class="flex items-center justify-between w-full">
-            <span class="text-[11px] font-bold text-slate-600">Buổi ${idx + 1}</span>
-            ${isPresent ? '<i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>' : '<i data-lucide="x-circle" class="w-3.5 h-3.5 text-rose-600"></i>'}
+            ${sub.feedback ? `<div class="mt-1.5 text-xs text-slate-700 bg-white p-2 rounded border border-slate-200"><strong>Cô Diễm nhận xét:</strong> "${sub.feedback}"</div>` : ''}
           </div>
-          <div class="font-mono text-[11px] text-slate-500 mt-1">${dateStr}</div>
-          <div class="text-[11px] font-extrabold mt-1">
-            ${isPresent ? '<span class="text-emerald-700">✓ Đi học</span>' : '<span class="text-rose-600">✗ Vắng</span>'}
+
+          <div class="self-end sm:self-center flex items-center gap-2">
+            ${sub.submitted
+              ? `
+                <div class="text-right">
+                  <span class="px-3 py-1 rounded bg-emerald-100 text-emerald-800 font-bold text-xs inline-block">
+                    ${sub.score !== null ? `${sub.score} điểm` : 'Đã nộp bài'}
+                  </span>
+                  <button onclick="openTakeQuizModal('${hw.id}', '${student.id}')" class="block text-[11px] text-blue-600 hover:underline mt-0.5">
+                    Xem lại kết quả
+                  </button>
+                </div>
+              `
+              : `
+                <button
+                  onclick="openTakeQuizModal('${hw.id}', '${student.id}')"
+                  class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition"
+                >
+                  <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+                  <span>Làm bài ngay</span>
+                </button>
+              `
+            }
           </div>
         `;
-        grid.appendChild(btn);
+        hwList.appendChild(d);
       });
 
       openModal('modalStudentDetail');
@@ -1822,60 +1545,371 @@
     }
 
     // =========================================================
-    // MODAL THU 1 PHẦN HỌC PHÍ
+    // SOẠN BÀI TẬP MỚI & THÊM CÂU HỎI TRẮC NGHIỆM TỰ ĐỘNG CHẤM
     // =========================================================
-    function openPartialPaymentModal(studentId) {
-      const student = students.find(s => s.id === studentId);
-      if (!student) return;
-      partialPaymentStudent = student;
-
-      const fee = calculateStudentFee(student);
-      document.getElementById('partialModalStudentName').textContent = `${student.name} (${student.school})`;
-      document.getElementById('partialModalTotalFee').textContent = `${fee.finalAmount.toLocaleString('vi-VN')} đ`;
-      document.getElementById('partialModalPreviouslyPaid').textContent = `${student.paidAmount.toLocaleString('vi-VN')} đ`;
-
-      const input = document.getElementById('partialPaymentAmountInput');
-      input.value = student.paidAmount > 0 ? student.paidAmount : Math.round(fee.finalAmount / 2);
-      updatePartialModalRemaining();
-
-      openModal('modalPartialPayment');
+    function openNewHomeworkModal() {
+      document.getElementById('newHwTitle').value = '';
+      document.getElementById('newHwLessonNote').value = '';
+      document.getElementById('newHwDeadline').value = '';
+      document.getElementById('newHwContent').value = '';
+      clearAttachedFile();
+      draftQuestions = [];
+      renderDraftQuestions();
+      openModal('modalNewHomework');
     }
 
-    function updatePartialModalRemaining() {
-      if (!partialPaymentStudent) return;
-      const fee = calculateStudentFee(partialPaymentStudent);
-      const val = Number(document.getElementById('partialPaymentAmountInput').value) || 0;
-      const rem = Math.max(0, fee.finalAmount - val);
-      document.getElementById('partialModalRemainingCalculated').textContent = `${rem.toLocaleString('vi-VN')} đ`;
+    function handleFileSelected(input) {
+      if (input.files && input.files[0]) {
+        currentDraftFile = input.files[0].name;
+        document.getElementById('attachedFileName').textContent = currentDraftFile;
+        document.getElementById('btnClearFile').classList.remove('hidden');
+      }
     }
 
-    function setPartialInputValue(val) {
-      document.getElementById('partialPaymentAmountInput').value = val;
-      updatePartialModalRemaining();
+    function clearAttachedFile() {
+      currentDraftFile = null;
+      document.getElementById('hwFileInput').value = '';
+      document.getElementById('attachedFileName').textContent = 'Chưa đính kèm file';
+      document.getElementById('btnClearFile').classList.add('hidden');
     }
 
-    function setPartialInputPercent(percent) {
-      if (!partialPaymentStudent) return;
-      const fee = calculateStudentFee(partialPaymentStudent);
-      document.getElementById('partialPaymentAmountInput').value = Math.round(fee.finalAmount * percent);
-      updatePartialModalRemaining();
+    function addNewBlankQuestion() {
+      const qIndex = draftQuestions.length + 1;
+      draftQuestions.push({
+        id: `q_${Date.now()}`,
+        text: `Câu ${qIndex}: `,
+        options: ['A. Đáp án 1', 'B. Đáp án 2', 'C. Đáp án 3', 'D. Đáp án 4'],
+        correct: 0,
+        explanation: 'Giải thích ngữ pháp...'
+      });
+      renderDraftQuestions();
     }
 
-    function handleSavePartialPayment(e) {
+    function addSampleQuizQuestions() {
+      draftQuestions = [
+        {
+          id: `q_${Date.now()}_1`,
+          text: 'If it ______ tomorrow, we will postpone the outdoor speaking session.',
+          options: ['A. rains', 'B. will rain', 'C. rained', 'D. would rain'],
+          correct: 0,
+          explanation: 'Câu điều kiện loại 1: Mệnh đề If dùng thì hiện tại đơn (If it rains).'
+        },
+        {
+          id: `q_${Date.now()}_2`,
+          text: 'She has lived in Hanoi ______ ten years.',
+          options: ['A. since', 'B. for', 'C. in', 'D. at'],
+          correct: 1,
+          explanation: '"For" đi với khoảng thời gian (for ten years), "since" đi với mốc thời gian.'
+        },
+        {
+          id: `q_${Date.now()}_3`,
+          text: 'Neither Peter nor his colleagues ______ satisfied with the presentation.',
+          options: ['A. is', 'B. are', 'C. was', 'D. has been'],
+          correct: 1,
+          explanation: 'Cấu trúc "Neither... nor": động từ hòa hợp theo chủ ngữ gần nhất (his colleagues -> số nhiều: are).'
+        }
+      ];
+      renderDraftQuestions();
+    }
+
+    function renderDraftQuestions() {
+      const container = document.getElementById('quizQuestionsContainer');
+      container.innerHTML = '';
+
+      if (draftQuestions.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-xs text-slate-400">
+            Chưa có câu hỏi trực tuyến nào. Bấm "+ Thêm câu hỏi" hoặc "+ Thêm đề mẫu" để tạo đề tự động chấm điểm.
+          </div>
+        `;
+        return;
+      }
+
+      draftQuestions.forEach((q, idx) => {
+        const item = document.createElement('div');
+        item.className = "p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs relative";
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-800">Câu hỏi #${idx + 1}</span>
+            <button type="button" onclick="removeDraftQuestion(${idx})" class="text-rose-500 hover:text-rose-700 text-[11px] font-bold">
+              Xóa câu
+            </button>
+          </div>
+          <input
+            type="text"
+            value="${q.text}"
+            onchange="updateDraftQuestionText(${idx}, this.value)"
+            placeholder="Nội dung câu hỏi..."
+            class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white font-medium focus:outline-none"
+          />
+          <div class="grid grid-cols-2 gap-2">
+            ${q.options.map((opt, oIdx) => `
+              <div class="flex items-center gap-1.5 bg-white p-1 rounded-lg border ${q.correct === oIdx ? 'border-emerald-500 ring-1 ring-emerald-200' : 'border-slate-200'}">
+                <input
+                  type="radio"
+                  name="correct_opt_${idx}"
+                  ${q.correct === oIdx ? 'checked' : ''}
+                  onchange="updateDraftQuestionCorrect(${idx}, ${oIdx})"
+                  class="text-emerald-600 cursor-pointer"
+                  title="Chọn làm đáp án đúng"
+                />
+                <input
+                  type="text"
+                  value="${opt}"
+                  onchange="updateDraftQuestionOption(${idx}, ${oIdx}, this.value)"
+                  class="w-full text-xs bg-transparent focus:outline-none"
+                />
+              </div>
+            `).join('')}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-slate-400 shrink-0">Giải thích:</span>
+            <input
+              type="text"
+              value="${q.explanation || ''}"
+              onchange="updateDraftQuestionExplanation(${idx}, this.value)"
+              placeholder="Ghi chú kiến thức sau khi học sinh làm xong..."
+              class="w-full text-[11px] px-2 py-1 bg-white border border-slate-200 rounded-lg text-slate-600 focus:outline-none"
+            />
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function removeDraftQuestion(idx) {
+      draftQuestions.splice(idx, 1);
+      renderDraftQuestions();
+    }
+    function updateDraftQuestionText(idx, val) {
+      if (draftQuestions[idx]) draftQuestions[idx].text = val;
+    }
+    function updateDraftQuestionOption(qIdx, oIdx, val) {
+      if (draftQuestions[qIdx]) draftQuestions[qIdx].options[oIdx] = val;
+    }
+    function updateDraftQuestionCorrect(qIdx, oIdx) {
+      if (draftQuestions[qIdx]) draftQuestions[qIdx].correct = oIdx;
+      renderDraftQuestions();
+    }
+    function updateDraftQuestionExplanation(idx, val) {
+      if (draftQuestions[idx]) draftQuestions[idx].explanation = val;
+    }
+
+    function handleCreateHomework(e) {
       e.preventDefault();
-      if (!partialPaymentStudent) return;
+      const title = document.getElementById('newHwTitle').value.trim();
+      const note = document.getElementById('newHwLessonNote').value.trim() || 'Bài tập rèn luyện';
+      const deadline = document.getElementById('newHwDeadline').value;
+      const content = document.getElementById('newHwContent').value.trim();
 
-      const newVal = Math.max(0, Number(document.getElementById('partialPaymentAmountInput').value) || 0);
-      const prevAmount = partialPaymentStudent.paidAmount;
-      partialPaymentStudent.paidAmount = newVal;
-
-      showUndoToast({
-        studentId: partialPaymentStudent.id,
-        previousAmount: prevAmount,
-        message: `Đã cập nhật thu: ${newVal.toLocaleString('vi-VN')} đ cho ${partialPaymentStudent.name}`
+      const initialSubs = {};
+      students.forEach(s => {
+        initialSubs[s.id] = { submitted: false, score: null, feedback: '' };
       });
 
-      closeModal('modalPartialPayment');
+      const newHw = {
+        id: `BT0${homeworks.length + 1}`,
+        title,
+        lessonNote: note,
+        deadline,
+        content,
+        attachedFile: currentDraftFile,
+        questions: [...draftQuestions],
+        submissions: initialSubs
+      };
+
+      homeworks.unshift(newHw);
+      closeModal('modalNewHomework');
+      renderAll();
+    }
+
+    // =========================================================
+    // MODAL HỌC SINH LÀM BÀI TRỰC TUYẾN & TỰ ĐỘNG CHẤM ĐIỂM
+    // =========================================================
+    function openTakeQuizModal(hwId, studentId) {
+      const hw = homeworks.find(h => h.id === hwId);
+      const student = students.find(s => s.id === studentId) || students[0];
+      if (!hw) return;
+
+      takingHomework = hw;
+      takingStudent = student;
+      quizSelectedAnswers = {};
+
+      document.getElementById('quizModalTitle').textContent = hw.title;
+      document.getElementById('quizModalStudentName').textContent = `Học sinh: ${student.name} (${student.school})`;
+
+      // File đính kèm nếu có
+      const fileBox = document.getElementById('quizAttachedFileBox');
+      if (hw.attachedFile) {
+        fileBox.classList.remove('hidden');
+        document.getElementById('quizAttachedFileNameText').textContent = hw.attachedFile;
+      } else {
+        fileBox.classList.add('hidden');
+      }
+
+      // Kiểm tra xem học sinh đã có điểm nộp trước đó chưa
+      const sub = hw.submissions[student.id] || { submitted: false };
+      const summaryBox = document.getElementById('quizResultSummaryBox');
+      const submitBtn = document.getElementById('btnSubmitQuiz');
+
+      if (sub.submitted && sub.score !== null) {
+        summaryBox.classList.remove('hidden');
+        document.getElementById('quizScoreNumberBadge').textContent = `${sub.score} / 10 điểm`;
+        document.getElementById('quizResultFeedbackText').textContent = sub.feedback || 'Bài làm đã được chấm điểm tự động.';
+        submitBtn.textContent = "Nộp lại bài làm";
+      } else {
+        summaryBox.classList.add('hidden');
+        submitBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i> <span>Nộp bài & Chấm điểm</span>`;
+      }
+
+      // Render danh sách câu hỏi làm bài
+      const list = document.getElementById('quizQuestionsList');
+      list.innerHTML = '';
+
+      if (!hw.questions || hw.questions.length === 0) {
+        list.innerHTML = `
+          <div class="p-4 bg-slate-50 rounded-xl text-center text-xs text-slate-500">
+            Bài tập này không có câu hỏi trắc nghiệm trực tuyến. Học sinh làm bài ra vở theo dặn dò của cô:
+            <div class="mt-2 font-bold text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200">${hw.content}</div>
+          </div>
+        `;
+      } else {
+        hw.questions.forEach((q, idx) => {
+          const qBox = document.createElement('div');
+          qBox.className = "p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5 text-xs";
+          qBox.innerHTML = `
+            <div class="font-extrabold text-slate-900 leading-snug">
+              Câu ${idx + 1}: ${q.text}
+            </div>
+            <div class="space-y-1.5">
+              ${q.options.map((opt, oIdx) => `
+                <label class="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-slate-200 cursor-pointer hover:bg-blue-50/50 hover:border-blue-300 transition text-slate-700">
+                  <input
+                    type="radio"
+                    name="student_answer_${idx}"
+                    value="${oIdx}"
+                    onchange="selectStudentQuizAnswer(${idx}, ${oIdx})"
+                    class="text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    required
+                  />
+                  <span class="font-medium">${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+            ${sub.submitted && q.explanation ? `
+              <div class="p-2 bg-emerald-50 rounded-lg border border-emerald-100 text-[11px] text-emerald-900">
+                <strong>Đáp án đúng: ${q.options[q.correct]}</strong><br/>
+                <span class="text-slate-600">${q.explanation}</span>
+              </div>
+            ` : ''}
+          `;
+          list.appendChild(qBox);
+        });
+      }
+
+      openModal('modalTakeQuiz');
+      lucide.createIcons();
+    }
+
+    function selectStudentQuizAnswer(qIdx, optIdx) {
+      quizSelectedAnswers[qIdx] = optIdx;
+    }
+
+    function handleSubmitQuiz(e) {
+      e.preventDefault();
+      if (!takingHomework || !takingStudent) return;
+
+      const questions = takingHomework.questions || [];
+      let finalScore = 10;
+      let feedback = 'Đã hoàn thành bài tập.';
+
+      // TỰ ĐỘNG CHẤM ĐIỂM DỰA TRÊN ĐÁP ÁN ĐÚNG
+      if (questions.length > 0) {
+        let correctCount = 0;
+        questions.forEach((q, idx) => {
+          const userAns = quizSelectedAnswers[idx];
+          if (userAns !== undefined && Number(userAns) === Number(q.correct)) {
+            correctCount++;
+          }
+        });
+        const calculatedScore = Math.round((correctCount / questions.length) * 10 * 10) / 10;
+        finalScore = calculatedScore;
+
+        if (finalScore === 10) {
+          feedback = `Xuất sắc! Con đã làm đúng 100% (${correctCount}/${questions.length} câu).`;
+        } else if (finalScore >= 8) {
+          feedback = `Làm bài rất tốt! Đúng ${correctCount}/${questions.length} câu. Chú ý các câu ngữ pháp bị nhầm.`;
+        } else if (finalScore >= 5) {
+          feedback = `Đã đạt yêu cầu (${correctCount}/${questions.length} câu). Cần ôn lại các quy tắc ngữ pháp của bài.`;
+        } else {
+          feedback = `Con cần xem lại lý thuyết và làm bài cẩn thận hơn (${correctCount}/${questions.length} câu).`;
+        }
+      }
+
+      // Cập nhật kết quả vào bài tập
+      takingHomework.submissions[takingStudent.id] = {
+        submitted: true,
+        score: finalScore,
+        feedback: feedback
+      };
+
+      // Hiển thị khung kết quả ngay trên modal
+      const summaryBox = document.getElementById('quizResultSummaryBox');
+      summaryBox.classList.remove('hidden');
+      document.getElementById('quizScoreNumberBadge').textContent = `${finalScore} / 10 điểm`;
+      document.getElementById('quizResultFeedbackText').textContent = feedback;
+
+      // Cập nhật lại toàn bộ ứng dụng
+      renderAll();
+    }
+
+    function viewAttachedMockFile(fileName) {
+      alert(`[Demo] Đang mở tài liệu: ${fileName || 'De_kiem_tra.pdf'}\nFile đề bài đã được đính kèm sẵn cho học sinh tải về.`);
+    }
+
+    // =========================================================
+    // MODAL SỬA CHI TIẾT HỌC PHÍ TỪNG HỌC SINH (ĐỒNG BỘ 2 CHIỀU)
+    // =========================================================
+    function openEditIndividualFeeModal(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      editingStudent = student;
+
+      document.getElementById('editFeeStudentName').textContent = `${student.name} (${student.school})`;
+      document.getElementById('editFeePricingType').value = student.pricingType || 'per_session';
+      document.getElementById('editFeePricePerSession').value = student.pricePerSession || 120000;
+      document.getElementById('editFeeMonthlyPrice').value = student.monthlyFixedPrice || 900000;
+      document.getElementById('editFeeDiscountOrExtra').value = student.discountOrExtra || 0;
+      document.getElementById('editFeePaidAmount').value = student.paidAmount || 0;
+
+      toggleEditFeeFields(student.pricingType || 'per_session');
+      openModal('modalEditIndividualFee');
+    }
+
+    function toggleEditFeeFields(val) {
+      const per = document.getElementById('editFeePerSessionField');
+      const mon = document.getElementById('editFeeMonthlyField');
+      if (val === 'per_session') {
+        per.classList.remove('hidden');
+        mon.classList.add('hidden');
+      } else {
+        per.classList.add('hidden');
+        mon.classList.remove('hidden');
+      }
+    }
+
+    function handleSaveIndividualFee(e) {
+      e.preventDefault();
+      if (!editingStudent) return;
+
+      editingStudent.pricingType = document.getElementById('editFeePricingType').value;
+      editingStudent.pricePerSession = Number(document.getElementById('editFeePricePerSession').value) || 0;
+      editingStudent.monthlyFixedPrice = Number(document.getElementById('editFeeMonthlyPrice').value) || 0;
+      editingStudent.discountOrExtra = Number(document.getElementById('editFeeDiscountOrExtra').value) || 0;
+      editingStudent.paidAmount = Number(document.getElementById('editFeePaidAmount').value) || 0;
+
+      closeModal('modalEditIndividualFee');
+      // ĐỒNG BỘ TỨC THÌ CẢ 2 PHÂN HỆ: ĐIỂM DANH VÀ HỌC PHÍ
       renderAll();
     }
 
