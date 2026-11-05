@@ -49,7 +49,6 @@
             <h1 class="text-sm sm:text-base md:text-lg font-bold text-slate-900 leading-tight">
               Lớp Tiếng Anh - Cô Diễm
             </h1>
-            <p class="text-[11px] sm:text-xs text-slate-500 font-medium">Sổ liên lạc & Đối soát học phí buổi học</p>
           </div>
         </div>
 
@@ -79,18 +78,18 @@
 
   <!-- ==================== BANNER THÔNG TIN BUỔI HỌC ==================== -->
   <div class="bg-slate-900 text-white">
-    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3.5">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
         
-        <div>
+        <div class="flex flex-wrap items-center gap-2">
           <!-- THỜI GIAN THỰC TẾ & BỘ CHỌN LỚP CÔ DIỄM -->
-          <div class="text-xs text-indigo-400 font-semibold flex flex-wrap items-center gap-1.5 mb-1.5">
+          <div class="text-xs text-indigo-400 font-semibold flex flex-wrap items-center gap-1.5">
             <i data-lucide="calendar" class="w-3.5 h-3.5 text-indigo-300 shrink-0"></i>
             <span id="currentDateDisplayBanner">Hôm nay</span>
             <span class="text-slate-500">•</span>
 
-            <!-- Khối chọn lớp tinh tế -->
-            <div class="inline-flex items-center gap-1.5 bg-slate-800/90 py-0.5 px-2 rounded-lg border border-slate-700">
+            <!-- Khối chọn lớp -->
+            <div class="inline-flex items-center gap-1.5 bg-slate-800/90 py-1 px-2.5 rounded-lg border border-slate-700">
               <span class="text-slate-400 text-[11px] font-bold">Lớp:</span>
               <select
                 id="classListSelect"
@@ -124,14 +123,10 @@
               45.000đ/buổi
             </span>
           </div>
-
-          <h2 id="bannerRoleTitle" class="text-base sm:text-lg font-bold">
-            Quản lý điểm danh, thời khóa biểu & báo cáo học tập
-          </h2>
         </div>
 
         <!-- Khi ở chế độ Phụ huynh: Bộ chọn học sinh -->
-        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 px-3 py-2 rounded-xl flex items-center gap-3">
+        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-3">
           <div class="text-xs text-slate-400">Xem sổ của con:</div>
           <select
             id="parentStudentSelect"
@@ -206,48 +201,43 @@
         <!-- BẢNG THỜI KHÓA BIỂU TUẦN CÁC LỚP TIẾNG ANH (HIỂN THỊ MẶC ĐỊNH BAN ĐẦU) -->
         <div id="weeklyScheduleSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-4">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
-                <h3 class="font-extrabold text-slate-900 text-sm sm:text-base uppercase tracking-tight">
-                  Thời khóa biểu 6 Lớp Tiếng Anh Cô Diễm
-                </h3>
-              </div>
-              <p class="text-xs text-slate-500 mt-0.5">
-                Bấm vào bất kỳ ô ca học nào để mở danh sách học sinh & sổ điểm danh của lớp đó
-              </p>
+          <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0"></span>
+              <h3 class="font-extrabold text-slate-900 text-xs sm:text-base uppercase tracking-tight truncate">
+                Thời khóa biểu
+              </h3>
             </div>
 
-            <!-- Nút chuyển chế độ xem dành riêng cho điện thoại -->
-            <div class="flex items-center gap-1.5 self-start sm:self-auto bg-slate-100 p-1 rounded-xl">
+            <!-- Nút chuyển chế độ xem dành riêng cho điện thoại gom cùng hàng -->
+            <div class="flex items-center gap-1 bg-slate-100 p-0.5 sm:p-1 rounded-xl shrink-0">
               <button
                 type="button"
                 id="viewTodayMobileBtn"
                 onclick="toggleScheduleViewMode('today')"
-                class="px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 bg-white text-indigo-700 shadow-xs"
+                class="px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-bold transition flex items-center gap-1 bg-white text-indigo-700 shadow-xs whitespace-nowrap"
               >
-                <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i>
+                <i data-lucide="zap" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500"></i>
                 <span id="mobileTodayBtnLabel">Hôm nay</span>
               </button>
               <button
                 type="button"
                 id="viewAllWeekMobileBtn"
                 onclick="toggleScheduleViewMode('week')"
-                class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1"
+                class="px-2 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1 whitespace-nowrap"
               >
-                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                <i data-lucide="calendar" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
                 <span>Cả tuần</span>
               </button>
             </div>
           </div>
 
-          <!-- THẺ HIỂN THỊ NHANH CÁC CA HÔM NAY CHO ĐIỆN THOẠI (KHÔNG CẦN VUỐT) -->
+          <!-- THẺ HIỂN THỊ NHANH CÁC CA HÔM NAY CHO ĐIỆN THOẠI -->
           <div id="todayMobileCardsWrapper" class="space-y-2.5 block md:hidden">
             <!-- Render động bằng JavaScript -->
           </div>
 
-          <!-- BẢNG LỊCH DẠY DẠNG MA TRẬN CHUẨN ĐẸP (THEO PHÒNG & THỨ TRONG TUẦN) -->
+          <!-- BẢNG LỊCH DẠY DẠNG MA TRẬN CHUẨN ĐẸP -->
           <div id="matrixScheduleTableWrapper" class="overflow-x-auto rounded-xl border border-slate-200 scrollbar-none transition-all">
             <table class="w-full text-center border-collapse min-w-[780px] table-fixed text-xs">
               <thead>
@@ -273,70 +263,67 @@
         <!-- KHỐI DANH SÁCH HỌC SINH & ĐIỂM DANH (CHỈ HIỆN KHI BẤM CHỌN LỚP) -->
         <div id="studentAttendanceSection" class="hidden space-y-4">
           
-          <!-- Thanh điều hướng quay lại thời khóa biểu -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-indigo-50/80 border border-indigo-200 p-3.5 rounded-2xl">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Đang mở:</span>
-              <h3 id="currentClassTitleBadge" class="font-black text-slate-900 text-sm sm:text-base">
-                Tiếng Anh 9A (Luyện Thi Vào 10)
+          <!-- Thanh điều hướng quay lại thời khóa biểu (gọn gàng trên 1 hàng ở cả điện thoại) -->
+          <div class="flex items-center justify-between gap-2 bg-indigo-50/90 border border-indigo-200 px-2.5 py-1.5 sm:p-3 sm:rounded-2xl rounded-xl">
+            <div class="flex items-center gap-1.5 min-w-0 flex-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+              <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider shrink-0 hidden xs:inline">Đang mở:</span>
+              <h3 id="currentClassTitleBadge" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">
+                Tiếng Anh 6A • P.101 • 18h00 - 19h30
               </h3>
             </div>
 
             <button
               type="button"
               onclick="closeStudentListAndShowSchedule()"
-              class="px-3 py-1.5 rounded-xl bg-white text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
+              class="px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-white text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1 shadow-xs shrink-0 whitespace-nowrap"
             >
-              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-              <span>← Đóng danh sách / Xem lại Thời khóa biểu</span>
+              <i data-lucide="arrow-left" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
+              <span>← Xem lại Thời khóa biểu</span>
             </button>
           </div>
 
-          <!-- Thống kê sĩ số của lớp đang chọn -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex items-center justify-between shadow-xs">
+          <!-- Thống kê sĩ số của lớp đang chọn (Thu nhỏ dàn 1 hàng trên điện thoại) -->
+          <div class="grid grid-cols-3 gap-1.5 sm:gap-3">
+            <div class="bg-white p-2 sm:p-3.5 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between shadow-xs text-center sm:text-left">
               <div>
-                <div class="text-[11px] text-slate-500 font-medium">Sĩ số lớp</div>
-                <div id="statTotalStudents" class="text-xl font-extrabold text-slate-900">0 học sinh</div>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 font-medium leading-tight">Sĩ số lớp</div>
+                <div id="statTotalStudents" class="text-sm sm:text-xl font-extrabold text-slate-900 mt-0.5">0 HS</div>
               </div>
-              <i data-lucide="users" class="w-6 h-6 text-slate-400"></i>
+              <i data-lucide="users" class="w-4 h-4 sm:w-6 sm:h-6 text-slate-400 mx-auto sm:mx-0 mt-1 sm:mt-0 hidden sm:block"></i>
             </div>
 
-            <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-200 flex items-center justify-between shadow-xs">
+            <div class="bg-emerald-50 p-2 sm:p-3.5 rounded-xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center sm:justify-between shadow-xs text-center sm:text-left">
               <div>
-                <div class="text-[11px] text-emerald-700 font-medium">Hôm nay ĐI HỌC</div>
-                <div id="statPresentStudents" class="text-xl font-extrabold text-emerald-800">0 em</div>
+                <div class="text-[10px] sm:text-[11px] text-emerald-700 font-semibold leading-tight">Đi học</div>
+                <div id="statPresentStudents" class="text-sm sm:text-xl font-extrabold text-emerald-800 mt-0.5">0 em</div>
               </div>
-              <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-600"></i>
+              <i data-lucide="check-circle-2" class="w-4 h-4 sm:w-6 sm:h-6 text-emerald-600 mx-auto sm:mx-0 mt-1 sm:mt-0 hidden sm:block"></i>
             </div>
 
-            <div class="bg-rose-50 p-3.5 rounded-xl border border-rose-200 flex items-center justify-between shadow-xs">
+            <div class="bg-rose-50 p-2 sm:p-3.5 rounded-xl border border-rose-200 flex flex-col sm:flex-row sm:items-center sm:justify-between shadow-xs text-center sm:text-left">
               <div>
-                <div class="text-[11px] text-rose-700 font-medium">Hôm nay VẮNG</div>
-                <div id="statAbsentStudents" class="text-xl font-extrabold text-rose-800">0 em</div>
+                <div class="text-[10px] sm:text-[11px] text-rose-700 font-semibold leading-tight">Vắng</div>
+                <div id="statAbsentStudents" class="text-sm sm:text-xl font-extrabold text-rose-800 mt-0.5">0 em</div>
               </div>
-              <i data-lucide="x-circle" class="w-6 h-6 text-rose-600"></i>
+              <i data-lucide="x-circle" class="w-4 h-4 sm:w-6 sm:h-6 text-rose-600 mx-auto sm:mx-0 mt-1 sm:mt-0 hidden sm:block"></i>
             </div>
           </div>
 
           <!-- Danh sách học sinh điểm danh -->
           <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="p-3.5 sm:p-4 border-b border-slate-100 bg-slate-50/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="px-3 py-2 sm:p-4 border-b border-slate-100 bg-slate-50/80 flex items-center justify-between gap-2">
               <div>
-                <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Danh sách học sinh điểm danh buổi học</h3>
-                <p class="text-[11px] text-slate-500">
-                  <span class="text-blue-600 font-bold underline cursor-pointer">Bấm vào tên học sinh</span> để xem lịch chi tiết các ngày đi / vắng
-                </p>
+                <h3 class="font-bold text-slate-900 text-xs sm:text-sm">Danh sách điểm danh</h3>
               </div>
 
               <div class="flex items-center gap-2">
                 <button
                   type="button"
                   onclick="markAllAttendance('present')"
-                  class="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-xs flex items-center gap-1"
+                  class="text-[11px] sm:text-xs font-bold px-2.5 py-1 sm:py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-xs flex items-center gap-1"
                 >
-                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  <i data-lucide="check" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
                   <span>Tất cả Đi học</span>
                 </button>
               </div>
@@ -859,7 +846,7 @@
       }
     ];
 
-    // 3. DỮ LIỆU HỌC SINH MẪU CHO CẢ 6 LỚP
+    // 3. DỮ LIỆU HỌC SINH MẪU
     const DEFAULT_CLASS_STUDENTS_MAP = {
       'class_eng_6a': [
         { id: '6A01', name: 'Nguyễn Hải Đăng', dob: '14/05/2014', school: 'THCS Lê Quý Đôn', parentName: 'Nguyễn Văn Hải', parentPhone: '0912 111 222', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
@@ -936,7 +923,7 @@
       }
     ];
 
-    // LƯU DỮ LIỆU BỀN VỮNG VÀO LOCALSTORAGE
+    // LƯU DỮ LIỆU VÀO LOCALSTORAGE
     function saveAllToLocalStorage() {
       try {
         localStorage.setItem('dipi_classes_list', JSON.stringify(classesList));
@@ -953,6 +940,23 @@
       const dayName = days[now.getDay()];
       const dateFormatted = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
       return { dayName, dateFormatted };
+    }
+
+    // TỰ ĐỘNG CUỘN CỘT THỨ HÔM NAY VÀO CHÍNH GIỮA MÀN HÌNH ĐIỆN THOẠI
+    function scrollToCenterTodayColumn() {
+      const wrapper = document.getElementById('matrixScheduleTableWrapper');
+      const headerRow = document.getElementById('scheduleTableHeaderRow');
+      if (!wrapper || !headerRow) return;
+
+      const todayInfo = getCurrentDayOfWeekInfo();
+      const todayTh = headerRow.querySelector(`th[data-day="${todayInfo.dayName}"]`);
+      if (todayTh) {
+        const thLeft = todayTh.offsetLeft;
+        const thWidth = todayTh.offsetWidth;
+        const wrapperWidth = wrapper.clientWidth;
+        const scrollTarget = Math.max(0, thLeft - (wrapperWidth / 2) + (thWidth / 2));
+        wrapper.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+      }
     }
 
     // KHỞI CHẠY HỆ THỐNG
@@ -1014,7 +1018,7 @@
       }
     }
 
-    // ĐỔI LỚP TỪ DROPDOWN (GIỮ NGUYÊN VỊ TRÍ, KHÔNG TỰ CUỘN)
+    // ĐỔI LỚP TỪ DROPDOWN
     function onClassChange(newClassId) {
       currentClassId = newClassId;
       isClassSelected = true;
@@ -1034,6 +1038,7 @@
     function closeStudentListAndShowSchedule() {
       isClassSelected = false;
       renderAll();
+      setTimeout(scrollToCenterTodayColumn, 100);
     }
 
     // CHUYỂN CHẾ ĐỘ XEM TRÊN ĐIỆN THOẠI (HÔM NAY / CẢ TUẦN)
@@ -1058,10 +1063,11 @@
         weekBtn?.classList.remove('text-slate-600');
         todayBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-xs');
         todayBtn?.classList.add('text-slate-600');
+        setTimeout(scrollToCenterTodayColumn, 120);
       }
     }
 
-    // RENDER THỜI KHÓA BIỂU MA TRẬN CHUẨN ĐẸP (KHÔNG CÓ DANH SÁCH CHÚ THÍCH DƯ THỪA Ở DƯỚI)
+    // RENDER THỜI KHÓA BIỂU MA TRẬN
     function renderWeeklyScheduleGrid() {
       const tbody = document.getElementById('matrixScheduleTableBody');
       const todayCardsContainer = document.getElementById('todayMobileCardsWrapper');
@@ -1134,7 +1140,7 @@
         }
       }
 
-      // 2. Render ma trận bảng: ô to dài (min-h-[96px]) dễ nhìn trên điện thoại
+      // 2. Render ma trận bảng
       tbody.innerHTML = sortedSlots.map((slot, rIdx) => {
         return `
           <tr class="hover:bg-slate-100/50 transition">
@@ -1200,20 +1206,7 @@
         `;
       }).join('');
 
-      // Auto scroll ngang tới cột hôm nay trên mobile
-      const wrapper = document.getElementById('matrixScheduleTableWrapper');
-      if (wrapper && window.innerWidth < 768) {
-        setTimeout(() => {
-          const todayTh = headerRow?.querySelector(`th[data-day="${todayInfo.dayName}"]`);
-          if (todayTh) {
-            const offsetLeft = todayTh.offsetLeft - 100;
-            if (offsetLeft > 0) {
-              wrapper.scrollTo({ left: offsetLeft, behavior: 'smooth' });
-            }
-          }
-        }, 150);
-      }
-
+      setTimeout(scrollToCenterTodayColumn, 150);
       lucide.createIcons();
     }
 
@@ -1247,14 +1240,14 @@
       const cls = classesList.find(c => c.id === currentClassId);
       const titleBadge = document.getElementById('currentClassTitleBadge');
       if (titleBadge && cls) {
-        titleBadge.innerText = `${cls.class_name} • Phòng: ${cls.room || 'P.101'} • ${cls.timeSlot || '18h00 - 19h30'}`;
+        titleBadge.innerText = `${cls.class_name} • ${cls.room || 'P.101'} • ${cls.timeSlot || '18h00 - 19h30'}`;
       }
 
       const total = students.length;
       const presentCount = students.filter(s => s.status === 'present').length;
       const absentCount = total - presentCount;
 
-      document.getElementById('statTotalStudents').innerText = `${total} học sinh`;
+      document.getElementById('statTotalStudents').innerText = `${total} HS`;
       document.getElementById('statPresentStudents').innerText = `${presentCount} em`;
       document.getElementById('statAbsentStudents').innerText = `${absentCount} em`;
       document.getElementById('headerPresentBadge').innerText = `${presentCount}/${total}`;
@@ -1276,48 +1269,52 @@
         const isPresent = student.status === 'present';
 
         return `
-          <div class="p-3.5 sm:p-4 flex items-center justify-between hover:bg-slate-50 transition">
-            <div class="flex items-center space-x-3">
-              <span class="text-xs font-bold text-slate-400 w-5 text-center">${idx + 1}</span>
-              <div>
-                <button
-                  type="button"
-                  onclick="openStudentDetailModal('${student.id}')"
-                  class="font-bold text-slate-900 text-sm text-left hover:text-blue-600 hover:underline flex items-center gap-1.5"
-                >
-                  <span>${student.name}</span>
-                  <i data-lucide="eye" class="w-3.5 h-3.5 text-slate-400"></i>
-                </button>
-                <div class="text-[11px] sm:text-xs text-slate-500 flex flex-wrap items-center gap-2 mt-0.5">
-                  <span>${student.school || 'THCS'}</span>
-                  <span>•</span>
-                  <span class="text-blue-700 font-bold bg-blue-50 px-2 py-0.2 rounded">
-                    Đã học: ${summary.presentCount}/${summary.totalRecorded} buổi
+          <div class="px-2.5 py-1.5 sm:px-4 sm:py-2.5 flex items-center justify-between hover:bg-slate-50 transition gap-1.5">
+            <div class="flex items-center space-x-2 min-w-0 flex-1">
+              <span class="text-[11px] font-bold text-slate-400 w-4 text-center shrink-0">${idx + 1}</span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <button
+                    type="button"
+                    onclick="openStudentDetailModal('${student.id}')"
+                    class="font-bold text-slate-900 text-xs sm:text-sm text-left hover:text-blue-600 truncate max-w-[130px] sm:max-w-none"
+                  >
+                    ${student.name}
+                  </button>
+                  <span class="text-[10px] sm:text-[11px] font-bold bg-blue-50 text-blue-700 px-1.5 py-0.2 rounded shrink-0">
+                    ${summary.presentCount}B
                   </span>
-                  ${summary.absentCount > 0 ? `<span class="text-rose-600 font-medium">(Vắng ${summary.absentCount})</span>` : ''}
+                  ${summary.absentCount > 0 ? `
+                    <span class="text-[10px] sm:text-[11px] font-bold bg-rose-50 text-rose-700 px-1.5 py-0.2 rounded shrink-0">
+                      ${summary.absentCount}V
+                    </span>
+                  ` : ''}
+                </div>
+                <div class="text-[10px] text-slate-400 truncate mt-0.5 hidden xs:block">
+                  ${student.school || 'THCS'}
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-1.5 sm:gap-2">
+            <div class="flex items-center gap-1 shrink-0">
               <button
                 type="button"
                 onclick="setStudentAttendance('${student.id}', 'present')"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all ${
-                  isPresent ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+                class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold flex items-center gap-1 transition-all ${
+                  isPresent ? 'bg-emerald-600 text-white shadow-xs ring-1 ring-emerald-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
                 }"
               >
-                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                <i data-lucide="check" class="w-3 h-3"></i>
                 <span>Đi học</span>
               </button>
               <button
                 type="button"
                 onclick="setStudentAttendance('${student.id}', 'absent')"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 transition-all ${
-                  !isPresent ? 'bg-rose-600 text-white shadow-xs ring-2 ring-rose-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+                class="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg text-[11px] sm:text-xs font-bold flex items-center gap-1 transition-all ${
+                  !isPresent ? 'bg-rose-600 text-white shadow-xs ring-1 ring-rose-300' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
                 }"
               >
-                <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                <i data-lucide="x" class="w-3 h-3"></i>
                 <span>Vắng</span>
               </button>
             </div>
@@ -1461,7 +1458,7 @@
       }
     }
 
-    // BẬT / TẮT THU ĐỦ TIỀN VỚI TÍNH NĂNG HOÀN TÁC
+    // BẬT / TẮT THU ĐỦ TIỀN VỚI HOÀN TÁC
     function handleTogglePaymentStatus(id) {
       const student = students.find(s => s.id === id);
       if (!student) return;
@@ -1561,7 +1558,7 @@
       renderFinanceTab();
     }
 
-    // MODAL CHI TIẾT HỌC SINH (CLICK VÀO TÊN)
+    // MODAL CHI TIẾT HỌC SINH
     let currentDetailStudentId = null;
     function openStudentDetailModal(id) {
       const student = students.find(s => s.id === id);
@@ -1620,7 +1617,7 @@
       renderFinanceTab();
     }
 
-    // CÀI ĐẶT LỚP HỌC (SỬA GIỜ, PHÒNG, THỨ VÀ TÊN LỚP)
+    // CÀI ĐẶT LỚP HỌC
     function openEditClassModal() {
       const cls = classesList.find(c => c.id === currentClassId);
       if (!cls) return;
@@ -1630,7 +1627,6 @@
       document.getElementById('editClassCodeInput').value = cls.code || 'TA';
       document.getElementById('editClassFeeInput').value = cls.fee_per_session || 45000;
 
-      // Phân tách giờ bắt đầu và kết thúc
       let start = '18:00';
       let end = '19:30';
       if (cls.timeSlot && cls.timeSlot.includes('-')) {
@@ -1641,7 +1637,6 @@
       document.getElementById('editClassStartTime').value = start;
       document.getElementById('editClassEndTime').value = end;
 
-      // Checkbox các thứ trong tuần
       const days = cls.days || [];
       document.querySelectorAll('input[name="classDayCheckbox"]').forEach(chk => {
         chk.checked = days.includes(chk.value);
@@ -1680,7 +1675,6 @@
       cls.timeSlot = timeSlot;
       cls.days = selectedDays.length > 0 ? selectedDays : ['Thứ 2', 'Thứ 5'];
 
-      // Đồng bộ đơn giá học sinh nếu được chọn
       if (document.getElementById('syncStudentFeesCheckbox').checked) {
         students = students.map(s => ({ ...s, pricePerSession: newFee }));
         classStudentsMap[currentClassId] = students;
@@ -1757,7 +1751,13 @@
     }
 
     function openNewRemarkModal() {
-      alert('Chức năng thêm nhận xét mới');
+      const msg = document.getElementById('undoToast');
+      const text = document.getElementById('undoToastMessage');
+      if (msg && text) {
+        text.innerText = "Chức năng thêm nhận xét nhanh đang được cập nhật";
+        msg.classList.remove('hidden');
+        setTimeout(hideUndoToast, 3000);
+      }
     }
 
     // GIAO DIỆN PHỤ HUYNH
@@ -1877,14 +1877,12 @@
         document.getElementById('parentStudentSelectBox')?.classList.add('hidden');
         document.getElementById('roleTeacherBtn').className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-white text-blue-700 shadow-sm";
         document.getElementById('roleParentBtn').className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900";
-        document.getElementById('bannerRoleTitle').innerText = "Quản lý điểm danh, thời khóa biểu & báo cáo học tập";
       } else {
         document.getElementById('teacherViewSection')?.classList.add('hidden');
         document.getElementById('parentViewSection')?.classList.remove('hidden');
         document.getElementById('parentStudentSelectBox')?.classList.remove('hidden');
         document.getElementById('roleParentBtn').className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-white text-emerald-700 shadow-sm";
         document.getElementById('roleTeacherBtn').className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900";
-        document.getElementById('bannerRoleTitle').innerText = "Sổ theo dõi học tập & Học phí của con";
         renderParentView();
       }
       lucide.createIcons();
@@ -1921,9 +1919,17 @@
 
     // TỰ ĐỘNG KHỞI CHẠY NGAY KHI TẢI TRANG
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initSupabaseData);
+      document.addEventListener('DOMContentLoaded', () => {
+        initSupabaseData();
+        window.addEventListener('resize', () => {
+          if (!isClassSelected) scrollToCenterTodayColumn();
+        });
+      });
     } else {
       initSupabaseData();
+      window.addEventListener('resize', () => {
+        if (!isClassSelected) scrollToCenterTodayColumn();
+      });
     }
   </script>
 </body>
