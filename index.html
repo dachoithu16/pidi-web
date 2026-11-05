@@ -642,7 +642,7 @@
 
   <!-- MODAL: ĐỔI TÊN LỚP & THAY ĐỔI HỌC PHÍ TRỰC TIẾP -->
   <div id="modalEditClass" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 border border-slate-200 shadow-xl space-y-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 border border-slate-200 shadow-xl space-y-4 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
           <i data-lucide="settings" class="w-4 h-4 text-blue-600"></i>
@@ -653,9 +653,9 @@
         </button>
       </div>
 
-      <form onsubmit="handleSaveClassSettings(event)" class="space-y-3">
+      <form onsubmit="handleSaveClassSettings(event)" class="space-y-3.5">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Tên lớp học</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên lớp học *</label>
           <input
             id="editClassNameInput"
             type="text"
@@ -666,7 +666,7 @@
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Phòng học</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Phòng học *</label>
             <input
               id="editClassRoomInput"
               type="text"
@@ -687,26 +687,73 @@
           </div>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Khung giờ học</label>
-          <input
-            id="editClassTimeSlotInput"
-            type="text"
-            required
-            placeholder="VD: 18h00 - 19h30"
-            class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500 font-bold"
-          />
+        <!-- BỘ CHỌN KHUNG GIỜ HỌC DỄ DÙNG & TIỆN LỢI -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-700">Khung giờ học *</label>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold block mb-0.5">Bắt đầu:</span>
+              <input
+                id="editClassStartTime"
+                type="time"
+                required
+                class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-300 font-bold focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold block mb-0.5">Kết thúc:</span>
+              <input
+                id="editClassEndTime"
+                type="time"
+                required
+                class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-300 font-bold focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
+          <!-- Phím chọn nhanh ca học phổ biến -->
+          <div class="flex items-center gap-1.5 pt-1">
+            <span class="text-[10px] text-slate-400 font-medium shrink-0">Gợi ý nhanh:</span>
+            <div class="flex items-center gap-1 overflow-x-auto scrollbar-none">
+              <button type="button" onclick="setQuickTimeSlot('18:00', '19:30')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap">Ca 1: 18h-19h30</button>
+              <button type="button" onclick="setQuickTimeSlot('19:45', '21:15')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap">Ca 2: 19h45-21h15</button>
+              <button type="button" onclick="setQuickTimeSlot('08:30', '10:00')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 whitespace-nowrap">Sáng: 8h30-10h</button>
+            </div>
+          </div>
         </div>
 
+        <!-- BỘ CHỌN NGÀY HỌC DẠNG TÍCH CHECKBOX THOẢI MÁI -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Lịch học trong tuần (2 buổi)</label>
-          <select id="editClassDaysInput" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500 font-bold bg-white">
-            <option value="Thứ 2,Thứ 5">Thứ 2 & Thứ 5</option>
-            <option value="Thứ 3,Thứ 6">Thứ 3 & Thứ 6</option>
-            <option value="Thứ 4,Thứ 7">Thứ 4 & Thứ 7</option>
-            <option value="Thứ 4,Chủ Nhật">Thứ 4 & Chủ Nhật</option>
-            <option value="Thứ 7,Chủ Nhật">Thứ 7 & Chủ Nhật</option>
-          </select>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Các ngày học trong tuần (Tích chọn) *</label>
+          <div class="grid grid-cols-4 gap-1.5 text-xs" id="editClassDaysCheckboxGroup">
+            <label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 cursor-pointer">
+              <input type="checkbox" name="editClassDay" value="Thứ 2" class="rounded text-blue-600 focus:ring-blue-500" />
+              <span class="font-bold text-slate-700">Thứ 2</span>
+            </label>
+            <label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 cursor-pointer">
+              <input type="checkbox" name="editClassDay" value="Thứ 3" class="rounded text-blue-600 focus:ring-blue-500" />
+              <span class="font-bold text-slate-700">Thứ 3</span>
+            </label>
+            <label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 cursor-pointer">
+              <input type="checkbox" name="editClassDay" value="Thứ 4" class="rounded text-blue-600 focus:ring-blue-500" />
+              <span class="font-bold text-slate-700">Thứ 4</span>
+            </label>
+            <label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 cursor-pointer">
+              <input type="checkbox" name="editClassDay" value="Thứ 5" class="rounded text-blue-600 focus:ring-blue-500" />
+              <span class="font-bold text-slate-700">Thứ 5</span>
+            </label>
+            <label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 cursor-pointer">
+              <input type="checkbox" name="editClassDay" value="Thứ 6" class="rounded text-blue-600 focus:ring-blue-500" />
+              <span class="font-bold text-slate-700">Thứ 6</span>
+            </label>
+            <label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 cursor-pointer">
+              <input type="checkbox" name="editClassDay" value="Thứ 7" class="rounded text-blue-600 focus:ring-blue-500" />
+              <span class="font-bold text-slate-700">Thứ 7</span>
+            </label>
+            <label class="flex items-center gap-1.5 p-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 cursor-pointer col-span-2">
+              <input type="checkbox" name="editClassDay" value="Chủ Nhật" class="rounded text-blue-600 focus:ring-blue-500" />
+              <span class="font-bold text-slate-700">Chủ Nhật</span>
+            </label>
+          </div>
         </div>
 
         <div>
@@ -2916,21 +2963,41 @@
     }
 
     // Modal Cài đặt & Tạo lớp
+    function setQuickTimeSlot(start, end) {
+      document.getElementById('editClassStartTime').value = start;
+      document.getElementById('editClassEndTime').value = end;
+    }
+
     function openEditClassModal() {
       const cls = classesList.find(c => c.id === currentClassId);
       if (!cls) return;
       document.getElementById('editClassNameInput').value = cls.class_name;
       document.getElementById('editClassRoomInput').value = cls.room || 'P.101';
       document.getElementById('editClassCodeInput').value = cls.code || 'TA';
-      document.getElementById('editClassTimeSlotInput').value = cls.timeSlot || '18h00 - 19h30';
-      
-      const daysSelect = document.getElementById('editClassDaysInput');
-      if (daysSelect && Array.isArray(cls.days)) {
-        daysSelect.value = cls.days.join(',');
+
+      // Xử lý nạp giờ bắt đầu & kết thúc từ chuỗi timeSlot (VD: "Ca 1 (18h00 - 19h30)" hoặc "18:00 - 19:30")
+      let startVal = "18:00";
+      let endVal = "19:30";
+      if (cls.timeSlot) {
+        const matches = cls.timeSlot.match(/(\d{1,2})[h:](\d{2})\s*-\s*(\d{1,2})[h:](\d{2})/);
+        if (matches) {
+          startVal = `${matches[1].padStart(2, '0')}:${matches[2]}`;
+          endVal = `${matches[3].padStart(2, '0')}:${matches[4]}`;
+        }
       }
+      document.getElementById('editClassStartTime').value = startVal;
+      document.getElementById('editClassEndTime').value = endVal;
+
+      // Nạp các ngày học vào ô checkbox
+      const currentDays = Array.isArray(cls.days) ? cls.days : [];
+      const checkboxes = document.querySelectorAll('input[name="editClassDay"]');
+      checkboxes.forEach(cb => {
+        cb.checked = currentDays.includes(cb.value);
+      });
 
       document.getElementById('editClassFeeInput').value = cls.fee_per_session || 45000;
       openModal('modalEditClass');
+      lucide.createIcons();
     }
 
     function openCreateClassModal() {
@@ -2977,6 +3044,7 @@
 
       closeModal('modalCreateClass');
       renderClassSelectOptions();
+      renderWeeklyScheduleGrid();
       renderAll();
     }
 
@@ -2985,23 +3053,36 @@
       const name = document.getElementById('editClassNameInput').value.trim();
       const room = document.getElementById('editClassRoomInput').value.trim() || 'P.101';
       const code = document.getElementById('editClassCodeInput').value.trim().toUpperCase() || 'TA';
-      const timeSlot = document.getElementById('editClassTimeSlotInput').value.trim() || '18h00 - 19h30';
-      const daysStr = document.getElementById('editClassDaysInput').value;
-      const days = daysStr ? daysStr.split(',') : ['Thứ 2', 'Thứ 5'];
+      
+      const startTime = document.getElementById('editClassStartTime').value || '18:00';
+      const endTime = document.getElementById('editClassEndTime').value || '19:30';
+      const timeSlot = `${startTime.replace(':', 'h')} - ${endTime.replace(':', 'h')}`;
+
+      // Lấy danh sách các thứ đã tích chọn
+      const selectedDays = [];
+      const checkboxes = document.querySelectorAll('input[name="editClassDay"]:checked');
+      checkboxes.forEach(cb => selectedDays.push(cb.value));
+
+      if (selectedDays.length === 0) {
+        alert("Vui lòng tích chọn ít nhất 1 ngày học trong tuần cho lớp!");
+        return;
+      }
+
       const fee = Number(document.getElementById('editClassFeeInput').value) || 45000;
       const syncStudents = document.getElementById('syncStudentsFeeCheckbox').checked;
 
+      // CẬP NHẬT TRỰC TIẾP VÀ LƯU VÀO DANH SÁCH LỚP HỌC
       const cls = classesList.find(c => c.id === currentClassId);
       if (cls) {
         cls.class_name = name;
         cls.room = room;
         cls.code = code;
         cls.timeSlot = timeSlot;
-        cls.days = days;
+        cls.days = selectedDays;
         cls.fee_per_session = fee;
       }
 
-      if (syncStudents) {
+      if (syncStudents && Array.isArray(students)) {
         students.forEach(s => {
           if (s.pricingType !== 'monthly') {
             s.pricePerSession = fee;
