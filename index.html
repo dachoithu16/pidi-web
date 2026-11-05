@@ -3,169 +3,2182 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pidi - Sổ Lớp Nhỏ</title>
+  <title>Lớp Tiếng Anh - Cô Diễm | Sổ Liên Lạc & Học Phí</title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS Client v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 max-w-md mx-auto">
-  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
-    <h1 class="text-xl font-bold text-slate-800">Pidi - Sổ Lớp Nhỏ</h1>
-    <p class="text-xs text-slate-500">Quản lý lớp học & điểm danh nhanh</p>
-  </div>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
-  <!-- Form tạo lớp -->
-  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
-    <h2 class="font-semibold text-sm mb-2 text-slate-700">Tạo Lớp Mới</h2>
-    <input id="className" type="text" placeholder="Tên lớp (VD: Lớp Tiếng Anh)" class="w-full border p-2 rounded mb-2 text-sm">
-    <input id="classFee" type="number" placeholder="Học phí/buổi (VD: 50000)" class="w-full border p-2 rounded mb-2 text-sm">
-    <button onclick="createClass()" class="w-full bg-blue-600 text-white font-medium py-2 rounded text-sm hover:bg-blue-700">Tạo Lớp</button>
-  </div>
+  <!-- ======================================================== -->
+  <!-- HEADER & ĐIỀU HƯỚNG VAI TRÒ (GIÁO VIÊN / PHỤ HUYNH)     -->
+  <!-- ======================================================== -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & Thông Tin Lớp Học -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-sm tracking-wider shadow-sm">
+            ENG
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+                Lớp Tiếng Anh - Cô Diễm
+              </h1>
+              <span id="cloudStatusBadge" class="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Supabase Online
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 font-medium">Sổ liên lạc điện tử & đối soát học phí theo buổi</p>
+          </div>
+        </div>
 
-  <!-- Thêm học sinh -->
-  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
-    <h2 class="font-semibold text-sm mb-2 text-slate-700">Thêm Học Sinh</h2>
-    <select id="classList" onchange="loadStudents()" class="w-full border p-2 rounded mb-2 text-sm"></select>
-    <input id="studentName" type="text" placeholder="Họ tên học sinh" class="w-full border p-2 rounded mb-2 text-sm">
-    <input id="parentPhone" type="text" placeholder="Số điện thoại phụ huynh" class="w-full border p-2 rounded mb-2 text-sm">
-    <button onclick="addStudent()" class="w-full bg-emerald-600 text-white font-medium py-2 rounded text-sm hover:bg-emerald-700">Thêm Vào Lớp</button>
-  </div>
+        <!-- Chuyển đổi nhanh vai trò -->
+        <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <button
+            id="roleBtnTeacher"
+            onclick="switchRole('teacher')"
+            class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-white text-blue-700 shadow-sm"
+          >
+            <i data-lucide="shield" class="w-4 h-4 text-blue-600"></i>
+            <span>Giáo viên</span>
+          </button>
+          <button
+            id="roleBtnParent"
+            onclick="switchRole('parent')"
+            class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900"
+          >
+            <i data-lucide="users" class="w-4 h-4 text-emerald-600"></i>
+            <span>Phụ huynh</span>
+          </button>
+        </div>
 
-  <!-- Danh sách điểm danh hôm nay -->
-  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
-    <div class="flex justify-between items-center mb-2">
-      <h2 class="font-semibold text-sm text-slate-700">Điểm Danh Hôm Nay</h2>
-      <button onclick="loadStudents()" class="text-xs text-blue-600">Làm mới</button>
+      </div>
     </div>
-    <div id="attendanceList" class="space-y-2 text-sm text-slate-600">
-      Chưa có học sinh nào.
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- BANNER BUỔI HỌC VÀ CHỌN HỌC SINH (PHỤ HUYNH)             -->
+  <!-- ======================================================== -->
+  <div class="bg-slate-900 text-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+          <div class="text-xs text-indigo-400 font-semibold flex items-center gap-1.5 mb-1">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+            <span id="currentDateDisplay">Thứ Tư, 04/11/2026 • Lớp Luyện Thi & Giao Tiếp Chuyên Sâu</span>
+          </div>
+          <h2 id="bannerTitle" class="text-lg sm:text-xl font-bold">
+            Quản lý điểm danh, học phí & báo cáo học tập
+          </h2>
+        </div>
+
+        <!-- Khối chọn lớp (cho Giáo viên) hoặc chọn con (cho Phụ huynh) -->
+        <div class="flex items-center gap-2">
+          <!-- Chọn lớp của Giáo viên -->
+          <div id="classSelectorContainer" class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs">
+            <span class="text-slate-400">Lớp:</span>
+            <select id="classListSelect" onchange="onClassChange(this.value)" class="bg-transparent text-white font-bold focus:outline-none cursor-pointer">
+              <option value="main-class" class="text-slate-900">Lớp Tiếng Anh - Cô Diễm (120k/b)</option>
+            </select>
+          </div>
+
+          <!-- Chọn con của Phụ huynh -->
+          <div id="parentSelectorContainer" class="hidden bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs">
+            <span class="text-slate-400">Xem sổ của con:</span>
+            <select id="parentStudentSelect" onchange="onParentStudentChange(this.value)" class="bg-transparent text-white font-bold focus:outline-none cursor-pointer">
+              <!-- Render tự động bằng JS -->
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- ======================================================== -->
+  <!-- KHU VỰC NỘI DUNG CHÍNH (MAIN APP)                       -->
+  <!-- ======================================================== -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- ==================== GIAO DIỆN GIÁO VIÊN ==================== -->
+    <div id="teacherView" class="space-y-6">
+      
+      <!-- MENU TABS: ĐIỂM DANH -> BÀI TẬP -> NHẬN XÉT -> TÍNH HỌC PHÍ (Ở CUỐI) -->
+      <div class="flex border-b border-slate-200 gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <button
+          onclick="switchTab('attendance')"
+          id="tabBtn-attendance"
+          class="tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all whitespace-nowrap bg-blue-600 text-white shadow-sm"
+        >
+          <i data-lucide="user-check" class="w-4 h-4"></i>
+          <span>Điểm danh & Lịch học</span>
+          <span id="tabBadgeAttendance" class="ml-1 px-2 py-0.5 rounded-full text-xs bg-white/20">0/0</span>
+        </button>
+
+        <button
+          onclick="switchTab('homework')"
+          id="tabBtn-homework"
+          class="tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all whitespace-nowrap text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>Bài tập về nhà</span>
+          <span id="tabBadgeHomework" class="ml-1 px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700 font-bold">2</span>
+        </button>
+
+        <button
+          onclick="switchTab('remarks')"
+          id="tabBtn-remarks"
+          class="tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all whitespace-nowrap text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="message-square" class="w-4 h-4"></i>
+          <span>Nhận xét buổi học</span>
+        </button>
+
+        <button
+          onclick="switchTab('finance')"
+          id="tabBtn-finance"
+          class="tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all whitespace-nowrap text-slate-600 hover:bg-slate-100"
+        >
+          <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+          <span>Tính học phí</span>
+          <span id="tabBadgeFinance" class="ml-1 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-900 font-bold">Chưa nộp</span>
+        </button>
+      </div>
+
+      <!-- 1. TAB ĐIỂM DANH -->
+      <div id="tabContent-attendance" class="space-y-5">
+        <!-- 3 thẻ thống kê nhanh -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 flex items-center justify-between shadow-xs">
+            <div>
+              <div class="text-xs text-slate-500 font-medium">Sĩ số lớp</div>
+              <div id="statTotalStudents" class="text-xl font-extrabold text-slate-900">0 học sinh</div>
+            </div>
+            <i data-lucide="users" class="w-7 h-7 text-slate-400"></i>
+          </div>
+
+          <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 flex items-center justify-between shadow-xs">
+            <div>
+              <div class="text-xs text-emerald-700 font-medium">Hôm nay ĐI HỌC</div>
+              <div id="statPresentStudents" class="text-xl font-extrabold text-emerald-800">0 em</div>
+            </div>
+            <i data-lucide="check-circle-2" class="w-7 h-7 text-emerald-600"></i>
+          </div>
+
+          <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 flex items-center justify-between shadow-xs">
+            <div>
+              <div class="text-xs text-rose-700 font-medium">Hôm nay VẮNG</div>
+              <div id="statAbsentStudents" class="text-xl font-extrabold text-rose-800">0 em</div>
+            </div>
+            <i data-lucide="x-circle" class="w-7 h-7 text-rose-600"></i>
+          </div>
+        </div>
+
+        <!-- Bảng danh sách điểm danh -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-bold text-slate-900 text-sm">Điểm danh buổi học hôm nay</h3>
+              <p class="text-xs text-slate-500">
+                <span class="text-blue-600 font-semibold underline cursor-pointer">Bấm vào tên học sinh</span> để xem chi tiết lịch ngày nào đi - ngày nào vắng
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                onclick="markAllPresentToday()"
+                class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-xs"
+              >
+                ✓ Tất cả Đi học
+              </button>
+              <button
+                onclick="openAddStudentModal()"
+                class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition flex items-center gap-1 shadow-xs"
+              >
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Thêm học sinh</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="attendanceStudentList" class="divide-y divide-slate-100">
+            <!-- Render động bằng JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. TAB BÀI TẬP VỀ NHÀ -->
+      <div id="tabContent-homework" class="hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Bài tập về nhà & Luyện thi</h3>
+            <p class="text-xs text-slate-500">Giao bài rèn luyện và theo dõi tình hình nộp bài của học sinh</p>
+          </div>
+          <button
+            onclick="openNewHomeworkModal()"
+            class="flex items-center space-x-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm"
+          >
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Giao bài mới</span>
+          </button>
+        </div>
+
+        <div id="homeworkListContainer" class="space-y-4">
+          <!-- Render danh sách bài tập bằng JS -->
+        </div>
+      </div>
+
+      <!-- 3. TAB NHẬN XÉT BUỔI HỌC -->
+      <div id="tabContent-remarks" class="hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Nhận xét buổi học gửi Phụ huynh</h3>
+            <p class="text-xs text-slate-500">Đánh giá mức độ hiểu bài, kiến thức ngữ pháp/từ vựng cần rèn luyện</p>
+          </div>
+          <button
+            onclick="openNewRemarkModal()"
+            class="flex items-center space-x-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition shadow-sm"
+          >
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Viết nhận xét buổi này</span>
+          </button>
+        </div>
+
+        <div id="remarksListContainer" class="space-y-3">
+          <!-- Render danh sách nhận xét bằng JS -->
+        </div>
+      </div>
+
+      <!-- 4. TAB TÍNH HỌC PHÍ (Ở CUỐI CÙNG) -->
+      <div id="tabContent-finance" class="hidden space-y-5">
+        <!-- 3 Thẻ tài chính -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+            <div class="text-xs text-slate-500 font-medium">Tổng tiền dự kiến thu</div>
+            <div id="statTotalExpectedFee" class="text-xl font-extrabold text-slate-900 mt-1">0 đ</div>
+          </div>
+
+          <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 shadow-xs">
+            <div class="text-xs text-emerald-700 font-medium">Đã thu thực tế</div>
+            <div id="statTotalCollectedFee" class="text-xl font-extrabold text-emerald-800 mt-1">0 đ</div>
+          </div>
+
+          <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-xs">
+            <div class="text-xs text-amber-800 font-medium">Chưa nộp</div>
+            <div id="statTotalUnpaidFee" class="text-xl font-extrabold text-amber-900 mt-1">0 đ</div>
+          </div>
+        </div>
+
+        <!-- Thanh công cụ học phí -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              onclick="openBatchFeeModal('all')"
+              class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+            >
+              <i data-lucide="calculator" class="w-4 h-4"></i>
+              <span>Áp dụng mức tiền cho CẢ LỚP</span>
+            </button>
+
+            <button
+              id="btnApplyBatchSelected"
+              onclick="openBatchFeeModal('selected')"
+              disabled
+              class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-100 text-slate-400 cursor-not-allowed"
+            >
+              <i data-lucide="users" class="w-4 h-4"></i>
+              <span id="btnApplyBatchSelectedText">Áp dụng cho (0) em đã chọn</span>
+            </button>
+          </div>
+
+          <div class="text-xs text-slate-500">
+            Đã chọn: <strong id="selectedStudentsCountDisplay" class="text-slate-800 font-bold">0</strong> học sinh
+          </div>
+        </div>
+
+        <!-- BẢNG HỌC PHÍ CHI TIẾT -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
+          <table class="w-full text-left text-xs min-w-[780px]">
+            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider">
+              <tr>
+                <th class="p-3 w-10 text-center">
+                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllStudents(this.checked)" class="rounded text-blue-600 cursor-pointer">
+                </th>
+                <th class="py-3 px-3">Học sinh</th>
+                <th class="py-3 px-3">Số buổi đã học</th>
+                <th class="py-3 px-3">Cách tính & Đơn giá</th>
+                <th class="py-3 px-3">Cần nộp</th>
+                <th class="py-3 px-3">Đã đóng</th>
+                <th class="py-3 px-3">Chưa nộp</th>
+                <th class="py-3 px-3 text-center">Trạng thái</th>
+                <th class="py-3 px-3 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="financeTableBody" class="divide-y divide-slate-100">
+              <!-- Render động danh sách học phí bằng JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== GIAO DIỆN PHỤ HUYNH ==================== -->
+    <div id="parentView" class="hidden space-y-5">
+      <!-- Thẻ thông tin học sinh & trạng thái hôm nay -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h3 id="parentStudentHeaderName" class="text-base font-bold text-slate-900 flex items-center gap-2">
+              --
+              <span id="parentStudentHeaderSchool" class="text-xs font-normal text-slate-500">(--)</span>
+            </h3>
+            <div id="parentStudentHeaderContact" class="text-xs text-slate-500 mt-0.5">
+              Phụ huynh: -- • --
+            </div>
+          </div>
+
+          <div id="parentTodayStatusBadge">
+            <!-- Đi học / Vắng hôm nay -->
+          </div>
+        </div>
+
+        <!-- Khối học phí minh bạch -->
+        <div class="bg-blue-50/70 rounded-xl p-4 border border-blue-100 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+              <i data-lucide="dollar-sign" class="w-4 h-4 text-blue-600"></i>
+              <span>Đối soát học phí tháng 10/2026</span>
+            </div>
+            <span id="parentFeeStatusBadge" class="text-xs px-2.5 py-0.5 rounded-full font-bold">
+              --
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            <div class="bg-white p-2.5 rounded-lg border border-blue-100">
+              <div class="text-slate-500 text-[11px]">Số buổi đã học</div>
+              <div id="parentBoxSessions" class="text-base font-extrabold text-blue-700">0 buổi</div>
+            </div>
+
+            <div class="bg-white p-2.5 rounded-lg border border-blue-100">
+              <div class="text-slate-500 text-[11px]">Tổng cần nộp</div>
+              <div id="parentBoxTotal" class="text-base font-extrabold text-slate-900">0 đ</div>
+            </div>
+
+            <div class="bg-white p-2.5 rounded-lg border border-blue-100">
+              <div class="text-slate-500 text-[11px]">Đã nộp</div>
+              <div id="parentBoxPaid" class="text-base font-extrabold text-emerald-600">0 đ</div>
+            </div>
+
+            <div class="bg-white p-2.5 rounded-lg border border-blue-100">
+              <div class="text-slate-500 text-[11px]">Chưa nộp</div>
+              <div id="parentBoxUnpaid" class="text-base font-extrabold text-rose-600">0 đ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lịch chi tiết các ngày trong tháng của con -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+            <i data-lucide="calendar" class="w-4 h-4 text-blue-600"></i>
+            <span>Lịch sử các ngày học trong tháng của con</span>
+          </h4>
+          <span class="text-xs text-slate-400">Minh bạch từng buổi</span>
+        </div>
+
+        <div id="parentSessionsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <!-- Render danh sách ngày bằng JS -->
+        </div>
+      </div>
+
+      <!-- Bài tập về nhà của con -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+        <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-4 h-4 text-blue-600"></i>
+          <span>Bài tập về nhà & Luyện tập</span>
+        </h4>
+        <div id="parentHomeworkList" class="space-y-3">
+          <!-- Render bằng JS -->
+        </div>
+      </div>
+
+      <!-- Nhận xét từng buổi của cô Diễm -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+        <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+          <i data-lucide="message-square" class="w-4 h-4 text-blue-600"></i>
+          <span>Nhận xét từng buổi học của cô Diễm</span>
+        </h4>
+        <div id="parentRemarksList" class="space-y-3">
+          <!-- Render bằng JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- TOAST HOÀN TÁC (UNDO) KHI BẤM NHẦM THU TIỀN               -->
+  <!-- ======================================================== -->
+  <div id="undoToast" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 animate-slide-up text-xs">
+    <span id="undoToastMessage">Đã cập nhật trạng thái thu tiền.</span>
+    <button
+      onclick="handleUndoPayment()"
+      class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg flex items-center gap-1 transition"
+    >
+      <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+      <span>Hoàn tác</span>
+    </button>
+    <button onclick="hideUndoToast()" class="text-slate-400 hover:text-white ml-1">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- CÁC MODAL TIỆN ÍCH                                       -->
+  <!-- ======================================================== -->
+
+  <!-- 1. MODAL XEM LỊCH CHI TIẾT HỌC SINH (KHI BẤM VÀO TÊN) -->
+  <div id="modalStudentDetail" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 border border-slate-200 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 id="modalDetailName" class="font-bold text-slate-900 text-base flex items-center gap-2">
+            Học sinh
+            <span id="modalDetailIdBadge" class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold">HS01</span>
+          </h3>
+          <p id="modalDetailSubtext" class="text-xs text-slate-500 font-medium">--</p>
+        </div>
+        <button onclick="closeModal('modalStudentDetail')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- 3 ô tóm tắt -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-center">
+        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
+          <div class="text-[11px] text-blue-700 font-semibold">Đã đi học</div>
+          <div id="modalDetailPresentCount" class="text-lg font-black text-blue-900 mt-0.5">0/8 buổi</div>
+        </div>
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
+          <div class="text-[11px] text-emerald-700 font-semibold">Đã đóng</div>
+          <div id="modalDetailPaidAmount" class="text-lg font-black text-emerald-900 mt-0.5">0 đ</div>
+        </div>
+        <div class="bg-rose-50 p-3 rounded-xl border border-rose-100 col-span-2 sm:col-span-1">
+          <div class="text-[11px] text-rose-700 font-semibold">Chưa nộp</div>
+          <div id="modalDetailUnpaidAmount" class="text-lg font-black text-rose-900 mt-0.5">0 đ</div>
+        </div>
+      </div>
+
+      <!-- Danh sách ngày học dạng lưới bấm đổi được -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span>Lịch chi tiết các ngày trong tháng (Bấm để đổi)</span>
+          </h4>
+          <span class="text-[11px] text-slate-400">Click đổi Đi học / Vắng</span>
+        </div>
+        <div id="modalDetailDatesGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <!-- Render ngày bằng JS -->
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-100">
+        <button onclick="closeModal('modalStudentDetail')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MODAL THU 1 PHẦN HỌC PHÍ -->
+  <div id="modalPartialPayment" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-slate-900 text-base">Thu 1 phần học phí</h3>
+          <p id="partialModalStudentName" class="text-xs text-slate-500 font-medium">Học sinh</p>
+        </div>
+        <button onclick="closeModal('modalPartialPayment')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1.5">
+        <div class="flex justify-between">
+          <span class="text-slate-500">Tổng học phí cần nộp:</span>
+          <strong id="partialModalTotalFee" class="text-slate-900 font-bold">0 đ</strong>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Trước đó đã đóng:</span>
+          <span id="partialModalPreviouslyPaid" class="font-bold text-emerald-700">0 đ</span>
+        </div>
+      </div>
+
+      <form onsubmit="handleSavePartialPayment(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Số tiền phụ huynh vừa đóng (VNĐ) *</label>
+          <input
+            id="partialPaymentAmountInput"
+            type="number"
+            step="10000"
+            min="0"
+            required
+            oninput="updatePartialModalRemaining()"
+            class="w-full px-3 py-2 text-sm rounded-xl border border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 font-black text-slate-900"
+          >
+        </div>
+
+        <!-- Phím tắt nhanh -->
+        <div class="space-y-1.5">
+          <span class="text-[11px] font-semibold text-slate-500">Chọn nhanh:</span>
+          <div class="grid grid-cols-4 gap-1.5">
+            <button type="button" onclick="setPartialInputPercent(0.5)" class="py-1 px-1.5 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700">50%</button>
+            <button type="button" onclick="setPartialInputValue(200000)" class="py-1 px-1.5 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700">200k</button>
+            <button type="button" onclick="setPartialInputValue(500000)" class="py-1 px-1.5 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700">500k</button>
+            <button type="button" onclick="setPartialInputPercent(1.0)" class="py-1 px-1.5 rounded-lg text-[11px] font-bold bg-emerald-100 hover:bg-emerald-200 text-emerald-800">Đủ 100%</button>
+          </div>
+        </div>
+
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs flex items-center justify-between">
+          <span class="text-amber-900 font-medium">Số tiền còn Chưa nộp:</span>
+          <strong id="partialModalRemainingCalculated" class="text-rose-600 font-extrabold text-sm">0 đ</strong>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalPartialPayment')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-sm">Xác nhận đã thu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. MODAL ÁP DỤNG HỌC PHÍ CẢ LỚP HOẶC NHIỀU EM -->
+  <div id="modalBatchFee" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 id="modalBatchFeeTitle" class="font-bold text-slate-900 text-base">Điền học phí cho CẢ LỚP</h3>
+        <button onclick="closeModal('modalBatchFee')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleApplyBatchFee(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Hình thức thu học phí</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              id="batchPricingPerSessionBtn"
+              onclick="setBatchPricingType('per_session')"
+              class="py-2 px-3 rounded-lg text-xs font-bold border transition bg-blue-50 border-blue-600 text-blue-700"
+            >
+              Tính theo Buổi học
+            </button>
+            <button
+              type="button"
+              id="batchPricingMonthlyBtn"
+              onclick="setBatchPricingType('monthly')"
+              class="py-2 px-3 rounded-lg text-xs font-bold border transition border-slate-200 text-slate-600"
+            >
+              Thu Trọn Gói Tháng
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label id="batchAmountLabel" class="block text-xs font-bold text-slate-700 mb-1">Đơn giá mỗi buổi (VNĐ) *</label>
+          <input
+            id="batchAmountInput"
+            type="number"
+            step="5000"
+            required
+            value="120000"
+            class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500 font-bold"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Phụ thu (+) hoặc Học bổng giảm trừ (-)</label>
+          <input
+            id="batchDiscountInput"
+            type="number"
+            step="5000"
+            value="0"
+            placeholder="VD: -50000 hoặc 30000"
+            class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500"
+          >
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalBatchFee')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm">Áp dụng ngay</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. MODAL SỬA CHI TIẾT HỌC PHÍ 1 HỌC SINH -->
+  <div id="modalEditIndividualFee" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-slate-900 text-base">Chỉnh sửa học phí</h3>
+          <p id="editFeeStudentName" class="text-xs text-slate-500 font-medium">Học sinh</p>
+        </div>
+        <button onclick="closeModal('modalEditIndividualFee')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveIndividualFee(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Cách tính tiền</label>
+          <select id="editFeePricingType" onchange="toggleEditFeeFields(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
+            <option value="per_session">Theo số buổi thực tế đã học</option>
+            <option value="monthly">Trọn gói theo tháng cố định</option>
+          </select>
+        </div>
+
+        <div id="editFeePerSessionField">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Đơn giá / buổi (VNĐ)</label>
+          <input id="editFeePricePerSession" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
+        </div>
+
+        <div id="editFeeMonthlyField" class="hidden">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tiền trọn gói tháng (VNĐ)</label>
+          <input id="editFeeMonthlyPrice" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Phụ thu (+) hoặc Giảm trừ (-)</label>
+          <input id="editFeeDiscountOrExtra" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-slate-700">Tiền phụ huynh ĐÃ ĐÓNG (VNĐ)</label>
+            <button type="button" onclick="document.getElementById('editFeePaidAmount').value = 0" class="text-[11px] text-rose-600 hover:underline font-bold">
+              Đặt lại 0đ (Chưa nộp)
+            </button>
+          </div>
+          <input id="editFeePaidAmount" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-emerald-300 bg-emerald-50/40 text-emerald-900 font-extrabold">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalEditIndividualFee')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. MODAL XUẤT TIN NHẮN ZALO BÁO HỌC PHÍ -->
+  <div id="modalZaloInvoice" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-slate-900 text-base">Tin nhắn đối soát Zalo</h3>
+          <p id="zaloModalTargetName" class="text-xs text-slate-500 font-medium">Gửi phụ huynh</p>
+        </div>
+        <button onclick="closeModal('modalZaloInvoice')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <textarea id="zaloMessageContent" readonly rows="9" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-800 leading-relaxed focus:outline-none"></textarea>
+
+      <div id="zaloCopiedAlert" class="hidden text-xs bg-emerald-100 text-emerald-800 p-2 rounded-lg font-bold flex items-center gap-1.5">
+        <i data-lucide="check" class="w-4 h-4"></i> Đã sao chép nội dung! Bạn có thể dán ngay vào tin nhắn Zalo của phụ huynh.
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeModal('modalZaloInvoice')" class="px-3.5 py-1.5 text-xs text-slate-600">Đóng</button>
+        <button type="button" onclick="copyZaloMessage()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="copy" class="w-4 h-4"></i>
+          <span>Sao chép tin nhắn Zalo</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MODAL THÊM HỌC SINH MỚI -->
+  <div id="modalAddStudent" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base">Thêm học sinh mới vào lớp</h3>
+        <button onclick="closeModal('modalAddStudent')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateStudent(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên học sinh *</label>
+          <input id="addStudentName" type="text" required placeholder="VD: Nguyễn Văn An" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Trường đang học</label>
+          <input id="addStudentSchool" type="text" placeholder="VD: THCS Giảng Võ" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Họ tên phụ huynh</label>
+          <input id="addStudentParentName" type="text" placeholder="VD: Bác Tuấn" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại phụ huynh *</label>
+          <input id="addStudentPhone" type="text" required placeholder="VD: 0988 123 456" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalAddStudent')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm">Lưu học sinh</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. MODAL GIAO BÀI TẬP MỚI -->
+  <div id="modalNewHomework" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base">Giao bài tập buổi học</h3>
+        <button onclick="closeModal('modalNewHomework')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateHomework(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên bài tập *</label>
+          <input id="newHwTitle" type="text" required placeholder="VD: Unit 6: Passive Voice & Vocab" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ghi chú dạng bài</label>
+          <input id="newHwLessonNote" type="text" placeholder="VD: Câu bị động & từ vựng chủ đề công nghệ" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Hạn nộp bài *</label>
+          <input id="newHwDeadline" type="date" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nội dung chi tiết</label>
+          <textarea id="newHwContent" rows="3" placeholder="Ghi số bài trong sách hoặc link đề..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalNewHomework')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm">Giao bài ngay</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 8. MODAL VIẾT NHẬN XÉT MỚI -->
+  <div id="modalNewRemark" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base">Nhận xét buổi học gửi phụ huynh</h3>
+        <button onclick="closeModal('modalNewRemark')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateRemark(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Chọn học sinh *</label>
+          <select id="newRemarkStudentSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
+            <!-- Render options học sinh bằng JS -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mức độ tiếp thu</label>
+          <select id="newRemarkUnderstanding" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
+            <option value="Tiếp thu tốt, làm bài nhanh">Tiếp thu tốt, làm bài nhanh</option>
+            <option value="Nắm vững cơ bản, cần rèn bài khó">Nắm vững cơ bản, cần rèn bài khó</option>
+            <option value="Còn lúng túng, cần cô kèm thêm">Còn lúng túng, cần cô kèm thêm</option>
+            <option value="Hôm nay vắng mặt">Hôm nay vắng mặt</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Lời dặn của cô gửi phụ huynh *</label>
+          <textarea id="newRemarkContent" rows="3" required placeholder="Tình hình làm bài, phát âm, từ vựng cần ôn lại..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalNewRemark')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm">Lưu nhận xét</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT: LOGIC VÀ KẾT NỐI SUPABASE                    -->
+  <!-- ======================================================== -->
   <script>
+    // KẾT NỐI SUPABASE
     const SUPABASE_URL = "https://gsjatlnmeynwllptqdqf.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_-57pVqsTKuC3sYvM3nkkBg_NLcRFSVK";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function createClass() {
-      const name = document.getElementById('className').value;
-      const fee = document.getElementById('classFee').value;
-      if (!name) return alert("Vui lòng nhập tên lớp");
-      
-      const { error } = await client.from('classes').insert([{ 
-        class_name: name, 
-        fee_per_session: fee || 50000 
-      }]);
-      
-      if (error) {
-        alert("Lỗi tạo lớp: " + error.message);
-        return;
+    // Lịch các ngày học trong tháng (Thứ Tư và Thứ Bảy)
+    const SESSION_DATES = [
+      '07/10/2026', '10/10/2026', '14/10/2026', '17/10/2026',
+      '21/10/2026', '24/10/2026', '28/10/2026', '31/10/2026'
+    ];
+
+    // DỮ LIỆU BAN ĐẦU CHUẨN LỚP TIẾNG ANH - CÔ DIỄM
+    let students = [
+      {
+        id: 'HS01',
+        name: 'Nguyễn Minh Quân',
+        school: 'THCS Lê Quý Đôn',
+        parentName: 'Nguyễn Văn Hùng',
+        parentPhone: '0912 345 678',
+        status: 'present',
+        attendanceHistory: {
+          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'absent',
+          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
+        },
+        pricingType: 'per_session',
+        pricePerSession: 120000,
+        monthlyFixedPrice: 0,
+        discountOrExtra: 0,
+        paidAmount: 840000
+      },
+      {
+        id: 'HS02',
+        name: 'Trần Bảo Anh',
+        school: 'THCS Giảng Võ',
+        parentName: 'Lê Thu Trang',
+        parentPhone: '0988 765 432',
+        status: 'present',
+        attendanceHistory: {
+          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'present',
+          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
+        },
+        pricingType: 'per_session',
+        pricePerSession: 120000,
+        monthlyFixedPrice: 0,
+        discountOrExtra: -50000, // Học bổng
+        paidAmount: 910000
+      },
+      {
+        id: 'HS03',
+        name: 'Lê Hoàng Nam',
+        school: 'THCS Chu Văn An',
+        parentName: 'Lê Minh Tuấn',
+        parentPhone: '0903 112 233',
+        status: 'absent',
+        attendanceHistory: {
+          '07/10/2026': 'present', '10/10/2026': 'absent', '14/10/2026': 'present', '17/10/2026': 'present',
+          '21/10/2026': 'absent', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
+        },
+        pricingType: 'per_session',
+        pricePerSession: 120000,
+        monthlyFixedPrice: 0,
+        discountOrExtra: 0,
+        paidAmount: 0
+      },
+      {
+        id: 'HS04',
+        name: 'Phạm Quỳnh Chi',
+        school: 'THCS Cầu Giấy',
+        parentName: 'Phạm Quốc Bảo',
+        parentPhone: '0977 889 900',
+        status: 'present',
+        attendanceHistory: {
+          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'present',
+          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
+        },
+        pricingType: 'monthly',
+        pricePerSession: 120000,
+        monthlyFixedPrice: 900000,
+        discountOrExtra: 0,
+        paidAmount: 900000
+      },
+      {
+        id: 'HS05',
+        name: 'Đặng Quốc Huy',
+        school: 'THCS Marie Curie',
+        parentName: 'Vũ Thanh Hằng',
+        parentPhone: '0934 556 677',
+        status: 'absent',
+        attendanceHistory: {
+          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'absent', '17/10/2026': 'absent',
+          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'absent', '31/10/2026': 'present',
+        },
+        pricingType: 'per_session',
+        pricePerSession: 120000,
+        monthlyFixedPrice: 0,
+        discountOrExtra: 0,
+        paidAmount: 400000
+      },
+      {
+        id: 'HS06',
+        name: 'Hoàng Mai Phương',
+        school: 'THCS Archimedes',
+        parentName: 'Hoàng Văn Đức',
+        parentPhone: '0966 223 344',
+        status: 'present',
+        attendanceHistory: {
+          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'present',
+          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
+        },
+        pricingType: 'per_session',
+        pricePerSession: 120000,
+        monthlyFixedPrice: 0,
+        discountOrExtra: 0,
+        paidAmount: 960000
       }
-      
-      alert("Đã tạo lớp thành công!");
-      document.getElementById('className').value = '';
-      document.getElementById('classFee').value = '';
-      loadClasses();
+    ];
+
+    let homeworks = [
+      {
+        id: 'BT01',
+        title: 'Unit 5 Review: Inversion & Relative Clauses',
+        lessonNote: 'Bài tập rèn luyện đảo ngữ và mệnh đề quan hệ',
+        deadline: '2026-11-07',
+        content: 'Hoàn thành 30 câu viết lại câu và bài đọc hiểu Reading Comprehension trang 45-47.',
+        submissions: {
+          HS01: { submitted: true, score: 9.5, feedback: 'Áp dụng cấu trúc đảo ngữ với Not only... but also rất nhuần nhuyễn.' },
+          HS02: { submitted: true, score: 10, feedback: 'Bài làm xuất sắc, ngữ pháp và từ vựng chuẩn xác.' },
+          HS03: { submitted: false, score: null, feedback: '' },
+          HS04: { submitted: true, score: 8.5, feedback: 'Chú ý chia thì quá khứ hoàn thành ở câu 14 nhé.' },
+          HS05: { submitted: false, score: null, feedback: '' },
+          HS06: { submitted: true, score: null, feedback: '' }
+        }
+      },
+      {
+        id: 'BT02',
+        title: 'Vocab Quiz & Reading: Environmental Issues',
+        lessonNote: 'Từ vựng chủ đề Môi trường và phát âm đuôi -ed/-s',
+        deadline: '2026-11-04',
+        content: 'Học thuộc 25 từ vựng mới, làm bài tập tìm lỗi sai trong đoạn văn ngắn.',
+        submissions: {
+          HS01: { submitted: true, score: 9.0, feedback: 'Nhớ từ vựng tốt, phát âm có tiến bộ rõ rệt.' },
+          HS02: { submitted: true, score: 9.5, feedback: 'Tốt.' },
+          HS03: { submitted: true, score: 6.5, feedback: 'Cần ôn lại cách phân biệt đuôi /t/, /d/ và /id/.' },
+          HS04: { submitted: true, score: 8.0, feedback: 'Làm bài cẩn thận, nắm vững cấu trúc cơ bản.' },
+          HS05: { submitted: true, score: 7.0, feedback: 'Chưa học kỹ collocations của chủ đề này.' },
+          HS06: { submitted: true, score: 8.5, feedback: 'Làm tốt.' }
+        }
+      }
+    ];
+
+    let remarks = [
+      {
+        id: 'NX01',
+        studentId: 'HS01',
+        date: '04/11/2026',
+        sessionName: 'Buổi 8: Luyện đề Chuyên Anh & Viết lại câu',
+        understanding: 'Tiếp thu tốt, làm bài nhanh',
+        content: 'Minh Quân phản xạ từ vựng rất nhanh, nắm vững cấu trúc câu phức. Hôm nay xung phong đọc bài mẫu trước lớp.',
+        parentReply: 'Gia đình cảm ơn cô, cháu về nhà rất thích phương pháp dạy của cô Diễm ạ!',
+        replyDate: '04/11 - 21:30'
+      },
+      {
+        id: 'NX02',
+        studentId: 'HS03',
+        date: '04/11/2026',
+        sessionName: 'Buổi 8: Luyện đề Chuyên Anh & Viết lại câu',
+        understanding: 'Hôm nay vắng mặt',
+        content: 'Hôm nay Hoàng Nam vắng, cô đã gửi phiếu bài tập và link file nghe qua Zalo để con xem trước và làm bù.',
+        parentReply: 'Dạ vâng hôm nay cháu bị sốt nhẹ, mai cháu đỡ tôi sẽ nhắc cháu nghe và làm bài cô gửi ạ.',
+        replyDate: '04/11 - 20:15'
+      },
+      {
+        id: 'NX03',
+        studentId: 'HS05',
+        date: '04/11/2026',
+        sessionName: 'Buổi 8: Luyện đề Chuyên Anh & Viết lại câu',
+        understanding: 'Hôm nay vắng mặt',
+        content: 'Con vắng buổi thứ 2 trong tháng này. Nội dung luyện đề đang ở giai đoạn tăng tốc, nhờ phụ huynh đôn đốc con theo kịp các bạn.',
+        parentReply: '',
+        replyDate: null
+      }
+    ];
+
+    // Trạng thái ứng dụng
+    let currentRole = 'teacher';
+    let currentTab = 'attendance';
+    let selectedParentStudentId = 'HS01';
+    let selectedStudentIds = [];
+    let currentTargetBatch = 'all';
+    let batchPricingType = 'per_session';
+    let editingStudent = null;
+    let partialPaymentStudent = null;
+    let detailedStudent = null;
+    let lastUndoAction = null;
+    let undoToastTimer = null;
+
+    // TÍNH TOÁN SỐ BUỔI ĐI HỌC VÀ HỌC PHÍ CỦA HỌC SINH
+    function getAttendanceSummary(student) {
+      const history = student.attendanceHistory || {};
+      const totalRecorded = Object.keys(history).length;
+      const presentCount = Object.values(history).filter(s => s === 'present').length;
+      const absentCount = totalRecorded - presentCount;
+      return { presentCount, absentCount, totalRecorded };
     }
 
-    async function loadClasses() {
-      const { data, error } = await client.from('classes').select('*').order('created_at', { ascending: false });
-      if (error) {
-        console.error("Lỗi lấy danh sách lớp:", error);
-        return;
+    function calculateStudentFee(student) {
+      const { presentCount } = getAttendanceSummary(student);
+      let baseAmount = 0;
+      if (student.pricingType === 'monthly') {
+        baseAmount = Number(student.monthlyFixedPrice) || 0;
+      } else {
+        baseAmount = presentCount * (Number(student.pricePerSession) || 0);
       }
-      
-      const select = document.getElementById('classList');
-      select.innerHTML = '';
-      if (!data || data.length === 0) {
-        select.innerHTML = '<option value="">Chưa có lớp học nào</option>';
-        return;
+      const finalAmount = Math.max(0, baseAmount + (Number(student.discountOrExtra) || 0));
+      const paid = Number(student.paidAmount) || 0;
+      const remaining = finalAmount - paid;
+      return {
+        baseAmount,
+        finalAmount,
+        paid,
+        remaining,
+        isFullyPaid: remaining <= 0,
+        presentCount
+      };
+    }
+
+    // =========================================================
+    // KHỞI TẠO VÀ ĐỒNG BỘ SUPABASE
+    // =========================================================
+    async function initSupabaseData() {
+      try {
+        // Tải danh sách lớp
+        const { data: classData, error: classErr } = await client.from('classes').select('*');
+        if (!classErr && classData && classData.length > 0) {
+          const classSelect = document.getElementById('classListSelect');
+          classSelect.innerHTML = '';
+          classData.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = `${c.class_name} (${Number(c.fee_per_session || 120000).toLocaleString('vi-VN')}đ/buổi)`;
+            opt.className = 'text-slate-900';
+            classSelect.appendChild(opt);
+          });
+        }
+
+        // Tải danh sách học sinh từ Supabase (nếu đã có trên database)
+        const { data: dbStudents, error: stuErr } = await client.from('students').select('*');
+        if (!stuErr && dbStudents && dbStudents.length > 0) {
+          // Kết hợp danh sách từ DB vào dữ liệu local
+          dbStudents.forEach(dbStu => {
+            if (!students.some(s => s.id === dbStu.id || s.name === dbStu.student_name)) {
+              students.push({
+                id: dbStu.id,
+                name: dbStu.student_name,
+                school: dbStu.school || 'THCS',
+                parentName: dbStu.parent_name || 'Phụ huynh',
+                parentPhone: dbStu.parent_phone || '',
+                status: 'present',
+                attendanceHistory: { '04/11/2026': 'present' },
+                pricingType: 'per_session',
+                pricePerSession: 120000,
+                monthlyFixedPrice: 0,
+                discountOrExtra: 0,
+                paidAmount: 0
+              });
+            }
+          });
+        }
+      } catch (e) {
+        console.warn("Đang chạy chế độ Local Cache đồng bộ dự phòng:", e);
+      } finally {
+        renderAll();
       }
-      
-      data.forEach(c => {
+    }
+
+    // =========================================================
+    // CHUYỂN ĐỔI VAI TRÒ (GIÁO VIÊN / PHỤ HUYNH)
+    // =========================================================
+    function switchRole(role) {
+      currentRole = role;
+      const teacherView = document.getElementById('teacherView');
+      const parentView = document.getElementById('parentView');
+      const roleBtnTeacher = document.getElementById('roleBtnTeacher');
+      const roleBtnParent = document.getElementById('roleBtnParent');
+      const bannerTitle = document.getElementById('bannerTitle');
+      const classSelectorContainer = document.getElementById('classSelectorContainer');
+      const parentSelectorContainer = document.getElementById('parentSelectorContainer');
+
+      if (role === 'teacher') {
+        teacherView.classList.remove('hidden');
+        parentView.classList.add('hidden');
+        classSelectorContainer.classList.remove('hidden');
+        parentSelectorContainer.classList.add('hidden');
+
+        roleBtnTeacher.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-white text-blue-700 shadow-sm";
+        roleBtnParent.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900";
+        bannerTitle.textContent = "Quản lý điểm danh, học phí & báo cáo học tập";
+      } else {
+        teacherView.classList.add('hidden');
+        parentView.classList.remove('hidden');
+        classSelectorContainer.classList.add('hidden');
+        parentSelectorContainer.classList.remove('hidden');
+
+        roleBtnParent.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 bg-white text-emerald-700 shadow-sm";
+        roleBtnTeacher.className = "px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-1.5 text-slate-600 hover:text-slate-900";
+        bannerTitle.textContent = "Sổ theo dõi học tập & Học phí của con";
+        renderParentView();
+      }
+      lucide.createIcons();
+    }
+
+    // =========================================================
+    // CHUYỂN TABS TRONG GIAO DIỆN GIÁO VIÊN
+    // =========================================================
+    function switchTab(tabId) {
+      currentTab = tabId;
+      const tabs = ['attendance', 'homework', 'remarks', 'finance'];
+      tabs.forEach(t => {
+        const content = document.getElementById(`tabContent-${t}`);
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (t === tabId) {
+          content.classList.remove('hidden');
+          btn.className = "tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all whitespace-nowrap bg-blue-600 text-white shadow-sm";
+        } else {
+          content.classList.add('hidden');
+          btn.className = "tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all whitespace-nowrap text-slate-600 hover:bg-slate-100";
+        }
+      });
+      lucide.createIcons();
+    }
+
+    // =========================================================
+    // RENDER TAB 1: ĐIỂM DANH
+    // =========================================================
+    function renderAttendanceTab() {
+      const presentCount = students.filter(s => s.status === 'present').length;
+      const absentCount = students.length - presentCount;
+
+      document.getElementById('statTotalStudents').textContent = `${students.length} học sinh`;
+      document.getElementById('statPresentStudents').textContent = `${presentCount} em`;
+      document.getElementById('statAbsentStudents').textContent = `${absentCount} em`;
+      document.getElementById('tabBadgeAttendance').textContent = `${presentCount}/${students.length}`;
+
+      const listContainer = document.getElementById('attendanceStudentList');
+      listContainer.innerHTML = '';
+
+      students.forEach((student, idx) => {
+        const summary = getAttendanceSummary(student);
+        const div = document.createElement('div');
+        div.className = "p-4 flex items-center justify-between hover:bg-slate-50 transition";
+        div.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <span class="text-xs font-bold text-slate-400 w-5">${idx + 1}</span>
+            <div>
+              <button
+                onclick="openStudentDetailModal('${student.id}')"
+                class="font-bold text-slate-900 text-sm text-left hover:text-blue-600 hover:underline flex items-center gap-1.5 group"
+              >
+                <span>${student.name}</span>
+                <i data-lucide="eye" class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition"></i>
+              </button>
+              
+              <div class="text-xs text-slate-500 flex flex-wrap items-center gap-2 mt-0.5">
+                <span>${student.school}</span>
+                <span>•</span>
+                <span class="text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded">
+                  Tháng này: đã học ${summary.presentCount}/${summary.totalRecorded} buổi
+                </span>
+                ${summary.absentCount > 0 ? `<span class="text-rose-600 font-medium">(Vắng ${summary.absentCount} buổi)</span>` : ''}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              onclick="setAttendanceStatus('${student.id}', 'present')"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                student.status === 'present'
+                  ? 'bg-emerald-600 text-white shadow-sm ring-2 ring-emerald-300'
+                  : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+              }"
+            >
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              <span>Đi học</span>
+            </button>
+
+            <button
+              onclick="setAttendanceStatus('${student.id}', 'absent')"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                student.status === 'absent'
+                  ? 'bg-rose-600 text-white shadow-sm ring-2 ring-rose-300'
+                  : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+              }"
+            >
+              <i data-lucide="x-circle" class="w-4 h-4"></i>
+              <span>Vắng</span>
+            </button>
+          </div>
+        `;
+        listContainer.appendChild(div);
+      });
+    }
+
+    async function setAttendanceStatus(studentId, newStatus) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+
+      student.status = newStatus;
+      student.attendanceHistory['04/11/2026'] = newStatus;
+
+      // Đồng bộ ngầm lên Supabase (không block giao diện)
+      try {
+        await client.from('attendances').insert([{
+          student_id: studentId,
+          status: newStatus,
+          date: '2026-11-04'
+        }]);
+      } catch (err) {
+        console.warn("Supabase log:", err);
+      }
+
+      renderAll();
+    }
+
+    function markAllPresentToday() {
+      students.forEach(s => {
+        s.status = 'present';
+        s.attendanceHistory['04/11/2026'] = 'present';
+      });
+      renderAll();
+    }
+
+    // =========================================================
+    // RENDER TAB 2: BÀI TẬP VỀ NHÀ
+    // =========================================================
+    function renderHomeworkTab() {
+      const container = document.getElementById('homeworkListContainer');
+      document.getElementById('tabBadgeHomework').textContent = homeworks.length;
+      container.innerHTML = '';
+
+      homeworks.forEach(hw => {
+        const submittedCount = Object.values(hw.submissions).filter(s => s.submitted).length;
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm";
+
+        let studentsGridHtml = '';
+        students.forEach(s => {
+          const sub = hw.submissions[s.id] || { submitted: false };
+          studentsGridHtml += `
+            <div class="p-2.5 rounded-lg border border-slate-100 bg-slate-50 flex items-center justify-between">
+              <div>
+                <div class="text-xs font-bold text-slate-800">${s.name}</div>
+                <div class="text-[11px]">
+                  ${sub.submitted ? '<span class="text-emerald-600 font-medium">✓ Đã nộp</span>' : '<span class="text-rose-500 font-medium">Chưa làm</span>'}
+                </div>
+              </div>
+              <div>
+                ${sub.score !== null && sub.score !== undefined 
+                  ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-extrabold text-xs rounded">${sub.score}đ</span>`
+                  : sub.submitted ? '<span class="text-[11px] text-amber-700 font-medium">Chờ chấm</span>' : '<span class="text-slate-300">-</span>'}
+              </div>
+            </div>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700">${hw.id}</span>
+                <span class="text-xs text-rose-600 font-semibold">Hạn: ${hw.deadline}</span>
+                <span class="text-xs text-slate-400">• ${hw.lessonNote}</span>
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 mt-1">${hw.title}</h4>
+              <p class="text-xs text-slate-600 mt-0.5">${hw.content}</p>
+            </div>
+            <div class="text-xs bg-white px-3 py-1.5 rounded-lg border border-slate-200 self-start sm:self-auto font-semibold">
+              Tỉ lệ nộp: <strong class="text-blue-600">${submittedCount}/${students.length}</strong>
+            </div>
+          </div>
+          <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            ${studentsGridHtml}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // =========================================================
+    // RENDER TAB 3: NHẬN XÉT BUỔI HỌC
+    // =========================================================
+    function renderRemarksTab() {
+      const container = document.getElementById('remarksListContainer');
+      container.innerHTML = '';
+
+      remarks.forEach(item => {
+        const student = students.find(s => s.id === item.studentId);
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-2.5";
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="font-bold text-slate-900 text-sm">${student?.name || 'Học sinh'}</span>
+                <span class="text-xs text-slate-400">(${student?.school || 'THCS'})</span>
+              </div>
+              <div class="text-xs text-slate-500 mt-0.5">
+                ${item.sessionName} • ${item.date}
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium border border-blue-200 text-xs">
+              ${item.understanding}
+            </span>
+          </div>
+
+          <div class="p-3 bg-slate-50 rounded-lg text-xs text-slate-700 border border-slate-100">
+            ${item.content}
+          </div>
+
+          ${item.parentReply ? `
+            <div class="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-100 text-xs text-emerald-900">
+              <div class="font-bold text-[11px] text-emerald-700 flex justify-between">
+                <span>Phụ huynh phản hồi:</span>
+                <span class="font-normal text-slate-400">${item.replyDate || ''}</span>
+              </div>
+              <p class="italic mt-0.5">"${item.parentReply}"</p>
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // =========================================================
+    // RENDER TAB 4: QUẢN LÝ TÍNH HỌC PHÍ (NẰM Ở CUỐI CÙNG)
+    // =========================================================
+    function renderFinanceTab() {
+      let totalExpected = 0;
+      let totalCollected = 0;
+      let totalDebt = 0;
+
+      const tbody = document.getElementById('financeTableBody');
+      tbody.innerHTML = '';
+
+      students.forEach(student => {
+        const fee = calculateStudentFee(student);
+        totalExpected += fee.finalAmount;
+        totalCollected += fee.paid;
+        if (fee.remaining > 0) totalDebt += fee.remaining;
+
+        const isSelected = selectedStudentIds.includes(student.id);
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-slate-50 transition ${isSelected ? 'bg-blue-50/40' : ''}`;
+
+        tr.innerHTML = `
+          <td class="p-3 text-center">
+            <input
+              type="checkbox"
+              ${isSelected ? 'checked' : ''}
+              onchange="toggleSelectStudent('${student.id}', this.checked)"
+              class="rounded text-blue-600 cursor-pointer"
+            >
+          </td>
+
+          <td class="py-3 px-3">
+            <button
+              onclick="openStudentDetailModal('${student.id}')"
+              class="font-bold text-slate-900 text-left hover:text-blue-600 hover:underline block"
+            >
+              ${student.name}
+            </button>
+            <span class="text-[11px] text-slate-400 font-mono">${student.parentPhone}</span>
+          </td>
+
+          <td class="py-3 px-3">
+            <span class="font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+              ${fee.presentCount} buổi
+            </span>
+          </td>
+
+          <td class="py-3 px-3">
+            ${student.pricingType === 'monthly'
+              ? `<div><span class="font-bold text-slate-700">Trọn gói:</span> ${Number(student.monthlyFixedPrice).toLocaleString('vi-VN')} đ/tháng</div>`
+              : `<div><span class="font-bold text-slate-700">${Number(student.pricePerSession).toLocaleString('vi-VN')} đ/buổi</span></div>`
+            }
+            ${student.discountOrExtra !== 0 ? `
+              <span class="text-[11px] block font-medium ${student.discountOrExtra > 0 ? 'text-rose-600' : 'text-emerald-600'}">
+                ${student.discountOrExtra > 0 ? `+ Phụ thu: ${student.discountOrExtra.toLocaleString('vi-VN')}đ` : `- Học bổng: ${Math.abs(student.discountOrExtra).toLocaleString('vi-VN')}đ`}
+              </span>
+            ` : ''}
+          </td>
+
+          <td class="py-3 px-3 font-extrabold text-slate-900">
+            ${fee.finalAmount.toLocaleString('vi-VN')} đ
+          </td>
+
+          <td class="py-3 px-3 font-bold text-emerald-700">
+            ${fee.paid.toLocaleString('vi-VN')} đ
+          </td>
+
+          <td class="py-3 px-3">
+            ${fee.remaining > 0
+              ? `<span class="font-extrabold text-rose-600">${fee.remaining.toLocaleString('vi-VN')} đ</span>`
+              : `<span class="text-slate-400 font-medium">0 đ</span>`
+            }
+          </td>
+
+          <td class="py-3 px-3 text-center">
+            ${fee.isFullyPaid
+              ? `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">Đã nộp đủ</span>`
+              : fee.paid > 0
+                ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">Thu 1 phần (${fee.paid.toLocaleString('vi-VN')} đ)</span>`
+                : `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800">Chưa nộp</span>`
+            }
+          </td>
+
+          <td class="py-3 px-3 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <!-- Thu 1 phần -->
+              <button
+                onclick="openPartialPaymentModal('${student.id}')"
+                title="Thu 1 phần tiền"
+                class="px-2 py-1 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300 font-bold text-[11px] flex items-center gap-1 transition"
+              >
+                <i data-lucide="coins" class="w-3 h-3 text-amber-600"></i>
+                <span>Thu 1 phần</span>
+              </button>
+
+              <!-- Nút toggle ĐÃ THU ĐỦ <-> HỦY THU (hoàn tác 2 chiều) -->
+              ${fee.isFullyPaid
+                ? `<button
+                    onclick="togglePaymentStatus('${student.id}')"
+                    title="Bấm để hủy thu về Chưa nộp (nếu ấn nhầm)"
+                    class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-bold text-[11px] flex items-center gap-1 transition"
+                  >
+                    <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                    <span>Hủy thu</span>
+                  </button>`
+                : `<button
+                    onclick="togglePaymentStatus('${student.id}')"
+                    title="Đánh dấu đã nộp đủ tiền"
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 font-bold text-[11px] flex items-center gap-1 shadow-sm transition"
+                  >
+                    <i data-lucide="check" class="w-3 h-3"></i>
+                    <span>Đã thu đủ</span>
+                  </button>`
+              }
+
+              <!-- Chỉnh sửa -->
+              <button
+                onclick="openEditIndividualFeeModal('${student.id}')"
+                title="Chỉnh sửa học phí em này"
+                class="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
+              >
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+              </button>
+
+              <!-- Gửi Zalo -->
+              <button
+                onclick="openZaloInvoiceModal('${student.id}')"
+                title="Tạo tin nhắn gửi Zalo"
+                class="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
+              >
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('statTotalExpectedFee').textContent = `${totalExpected.toLocaleString('vi-VN')} đ`;
+      document.getElementById('statTotalCollectedFee').textContent = `${totalCollected.toLocaleString('vi-VN')} đ`;
+      document.getElementById('statTotalUnpaidFee').textContent = `${totalDebt.toLocaleString('vi-VN')} đ`;
+
+      // Cập nhật nút Áp dụng hàng loạt
+      const count = selectedStudentIds.length;
+      document.getElementById('selectedStudentsCountDisplay').textContent = count;
+      const btnBatch = document.getElementById('btnApplyBatchSelected');
+      const btnBatchText = document.getElementById('btnApplyBatchSelectedText');
+      if (count > 0) {
+        btnBatch.disabled = false;
+        btnBatch.className = "px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer";
+        btnBatchText.textContent = `Áp dụng cho (${count}) em đã chọn`;
+      } else {
+        btnBatch.disabled = true;
+        btnBatch.className = "px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-100 text-slate-400 cursor-not-allowed";
+        btnBatchText.textContent = `Áp dụng cho (0) em đã chọn`;
+      }
+    }
+
+    // TOGGLE ĐÃ THU ĐỦ / HỦY THU (BẢO VỆ KHI BẤM NHẦM)
+    function togglePaymentStatus(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+
+      const fee = calculateStudentFee(student);
+      const wasPaid = fee.isFullyPaid;
+      const prevAmount = student.paidAmount;
+
+      student.paidAmount = wasPaid ? 0 : fee.finalAmount;
+
+      // Kích hoạt Toast hoàn tác
+      showUndoToast({
+        studentId: student.id,
+        previousAmount: prevAmount,
+        message: wasPaid 
+          ? `Đã hủy thu tiền của ${student.name} về Chưa nộp`
+          : `Đã đánh dấu ${student.name} đóng đủ ${fee.finalAmount.toLocaleString('vi-VN')} đ`
+      });
+
+      renderAll();
+    }
+
+    // =========================================================
+    // RENDER GIAO DIỆN PHỤ HUYNH
+    // =========================================================
+    function renderParentView() {
+      const parentSelect = document.getElementById('parentStudentSelect');
+      parentSelect.innerHTML = '';
+      students.forEach(s => {
         const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = `${c.class_name} (${Number(c.fee_per_session).toLocaleString()}đ/buổi)`;
+        opt.value = s.id;
+        opt.textContent = `${s.name} (${s.school})`;
+        opt.className = 'text-slate-900';
+        if (s.id === selectedParentStudentId) opt.selected = true;
+        parentSelect.appendChild(opt);
+      });
+
+      const student = students.find(s => s.id === selectedParentStudentId) || students[0];
+      if (!student) return;
+
+      document.getElementById('parentStudentHeaderName').innerHTML = `
+        ${student.name}
+        <span class="text-xs font-normal text-slate-500">(${student.school})</span>
+      `;
+      document.getElementById('parentStudentHeaderContact').textContent = `Phụ huynh: ${student.parentName} • ${student.parentPhone}`;
+
+      // Huy hiệu hôm nay
+      const todayBadge = document.getElementById('parentTodayStatusBadge');
+      if (student.status === 'present') {
+        todayBadge.innerHTML = `
+          <span class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Hôm nay ĐI HỌC
+          </span>
+        `;
+      } else {
+        todayBadge.innerHTML = `
+          <span class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-rose-100 text-rose-800 flex items-center gap-1.5">
+            <i data-lucide="x-circle" class="w-4 h-4"></i> Hôm nay VẮNG
+          </span>
+        `;
+      }
+
+      // Khối đối soát học phí
+      const fee = calculateStudentFee(student);
+      const summary = getAttendanceSummary(student);
+      const feeBadge = document.getElementById('parentFeeStatusBadge');
+      if (fee.isFullyPaid) {
+        feeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800";
+        feeBadge.textContent = "Đã hoàn tất học phí";
+      } else {
+        feeBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-bold bg-rose-100 text-rose-800";
+        feeBadge.textContent = "Chưa nộp đủ";
+      }
+
+      document.getElementById('parentBoxSessions').textContent = `${summary.presentCount} buổi`;
+      document.getElementById('parentBoxTotal').textContent = `${fee.finalAmount.toLocaleString('vi-VN')} đ`;
+      document.getElementById('parentBoxPaid').textContent = `${fee.paid.toLocaleString('vi-VN')} đ`;
+      document.getElementById('parentBoxUnpaid').textContent = `${fee.remaining.toLocaleString('vi-VN')} đ`;
+
+      // Lưới các ngày học trong tháng
+      const grid = document.getElementById('parentSessionsGrid');
+      grid.innerHTML = '';
+      SESSION_DATES.forEach((dateStr, idx) => {
+        const isPresent = (student.attendanceHistory?.[dateStr] || 'absent') === 'present';
+        const item = document.createElement('div');
+        item.className = `p-3 rounded-xl border text-xs flex flex-col justify-between ${
+          isPresent ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950' : 'bg-rose-50/70 border-rose-200 text-rose-950'
+        }`;
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-700">Buổi ${idx + 1}</span>
+            ${isPresent ? '<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>' : '<i data-lucide="x-circle" class="w-4 h-4 text-rose-600"></i>'}
+          </div>
+          <div class="font-mono text-xs text-slate-600 mt-1">${dateStr}</div>
+          <div class="mt-2 font-bold text-[11px]">
+            ${isPresent ? '<span class="text-emerald-700">✓ Đi học</span>' : '<span class="text-rose-600">✗ Vắng mặt</span>'}
+          </div>
+        `;
+        grid.appendChild(item);
+      });
+
+      // Bài tập về nhà của con
+      const hwList = document.getElementById('parentHomeworkList');
+      hwList.innerHTML = '';
+      homeworks.forEach(hw => {
+        const sub = hw.submissions[student.id] || { submitted: false };
+        const d = document.createElement('div');
+        d.className = "p-3.5 rounded-lg border border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+        d.innerHTML = `
+          <div>
+            <div class="text-xs font-bold text-slate-900">${hw.title}</div>
+            <p class="text-xs text-slate-500 mt-0.5">${hw.content}</p>
+            <div class="text-[11px] text-rose-600 font-semibold mt-1">Hạn nộp: ${hw.deadline}</div>
+            ${sub.feedback ? `<div class="mt-1.5 text-xs text-slate-700 bg-white p-2 rounded border border-slate-200"><strong>Cô Diễm nhận xét:</strong> "${sub.feedback}"</div>` : ''}
+          </div>
+          <div class="self-end sm:self-center">
+            ${sub.submitted
+              ? `<span class="px-3 py-1 rounded bg-emerald-100 text-emerald-800 font-bold text-xs">${sub.score !== null ? `${sub.score} điểm` : 'Đã nộp bài'}</span>`
+              : `<span class="px-3 py-1 rounded bg-rose-100 text-rose-800 font-bold text-xs">Chưa hoàn thành</span>`
+            }
+          </div>
+        `;
+        hwList.appendChild(d);
+      });
+
+      // Nhận xét của cô Diễm
+      const remList = document.getElementById('parentRemarksList');
+      remList.innerHTML = '';
+      const stuRemarks = remarks.filter(r => r.studentId === student.id);
+      if (stuRemarks.length === 0) {
+        remList.innerHTML = '<div class="text-xs text-slate-400 p-2">Chưa có nhận xét nào cho buổi này.</div>';
+      } else {
+        stuRemarks.forEach(rm => {
+          const rDiv = document.createElement('div');
+          rDiv.className = "p-3.5 rounded-lg border border-slate-200 bg-white space-y-2.5";
+          rDiv.innerHTML = `
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-800">${rm.sessionName}</span>
+              <span class="text-slate-400">${rm.date}</span>
+            </div>
+            <div class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-100">${rm.content}</div>
+            ${rm.parentReply ? `
+              <div class="text-xs bg-blue-50/70 p-2.5 rounded border border-blue-100">
+                <span class="font-bold text-blue-800">Phụ huynh đã phản hồi: </span>
+                <span class="italic text-slate-700">"${rm.parentReply}"</span>
+              </div>
+            ` : `
+              <button onclick="promptParentReply('${rm.id}')" class="text-xs text-blue-600 hover:underline font-bold">
+                + Trả lời / Trao đổi với cô Diễm
+              </button>
+            `}
+          `;
+          remList.appendChild(rDiv);
+        });
+      }
+
+      lucide.createIcons();
+    }
+
+    function onParentStudentChange(val) {
+      selectedParentStudentId = val;
+      renderParentView();
+    }
+
+    function promptParentReply(remarkId) {
+      const text = prompt("Nhập lời nhắn trao đổi gửi cô Diễm:");
+      if (!text || !text.trim()) return;
+      const rm = remarks.find(r => r.id === remarkId);
+      if (rm) {
+        rm.parentReply = text.trim();
+        rm.replyDate = "Vừa xong";
+        renderParentView();
+      }
+    }
+
+    // =========================================================
+    // MODAL XEM CHI TIẾT HỌC SINH (KHI BẤM VÀO TÊN)
+    // =========================================================
+    function openStudentDetailModal(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      detailedStudent = student;
+
+      const summary = getAttendanceSummary(student);
+      const fee = calculateStudentFee(student);
+
+      document.getElementById('modalDetailName').innerHTML = `
+        ${student.name}
+        <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold">${student.id}</span>
+      `;
+      document.getElementById('modalDetailSubtext').textContent = `${student.school} • PH: ${student.parentName} (${student.parentPhone})`;
+      document.getElementById('modalDetailPresentCount').textContent = `${summary.presentCount}/${summary.totalRecorded} buổi`;
+      document.getElementById('modalDetailPaidAmount').textContent = `${fee.paid.toLocaleString('vi-VN')} đ`;
+      document.getElementById('modalDetailUnpaidAmount').textContent = fee.remaining > 0 ? `${fee.remaining.toLocaleString('vi-VN')} đ` : '0 đ';
+
+      // Lưới bấm đổi từng ngày
+      const grid = document.getElementById('modalDetailDatesGrid');
+      grid.innerHTML = '';
+      SESSION_DATES.forEach((dateStr, idx) => {
+        const isPresent = (student.attendanceHistory?.[dateStr] || 'absent') === 'present';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => toggleDayInModal(student.id, dateStr);
+        btn.className = `p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+          isPresent
+            ? 'bg-emerald-50 border-emerald-200 text-emerald-900 hover:bg-emerald-100'
+            : 'bg-rose-50 border-rose-200 text-rose-900 hover:bg-rose-100'
+        }`;
+        btn.innerHTML = `
+          <div class="flex items-center justify-between w-full">
+            <span class="text-[11px] font-bold text-slate-600">Buổi ${idx + 1}</span>
+            ${isPresent ? '<i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>' : '<i data-lucide="x-circle" class="w-3.5 h-3.5 text-rose-600"></i>'}
+          </div>
+          <div class="font-mono text-[11px] text-slate-500 mt-1">${dateStr}</div>
+          <div class="text-[11px] font-extrabold mt-1">
+            ${isPresent ? '<span class="text-emerald-700">✓ Đi học</span>' : '<span class="text-rose-600">✗ Vắng</span>'}
+          </div>
+        `;
+        grid.appendChild(btn);
+      });
+
+      openModal('modalStudentDetail');
+      lucide.createIcons();
+    }
+
+    function toggleDayInModal(studentId, dateStr) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      const current = student.attendanceHistory[dateStr] || 'absent';
+      student.attendanceHistory[dateStr] = current === 'present' ? 'absent' : 'present';
+      openStudentDetailModal(studentId); // re-render modal
+      renderAll();
+    }
+
+    // =========================================================
+    // MODAL THU 1 PHẦN HỌC PHÍ
+    // =========================================================
+    function openPartialPaymentModal(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      partialPaymentStudent = student;
+
+      const fee = calculateStudentFee(student);
+      document.getElementById('partialModalStudentName').textContent = `${student.name} (${student.school})`;
+      document.getElementById('partialModalTotalFee').textContent = `${fee.finalAmount.toLocaleString('vi-VN')} đ`;
+      document.getElementById('partialModalPreviouslyPaid').textContent = `${student.paidAmount.toLocaleString('vi-VN')} đ`;
+
+      const input = document.getElementById('partialPaymentAmountInput');
+      input.value = student.paidAmount > 0 ? student.paidAmount : Math.round(fee.finalAmount / 2);
+      updatePartialModalRemaining();
+
+      openModal('modalPartialPayment');
+    }
+
+    function updatePartialModalRemaining() {
+      if (!partialPaymentStudent) return;
+      const fee = calculateStudentFee(partialPaymentStudent);
+      const val = Number(document.getElementById('partialPaymentAmountInput').value) || 0;
+      const rem = Math.max(0, fee.finalAmount - val);
+      document.getElementById('partialModalRemainingCalculated').textContent = `${rem.toLocaleString('vi-VN')} đ`;
+    }
+
+    function setPartialInputValue(val) {
+      document.getElementById('partialPaymentAmountInput').value = val;
+      updatePartialModalRemaining();
+    }
+
+    function setPartialInputPercent(percent) {
+      if (!partialPaymentStudent) return;
+      const fee = calculateStudentFee(partialPaymentStudent);
+      document.getElementById('partialPaymentAmountInput').value = Math.round(fee.finalAmount * percent);
+      updatePartialModalRemaining();
+    }
+
+    function handleSavePartialPayment(e) {
+      e.preventDefault();
+      if (!partialPaymentStudent) return;
+
+      const newVal = Math.max(0, Number(document.getElementById('partialPaymentAmountInput').value) || 0);
+      const prevAmount = partialPaymentStudent.paidAmount;
+      partialPaymentStudent.paidAmount = newVal;
+
+      showUndoToast({
+        studentId: partialPaymentStudent.id,
+        previousAmount: prevAmount,
+        message: `Đã cập nhật thu: ${newVal.toLocaleString('vi-VN')} đ cho ${partialPaymentStudent.name}`
+      });
+
+      closeModal('modalPartialPayment');
+      renderAll();
+    }
+
+    // =========================================================
+    // MODAL ÁP DỤNG HỌC PHÍ THEO LỚP HOẶC HÀNG LOẠT
+    // =========================================================
+    function openBatchFeeModal(target) {
+      currentTargetBatch = target;
+      const title = document.getElementById('modalBatchFeeTitle');
+      if (target === 'all') {
+        title.textContent = "Điền số tiền / Học phí CẢ LỚP";
+      } else {
+        title.textContent = `Điền học phí cho (${selectedStudentIds.length}) học sinh đã chọn`;
+      }
+      setBatchPricingType('per_session');
+      openModal('modalBatchFee');
+    }
+
+    function setBatchPricingType(type) {
+      batchPricingType = type;
+      const btnPer = document.getElementById('batchPricingPerSessionBtn');
+      const btnMon = document.getElementById('batchPricingMonthlyBtn');
+      const label = document.getElementById('batchAmountLabel');
+
+      if (type === 'per_session') {
+        btnPer.className = "py-2 px-3 rounded-lg text-xs font-bold border transition bg-blue-50 border-blue-600 text-blue-700";
+        btnMon.className = "py-2 px-3 rounded-lg text-xs font-bold border transition border-slate-200 text-slate-600";
+        label.textContent = "Đơn giá mỗi buổi (VNĐ) *";
+      } else {
+        btnMon.className = "py-2 px-3 rounded-lg text-xs font-bold border transition bg-blue-50 border-blue-600 text-blue-700";
+        btnPer.className = "py-2 px-3 rounded-lg text-xs font-bold border transition border-slate-200 text-slate-600";
+        label.textContent = "Số tiền trọn gói 1 tháng (VNĐ) *";
+      }
+    }
+
+    function handleApplyBatchFee(e) {
+      e.preventDefault();
+      const amount = Number(document.getElementById('batchAmountInput').value) || 0;
+      const discount = Number(document.getElementById('batchDiscountInput').value) || 0;
+
+      const targetIds = currentTargetBatch === 'all'
+        ? students.map(s => s.id)
+        : selectedStudentIds;
+
+      students.forEach(s => {
+        if (targetIds.includes(s.id)) {
+          s.pricingType = batchPricingType;
+          if (batchPricingType === 'per_session') {
+            s.pricePerSession = amount;
+          } else {
+            s.monthlyFixedPrice = amount;
+          }
+          s.discountOrExtra = discount;
+        }
+      });
+
+      closeModal('modalBatchFee');
+      renderAll();
+    }
+
+    // =========================================================
+    // MODAL SỬA CHI TIẾT HỌC PHÍ TỪNG HỌC SINH
+    // =========================================================
+    function openEditIndividualFeeModal(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      editingStudent = student;
+
+      document.getElementById('editFeeStudentName').textContent = `${student.name} (${student.school})`;
+      document.getElementById('editFeePricingType').value = student.pricingType || 'per_session';
+      document.getElementById('editFeePricePerSession').value = student.pricePerSession || 120000;
+      document.getElementById('editFeeMonthlyPrice').value = student.monthlyFixedPrice || 900000;
+      document.getElementById('editFeeDiscountOrExtra').value = student.discountOrExtra || 0;
+      document.getElementById('editFeePaidAmount').value = student.paidAmount || 0;
+
+      toggleEditFeeFields(student.pricingType || 'per_session');
+      openModal('modalEditIndividualFee');
+    }
+
+    function toggleEditFeeFields(val) {
+      const per = document.getElementById('editFeePerSessionField');
+      const mon = document.getElementById('editFeeMonthlyField');
+      if (val === 'per_session') {
+        per.classList.remove('hidden');
+        mon.classList.add('hidden');
+      } else {
+        per.classList.add('hidden');
+        mon.classList.remove('hidden');
+      }
+    }
+
+    function handleSaveIndividualFee(e) {
+      e.preventDefault();
+      if (!editingStudent) return;
+
+      editingStudent.pricingType = document.getElementById('editFeePricingType').value;
+      editingStudent.pricePerSession = Number(document.getElementById('editFeePricePerSession').value) || 0;
+      editingStudent.monthlyFixedPrice = Number(document.getElementById('editFeeMonthlyPrice').value) || 0;
+      editingStudent.discountOrExtra = Number(document.getElementById('editFeeDiscountOrExtra').value) || 0;
+      editingStudent.paidAmount = Number(document.getElementById('editFeePaidAmount').value) || 0;
+
+      closeModal('modalEditIndividualFee');
+      renderAll();
+    }
+
+    // =========================================================
+    // MODAL XUẤT TIN NHẮN ZALO BÁO HỌC PHÍ
+    // =========================================================
+    function openZaloInvoiceModal(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+
+      const fee = calculateStudentFee(student);
+      const summary = getAttendanceSummary(student);
+      const pricingDesc = student.pricingType === 'monthly'
+        ? `Học phí trọn gói tháng: ${Number(student.monthlyFixedPrice).toLocaleString('vi-VN')} đ`
+        : `Đơn giá: ${Number(student.pricePerSession).toLocaleString('vi-VN')} đ/buổi × ${summary.presentCount} buổi = ${(summary.presentCount * student.pricePerSession).toLocaleString('vi-VN')} đ`;
+
+      const msg = `Kính gửi phụ huynh em ${student.name},\nCô Diễm gửi thông tin đối soát học phí tháng 10/2026 của con tại Lớp Tiếng Anh - Cô Diễm:\n- Số buổi đã tham gia: ${summary.presentCount}/${summary.totalRecorded} buổi.\n- Hình thức tính: ${pricingDesc}.\n${student.discountOrExtra !== 0 ? `- Điều chỉnh/Phụ thu: ${student.discountOrExtra.toLocaleString('vi-VN')} đ\n` : ''}- Tổng học phí: ${fee.finalAmount.toLocaleString('vi-VN')} đ.\n- Đã thanh toán: ${fee.paid.toLocaleString('vi-VN')} đ.\n- Số tiền chưa nộp: ${fee.remaining > 0 ? `${fee.remaining.toLocaleString('vi-VN')} đ` : 'Đã hoàn thành'}.\n\nKính mong phụ huynh kiểm tra đối soát và hoàn tất học phí cho con trước ngày 10 hàng tháng. Cô Diễm xin cảm ơn!`;
+
+      document.getElementById('zaloModalTargetName').textContent = `Gửi tới PH em: ${student.name} (${student.parentPhone})`;
+      document.getElementById('zaloMessageContent').value = msg;
+      document.getElementById('zaloCopiedAlert').classList.add('hidden');
+
+      openModal('modalZaloInvoice');
+    }
+
+    function copyZaloMessage() {
+      const textarea = document.getElementById('zaloMessageContent');
+      textarea.select();
+      document.execCommand('copy');
+      const alertBox = document.getElementById('zaloCopiedAlert');
+      alertBox.classList.remove('hidden');
+      setTimeout(() => alertBox.classList.add('hidden'), 3000);
+    }
+
+    // =========================================================
+    // MODAL THÊM HỌC SINH MỚI & LƯU LÊN SUPABASE
+    // =========================================================
+    function openAddStudentModal() {
+      document.getElementById('addStudentName').value = '';
+      document.getElementById('addStudentSchool').value = '';
+      document.getElementById('addStudentParentName').value = '';
+      document.getElementById('addStudentPhone').value = '';
+      openModal('modalAddStudent');
+    }
+
+    async function handleCreateStudent(e) {
+      e.preventDefault();
+      const name = document.getElementById('addStudentName').value.trim();
+      const school = document.getElementById('addStudentSchool').value.trim() || 'THCS';
+      const pName = document.getElementById('addStudentParentName').value.trim() || 'Phụ huynh';
+      const phone = document.getElementById('addStudentPhone').value.trim();
+
+      const newId = `HS0${students.length + 1}`;
+      const newStudent = {
+        id: newId,
+        name: name,
+        school: school,
+        parentName: pName,
+        parentPhone: phone,
+        status: 'present',
+        attendanceHistory: { '04/11/2026': 'present' },
+        pricingType: 'per_session',
+        pricePerSession: 120000,
+        monthlyFixedPrice: 0,
+        discountOrExtra: 0,
+        paidAmount: 0
+      };
+
+      students.push(newStudent);
+
+      // Thử lưu lên Supabase nếu có cấu trúc bảng
+      try {
+        await client.from('students').insert([{
+          student_name: name,
+          parent_phone: phone,
+          school: school
+        }]);
+      } catch (err) {
+        console.warn("Supabase log:", err);
+      }
+
+      closeModal('modalAddStudent');
+      renderAll();
+    }
+
+    // =========================================================
+    // MODAL GIAO BÀI TẬP & NHẬN XÉT MỚI
+    // =========================================================
+    function openNewHomeworkModal() {
+      document.getElementById('newHwTitle').value = '';
+      document.getElementById('newHwLessonNote').value = '';
+      document.getElementById('newHwDeadline').value = '';
+      document.getElementById('newHwContent').value = '';
+      openModal('modalNewHomework');
+    }
+
+    function handleCreateHomework(e) {
+      e.preventDefault();
+      const title = document.getElementById('newHwTitle').value.trim();
+      const note = document.getElementById('newHwLessonNote').value.trim() || 'Bài tập rèn luyện';
+      const deadline = document.getElementById('newHwDeadline').value;
+      const content = document.getElementById('newHwContent').value.trim();
+
+      const initialSubs = {};
+      students.forEach(s => {
+        initialSubs[s.id] = { submitted: false, score: null, feedback: '' };
+      });
+
+      const newHw = {
+        id: `BT0${homeworks.length + 1}`,
+        title,
+        lessonNote: note,
+        deadline,
+        content,
+        submissions: initialSubs
+      };
+
+      homeworks.unshift(newHw);
+      closeModal('modalNewHomework');
+      renderAll();
+    }
+
+    function openNewRemarkModal() {
+      const select = document.getElementById('newRemarkStudentSelect');
+      select.innerHTML = '';
+      students.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} (${s.school})`;
         select.appendChild(opt);
       });
-      loadStudents();
+      document.getElementById('newRemarkContent').value = '';
+      openModal('modalNewRemark');
     }
 
-    async function addStudent() {
-      const classId = document.getElementById('classList').value;
-      const name = document.getElementById('studentName').value;
-      const phone = document.getElementById('parentPhone').value;
-      
-      if (!classId) return alert("Vui lòng tạo hoặc chọn lớp học trước");
-      if (!name) return alert("Vui lòng nhập tên học sinh");
-      
-      const { error } = await client.from('students').insert([{ 
-        class_id: classId, 
-        student_name: name, 
-        parent_phone: phone 
-      }]);
-      
-      if (error) {
-        alert("Lỗi thêm học sinh: " + error.message);
-        return;
-      }
-      
-      alert("Đã thêm học sinh!");
-      document.getElementById('studentName').value = '';
-      document.getElementById('parentPhone').value = '';
-      loadStudents();
+    function handleCreateRemark(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('newRemarkStudentSelect').value;
+      const understanding = document.getElementById('newRemarkUnderstanding').value;
+      const content = document.getElementById('newRemarkContent').value.trim();
+
+      const newRemark = {
+        id: `NX0${remarks.length + 1}`,
+        studentId,
+        date: '04/11/2026',
+        sessionName: 'Buổi học ngày 04/11/2026',
+        understanding,
+        content,
+        parentReply: '',
+        replyDate: null
+      };
+
+      remarks.unshift(newRemark);
+      closeModal('modalNewRemark');
+      renderAll();
     }
 
-    async function loadStudents() {
-      const classId = document.getElementById('classList').value;
-      const list = document.getElementById('attendanceList');
-      if (!classId) {
-        list.innerHTML = '<p class="text-xs text-slate-400">Chọn lớp để xem học sinh</p>';
-        return;
+    // =========================================================
+    // CHECKBOX CHỌN HỌC SINH TÍNH TIỀN HÀNG LOẠT
+    // =========================================================
+    function toggleSelectStudent(id, checked) {
+      if (checked) {
+        if (!selectedStudentIds.includes(id)) selectedStudentIds.push(id);
+      } else {
+        selectedStudentIds = selectedStudentIds.filter(item => item !== id);
       }
-      
-      const { data: students, error } = await client.from('students').select('*').eq('class_id', classId);
-      if (error) {
-        console.error("Lỗi tải học sinh:", error);
-        return;
-      }
-      
-      list.innerHTML = '';
-      if (!students || students.length === 0) {
-        list.innerHTML = '<p class="text-xs text-slate-400">Lớp chưa có học sinh nào</p>';
-        return;
-      }
-      
-      students.forEach(s => {
-        const div = document.createElement('div');
-        div.className = "flex justify-between items-center p-2 bg-slate-50 border rounded";
-        div.innerHTML = `
-          <div>
-            <div class="font-medium text-slate-800">${s.student_name}</div>
-            <div class="text-xs text-slate-400">${s.parent_phone || 'Chưa có SĐT'}</div>
-          </div>
-          <button onclick="markPresent('${s.id}')" class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium hover:bg-green-200">
-            ✓ Có mặt
-          </button>
-        `;
-        list.appendChild(div);
-      });
+      renderFinanceTab();
+      updateSelectAllCheckboxState();
     }
 
-    async function markPresent(studentId) {
-      const { error } = await client.from('attendances').insert([{ 
-        student_id: studentId, 
-        status: 'present' 
-      }]);
-      
-      if (error) {
-        alert("Lỗi điểm danh: " + error.message);
-        return;
+    function toggleSelectAllStudents(checked) {
+      if (checked) {
+        selectedStudentIds = students.map(s => s.id);
+      } else {
+        selectedStudentIds = [];
       }
-      alert("Đã ghi nhận có mặt!");
+      renderFinanceTab();
     }
 
-    // Tự động tải danh sách lớp khi vừa mở trang
-    loadClasses();
+    function updateSelectAllCheckboxState() {
+      const cb = document.getElementById('selectAllCheckbox');
+      if (cb) {
+        cb.checked = selectedStudentIds.length === students.length && students.length > 0;
+      }
+    }
+
+    // =========================================================
+    // TOAST HOÀN TÁC (UNDO TOAST)
+    // =========================================================
+    function showUndoToast(action) {
+      lastUndoAction = action;
+      const toast = document.getElementById('undoToast');
+      const msg = document.getElementById('undoToastMessage');
+      msg.textContent = action.message;
+      toast.classList.remove('hidden');
+
+      if (undoToastTimer) clearTimeout(undoToastTimer);
+      undoToastTimer = setTimeout(() => {
+        hideUndoToast();
+      }, 6500);
+      lucide.createIcons();
+    }
+
+    function hideUndoToast() {
+      document.getElementById('undoToast').classList.add('hidden');
+      lastUndoAction = null;
+    }
+
+    function handleUndoPayment() {
+      if (!lastUndoAction) return;
+      const student = students.find(s => s.id === lastUndoAction.studentId);
+      if (student) {
+        student.paidAmount = lastUndoAction.previousAmount;
+        renderAll();
+      }
+      hideUndoToast();
+    }
+
+    // =========================================================
+    // TIỆN ÍCH MODAL
+    // =========================================================
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    function onClassChange(val) {
+      // Dành cho mở rộng thêm nhiều lớp sau này
+    }
+
+    // =========================================================
+    // RENDER TOÀN BỘ ỨNG DỤNG
+    // =========================================================
+    function renderAll() {
+      renderAttendanceTab();
+      renderHomeworkTab();
+      renderRemarksTab();
+      renderFinanceTab();
+      if (currentRole === 'parent') {
+        renderParentView();
+      }
+      lucide.createIcons();
+    }
+
+    // Tự động chạy khi mở web
+    window.onload = function () {
+      initSupabaseData();
+    };
   </script>
 </body>
 </html>
