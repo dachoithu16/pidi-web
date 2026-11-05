@@ -114,7 +114,7 @@
         <div class="flex items-center justify-between">
           <div class="text-[11px] sm:text-xs text-indigo-400 font-semibold flex items-center gap-1.5">
             <i data-lucide="calendar" class="w-3.5 h-3.5 shrink-0"></i>
-            <span id="currentDateDisplay">Thứ Tư, 04/11 • Lớp Học Trực Tiếp</span>
+            <span id="currentDateDisplay">Đang cập nhật ngày...</span>
           </div>
         </div>
 
@@ -318,32 +318,65 @@
               </div>
               <div>
                 <h3 class="font-black text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
-                  <span>THỜI KHÓA BIỂU TUẦN - 6 LỚP TIẾNG ANH CÔ DIỄM</span>
+                  <span>THỜI KHÓA BIỂU - LỚP TIẾNG ANH CÔ DIỄM</span>
                 </h3>
                 <p class="text-[11px] text-slate-500 font-medium">Bấm vào ô ca học để mở danh sách học sinh & điểm danh</p>
               </div>
             </div>
             <div class="flex items-center gap-2 text-[11px]">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Hôm nay Thứ Tư
+              <!-- Nút chuyển chế độ xem trên điện thoại -->
+              <div class="inline-flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                <button
+                  type="button"
+                  id="btnScheduleViewToday"
+                  onclick="toggleScheduleMobileView('today')"
+                  class="px-2.5 py-1 rounded-md font-bold text-[11px] bg-white text-indigo-700 shadow-2xs transition"
+                >
+                  ⚡ Hôm nay
+                </button>
+                <button
+                  type="button"
+                  id="btnScheduleViewWeek"
+                  onclick="toggleScheduleMobileView('week')"
+                  class="px-2.5 py-1 rounded-md font-bold text-[11px] text-slate-600 hover:text-slate-900 transition"
+                >
+                  Cả tuần
+                </button>
+              </div>
+              <span id="todayBadgeSchedule" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="todayBadgeText">Hôm nay</span>
               </span>
-              <span class="text-slate-400 font-medium hidden sm:inline">6 lớp học</span>
+            </div>
+          </div>
+
+          <!-- KHỐI XEM NHANH CA HÔM NAY CHO ĐIỆN THOẠI (KHÔNG CẦN CUỘN NGANG) -->
+          <div id="mobileTodayScheduleBox" class="space-y-2">
+            <div class="flex items-center justify-between px-1">
+              <span class="text-xs font-black text-slate-800 flex items-center gap-1">
+                <i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-600"></i>
+                <span id="todayScheduleTitle">Các ca dạy hôm nay</span>
+              </span>
+              <span class="text-[10px] text-indigo-600 font-bold">1 chạm vào điểm danh ngay</span>
+            </div>
+            <div id="mobileTodayClassesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <!-- Render tự động các ca hôm nay bằng JS -->
             </div>
           </div>
 
           <!-- BẢNG LỊCH DẠY DẠNG MA TRẬN CHUẨN ĐẸP (THEO PHÒNG & THỨ TRONG TUẦN) -->
-          <div class="overflow-x-auto rounded-xl border border-slate-200 scrollbar-none">
+          <div id="matrixScheduleTableWrapper" class="overflow-x-auto rounded-xl border border-slate-200 scrollbar-none transition-all">
             <table class="w-full text-center border-collapse min-w-[760px] table-fixed text-xs">
               <thead>
-                <tr class="bg-slate-900 text-white font-extrabold uppercase text-[11px] tracking-wider">
+                <tr id="scheduleTableHeaderRow" class="bg-slate-900 text-white font-extrabold uppercase text-[11px] tracking-wider">
                   <th class="py-2.5 px-3 border-r border-slate-700 w-28">Phòng / Ca</th>
-                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 2</th>
-                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 3</th>
-                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%] bg-slate-800 text-amber-300">Thứ 4 (Nay)</th>
-                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 5</th>
-                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 6</th>
-                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 7</th>
-                  <th class="py-2.5 px-1 w-[13%]">Chủ Nhật</th>
+                  <th data-day="Thứ 2" class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 2</th>
+                  <th data-day="Thứ 3" class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 3</th>
+                  <th data-day="Thứ 4" class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 4</th>
+                  <th data-day="Thứ 5" class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 5</th>
+                  <th data-day="Thứ 6" class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 6</th>
+                  <th data-day="Thứ 7" class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 7</th>
+                  <th data-day="Chủ Nhật" class="py-2.5 px-1 w-[13%]">Chủ Nhật</th>
                 </tr>
               </thead>
               <tbody id="matrixScheduleTableBody" class="divide-y divide-slate-200 bg-slate-50/40">
@@ -1345,7 +1378,7 @@
         days: ['Thứ 4', 'Thứ 7'],
         colorBg: 'bg-sky-100 hover:bg-sky-200/90 border-sky-300 text-sky-950',
         badgeColor: 'bg-sky-600 text-white',
-        isToday: true // Thứ Tư hôm nay
+        isToday: false
       },
       { 
         id: 'class_eng_9a', 
@@ -1384,12 +1417,29 @@
         days: ['Thứ 4', 'Chủ Nhật'],
         colorBg: 'bg-rose-100 hover:bg-rose-200/90 border-rose-300 text-rose-950',
         badgeColor: 'bg-rose-600 text-white',
-        isToday: true // Thứ Tư hôm nay
+        isToday: false
       }
     ];
 
     let currentClassId = 'class_eng_8a';
     let isClassSelected = false; // Mặc định khi vừa vào web là CHƯA mở danh sách học sinh (hiện thời khóa biểu)
+    let scheduleViewMode = 'today'; // 'today' | 'week'
+
+    // HÀM TÍNH TOÁN THỨ & NGÀY THỰC TẾ THEO MÚI GIỜ VỊ TRÍ THIẾT BỊ NGƯỜI DÙNG
+    function getCurrentDayOfWeekInfo() {
+      const now = new Date();
+      const dayMap = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+      const dayName = dayMap[now.getDay()];
+      const dayNum = String(now.getDate()).padStart(2, '0');
+      const monthNum = String(now.getMonth() + 1).padStart(2, '0');
+      const yearNum = now.getFullYear();
+      return {
+        dayIndex: now.getDay(), // 0: CN, 1: T2, ..., 6: T7
+        dayName,                // 'Thứ 2', ..., 'Chủ Nhật'
+        fullDateStr: `${dayName}, ${dayNum}/${monthNum}/${yearNum}`,
+        shortDateStr: `${dayName}, ${dayNum}/${monthNum}`
+      };
+    }
 
     // DỮ LIỆU HỌC SINH DEMO PHONG PHÚ CHO CẢ 6 LỚP TIẾNG ANH (12 - 15 HỌC SINH MỖI LỚP)
     let classStudentsMap = {
@@ -1612,16 +1662,122 @@
       return parts.slice(-2).join(' ');
     }
 
+    // CHUYỂN ĐỔI CHẾ ĐỘ XEM TRÊN ĐIỆN THOẠI (HÔM NAY / CẢ TUẦN)
+    function toggleScheduleMobileView(mode) {
+      scheduleViewMode = mode;
+      const btnToday = document.getElementById('btnScheduleViewToday');
+      const btnWeek = document.getElementById('btnScheduleViewWeek');
+      const todayBox = document.getElementById('mobileTodayScheduleBox');
+      const tableWrapper = document.getElementById('matrixScheduleTableWrapper');
+
+      if (mode === 'today') {
+        if (btnToday) btnToday.className = "px-2.5 py-1 rounded-md font-bold text-[11px] bg-white text-indigo-700 shadow-2xs transition";
+        if (btnWeek) btnWeek.className = "px-2.5 py-1 rounded-md font-bold text-[11px] text-slate-600 hover:text-slate-900 transition";
+        if (todayBox) todayBox.classList.remove('hidden');
+      } else {
+        if (btnWeek) btnWeek.className = "px-2.5 py-1 rounded-md font-bold text-[11px] bg-white text-indigo-700 shadow-2xs transition";
+        if (btnToday) btnToday.className = "px-2.5 py-1 rounded-md font-bold text-[11px] text-slate-600 hover:text-slate-900 transition";
+      }
+
+      renderWeeklyScheduleGrid();
+    }
+
     // =========================================================
-    // HÀM HIỂN THỊ THỜI KHÓA BIỂU DẠNG MA TRẬN (LƯỚI THEO PHÒNG VÀ CÁC THỨ TRONG TUẦN)
+    // HÀM HIỂN THỊ THỜI KHÓA BIỂU DẠNG MA TRẬN & TỰ NHẬN DIỆN THỨ HÔM NAY
     // =========================================================
     function renderWeeklyScheduleGrid() {
       const tbody = document.getElementById('matrixScheduleTableBody');
       const legendContainer = document.getElementById('classLegendList');
+      const todayInfo = getCurrentDayOfWeekInfo();
+
+      // Cập nhật ngày giờ thực tế lên thanh banner
+      const curDateDisplay = document.getElementById('currentDateDisplay');
+      if (curDateDisplay) {
+        curDateDisplay.textContent = `${todayInfo.fullDateStr} • Lớp Học Trực Tiếp`;
+      }
+
+      // Cập nhật huy hiệu "Hôm nay"
+      const todayBadgeText = document.getElementById('todayBadgeText');
+      if (todayBadgeText) {
+        todayBadgeText.textContent = `Hôm nay ${todayInfo.dayName}`;
+      }
+
+      // 1. RENDER KHỐI "CÁC CA DẠY HÔM NAY" CHO MOBILE (KHÔNG CẦN CUỘN NGANG)
+      const mobileTodayContainer = document.getElementById('mobileTodayClassesContainer');
+      const todayTitleEl = document.getElementById('todayScheduleTitle');
+      if (todayTitleEl) {
+        todayTitleEl.textContent = `Các ca dạy hôm nay (${todayInfo.dayName})`;
+      }
+
+      if (mobileTodayContainer) {
+        const todayClasses = classesList.filter(c => Array.isArray(c.days) && c.days.includes(todayInfo.dayName));
+        if (todayClasses.length === 0) {
+          mobileTodayContainer.innerHTML = `
+            <div class="col-span-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-500">
+              ☕ Hôm nay <strong>${todayInfo.dayName}</strong> không có ca dạy cố định. Bấm "Cả tuần" để xem toàn bộ lịch hoặc chọn lớp trên thanh công cụ.
+            </div>
+          `;
+        } else {
+          mobileTodayContainer.innerHTML = todayClasses.map(cls => {
+            const studentCount = (classStudentsMap[cls.id] || []).length;
+            const displayTime = cls.timeSlot || '18h00 - 19h30';
+            const room = cls.room || 'P.101';
+            return `
+              <div 
+                onclick="selectClassFromSchedule('${cls.id}')"
+                class="p-3 rounded-xl border transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-between ${cls.colorBg}"
+              >
+                <div class="min-w-0 pr-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-black px-1.5 py-0.5 rounded ${cls.badgeColor} leading-none">
+                      ${cls.code || 'TA'}
+                    </span>
+                    <span class="text-xs font-black text-slate-900 truncate">
+                      ${cls.class_name}
+                    </span>
+                  </div>
+                  <div class="text-[11px] text-slate-600 font-bold mt-1 flex items-center gap-2">
+                    <span class="flex items-center gap-1 text-indigo-700">
+                      <i data-lucide="clock" class="w-3 h-3"></i> ${displayTime}
+                    </span>
+                    <span>•</span>
+                    <span class="text-slate-700">${room}</span>
+                  </div>
+                </div>
+
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-extrabold px-2.5 py-1 bg-white/90 text-indigo-800 rounded-lg shadow-2xs border border-indigo-100 flex items-center gap-1">
+                    <span>Vào điểm danh</span>
+                    <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                  </span>
+                  <div class="text-[10px] text-slate-500 font-semibold mt-1">${studentCount} học sinh</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
       if (!tbody) return;
 
       // Danh sách các ngày trong tuần
       const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+
+      // Làm nổi bật tiêu đề cột của thứ hôm nay
+      const headerRow = document.getElementById('scheduleTableHeaderRow');
+      if (headerRow) {
+        const thList = headerRow.querySelectorAll('th[data-day]');
+        thList.forEach(th => {
+          const dName = th.getAttribute('data-day');
+          if (dName === todayInfo.dayName) {
+            th.className = "py-2.5 px-1 border-r border-slate-700 w-[13%] bg-amber-400 text-slate-950 font-black ring-2 ring-amber-300";
+            th.innerHTML = `${dName} <span class="block text-[9px] font-bold text-amber-900 leading-none mt-0.5">(Hôm nay)</span>`;
+          } else {
+            th.className = "py-2.5 px-1 border-r border-slate-700 w-[13%]";
+            th.textContent = dName;
+          }
+        });
+      }
 
       // Tự động phân tách thành các Ca học riêng biệt (theo cả Phòng VÀ Khung giờ)
       const slotMap = new Map();
@@ -1634,14 +1790,13 @@
         }
       });
 
-      // Nếu số ca ít hơn 2 thì thêm ca dự phòng để bảng ma trận luôn cân đối
       if (slotMap.size === 1) {
         slotMap.set('P.201__19h45 - 21h15', { room: 'P.201', timeSlot: '19h45 - 21h15', key: 'P.201__19h45 - 21h15' });
       }
 
       const sortedSlots = Array.from(slotMap.values());
 
-      // 1. Vẽ từng hàng theo từng Ca học & Phòng riêng biệt (khác giờ tách riêng hàng)
+      // 2. Vẽ từng hàng ma trận
       tbody.innerHTML = sortedSlots.map((slot, rIdx) => {
         return `
           <tr class="hover:bg-slate-100/50 transition">
@@ -1654,18 +1809,17 @@
 
             <!-- 7 Cột từ Thứ 2 đến Chủ Nhật -->
             ${daysOfWeek.map(day => {
-              // Tìm lớp có cùng Phòng, cùng Khung giờ và học vào thứ này
               const cls = classesList.find(c => 
                 (c.room || 'P.101') === slot.room && 
                 (c.timeSlot || '18h00 - 19h30') === slot.timeSlot &&
                 Array.isArray(c.days) && 
                 c.days.includes(day)
               );
-              const isTodayCol = day === 'Thứ 4'; // Giả lập hôm nay Thứ Tư
+              const isTodayCol = day === todayInfo.dayName; // DỰA TRÊN THỨ THỰC TẾ
 
               if (!cls) {
                 return `
-                  <td class="p-1 border-r border-slate-200 ${isTodayCol ? 'bg-amber-50/40' : 'bg-slate-50/50'} text-slate-300 text-[11px] italic h-[72px]">
+                  <td class="p-1 border-r border-slate-200 ${isTodayCol ? 'bg-amber-50/70' : 'bg-slate-50/50'} text-slate-300 text-[11px] italic h-[72px]">
                     <div class="h-full flex items-center justify-center">--</div>
                   </td>
                 `;
@@ -1676,12 +1830,12 @@
               const displayTime = cls.timeSlot || '18h00 - 19h30';
 
               return `
-                <td class="p-1 border-r border-slate-200 ${isTodayCol ? 'bg-amber-50/60 ring-1 ring-amber-300/60' : ''} h-[72px]">
+                <td class="p-1 border-r border-slate-200 ${isTodayCol ? 'bg-amber-50/80 ring-1 ring-amber-400/80' : ''} h-[72px]">
                   <div
                     onclick="selectClassFromSchedule('${cls.id}')"
                     class="p-1.5 rounded-xl border transition-all cursor-pointer shadow-xs active:scale-95 text-left flex flex-col justify-between h-full ${cls.colorBg} ${
                       isSelected ? 'ring-2 ring-indigo-600 font-bold scale-[1.02]' : ''
-                    }"
+                    } ${isTodayCol ? 'border-amber-400 shadow-amber-100' : ''}"
                     title="Bấm để mở danh sách học sinh ${cls.class_name} • Phòng: ${cls.room} • Giờ: ${displayTime}"
                   >
                     <div>
@@ -1709,22 +1863,41 @@
         `;
       }).join('');
 
-      // 2. Vẽ danh sách chú thích 6 lớp bên dưới
+      // 3. Tự động căn chỉnh cuộn ngang đến cột của Thứ hôm nay trên điện thoại
+      const wrapper = document.getElementById('matrixScheduleTableWrapper');
+      if (wrapper && window.innerWidth < 768) {
+        setTimeout(() => {
+          const todayTh = headerRow?.querySelector(`th[data-day="${todayInfo.dayName}"]`);
+          if (todayTh) {
+            const offsetLeft = todayTh.offsetLeft - 100;
+            if (offsetLeft > 0) {
+              wrapper.scrollTo({ left: offsetLeft, behavior: 'smooth' });
+            }
+          }
+        }, 150);
+      }
+
+      // 4. Vẽ danh sách chú thích 6 lớp bên dưới
       if (legendContainer) {
         legendContainer.innerHTML = classesList.map(c => {
           const isSelected = isClassSelected && c.id === currentClassId;
           const studentCount = (classStudentsMap[c.id] || []).length;
           const daysText = Array.isArray(c.days) ? c.days.join(' & ') : 'Linh hoạt';
+          const hasClassToday = Array.isArray(c.days) && c.days.includes(todayInfo.dayName);
+
           return `
             <button
               type="button"
               onclick="selectClassFromSchedule('${c.id}')"
               class="p-2 rounded-xl border text-left transition flex items-center justify-between gap-1.5 active:scale-95 ${c.colorBg} ${
                 isSelected ? 'ring-2 ring-indigo-600 font-bold' : 'opacity-90 hover:opacity-100'
-              }"
+              } ${hasClassToday ? 'ring-1 ring-amber-400' : ''}"
             >
               <div class="min-w-0">
-                <div class="text-[10px] font-black text-slate-900 truncate">${c.class_name}</div>
+                <div class="text-[10px] font-black text-slate-900 truncate flex items-center gap-1">
+                  <span>${c.class_name}</span>
+                  ${hasClassToday ? '<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>' : ''}
+                </div>
                 <div class="text-[9px] text-slate-600 font-medium">${daysText} • ${c.room || 'P.101'}</div>
               </div>
               <span class="text-[10px] font-black px-1.5 py-0.5 rounded ${c.badgeColor} shrink-0">
