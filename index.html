@@ -263,23 +263,23 @@
         <!-- KHỐI DANH SÁCH HỌC SINH & ĐIỂM DANH (CHỈ HIỆN KHI BẤM CHỌN LỚP) -->
         <div id="studentAttendanceSection" class="hidden space-y-4">
           
-          <!-- Thanh điều hướng quay lại thời khóa biểu (gọn gàng trên 1 hàng ở cả điện thoại) -->
-          <div class="flex items-center justify-between gap-2 bg-indigo-50/90 border border-indigo-200 px-2.5 py-1.5 sm:p-3 sm:rounded-2xl rounded-xl">
+          <!-- Thanh điều hướng quay lại thời khóa biểu (to rõ trên PC, gọn nhẹ trên Mobile) -->
+          <div class="flex items-center justify-between gap-2 bg-indigo-50/90 border border-indigo-200 px-2.5 py-1.5 sm:px-4 sm:py-2.5 sm:rounded-2xl rounded-xl">
             <div class="flex items-center gap-1.5 min-w-0 flex-1">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+              <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
               <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider shrink-0 hidden xs:inline">Đang mở:</span>
-              <h3 id="currentClassTitleBadge" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">
-                Tiếng Anh 6A • P.101 • 18h00 - 19h30
+              <h3 id="currentClassTitleBadge" class="font-extrabold text-slate-900 text-xs sm:text-base truncate">
+                P.101 • 18h00 - 19h30
               </h3>
             </div>
 
             <button
               type="button"
               onclick="closeStudentListAndShowSchedule()"
-              class="px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-white text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1 shadow-xs shrink-0 whitespace-nowrap"
+              class="px-2.5 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl bg-white text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 text-[11px] sm:text-sm font-bold transition flex items-center justify-center gap-1 sm:gap-1.5 shadow-xs shrink-0 whitespace-nowrap active:scale-95"
             >
-              <i data-lucide="arrow-left" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i>
-              <span>← Xem lại Thời khóa biểu</span>
+              <i data-lucide="calendar" class="w-3 h-3 sm:w-4 sm:h-4"></i>
+              <span>Thời khóa biểu</span>
             </button>
           </div>
 
@@ -856,6 +856,13 @@
     </button>
   </div>
 
+  <!-- CHỈ BÁO VUỐT MÉP ĐỂ BACK TRÊN MOBILE (EDGE SWIPE INDICATOR) -->
+  <div id="edgeSwipeIndicator" class="fixed left-0 top-1/2 -translate-y-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-150 flex items-center">
+    <div class="bg-indigo-600 text-white p-3 rounded-r-2xl shadow-xl border border-indigo-400/50 flex items-center gap-1">
+      <i data-lucide="chevron-left" class="w-5 h-5"></i>
+    </div>
+  </div>
+
   <!-- ==================== LOGIC JAVASCRIPT ĐẦY ĐỦ ==================== -->
   <script>
     // 1. MẢNG CÁC NGÀY HỌC TRONG THÁNG
@@ -1111,6 +1118,7 @@
       currentClassId = newClassId;
       isClassSelected = true;
       students = classStudentsMap[currentClassId] || [];
+      pushHistoryState({ view: 'student_list', classId: currentClassId });
       renderAll();
     }
 
@@ -1119,15 +1127,106 @@
       currentClassId = clsId;
       isClassSelected = true;
       students = classStudentsMap[currentClassId] || [];
+      pushHistoryState({ view: 'student_list', classId: clsId });
       renderAll();
     }
 
     // ĐÓNG DANH SÁCH ĐỂ QUAY LẠI THỜI KHÓA BIỂU
-    function closeStudentListAndShowSchedule() {
+    function closeStudentListAndShowSchedule(fromHistory = false) {
       isClassSelected = false;
+      if (!fromHistory && history.state && history.state.view) {
+        history.back();
+        return;
+      }
       renderAll();
       setTimeout(scrollToCenterTodayColumn, 100);
     }
+
+    // QUẢN LÝ LỊCH SỬ TRÌNH DUYỆT (HISTORY API) & HỖ TRỢ NÚT BACK CHO CẢ PC VÀ MOBILE
+    function pushHistoryState(stateObj) {
+      try {
+        history.pushState(stateObj, '', window.location.pathname + '#' + (stateObj.modal || stateObj.view || ''));
+      } catch (e) {
+        console.warn('History pushState error:', e);
+      }
+    }
+
+    window.addEventListener('popstate', (e) => {
+      // 1. Nếu có modal nào đang mở, ưu tiên đóng modal trước
+      const activeModal = document.querySelector('.fixed.inset-0.z-50:not(.hidden)');
+      if (activeModal && activeModal.id) {
+        closeModal(activeModal.id, true);
+        return;
+      }
+
+      // 2. Nếu đang mở danh sách học sinh, quay về Thời khóa biểu
+      if (isClassSelected) {
+        closeStudentListAndShowSchedule(true);
+        return;
+      }
+    });
+
+    // CỬ CHỈ VUỐT MÉP MÀN HÌNH ĐỂ BACK TRÊN DI ĐỘNG (EDGE SWIPE BACK)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isEdgeSwipeActive = false;
+    const swipeIndicator = document.getElementById('edgeSwipeIndicator');
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1) return;
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+
+      // Kích hoạt khi bắt đầu chạm ở gần mép trái màn hình (trong vòng 35px)
+      // và khi đang có modal mở hoặc đang ở màn hình chi tiết lớp học
+      const hasActiveModal = !!document.querySelector('.fixed.inset-0.z-50:not(.hidden)');
+      if (touchStartX <= 35 && (isClassSelected || hasActiveModal)) {
+        isEdgeSwipeActive = true;
+      } else {
+        isEdgeSwipeActive = false;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isEdgeSwipeActive || e.touches.length !== 1) return;
+      const touch = e.touches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = Math.abs(touch.clientY - touchStartY);
+
+      // Nếu kéo lệch theo trục dọc quá nhiều thì hủy
+      if (deltaY > 60) {
+        isEdgeSwipeActive = false;
+        if (swipeIndicator) swipeIndicator.style.opacity = '0';
+        return;
+      }
+
+      // Hiện chỉ báo vuốt
+      if (deltaX > 20 && swipeIndicator) {
+        swipeIndicator.style.opacity = Math.min(1, deltaX / 80).toString();
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      if (!isEdgeSwipeActive) return;
+      isEdgeSwipeActive = false;
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+
+      if (swipeIndicator) {
+        swipeIndicator.style.opacity = '0';
+      }
+
+      // Nếu vuốt sang phải hơn 60px từ mép trái -> Kích hoạt lệnh Back
+      if (deltaX >= 60) {
+        const activeModal = document.querySelector('.fixed.inset-0.z-50:not(.hidden)');
+        if (activeModal && activeModal.id) {
+          closeModal(activeModal.id);
+        } else if (isClassSelected) {
+          closeStudentListAndShowSchedule();
+        }
+      }
+    }, { passive: true });
 
     // CHUYỂN CHẾ ĐỘ XEM TRÊN ĐIỆN THOẠI (HÔM NAY / CẢ TUẦN)
     function toggleScheduleViewMode(mode) {
@@ -1328,7 +1427,7 @@
       const cls = classesList.find(c => c.id === currentClassId);
       const titleBadge = document.getElementById('currentClassTitleBadge');
       if (titleBadge && cls) {
-        titleBadge.innerText = `${cls.class_name} • ${cls.room || 'P.101'} • ${cls.timeSlot || '18h00 - 19h30'}`;
+        titleBadge.innerText = `${cls.room || 'P.101'} • ${cls.timeSlot || '18h00 - 19h30'}`;
       }
 
       const total = students.length;
@@ -2036,11 +2135,15 @@
     // MODAL TIỆN ÍCH
     function openModal(id) {
       document.getElementById(id)?.classList.remove('hidden');
+      pushHistoryState({ modal: id });
       lucide.createIcons();
     }
 
-    function closeModal(id) {
+    function closeModal(id, fromHistory = false) {
       document.getElementById(id)?.classList.add('hidden');
+      if (!fromHistory && history.state && history.state.modal === id) {
+        history.back();
+      }
     }
 
     // TỰ ĐỘNG KHỞI CHẠY NGAY KHI TẢI TRANG
