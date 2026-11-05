@@ -43,24 +43,44 @@
 
   <script>
     const SUPABASE_URL = "https://gsjatlnmeynwllptqdqf.supabase.co";
-    const SUPABASE_ANON_KEY = "DIEN_PUBLISHABLE_KEY_VAO_DAY";
+    const SUPABASE_ANON_KEY = "sb_publishable_-57pVqsTKuC3sYvM3nkkBg_NLcRFSVK";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function createClass() {
       const name = document.getElementById('className').value;
       const fee = document.getElementById('classFee').value;
       if (!name) return alert("Vui lòng nhập tên lớp");
-      await client.from('classes').insert([{ class_name: name, fee_per_session: fee }]);
+      
+      const { error } = await client.from('classes').insert([{ 
+        class_name: name, 
+        fee_per_session: fee || 50000 
+      }]);
+      
+      if (error) {
+        alert("Lỗi tạo lớp: " + error.message);
+        return;
+      }
+      
       alert("Đã tạo lớp thành công!");
       document.getElementById('className').value = '';
+      document.getElementById('classFee').value = '';
       loadClasses();
     }
 
     async function loadClasses() {
-      const { data } = await client.from('classes').select('*');
+      const { data, error } = await client.from('classes').select('*').order('created_at', { ascending: false });
+      if (error) {
+        console.error("Lỗi lấy danh sách lớp:", error);
+        return;
+      }
+      
       const select = document.getElementById('classList');
       select.innerHTML = '';
-      if (!data || data.length === 0) return;
+      if (!data || data.length === 0) {
+        select.innerHTML = '<option value="">Chưa có lớp học nào</option>';
+        return;
+      }
+      
       data.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
@@ -74,8 +94,21 @@
       const classId = document.getElementById('classList').value;
       const name = document.getElementById('studentName').value;
       const phone = document.getElementById('parentPhone').value;
+      
+      if (!classId) return alert("Vui lòng tạo hoặc chọn lớp học trước");
       if (!name) return alert("Vui lòng nhập tên học sinh");
-      await client.from('students').insert([{ class_id: classId, student_name: name, parent_phone: phone }]);
+      
+      const { error } = await client.from('students').insert([{ 
+        class_id: classId, 
+        student_name: name, 
+        parent_phone: phone 
+      }]);
+      
+      if (error) {
+        alert("Lỗi thêm học sinh: " + error.message);
+        return;
+      }
+      
       alert("Đã thêm học sinh!");
       document.getElementById('studentName').value = '';
       document.getElementById('parentPhone').value = '';
@@ -84,14 +117,24 @@
 
     async function loadStudents() {
       const classId = document.getElementById('classList').value;
-      if (!classId) return;
-      const { data: students } = await client.from('students').select('*').eq('class_id', classId);
       const list = document.getElementById('attendanceList');
+      if (!classId) {
+        list.innerHTML = '<p class="text-xs text-slate-400">Chọn lớp để xem học sinh</p>';
+        return;
+      }
+      
+      const { data: students, error } = await client.from('students').select('*').eq('class_id', classId);
+      if (error) {
+        console.error("Lỗi tải học sinh:", error);
+        return;
+      }
+      
       list.innerHTML = '';
       if (!students || students.length === 0) {
         list.innerHTML = '<p class="text-xs text-slate-400">Lớp chưa có học sinh nào</p>';
         return;
       }
+      
       students.forEach(s => {
         const div = document.createElement('div');
         div.className = "flex justify-between items-center p-2 bg-slate-50 border rounded";
@@ -109,10 +152,19 @@
     }
 
     async function markPresent(studentId) {
-      await client.from('attendances').insert([{ student_id: studentId, status: 'present' }]);
+      const { error } = await client.from('attendances').insert([{ 
+        student_id: studentId, 
+        status: 'present' 
+      }]);
+      
+      if (error) {
+        alert("Lỗi điểm danh: " + error.message);
+        return;
+      }
       alert("Đã ghi nhận có mặt!");
     }
 
+    // Tự động tải danh sách lớp khi vừa mở trang
     loadClasses();
   </script>
 </body>
