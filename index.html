@@ -78,55 +78,55 @@
 
   <!-- ==================== BANNER THÔNG TIN BUỔI HỌC ==================== -->
   <div class="bg-slate-900 text-white">
-    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-2.5">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5">
         
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- THỜI GIAN THỰC TẾ & BỘ CHỌN LỚP CÔ DIỄM -->
-          <div class="text-xs text-indigo-400 font-semibold flex flex-wrap items-center gap-1.5">
+        <!-- Dòng thông tin ngày tháng, bộ chọn lớp & học phí trên cùng 1 HÀNG DUY NHẤT -->
+        <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-none py-0.5 whitespace-nowrap text-xs text-indigo-400 font-semibold">
+          <div class="flex items-center gap-1 shrink-0">
             <i data-lucide="calendar" class="w-3.5 h-3.5 text-indigo-300 shrink-0"></i>
             <span id="currentDateDisplayBanner">Hôm nay</span>
-            <span class="text-slate-500">•</span>
-
-            <!-- Khối chọn lớp -->
-            <div class="inline-flex items-center gap-1.5 bg-slate-800/90 py-1 px-2.5 rounded-lg border border-slate-700">
-              <span class="text-slate-400 text-[11px] font-bold">Lớp:</span>
-              <select
-                id="classListSelect"
-                onchange="onClassChange(this.value)"
-                class="bg-transparent text-white font-extrabold text-xs focus:outline-none cursor-pointer pr-1"
-              >
-                <!-- Render động các lớp tiếng anh -->
-              </select>
-
-              <!-- Icon Sửa cài đặt lớp -->
-              <button 
-                onclick="openEditClassModal()" 
-                class="w-6 h-6 rounded-md hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition"
-                title="Cài đặt phòng học & giờ học lớp này"
-              >
-                <i data-lucide="settings" class="w-3.5 h-3.5"></i>
-              </button>
-
-              <!-- Icon Thêm lớp mới -->
-              <button 
-                onclick="openCreateClassModal()" 
-                class="w-6 h-6 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center transition shadow-xs"
-                title="Tạo lớp học mới"
-              >
-                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
-
-            <!-- Huy hiệu học phí của lớp -->
-            <span id="quickClassFeeBadge" class="bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 px-2 py-0.5 rounded text-[11px] font-mono font-bold">
-              45.000đ/buổi
-            </span>
           </div>
+          <span class="text-slate-600 shrink-0">•</span>
+
+          <!-- Khối chọn lớp -->
+          <div class="inline-flex items-center gap-1 bg-slate-800/95 py-0.5 px-2 rounded-lg border border-slate-700 shrink-0">
+            <span class="text-slate-400 text-[11px] font-bold">Lớp:</span>
+            <select
+              id="classListSelect"
+              onchange="onClassChange(this.value)"
+              class="bg-transparent text-white font-extrabold text-xs focus:outline-none cursor-pointer pr-0.5"
+            >
+              <!-- Render động các lớp tiếng anh -->
+            </select>
+
+            <!-- Icon Sửa cài đặt lớp -->
+            <button 
+              onclick="openEditClassModal()" 
+              class="w-5 h-5 rounded hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition"
+              title="Cài đặt phòng học & giờ học lớp này"
+            >
+              <i data-lucide="settings" class="w-3 h-3"></i>
+            </button>
+
+            <!-- Icon Thêm lớp mới -->
+            <button 
+              onclick="openCreateClassModal()" 
+              class="w-5 h-5 rounded bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center transition shadow-xs"
+              title="Tạo lớp học mới"
+            >
+              <i data-lucide="plus" class="w-3 h-3"></i>
+            </button>
+          </div>
+
+          <!-- Huy hiệu học phí của lớp nằm liền kề trên cùng 1 hàng -->
+          <span id="quickClassFeeBadge" class="bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 px-2 py-0.5 rounded text-[11px] font-mono font-bold shrink-0">
+            45.000đ/buổi
+          </span>
         </div>
 
         <!-- Khi ở chế độ Phụ huynh: Bộ chọn học sinh -->
-        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-3">
+        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-xl flex items-center gap-3 shrink-0">
           <div class="text-xs text-slate-400">Xem sổ của con:</div>
           <select
             id="parentStudentSelect"
@@ -453,50 +453,138 @@
 
   </main>
 
-  <!-- ==================== MODAL XEM CHI TIẾT HỌC SINH ==================== -->
-  <div id="modalStudentDetail" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-5 border border-slate-200 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+  <!-- ==================== MODAL XEM CHI TIẾT & CHỈNH SỬA HỌC SINH ==================== -->
+  <div id="modalStudentDetail" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-5 border border-slate-200 shadow-xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <div>
-          <h3 id="detailStudentName" class="font-bold text-slate-900 text-base">Tên học sinh</h3>
-          <p id="detailStudentSubtext" class="text-xs text-slate-500 font-medium">Trường học • Phụ huynh</p>
+          <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+            <i data-lucide="user-cog" class="w-4 h-4 text-indigo-600"></i>
+            <span>Thông tin & Sổ học tập học sinh</span>
+          </h3>
+          <p class="text-[11px] text-slate-400 font-medium">Chỉnh sửa thông tin học sinh và đối soát các buổi học</p>
         </div>
         <button onclick="closeModal('modalStudentDetail')" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Thống kê nhanh -->
-      <div class="grid grid-cols-3 gap-2.5 text-center">
-        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
-          <div class="text-[11px] text-blue-700 font-semibold">Đã đi học</div>
-          <div id="detailPresentCount" class="text-lg font-black text-blue-900 mt-0.5">0 buổi</div>
+      <!-- Thống kê nhanh số buổi & học phí của học sinh -->
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="bg-blue-50 p-2 sm:p-2.5 rounded-xl border border-blue-100">
+          <div class="text-[10px] sm:text-[11px] text-blue-700 font-semibold">Đã đi học</div>
+          <div id="detailPresentCount" class="text-sm sm:text-base font-black text-blue-900 mt-0.5">0 buổi</div>
         </div>
-        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100">
-          <div class="text-[11px] text-emerald-700 font-semibold">Đã đóng</div>
-          <div id="detailPaidAmount" class="text-lg font-black text-emerald-900 mt-0.5">0 đ</div>
+        <div class="bg-emerald-50 p-2 sm:p-2.5 rounded-xl border border-emerald-100">
+          <div class="text-[10px] sm:text-[11px] text-emerald-700 font-semibold">Đã đóng</div>
+          <div id="detailPaidAmount" class="text-sm sm:text-base font-black text-emerald-900 mt-0.5">0 đ</div>
         </div>
-        <div class="bg-rose-50 p-3 rounded-xl border border-rose-100">
-          <div class="text-[11px] text-rose-700 font-semibold">Chưa nộp</div>
-          <div id="detailRemainingAmount" class="text-lg font-black text-rose-900 mt-0.5">0 đ</div>
+        <div class="bg-rose-50 p-2 sm:p-2.5 rounded-xl border border-rose-100">
+          <div class="text-[10px] sm:text-[11px] text-rose-700 font-semibold">Chưa nộp</div>
+          <div id="detailRemainingAmount" class="text-sm sm:text-base font-black text-rose-900 mt-0.5">0 đ</div>
         </div>
       </div>
 
+      <!-- FORM CHỈNH SỬA THÔNG TIN HỌC SINH -->
+      <form id="editStudentForm" onsubmit="handleSaveStudentInfo(event)" class="bg-slate-50/80 p-3 rounded-xl border border-slate-200 space-y-2.5">
+        <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
+          <span class="text-xs font-bold text-slate-800 flex items-center gap-1">
+            <i data-lucide="edit-3" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span>Chỉnh sửa hồ sơ học sinh</span>
+          </span>
+          <span class="text-[10px] text-slate-400">Tự động cập nhật vào sổ</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-0.5">Họ và tên *</label>
+            <input
+              type="text"
+              id="studentEditNameInput"
+              required
+              class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:border-blue-500 font-bold text-slate-800"
+            >
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-0.5">Ngày sinh</label>
+            <input
+              type="text"
+              id="studentEditDobInput"
+              placeholder="VD: 15/03/2012"
+              class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:border-blue-500 font-medium text-slate-800"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-0.5">Trường học</label>
+            <input
+              type="text"
+              id="studentEditSchoolInput"
+              placeholder="VD: THCS Lê Quý Đôn"
+              class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:border-blue-500 font-medium text-slate-800"
+            >
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-0.5">Học phí / buổi (VNĐ) *</label>
+            <input
+              type="number"
+              id="studentEditFeeInput"
+              step="5000"
+              required
+              class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:border-blue-500 font-bold text-slate-800"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-0.5">Họ tên Phụ huynh</label>
+            <input
+              type="text"
+              id="studentEditParentNameInput"
+              placeholder="VD: Bác Hùng"
+              class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:border-blue-500 font-medium text-slate-800"
+            >
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-0.5">Số điện thoại Phụ huynh</label>
+            <input
+              type="text"
+              id="studentEditParentPhoneInput"
+              placeholder="VD: 0912 345 678"
+              class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 focus:outline-none focus:border-blue-500 font-mono font-medium text-slate-800"
+            >
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-1">
+          <button
+            type="submit"
+            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-xs flex items-center gap-1 transition active:scale-95"
+          >
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Lưu thay đổi hồ sơ</span>
+          </button>
+        </div>
+      </form>
+
       <!-- Lịch chi tiết các ngày -->
-      <div class="space-y-2">
+      <div class="space-y-1.5">
         <div class="flex items-center justify-between">
           <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
             <i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-600"></i>
             <span>Lịch chi tiết các ngày trong tháng (Bấm để đổi Đi học / Vắng)</span>
           </h4>
         </div>
-        <div id="detailSessionHistoryGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div id="detailSessionHistoryGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
           <!-- Render động các ngày học -->
         </div>
       </div>
 
       <div class="flex justify-end pt-2 border-t border-slate-100">
-        <button onclick="closeModal('modalStudentDetail')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">
+        <button onclick="closeModal('modalStudentDetail')" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold">
           Đóng
         </button>
       </div>
@@ -1568,8 +1656,14 @@
       const fee = calculateStudentFee(student);
       const summary = getAttendanceSummary(student);
 
-      document.getElementById('detailStudentName').innerText = student.name;
-      document.getElementById('detailStudentSubtext').innerText = `${student.school || 'THCS'} • PH: ${student.parentName || 'Chưa cập nhật'} (${student.parentPhone || ''})`;
+      // Đổ dữ liệu vào form chỉnh sửa
+      document.getElementById('studentEditNameInput').value = student.name || '';
+      document.getElementById('studentEditDobInput').value = student.dob || '';
+      document.getElementById('studentEditSchoolInput').value = student.school || '';
+      document.getElementById('studentEditFeeInput').value = student.pricePerSession || 45000;
+      document.getElementById('studentEditParentNameInput').value = student.parentName || '';
+      document.getElementById('studentEditParentPhoneInput').value = student.parentPhone || '';
+
       document.getElementById('detailPresentCount').innerText = `${summary.presentCount}/${summary.totalRecorded} buổi`;
       document.getElementById('detailPaidAmount').innerText = `${fee.paid.toLocaleString('vi-VN')} đ`;
       document.getElementById('detailRemainingAmount').innerText = `${fee.remaining.toLocaleString('vi-VN')} đ`;
@@ -1584,16 +1678,16 @@
             <button
               type="button"
               onclick="toggleDetailStudentHistory('${dateStr}')"
-              class="p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+              class="p-2 sm:p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
                 isPresent ? 'bg-emerald-50 border-emerald-200 text-emerald-950' : 'bg-rose-50 border-rose-200 text-rose-950'
               }"
             >
               <div class="flex items-center justify-between">
-                <span class="text-[10.5px] font-bold text-slate-600">Buổi ${idx + 1}</span>
+                <span class="text-[10px] font-bold text-slate-600">Buổi ${idx + 1}</span>
                 <i data-lucide="${isPresent ? 'check-circle-2' : 'x-circle'}" class="w-3.5 h-3.5 ${isPresent ? 'text-emerald-600' : 'text-rose-600'}"></i>
               </div>
-              <div class="text-[11px] font-mono mt-1 text-slate-500">${dateStr}</div>
-              <div class="text-[11px] font-black mt-1 ${isPresent ? 'text-emerald-700' : 'text-rose-600'}">
+              <div class="text-[10.5px] font-mono mt-0.5 text-slate-500">${dateStr}</div>
+              <div class="text-[10.5px] font-black mt-1 ${isPresent ? 'text-emerald-700' : 'text-rose-600'}">
                 ${isPresent ? '✓ Đi học' : '✗ Vắng'}
               </div>
             </button>
@@ -1603,6 +1697,38 @@
 
       openModal('modalStudentDetail');
       lucide.createIcons();
+    }
+
+    // XỬ LÝ LƯU CHỈNH SỬA THÔNG TIN HỌC SINH
+    function handleSaveStudentInfo(e) {
+      e.preventDefault();
+      const student = students.find(s => s.id === currentDetailStudentId);
+      if (!student) return;
+
+      const newName = document.getElementById('studentEditNameInput').value.trim();
+      const newDob = document.getElementById('studentEditDobInput').value.trim();
+      const newSchool = document.getElementById('studentEditSchoolInput').value.trim();
+      const newFee = Number(document.getElementById('studentEditFeeInput').value) || 45000;
+      const newParentName = document.getElementById('studentEditParentNameInput').value.trim();
+      const newParentPhone = document.getElementById('studentEditParentPhoneInput').value.trim();
+
+      student.name = newName;
+      student.dob = newDob;
+      student.school = newSchool;
+      student.pricePerSession = newFee;
+      student.parentName = newParentName;
+      student.parentPhone = newParentPhone;
+
+      classStudentsMap[currentClassId] = students;
+      saveAllToLocalStorage();
+
+      // Cập nhật lại các bảng hiển thị
+      renderAttendanceTab();
+      renderFinanceTab();
+      renderParentSelectOptions();
+
+      showUndoToast(`Đã lưu thay đổi thông tin em ${student.name}`);
+      openStudentDetailModal(currentDetailStudentId);
     }
 
     function toggleDetailStudentHistory(dateKey) {
