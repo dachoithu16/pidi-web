@@ -120,21 +120,39 @@
 
         <!-- Khối chọn lớp (cho Giáo viên) hoặc chọn con (cho Phụ huynh) - HIỂN THỊ ĐẦY ĐỦ CHỮ -->
         <div class="flex items-center gap-2 w-full sm:w-auto">
-          <!-- Chọn lớp của Giáo viên: Không bị cắt ngắn, hiển thị trọn vẹn -->
-          <div id="classSelectorContainer" class="bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-xl flex items-center gap-2 text-xs w-full sm:w-auto justify-between">
-            <div class="flex items-center gap-1.5 min-w-0 flex-1">
-              <span class="text-slate-400 shrink-0 text-[11px] font-semibold">Lớp:</span>
-              <select id="classListSelect" onchange="onClassChange(this.value)" class="bg-transparent text-white font-bold focus:outline-none cursor-pointer text-xs w-full pr-1">
-                <option value="main-class" class="text-slate-900">Lớp Tiếng Anh - Cô Diễm (120.000đ/buổi)</option>
-              </select>
+          <!-- Chọn lớp của Giáo viên: Thiết kế cân đối, icon tinh gọn và sang trọng -->
+          <div id="classSelectorContainer" class="bg-slate-800/95 border border-slate-700/80 px-2.5 py-1.5 rounded-xl flex items-center gap-2 text-xs w-full sm:w-auto justify-between shadow-xs">
+            <div class="flex items-center gap-2 min-w-0 flex-1">
+              <span class="text-slate-400 shrink-0 text-xs font-semibold flex items-center gap-1">
+                <i data-lucide="layers" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span class="hidden xs:inline">Lớp:</span>
+              </span>
+              <div class="relative flex-1 min-w-0 flex items-center">
+                <select id="classListSelect" onchange="onClassChange(this.value)" class="w-full bg-slate-900 text-white font-bold focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer text-xs sm:text-sm py-1.5 px-2.5 rounded-lg border border-slate-600 transition">
+                  <option value="" disabled selected class="bg-slate-900 text-slate-400">-- Chọn lớp để xem danh sách HS --</option>
+                  <option value="class_eng_kid" class="bg-slate-900 text-white">Lớp Tiếng Anh Tiểu Học (Starters - Movers)</option>
+                  <option value="class_eng_exam10" class="bg-slate-900 text-white">Lớp Tiếng Anh Ôn Thi Vào 10 (Chuyên đề)</option>
+                  <option value="class_eng_comm" class="bg-slate-900 text-white">Lớp Tiếng Anh Giao Tiếp & Phát Âm</option>
+                  <option value="class_eng_ielts" class="bg-slate-900 text-white">Lớp Tiếng Anh IELTS Foundation</option>
+                </select>
+              </div>
             </div>
-            <!-- Nút sửa nhanh thông tin lớp / học phí & thêm lớp mới -->
-            <div class="flex items-center gap-1 border-l border-slate-700 pl-2 shrink-0">
-              <button onclick="openEditClassModal()" title="Sửa tên lớp & học phí" class="p-1 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg active:scale-95 transition">
+
+            <!-- Các nút biểu tượng tinh gọn: Cài đặt/Sửa lớp & Thêm lớp mới -->
+            <div class="flex items-center gap-1 border-l border-slate-700/80 pl-1.5 shrink-0">
+              <button 
+                onclick="openEditClassModal()" 
+                title="Đổi tên lớp & chỉnh học phí" 
+                class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition active:scale-95 border border-slate-600/50"
+              >
                 <i data-lucide="settings" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="openCreateClassModal()" title="Thêm lớp mới" class="p-1 hover:bg-slate-700 text-emerald-400 hover:text-emerald-300 rounded-lg active:scale-95 transition">
-                <i data-lucide="folder-plus" class="w-3.5 h-3.5"></i>
+              <button 
+                onclick="openCreateClassModal()" 
+                title="Tạo lớp học mới" 
+                class="w-7 h-7 flex items-center justify-center rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-400 hover:text-emerald-300 transition active:scale-95 border border-emerald-800/50"
+              >
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </div>
@@ -142,7 +160,7 @@
           <!-- Chọn con của Phụ huynh -->
           <div id="parentSelectorContainer" class="hidden bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-xl flex items-center gap-2 text-xs w-full sm:w-auto justify-between">
             <span class="text-slate-400 shrink-0 text-[11px]">Học sinh:</span>
-            <select id="parentStudentSelect" onchange="onParentStudentChange(this.value)" class="bg-transparent text-white font-bold focus:outline-none cursor-pointer text-xs w-full">
+            <select id="parentStudentSelect" onchange="onParentStudentChange(this.value)" class="bg-slate-900 text-white font-bold focus:outline-none cursor-pointer text-xs w-full py-1 px-2 rounded border border-slate-700">
               <!-- Render tự động bằng JS -->
             </select>
           </div>
@@ -166,8 +184,8 @@
           id="tabBtn-attendance"
           class="tab-btn flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all whitespace-nowrap bg-blue-600 text-white shadow-xs active:scale-95 shrink-0"
         >
-          <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
-          <span>Điểm danh</span>
+          <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+          <span>Lịch & Điểm danh</span>
           <span id="tabBadgeAttendance" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-white/25">0/0</span>
         </button>
 
@@ -178,7 +196,7 @@
         >
           <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
           <span>Bài tập</span>
-          <span id="tabBadgeHomework" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-blue-100 text-blue-700 font-bold">2</span>
+          <span id="tabBadgeHomework" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-blue-100 text-blue-700 font-bold">0</span>
         </button>
 
         <button
@@ -196,73 +214,150 @@
           class="tab-btn flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm transition-all whitespace-nowrap text-slate-600 hover:bg-slate-100 active:scale-95 shrink-0"
         >
           <i data-lucide="dollar-sign" class="w-3.5 h-3.5"></i>
-          <span>Học phí</span>
-          <span id="tabBadgeFinance" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-900 font-bold">Thu tiền</span>
+          <span>Tính học phí</span>
         </button>
       </div>
 
-      <!-- 1. TAB ĐIỂM DANH: SIÊU GỌN GÀNG, NHÌN ĐƯỢC NHIỀU HỌC SINH -->
-      <div id="tabContent-attendance" class="space-y-2.5 sm:space-y-4">
-        <!-- Thanh tóm tắt sĩ số: 3 khung card nhỏ đẹp, có viền, bóng đổ và chữ 'Hôm nay' -->
-        <div class="grid grid-cols-3 gap-2 sm:gap-3">
-          <!-- Sĩ số -->
-          <div class="bg-white px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200/90 shadow-xs flex flex-col justify-center text-center">
-            <div class="text-[10px] sm:text-[11px] text-slate-400 font-semibold tracking-tight">Sĩ số lớp</div>
-            <div id="statTotalStudents" class="text-xs sm:text-base font-black text-slate-800 leading-tight mt-0.5">0 HS</div>
+      <!-- 1. TAB ĐIỂM DANH: DANH SÁCH LỚP Ở TRÊN, THỜI KHÓA BIỂU XUỐNG DƯỚI -->
+      <div id="tabContent-attendance" class="space-y-4 sm:space-y-6">
+
+        <!-- KHỐI 1: DANH SÁCH ĐIỂM DANH HỌC SINH (CHỈ HIỆN KHI ẤN CHỌN LỚP) -->
+        <div id="attendanceDetailSection" class="hidden space-y-2.5 sm:space-y-4 animate-slide-up">
+          <!-- Nút đóng nhanh danh sách để quay lại thời khóa biểu -->
+          <div class="flex items-center justify-between">
+            <button
+              type="button"
+              onclick="hideStudentListAndShowSchedule()"
+              class="text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl border border-indigo-200 transition flex items-center gap-1 active:scale-95"
+            >
+              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+              <span>← Đóng danh sách / Xem lại Thời khóa biểu</span>
+            </button>
+            <span class="text-[11px] text-slate-400 italic">Đang xem sổ điểm danh lớp</span>
           </div>
 
-          <!-- Hôm nay Đi học -->
-          <div class="bg-emerald-50/70 px-2.5 py-1.5 sm:py-2 rounded-xl border border-emerald-200/80 shadow-xs flex flex-col justify-center text-center">
-            <div class="text-[10px] sm:text-[11px] text-emerald-700 font-bold tracking-tight">Hôm nay Đi học</div>
-            <div id="statPresentStudents" class="text-xs sm:text-base font-black text-emerald-800 leading-tight mt-0.5">0 em</div>
+          <!-- Thanh tóm tắt sĩ số: 3 khung card nhỏ đẹp, có viền, bóng đổ và chữ 'Hôm nay' -->
+          <div class="grid grid-cols-3 gap-2 sm:gap-3">
+            <!-- Sĩ số -->
+            <div class="bg-white px-2.5 py-1.5 sm:py-2 rounded-xl border border-slate-200/90 shadow-xs flex flex-col justify-center text-center">
+              <div class="text-[10px] sm:text-[11px] text-slate-400 font-semibold tracking-tight">Sĩ số lớp</div>
+              <div id="statTotalStudents" class="text-xs sm:text-base font-black text-slate-800 leading-tight mt-0.5">0 HS</div>
+            </div>
+
+            <!-- Hôm nay Đi học -->
+            <div class="bg-emerald-50/70 px-2.5 py-1.5 sm:py-2 rounded-xl border border-emerald-200/80 shadow-xs flex flex-col justify-center text-center">
+              <div class="text-[10px] sm:text-[11px] text-emerald-700 font-bold tracking-tight">Hôm nay Đi học</div>
+              <div id="statPresentStudents" class="text-xs sm:text-base font-black text-emerald-800 leading-tight mt-0.5">0 em</div>
+            </div>
+
+            <!-- Hôm nay Vắng - BẤM VÀO ĐỂ MỞ NHANH HỌC SINH ĐẾN MUỘN -->
+            <button 
+              type="button"
+              onclick="openAbsentQuickCheckModal()"
+              title="Bấm để xem danh sách vắng hoặc điểm danh học sinh đến sau"
+              class="bg-rose-50/70 hover:bg-rose-100/80 px-2.5 py-1.5 sm:py-2 rounded-xl border border-rose-200/80 shadow-xs flex flex-col justify-center text-center transition cursor-pointer active:scale-95"
+            >
+              <div class="text-[10px] sm:text-[11px] text-rose-600 font-bold tracking-tight flex items-center justify-center gap-1">
+                <span>Hôm nay Vắng</span>
+                <i data-lucide="chevron-right" class="w-3 h-3 text-rose-400"></i>
+              </div>
+              <div id="statAbsentStudents" class="text-xs sm:text-base font-black text-rose-700 leading-tight mt-0.5">0 em</div>
+            </button>
           </div>
 
-          <!-- Hôm nay Vắng -->
-          <div class="bg-rose-50/70 px-2.5 py-1.5 sm:py-2 rounded-xl border border-rose-200/80 shadow-xs flex flex-col justify-center text-center">
-            <div class="text-[10px] sm:text-[11px] text-rose-600 font-bold tracking-tight">Hôm nay Vắng</div>
-            <div id="statAbsentStudents" class="text-xs sm:text-base font-black text-rose-700 leading-tight mt-0.5">0 em</div>
+          <!-- Bảng danh sách điểm danh dạng hàng gọn nhẹ (Compact) -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-3 py-2 sm:p-3 border-b border-slate-100 bg-slate-50/80 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2 flex-wrap min-w-0">
+                <span class="font-bold text-slate-800 text-xs flex items-center gap-1">
+                  <i data-lucide="user-check" class="w-3.5 h-3.5 text-blue-600"></i>
+                  <span id="currentSelectedClassNameDisplay">Danh sách lớp</span>
+                </span>
+                <!-- Nút đổi nhanh học phí trực tiếp tại trang điểm danh -->
+                <button 
+                  onclick="openEditClassModal()" 
+                  id="quickClassFeeBadge"
+                  title="Bấm để đổi học phí lớp này"
+                  class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg hover:bg-amber-100 transition active:scale-95"
+                >
+                  <i data-lucide="tag" class="w-3 h-3 text-amber-600"></i>
+                  <span id="quickClassFeeText">45.000đ/buổi</span>
+                  <i data-lucide="pencil" class="w-2.5 h-2.5 text-amber-500"></i>
+                </button>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button
+                  onclick="markAllPresentToday()"
+                  class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-xs active:scale-95"
+                >
+                  ✓ Tất cả Đi học
+                </button>
+                <button
+                  onclick="openAddStudentModal()"
+                  class="text-[11px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-1 border border-slate-200 active:scale-95"
+                  title="Thêm học sinh mới"
+                >
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span class="hidden sm:inline">Thêm HS</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="attendanceStudentList" class="divide-y divide-slate-100">
+              <!-- Render động bằng JS với thiết kế Compact mỏng gọn -->
+            </div>
           </div>
         </div>
 
-        <!-- Bảng danh sách điểm danh dạng hàng gọn nhẹ (Compact) -->
-        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="px-3 py-2 sm:p-3 border-b border-slate-100 bg-slate-50/80 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2 flex-wrap min-w-0">
-              <span class="font-bold text-slate-800 text-xs">Danh sách lớp</span>
-              <!-- Nút đổi nhanh học phí trực tiếp tại trang điểm danh: hiển thị nguyên vẹn đầy đủ chữ -->
-              <button 
-                onclick="openEditClassModal()" 
-                id="quickClassFeeBadge"
-                title="Bấm để đổi học phí lớp này"
-                class="inline-flex items-center gap-1.5 text-[11px] font-extrabold px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg hover:bg-amber-100 transition active:scale-95"
-              >
-                <i data-lucide="tag" class="w-3 h-3 text-amber-600"></i>
-                <span id="quickClassFeeText">120.000đ/buổi</span>
-                <i data-lucide="pencil" class="w-2.5 h-2.5 text-amber-500"></i>
-              </button>
+        <!-- KHỐI 2: THỜI KHÓA BIỂU TUẦN CÁC LỚP (ƯU TIÊN HIỂN THỊ ĐẦU TIÊN KHI VÀO WEB) -->
+        <div id="scheduleSection" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-3.5 sm:p-5 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black shadow-xs">
+                <i data-lucide="calendar-range" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-black text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                  <span>THỜI KHÓA BIỂU TUẦN - 6 LỚP TIẾNG ANH CÔ DIỄM</span>
+                </h3>
+                <p class="text-[11px] text-slate-500 font-medium">Bấm vào ô ca học để mở danh sách học sinh & điểm danh</p>
+              </div>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button
-                onclick="markAllPresentToday()"
-                class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-xs active:scale-95"
-              >
-                ✓ Tất cả Đi học
-              </button>
-              <button
-                onclick="openAddStudentModal()"
-                class="text-[11px] font-bold px-2 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition flex items-center gap-1 border border-slate-200 active:scale-95"
-                title="Thêm học sinh mới"
-              >
-                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                <span class="hidden sm:inline">Thêm HS</span>
-              </button>
+            <div class="flex items-center gap-2 text-[11px]">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Hôm nay Thứ Tư
+              </span>
+              <span class="text-slate-400 font-medium hidden sm:inline">6 lớp học</span>
             </div>
           </div>
 
-          <div id="attendanceStudentList" class="divide-y divide-slate-100">
-            <!-- Render động bằng JS với thiết kế Compact mỏng gọn -->
+          <!-- BẢNG LỊCH DẠY DẠNG MA TRẬN CHUẨN ĐẸP (THEO PHÒNG & THỨ TRONG TUẦN) -->
+          <div class="overflow-x-auto rounded-xl border border-slate-200 scrollbar-none">
+            <table class="w-full text-center border-collapse min-w-[760px] table-fixed text-xs">
+              <thead>
+                <tr class="bg-slate-900 text-white font-extrabold uppercase text-[11px] tracking-wider">
+                  <th class="py-2.5 px-3 border-r border-slate-700 w-28">Phòng / Ca</th>
+                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 2</th>
+                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 3</th>
+                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%] bg-slate-800 text-amber-300">Thứ 4 (Nay)</th>
+                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 5</th>
+                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 6</th>
+                  <th class="py-2.5 px-1 border-r border-slate-700 w-[13%]">Thứ 7</th>
+                  <th class="py-2.5 px-1 w-[13%]">Chủ Nhật</th>
+                </tr>
+              </thead>
+              <tbody id="matrixScheduleTableBody" class="divide-y divide-slate-200 bg-slate-50/40">
+                <!-- Render động các phòng và ca học bằng JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Danh sách chú thích 6 lớp học trực quan bên dưới bảng -->
+          <div id="classLegendList" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-1">
+            <!-- Render chú giải màu sắc các lớp bằng JS -->
           </div>
         </div>
+
       </div>
 
       <!-- 2. TAB BÀI TẬP VỀ NHÀ -->
@@ -376,7 +471,7 @@
               </tr>
             </thead>
             <tbody id="financeTableBody" class="divide-y divide-slate-100">
-              <!-- Render động danh sách học phí bằng JS -->
+              <!-- Render động bảng học phí bằng JS -->
             </tbody>
           </table>
         </div>
@@ -385,56 +480,51 @@
     </div>
 
     <!-- ==================== GIAO DIỆN PHỤ HUYNH ==================== -->
-    <div id="parentView" class="hidden space-y-5">
-      <!-- Thẻ thông tin học sinh & trạng thái hôm nay -->
-      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4">
+    <div id="parentView" class="hidden space-y-3 sm:space-y-5">
+      <!-- Thẻ tổng quan của con -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-3">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
-            <h3 id="parentStudentHeaderName" class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <h3 id="parentStudentFullNameDisplay" class="text-base font-bold text-slate-900 flex items-center gap-2">
               --
-              <span id="parentStudentHeaderSchool" class="text-xs font-normal text-slate-500">(--)</span>
             </h3>
-            <div id="parentStudentHeaderContact" class="text-xs text-slate-500 mt-0.5">
-              Phụ huynh: -- • --
+            <div id="parentStudentSubtextDisplay" class="text-xs text-slate-500 mt-0.5">
+              --
             </div>
           </div>
-
           <div id="parentTodayStatusBadge">
             <!-- Đi học / Vắng hôm nay -->
           </div>
         </div>
 
-        <!-- Khối học phí minh bạch -->
-        <div class="bg-blue-50/70 rounded-xl p-4 border border-blue-100 space-y-3">
+        <!-- Khung học phí minh bạch phụ huynh -->
+        <div class="bg-blue-50/60 rounded-xl p-3 sm:p-4 border border-blue-100 space-y-3">
           <div class="flex items-center justify-between">
             <div class="text-xs font-bold text-blue-900 flex items-center gap-1.5">
               <i data-lucide="dollar-sign" class="w-4 h-4 text-blue-600"></i>
               <span>Đối soát học phí tháng 10/2026</span>
             </div>
-            <span id="parentFeeStatusBadge" class="text-xs px-2.5 py-0.5 rounded-full font-bold">
-              --
+            <span id="parentFeeStatusBadge" class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-rose-100 text-rose-800">
+              Chưa nộp đủ
             </span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
             <div class="bg-white p-2.5 rounded-lg border border-blue-100">
-              <div class="text-slate-500 text-[11px]">Số buổi đã học</div>
-              <div id="parentBoxSessions" class="text-base font-extrabold text-blue-700">0 buổi</div>
+              <div class="text-slate-500 text-[10px]">Số buổi đã học</div>
+              <div id="parentPresentCountDisplay" class="text-base font-extrabold text-blue-700">0 buổi</div>
             </div>
-
             <div class="bg-white p-2.5 rounded-lg border border-blue-100">
-              <div class="text-slate-500 text-[11px]">Tổng cần nộp</div>
-              <div id="parentBoxTotal" class="text-base font-extrabold text-slate-900">0 đ</div>
+              <div class="text-slate-500 text-[10px]">Tổng cần nộp</div>
+              <div id="parentTotalFeeDisplay" class="text-base font-extrabold text-slate-900">0 đ</div>
             </div>
-
             <div class="bg-white p-2.5 rounded-lg border border-blue-100">
-              <div class="text-slate-500 text-[11px]">Đã nộp</div>
-              <div id="parentBoxPaid" class="text-base font-extrabold text-emerald-600">0 đ</div>
+              <div class="text-slate-500 text-[10px]">Đã nộp</div>
+              <div id="parentPaidFeeDisplay" class="text-base font-extrabold text-emerald-600">0 đ</div>
             </div>
-
             <div class="bg-white p-2.5 rounded-lg border border-blue-100">
-              <div class="text-slate-500 text-[11px]">Chưa nộp</div>
-              <div id="parentBoxUnpaid" class="text-base font-extrabold text-rose-600">0 đ</div>
+              <div class="text-slate-500 text-[10px]">Chưa nộp</div>
+              <div id="parentRemainingFeeDisplay" class="text-base font-extrabold text-rose-600">0 đ</div>
             </div>
           </div>
         </div>
@@ -793,6 +883,121 @@
 
       <form onsubmit="handleSaveIndividualFee(event)" class="space-y-3">
         <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Cách tính học phí</label>
+          <select id="editFeePricingType" onchange="toggleEditFeeFields(this.value)" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
+            <option value="per_session">Theo số buổi thực tế đã học</option>
+            <option value="monthly">Trọn gói theo tháng cố định</option>
+          </select>
+        </div>
+
+        <div id="editFeePerSessionField">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Đơn giá / buổi (VNĐ)</label>
+          <input id="editFeePricePerSession" type="number" step="1000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold" />
+        </div>
+
+        <div id="editFeeMonthlyField" class="hidden">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tiền trọn gói tháng (VNĐ)</label>
+          <input id="editFeeMonthlyPrice" type="number" step="5000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Phụ thu (+) hoặc Giảm trừ (-)</label>
+          <input id="editFeeDiscountOrExtra" type="number" step="1000" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300" />
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-slate-700">Tiền đã đóng (VNĐ)</label>
+            <button type="button" onclick="document.getElementById('editFeePaidAmount').value = 0" class="text-[11px] text-rose-600 hover:underline font-bold">
+              Đặt lại 0đ (Chưa nộp)
+            </button>
+          </div>
+          <input id="editFeePaidAmount" type="number" step="1000" class="w-full px-3 py-2 text-xs rounded-xl border border-emerald-300 bg-emerald-50/40 text-emerald-900 font-extrabold" />
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalEditIndividualFee')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. MODAL XUẤT TIN NHẮN ZALO BÁO HỌC PHÍ -->
+  <div id="modalZaloInvoice" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-slate-900 text-base">Tin nhắn báo học phí phụ huynh</h3>
+          <p id="zaloModalTargetName" class="text-xs text-slate-500 font-medium">Gửi tới PH</p>
+        </div>
+        <button onclick="closeModal('modalZaloInvoice')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="relative">
+        <textarea id="zaloMessageContent" readonly rows="8" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-sans text-xs text-slate-800 leading-relaxed focus:outline-none"></textarea>
+      </div>
+
+      <div id="zaloCopiedAlert" class="hidden text-xs bg-emerald-100 text-emerald-800 p-2 rounded-lg font-bold flex items-center gap-1.5">
+        <i data-lucide="check" class="w-4 h-4"></i>
+        <span>Đã sao chép nội dung! Bạn có thể dán ngay vào tin nhắn Zalo cho phụ huynh.</span>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeModal('modalZaloInvoice')" class="px-3.5 py-1.5 text-xs text-slate-600">Đóng</button>
+        <button type="button" onclick="copyZaloMessage()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="copy" class="w-4 h-4"></i>
+          <span>Sao chép tin nhắn Zalo</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MODAL THÊM HỌC SINH MỚI -->
+  <div id="modalAddStudent" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 border border-slate-200 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4 text-blue-600"></i>
+          <span>Thêm học sinh mới vào lớp</span>
+        </h3>
+        <button onclick="closeModal('modalAddStudent')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCreateStudent(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Họ tên học sinh *</label>
+          <input id="addStudentName" type="text" required placeholder="VD: Lê Thu Thảo" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-blue-500 font-bold" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Ngày tháng năm sinh</label>
+          <input id="addStudentDob" type="date" value="2012-05-15" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-medium" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Trường học</label>
+          <input id="addStudentSchool" type="text" placeholder="VD: THCS Chu Văn An" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên phụ huynh</label>
+          <input id="addStudentParentName" type="text" placeholder="VD: Bác Tuấn" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại phụ huynh *</label>
+          <input id="addStudentPhone" type="tel" required placeholder="VD: 0988 123 456" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-mono" />
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalAddStudent')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm">Thêm học sinh</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- 7. MODAL GIAO BÀI TẬP MỚI THÔNG MINH (KÈM FILE & SOẠN CÂU HỎI TRẮC NGHIỆM) -->
   <div id="modalNewHomework" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
     <div class="bg-white rounded-2xl max-w-xl w-full p-4 sm:p-5 border border-slate-200 shadow-xl space-y-4 max-h-[92vh] overflow-y-auto">
@@ -852,85 +1057,56 @@
         <!-- Trình soạn câu hỏi trắc nghiệm tự động chấm -->
         <div class="space-y-2 border-t border-slate-100 pt-3">
           <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <i data-lucide="help-circle" class="w-3.5 h-3.5 text-blue-600"></i>
+              <span>Câu hỏi trắc nghiệm tự động chấm</span>
+            </span>
             <div class="flex items-center gap-1.5">
-              <i data-lucide="check-square" class="w-4 h-4 text-emerald-600"></i>
-              <span class="text-xs font-extrabold text-slate-900">Danh sách câu hỏi trắc nghiệm trực tuyến</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button type="button" onclick="addSampleQuizQuestions()" class="text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg hover:bg-amber-100">
+              <button type="button" onclick="addSampleQuizQuestions()" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-1 rounded-lg">
                 + Thêm đề mẫu
               </button>
-              <button type="button" onclick="addNewBlankQuestion()" class="text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-lg hover:bg-blue-100">
+              <button type="button" onclick="addNewBlankQuestion()" class="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2 py-1 rounded-lg">
                 + Thêm câu hỏi
               </button>
             </div>
           </div>
-          <p class="text-[11px] text-slate-400">Học sinh tích chọn đáp án trên điện thoại, hệ thống sẽ tự động tính điểm và gửi về cho cô Diễm.</p>
-
-          <div id="quizQuestionsContainer" class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
-            <!-- Render động danh sách câu hỏi đang soạn -->
+          <div id="quizQuestionsContainer" class="space-y-2.5 max-h-[220px] overflow-y-auto">
+            <!-- Render danh sách câu hỏi đang soạn thảo -->
           </div>
         </div>
 
-        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modalNewHomework')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5">
-            <i data-lucide="send" class="w-3.5 h-3.5"></i>
-            <span>Giao bài ngay</span>
-          </button>
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalNewHomework')" class="px-3.5 py-1.5 text-xs text-slate-600 font-semibold">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm">Giao bài ngay</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 9. MODAL HỌC SINH/PHỤ HUYNH LÀM BÀI TRỰC TUYẾN & TỰ ĐỘNG CHẤM ĐIỂM -->
-  <div id="modalTakeQuiz" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-5 border border-slate-200 shadow-xl space-y-4 max-h-[92vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <div>
-          <span id="quizModalBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">LÀM BÀI TRỰC TUYẾN</span>
-          <h3 id="quizModalTitle" class="font-bold text-slate-900 text-base mt-1">Tên bài tập</h3>
-          <p id="quizModalStudentName" class="text-xs text-slate-500 font-medium">Học sinh: --</p>
+  <!-- MODAL: ĐIỂM DANH NHANH HỌC SINH VẮNG ĐẾN SAU (ĐẾN MUỘN) -->
+  <div id="modalAbsentQuickCheck" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-4 border border-slate-200 shadow-xl space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+          <h3 class="font-extrabold text-slate-900 text-sm">Học sinh vắng hôm nay</h3>
         </div>
-        <button onclick="closeModal('modalTakeQuiz')" class="text-slate-400 hover:text-slate-700">
-          <i data-lucide="x" class="w-5 h-5"></i>
+        <button onclick="closeModal('modalAbsentQuickCheck')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <!-- File đính kèm của bài nếu có -->
-      <div id="quizAttachedFileBox" class="hidden p-2.5 bg-blue-50/70 border border-blue-200 rounded-xl text-xs flex items-center justify-between">
-        <div class="flex items-center gap-2 text-blue-900 font-semibold truncate">
-          <i data-lucide="file-text" class="w-4 h-4 text-blue-600 shrink-0"></i>
-          <span id="quizAttachedFileNameText" class="truncate">tailieu.pdf</span>
-        </div>
-        <button type="button" onclick="viewAttachedMockFile()" class="px-2.5 py-1 bg-white text-blue-700 font-bold rounded-lg border border-blue-200 text-[11px] shrink-0 hover:bg-blue-50">
-          Mở xem file
+      <p class="text-[11px] text-slate-500">Học sinh nào vừa đến lớp sau giờ điểm danh? Bấm <strong class="text-emerald-700">"Vừa đến học"</strong> để ghi nhận ngay:</p>
+
+      <div id="absentStudentsQuickList" class="space-y-1.5 max-h-[300px] overflow-y-auto">
+        <!-- Render học sinh vắng bằng JS -->
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeModal('modalAbsentQuickCheck')" class="px-3.5 py-1.5 text-xs text-slate-600 font-semibold">
+          Xong
         </button>
       </div>
-
-      <!-- Khu vực hiển thị kết quả sau khi nộp bài -->
-      <div id="quizResultSummaryBox" class="hidden p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-900 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">KẾT QUẢ TỰ ĐỘNG CHẤM</span>
-          <span id="quizScoreNumberBadge" class="text-base font-black px-3 py-0.5 rounded-full bg-emerald-600 text-white">10 / 10 điểm</span>
-        </div>
-        <p id="quizResultFeedbackText" class="text-xs font-medium">Con làm bài rất xuất sắc! Đã làm đúng toàn bộ câu hỏi.</p>
-      </div>
-
-      <!-- Danh sách câu hỏi để học sinh chọn đáp án -->
-      <form id="quizForm" onsubmit="handleSubmitQuiz(event)" class="space-y-4">
-        <div id="quizQuestionsList" class="space-y-3.5">
-          <!-- Render danh sách câu hỏi bằng JS -->
-        </div>
-
-        <div id="quizSubmitFooter" class="flex justify-end gap-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modalTakeQuiz')" class="px-3.5 py-1.5 text-xs text-slate-600">Đóng</button>
-          <button type="submit" id="btnSubmitQuiz" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 active:scale-95">
-            <i data-lucide="check" class="w-3.5 h-3.5"></i>
-            <span>Nộp bài & Chấm điểm</span>
-          </button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -948,231 +1124,310 @@
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Chọn học sinh *</label>
           <select id="newRemarkStudentSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold">
-            <!-- Render options học sinh bằng JS -->
+            <!-- Render học sinh bằng JS -->
           </select>
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Mức độ tiếp thu</label>
-          <select id="newRemarkUnderstanding" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mức độ tiếp thu *</label>
+          <select id="newRemarkUnderstanding" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-medium">
             <option value="Tiếp thu tốt, làm bài nhanh">Tiếp thu tốt, làm bài nhanh</option>
-            <option value="Nắm vững cơ bản, cần rèn bài khó">Nắm vững cơ bản, cần rèn bài khó</option>
+            <option value="Nắm vững cơ bản, cần rèn thêm bài khó">Nắm vững cơ bản, cần rèn thêm bài khó</option>
             <option value="Còn lúng túng, cần cô kèm thêm">Còn lúng túng, cần cô kèm thêm</option>
             <option value="Hôm nay vắng mặt">Hôm nay vắng mặt</option>
           </select>
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Lời dặn của cô gửi phụ huynh *</label>
-          <textarea id="newRemarkContent" rows="3" required placeholder="Tình hình làm bài, phát âm, từ vựng cần ôn lại..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300"></textarea>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Lời nhận xét / Dặn dò chi tiết</label>
+          <textarea id="newRemarkContent" rows="3" required placeholder="Ghi nhận thái độ học, bài tập cần làm thêm..." class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300"></textarea>
         </div>
 
         <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modalNewRemark')" class="px-3.5 py-1.5 text-xs text-slate-600">Hủy</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-sm">Lưu nhận xét</button>
+          <button type="button" onclick="closeModal('modalNewRemark')" class="px-3.5 py-1.5 text-xs text-slate-600 font-medium">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm">Lưu nhận xét</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ======================================================== -->
-  <!-- JAVASCRIPT: LOGIC VÀ KẾT NỐI SUPABASE                    -->
-  <!-- ======================================================== -->
+  <!-- 9. MODAL HỌC SINH/PHỤ HUYNH LÀM BÀI TRỰC TUYẾN & TỰ ĐỘNG CHẤM ĐIỂM -->
+  <div id="modalTakeQuiz" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-5 border border-slate-200 shadow-xl space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 id="quizModalTitle" class="font-bold text-slate-900 text-base">Làm bài tập trực tuyến</h3>
+          <p id="quizModalStudentName" class="text-xs text-slate-500 font-medium">Học sinh</p>
+        </div>
+        <button onclick="closeModal('modalTakeQuiz')" class="text-slate-400 hover:text-slate-700">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- File đính kèm nếu có -->
+      <div id="quizAttachedFileBox" class="hidden p-2.5 bg-blue-50/60 border border-blue-200 rounded-xl flex items-center justify-between text-xs">
+        <span class="flex items-center gap-1.5 text-blue-900 font-bold">
+          <i data-lucide="paperclip" class="w-3.5 h-3.5 text-blue-600"></i>
+          <span id="quizAttachedFileNameText">Tai_lieu_de_bai.pdf</span>
+        </span>
+        <button type="button" onclick="viewAttachedMockFile()" class="px-2 py-1 bg-white border border-blue-200 hover:bg-blue-50 text-blue-700 rounded-lg font-bold">
+          Xem / Tải về
+        </button>
+      </div>
+
+      <!-- Thông báo điểm số nếu đã nộp -->
+      <div id="quizResultSummaryBox" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-emerald-900">Kết quả bài làm:</span>
+          <span id="quizScoreNumberBadge" class="text-base font-black text-emerald-700">10 / 10 điểm</span>
+        </div>
+        <p id="quizResultFeedbackText" class="text-xs text-emerald-800">Con làm bài rất tốt!</p>
+      </div>
+
+      <form id="quizForm" onsubmit="handleSubmitQuiz(event)" class="space-y-4">
+        <div id="quizQuestionsList" class="space-y-3">
+          <!-- Render câu hỏi bằng JS -->
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalTakeQuiz')" class="px-3.5 py-1.5 text-xs text-slate-600">Đóng</button>
+          <button type="submit" id="btnSubmitQuiz" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Nộp bài & Chấm điểm</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
-    // KẾT NỐI SUPABASE
+    // =========================================================
+    // CẤU HÌNH SUPABASE & DỮ LIỆU BAN ĐẦU
+    // =========================================================
     const SUPABASE_URL = "https://gsjatlnmeynwllptqdqf.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_-57pVqsTKuC3sYvM3nkkBg_NLcRFSVK";
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Lịch các ngày học trong tháng (Thứ Tư và Thứ Bảy)
+    // LỊCH HỌC TRONG THÁNG MẪU (THỨ TƯ & THỨ BẢY)
     const SESSION_DATES = [
       '07/10/2026', '10/10/2026', '14/10/2026', '17/10/2026',
       '21/10/2026', '24/10/2026', '28/10/2026', '31/10/2026'
     ];
 
-    // DỮ LIỆU BAN ĐẦU CHUẨN LỚP TIẾNG ANH - CÔ DIỄM
+    // DANH SÁCH 6 LỚP TIẾNG ANH - CÔ DIỄM (MỖI LỚP 2 BUỔI / TUẦN)
     let classesList = [
-      {
-        id: 'main-class',
-        class_name: 'Lớp Tiếng Anh - Cô Diễm',
-        fee_per_session: 120000
-      }
-    ];
-    let currentClassId = 'main-class';
-
-    let students = [
-      {
-        id: 'HS01',
-        name: 'Nguyễn Minh Quân',
-        school: 'THCS Lê Quý Đôn',
-        parentName: 'Nguyễn Văn Hùng',
-        parentPhone: '0912 345 678',
-        status: 'present',
-        attendanceHistory: {
-          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'absent',
-          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
-        },
-        pricingType: 'per_session',
-        pricePerSession: 120000,
-        monthlyFixedPrice: 0,
-        discountOrExtra: 0,
-        paidAmount: 840000
+      { 
+        id: 'class_eng_6a', 
+        class_name: 'Tiếng Anh 6A', 
+        code: 'TA-6A',
+        fee_per_session: 45000, 
+        teacher: 'Ms. Diễm', 
+        room: 'P.101',
+        timeSlot: 'Ca 1 (18h00 - 19h30)',
+        days: ['Thứ 2', 'Thứ 5'],
+        colorBg: 'bg-emerald-100 hover:bg-emerald-200/90 border-emerald-300 text-emerald-950',
+        badgeColor: 'bg-emerald-600 text-white',
+        isToday: false
       },
-      {
-        id: 'HS02',
-        name: 'Trần Bảo Anh',
-        school: 'THCS Giảng Võ',
-        parentName: 'Lê Thu Trang',
-        parentPhone: '0988 765 432',
-        status: 'present',
-        attendanceHistory: {
-          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'present',
-          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
-        },
-        pricingType: 'per_session',
-        pricePerSession: 120000,
-        monthlyFixedPrice: 0,
-        discountOrExtra: -50000, // Học bổng
-        paidAmount: 910000
+      { 
+        id: 'class_eng_7a', 
+        class_name: 'Tiếng Anh 7A', 
+        code: 'TA-7A',
+        fee_per_session: 45000, 
+        teacher: 'Ms. Diễm', 
+        room: 'P.101',
+        timeSlot: 'Ca 1 (18h00 - 19h30)',
+        days: ['Thứ 3', 'Thứ 6'],
+        colorBg: 'bg-amber-100 hover:bg-amber-200/90 border-amber-300 text-amber-950',
+        badgeColor: 'bg-amber-600 text-white',
+        isToday: false
       },
-      {
-        id: 'HS03',
-        name: 'Lê Hoàng Nam',
-        school: 'THCS Chu Văn An',
-        parentName: 'Lê Minh Tuấn',
-        parentPhone: '0903 112 233',
-        status: 'absent',
-        attendanceHistory: {
-          '07/10/2026': 'present', '10/10/2026': 'absent', '14/10/2026': 'present', '17/10/2026': 'present',
-          '21/10/2026': 'absent', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
-        },
-        pricingType: 'per_session',
-        pricePerSession: 120000,
-        monthlyFixedPrice: 0,
-        discountOrExtra: 0,
-        paidAmount: 0
+      { 
+        id: 'class_eng_8a', 
+        class_name: 'Tiếng Anh 8A', 
+        code: 'TA-8A',
+        fee_per_session: 45000, 
+        teacher: 'Ms. Diễm', 
+        room: 'P.101',
+        timeSlot: 'Ca 1 (18h00 - 19h30)',
+        days: ['Thứ 4', 'Thứ 7'],
+        colorBg: 'bg-sky-100 hover:bg-sky-200/90 border-sky-300 text-sky-950',
+        badgeColor: 'bg-sky-600 text-white',
+        isToday: true // Thứ Tư hôm nay
       },
-      {
-        id: 'HS04',
-        name: 'Phạm Quỳnh Chi',
-        school: 'THCS Cầu Giấy',
-        parentName: 'Phạm Quốc Bảo',
-        parentPhone: '0977 889 900',
-        status: 'present',
-        attendanceHistory: {
-          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'present',
-          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
-        },
-        pricingType: 'monthly',
-        pricePerSession: 120000,
-        monthlyFixedPrice: 900000,
-        discountOrExtra: 0,
-        paidAmount: 900000
+      { 
+        id: 'class_eng_9a', 
+        class_name: 'Tiếng Anh 9A (Vào 10)', 
+        code: 'TA-9A',
+        fee_per_session: 45000, 
+        teacher: 'Ms. Diễm', 
+        room: 'P.201',
+        timeSlot: 'Ca 2 (19h45 - 21h15)',
+        days: ['Thứ 2', 'Thứ 5'],
+        colorBg: 'bg-orange-100 hover:bg-orange-200/90 border-orange-300 text-orange-950',
+        badgeColor: 'bg-orange-600 text-white',
+        isToday: false
       },
-      {
-        id: 'HS05',
-        name: 'Đặng Quốc Huy',
-        school: 'THCS Marie Curie',
-        parentName: 'Vũ Thanh Hằng',
-        parentPhone: '0934 556 677',
-        status: 'absent',
-        attendanceHistory: {
-          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'absent', '17/10/2026': 'absent',
-          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'absent', '31/10/2026': 'present',
-        },
-        pricingType: 'per_session',
-        pricePerSession: 120000,
-        monthlyFixedPrice: 0,
-        discountOrExtra: 0,
-        paidAmount: 400000
+      { 
+        id: 'class_eng_comm', 
+        class_name: 'Giao Tiếp & Phát Âm', 
+        code: 'TA-GT',
+        fee_per_session: 45000, 
+        teacher: 'Ms. Diễm', 
+        room: 'P.201',
+        timeSlot: 'Ca 2 (19h45 - 21h15)',
+        days: ['Thứ 3', 'Thứ 6'],
+        colorBg: 'bg-purple-100 hover:bg-purple-200/90 border-purple-300 text-purple-950',
+        badgeColor: 'bg-purple-600 text-white',
+        isToday: false
       },
-      {
-        id: 'HS06',
-        name: 'Hoàng Mai Phương',
-        school: 'THCS Archimedes',
-        parentName: 'Hoàng Văn Đức',
-        parentPhone: '0966 223 344',
-        status: 'present',
-        attendanceHistory: {
-          '07/10/2026': 'present', '10/10/2026': 'present', '14/10/2026': 'present', '17/10/2026': 'present',
-          '21/10/2026': 'present', '24/10/2026': 'present', '28/10/2026': 'present', '31/10/2026': 'present',
-        },
-        pricingType: 'per_session',
-        pricePerSession: 120000,
-        monthlyFixedPrice: 0,
-        discountOrExtra: 0,
-        paidAmount: 960000
+      { 
+        id: 'class_eng_ielts', 
+        class_name: 'Chuyên Anh & IELTS', 
+        code: 'TA-IELTS',
+        fee_per_session: 45000, 
+        teacher: 'Ms. Diễm', 
+        room: 'P.201',
+        timeSlot: 'Ca 2 (19h45 - 21h15 / CN: 08h30)',
+        days: ['Thứ 4', 'Chủ Nhật'],
+        colorBg: 'bg-rose-100 hover:bg-rose-200/90 border-rose-300 text-rose-950',
+        badgeColor: 'bg-rose-600 text-white',
+        isToday: true // Thứ Tư hôm nay
       }
     ];
 
+    let currentClassId = 'class_eng_8a';
+    let isClassSelected = false; // Mặc định khi vừa vào web là CHƯA mở danh sách học sinh (hiện thời khóa biểu)
+
+    // DỮ LIỆU HỌC SINH DEMO PHONG PHÚ CHO CẢ 6 LỚP TIẾNG ANH (12 - 15 HỌC SINH MỖI LỚP)
+    let classStudentsMap = {
+      'class_eng_8a': [
+        { id: 'TA8_01', name: 'Nguyễn Minh Quân', birthdate: '15/03/2012', school: 'THCS Lê Quý Đôn', parentName: 'Nguyễn Văn Hùng', parentPhone: '0912 345 678', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'absent', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'TA8_02', name: 'Trần Bảo Anh', birthdate: '22/08/2012', school: 'THCS Giảng Võ', parentName: 'Lê Thu Trang', parentPhone: '0988 765 432', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: -20000, paidAmount: 340000 },
+        { id: 'TA8_03', name: 'Lê Hoàng Nam', birthdate: '05/11/2012', school: 'THCS Chu Văn An', parentName: 'Lê Minh Tuấn', parentPhone: '0903 112 233', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'absent', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'absent', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 0 },
+        { id: 'TA8_04', name: 'Phạm Quỳnh Chi', birthdate: '19/01/2012', school: 'THCS Cầu Giấy', parentName: 'Phạm Quốc Bảo', parentPhone: '0977 889 900', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'monthly', pricePerSession: 45000, monthlyFixedPrice: 350000, discountOrExtra: 0, paidAmount: 350000 },
+        { id: 'TA8_05', name: 'Đặng Tuấn Phong', birthdate: '14/04/2012', school: 'THCS Nghĩa Tân', parentName: 'Đặng Văn Long', parentPhone: '0912 888 777', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA8_06', name: 'Vũ Thảo Nguyên', birthdate: '03/07/2012', school: 'THCS Marie Curie', parentName: 'Vũ Thị Hòa', parentPhone: '0936 123 456', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'absent', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'TA8_07', name: 'Bùi Gia Huy', birthdate: '18/10/2012', school: 'THCS Trưng Vương', parentName: 'Bùi Đức Anh', parentPhone: '0982 456 789', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'absent', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 180000 },
+        { id: 'TA8_08', name: 'Dương Khánh Linh', birthdate: '25/02/2012', school: 'THCS Archimedes', parentName: 'Dương Quốc Thái', parentPhone: '0904 333 222', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA8_09', name: 'Hoàng Nhật Quang', birthdate: '12/12/2012', school: 'THCS Lê Lợi', parentName: 'Hoàng Văn Chiến', parentPhone: '0978 999 111', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'absent', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'absent', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 270000 },
+        { id: 'TA8_10', name: 'Đỗ Phương Anh', birthdate: '08/09/2012', school: 'THCS Nam Từ Liêm', parentName: 'Đỗ Mạnh Thắng', parentPhone: '0915 678 901', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA8_11', name: 'Ngô Đăng Khoa', birthdate: '30/06/2012', school: 'THCS Dịch Vọng', parentName: 'Ngô Thanh Tùng', parentPhone: '0932 444 555', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA8_12', name: 'Lý Mai Chi', birthdate: '17/05/2012', school: 'THCS Yên Hòa', parentName: 'Lý Quốc Dũng', parentPhone: '0945 112 334', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'absent', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 }
+      ],
+      'class_eng_6a': [
+        { id: 'TA6_01', name: 'Bùi Gia Hân', birthdate: '14/08/2014', school: 'THCS Nam Thành Công', parentName: 'Bùi Quang Minh', parentPhone: '0912 111 888', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA6_02', name: 'Vũ Đức Trí', birthdate: '12/04/2014', school: 'THCS Thăng Long', parentName: 'Vũ Mạnh Cường', parentPhone: '0915 222 333', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA6_03', name: 'Nguyễn Tùng Dương', birthdate: '28/01/2014', school: 'THCS Cầu Giấy', parentName: 'Nguyễn Hải Nam', parentPhone: '0984 555 666', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA6_04', name: 'Lê Bảo Châu', birthdate: '19/09/2014', school: 'THCS Giảng Võ', parentName: 'Lê Quốc Việt', parentPhone: '0902 333 444', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'absent', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 200000 },
+        { id: 'TA6_05', name: 'Phạm Minh Khôi', birthdate: '05/06/2014', school: 'THCS Archimedes', parentName: 'Phạm Văn Thành', parentPhone: '0973 888 999', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA6_06', name: 'Trần Hương Trà', birthdate: '11/11/2014', school: 'THCS Đoàn Thị Điểm', parentName: 'Trần Văn Tân', parentPhone: '0918 666 777', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA6_07', name: 'Hoàng Anh Tuấn', birthdate: '23/03/2014', school: 'THCS Nguyễn Tất Thành', parentName: 'Hoàng Minh Đức', parentPhone: '0944 222 111', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'absent', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'TA6_08', name: 'Đỗ Ngọc Diệp', birthdate: '02/10/2014', school: 'THCS Marie Curie', parentName: 'Đỗ Hữu Thắng', parentPhone: '0965 333 888', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA6_09', name: 'Đinh Tiến Đạt', birthdate: '17/07/2014', school: 'THCS Chu Văn An', parentName: 'Đinh Văn Hoàng', parentPhone: '0981 999 000', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'absent', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 150000 },
+        { id: 'TA6_10', name: 'Nguyễn Tuệ Mẫn', birthdate: '09/12/2014', school: 'THCS Trưng Vương', parentName: 'Nguyễn Văn Hòa', parentPhone: '0937 444 888', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 }
+      ],
+      'class_eng_7a': [
+        { id: 'TA7_01', name: 'Đặng Tuấn Kiệt', birthdate: '19/02/2013', school: 'THCS Đoàn Thị Điểm', parentName: 'Đặng Quốc Huy', parentPhone: '0983 222 111', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA7_02', name: 'Phan Thảo Vy', birthdate: '09/09/2013', school: 'THCS Archimedes', parentName: 'Phan Văn Hải', parentPhone: '0904 999 888', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'absent', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 180000 },
+        { id: 'TA7_03', name: 'Vũ Minh Trí', birthdate: '14/05/2013', school: 'THCS Cầu Giấy', parentName: 'Vũ Đình Toàn', parentPhone: '0916 333 555', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA7_04', name: 'Lê Hà My', birthdate: '31/07/2013', school: 'THCS Lê Quý Đôn', parentName: 'Lê Văn Cường', parentPhone: '0979 444 111', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA7_05', name: 'Trần Gia Bảo', birthdate: '26/11/2013', school: 'THCS Giảng Võ', parentName: 'Trần Văn Tùng', parentPhone: '0935 888 222', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'absent', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'TA7_06', name: 'Nguyễn Yến Nhi', birthdate: '04/04/2013', school: 'THCS Nghĩa Tân', parentName: 'Nguyễn Văn Tuấn', parentPhone: '0987 555 123', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA7_07', name: 'Hoàng Quốc Anh', birthdate: '15/01/2013', school: 'THCS Thăng Long', parentName: 'Hoàng Đình Nam', parentPhone: '0906 111 999', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'absent', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'TA7_08', name: 'Bùi Thục Quyên', birthdate: '20/08/2013', school: 'THCS Marie Curie', parentName: 'Bùi Tiến Đạt', parentPhone: '0919 444 333', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'absent', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 0 },
+        { id: 'TA7_09', name: 'Dương Thành Long', birthdate: '08/10/2013', school: 'THCS Chu Văn An', parentName: 'Dương Văn Bình', parentPhone: '0943 777 555', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA7_10', name: 'Phạm Bảo Ngọc', birthdate: '12/12/2013', school: 'THCS Yên Hòa', parentName: 'Phạm Quốc Hùng', parentPhone: '0972 666 444', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 }
+      ],
+      'class_eng_9a': [
+        { id: 'TA9_01', name: 'Đặng Quốc Huy', birthdate: '10/06/2011', school: 'THCS Marie Curie', parentName: 'Vũ Thanh Hằng', parentPhone: '0934 556 677', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'absent', '17/10/2026':'absent', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'absent', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 150000 },
+        { id: 'TA9_02', name: 'Hoàng Mai Phương', birthdate: '28/09/2011', school: 'THCS Archimedes', parentName: 'Hoàng Văn Đức', parentPhone: '0966 223 344', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA9_03', name: 'Nguyễn Đình Dũng', birthdate: '14/03/2011', school: 'THCS Cầu Giấy', parentName: 'Nguyễn Văn Định', parentPhone: '0912 888 444', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA9_04', name: 'Lê Thu Trang', birthdate: '25/07/2011', school: 'THCS Chu Văn An', parentName: 'Lê Hải Nam', parentPhone: '0985 666 111', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'absent', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'TA9_05', name: 'Phạm Đức Anh', birthdate: '03/01/2011', school: 'THCS Giảng Võ', parentName: 'Phạm Minh Trí', parentPhone: '0903 444 777', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA9_06', name: 'Vũ Thùy Linh', birthdate: '19/11/2011', school: 'THCS Lê Quý Đôn', parentName: 'Vũ Quang Huy', parentPhone: '0974 111 333', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA9_07', name: 'Trịnh Minh Khang', birthdate: '22/05/2011', school: 'THCS Trưng Vương', parentName: 'Trịnh Văn Quý', parentPhone: '0917 222 888', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'absent', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 200000 },
+        { id: 'TA9_08', name: 'Bùi Thảo My', birthdate: '08/08/2011', school: 'THCS Đoàn Thị Điểm', parentName: 'Bùi Đức Long', parentPhone: '0936 999 555', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA9_09', name: 'Lý Quốc Việt', birthdate: '16/10/2011', school: 'THCS Nam Từ Liêm', parentName: 'Lý Văn Phúc', parentPhone: '0989 333 777', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'absent', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 0 },
+        { id: 'TA9_10', name: 'Đỗ Hà Linh', birthdate: '27/02/2011', school: 'THCS Nghĩa Tân', parentName: 'Đỗ Minh Tuấn', parentPhone: '0905 888 111', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'TA9_11', name: 'Ngô Hải Yến', birthdate: '11/04/2011', school: 'THCS Yên Hòa', parentName: 'Ngô Văn Thành', parentPhone: '0971 444 999', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 }
+      ],
+      'class_eng_comm': [
+        { id: 'COMM_01', name: 'Nguyễn Hoàng Nhật Minh', birthdate: '04/09/2010', school: 'THCS Thực Nghiệm', parentName: 'Nguyễn Văn Đạt', parentPhone: '0904 111 222', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'COMM_02', name: 'Bùi Hải Anh', birthdate: '18/03/2010', school: 'THCS Cầu Giấy', parentName: 'Bùi Quốc Tuấn', parentPhone: '0912 333 444', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'absent', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 200000 },
+        { id: 'COMM_03', name: 'Trần Gia Hân', birthdate: '14/11/2010', school: 'THCS Archimedes', parentName: 'Trần Văn Tùng', parentPhone: '0986 555 777', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'COMM_04', name: 'Lê Quang Dũng', birthdate: '29/05/2010', school: 'THCS Giảng Võ', parentName: 'Lê Minh Thành', parentPhone: '0938 222 444', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'absent', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 180000 },
+        { id: 'COMM_05', name: 'Vũ Mai Chi', birthdate: '08/01/2010', school: 'THCS Chu Văn An', parentName: 'Vũ Quốc Khánh', parentPhone: '0975 888 333', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'COMM_06', name: 'Đoàn Nhật Nam', birthdate: '21/08/2010', school: 'THCS Lê Quý Đôn', parentName: 'Đoàn Hữu Nghị', parentPhone: '0907 444 666', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'COMM_07', name: 'Phạm Thu Phương', birthdate: '03/12/2010', school: 'THCS Marie Curie', parentName: 'Phạm Văn Hòa', parentPhone: '0918 999 444', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'absent', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'COMM_08', name: 'Hoàng Gia Linh', birthdate: '17/04/2010', school: 'THCS Đoàn Thị Điểm', parentName: 'Hoàng Văn Toàn', parentPhone: '0946 333 111', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'COMM_09', name: 'Nguyễn Khắc Việt', birthdate: '12/07/2010', school: 'THCS Nghĩa Tân', parentName: 'Nguyễn Văn Tiến', parentPhone: '0983 777 222', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'absent', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 0 },
+        { id: 'COMM_10', name: 'Đỗ Thảo Nguyên', birthdate: '26/10/2010', school: 'THCS Thăng Long', parentName: 'Đỗ Hữu Hùng', parentPhone: '0931 555 888', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 }
+      ],
+      'class_eng_ielts': [
+        { id: 'IELTS_01', name: 'Phan Gia Hưng', birthdate: '08/07/2009', school: 'THPT Kim Liên', parentName: 'Phan Tuấn Kiệt', parentPhone: '0942 888 999', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'IELTS_02', name: 'Trịnh Hương Giang', birthdate: '18/03/2009', school: 'THPT Thăng Long', parentName: 'Trịnh Văn Quý', parentPhone: '0936 777 888', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'IELTS_03', name: 'Vũ Đức Minh', birthdate: '25/11/2009', school: 'THPT Yên Hòa', parentName: 'Vũ Đình Cường', parentPhone: '0913 222 444', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'IELTS_04', name: 'Lê Phương Thảo', birthdate: '04/05/2009', school: 'THPT Chu Văn An', parentName: 'Lê Minh Tuấn', parentPhone: '0982 111 666', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'absent', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'IELTS_05', name: 'Nguyễn Hoàng Long', birthdate: '14/09/2009', school: 'THPT Chuyên Sư Phạm', parentName: 'Nguyễn Văn Long', parentPhone: '0904 555 888', status: 'absent', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'absent', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 0 },
+        { id: 'IELTS_06', name: 'Đặng Mai Chi', birthdate: '30/01/2009', school: 'THPT Chuyên Hà Nội - Amsterdam', parentName: 'Đặng Quốc Huy', parentPhone: '0976 999 222', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'IELTS_07', name: 'Hoàng Tuấn Anh', birthdate: '19/10/2009', school: 'THPT Nhân Chính', parentName: 'Hoàng Minh Dũng', parentPhone: '0918 333 777', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'absent', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 315000 },
+        { id: 'IELTS_08', name: 'Bùi Diệu Linh', birthdate: '06/06/2009', school: 'THPT Việt Đức', parentName: 'Bùi Văn Hùng', parentPhone: '0937 666 111', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'IELTS_09', name: 'Đỗ Quang Hải', birthdate: '23/12/2009', school: 'THPT Lương Thế Vinh', parentName: 'Đỗ Văn Thành', parentPhone: '0981 444 888', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 },
+        { id: 'IELTS_10', name: 'Trần Hải Đăng', birthdate: '15/04/2009', school: 'THPT Cầu Giấy', parentName: 'Trần Văn Vinh', parentPhone: '0908 222 999', status: 'present', attendanceHistory: { '07/10/2026':'present', '10/10/2026':'present', '14/10/2026':'present', '17/10/2026':'present', '21/10/2026':'present', '24/10/2026':'present', '28/10/2026':'present', '31/10/2026':'present' }, pricingType: 'per_session', pricePerSession: 45000, monthlyFixedPrice: 0, discountOrExtra: 0, paidAmount: 360000 }
+      ]
+    };
+
+    // Danh sách học sinh của lớp đang được chọn
+    let students = classStudentsMap[currentClassId] || [];
+
+    // BIẾN TRẠNG THÁI TOÀN CỤC CẦN THIẾT
+    let selectedStudentIds = [];
+    let currentRole = 'teacher';
+    let currentTab = 'attendance';
+    let detailedStudent = null;
+    let editingStudent = null;
+    let partialPaymentStudent = null;
+    let selectedParentStudentId = 'ENG10_01';
+    let lastUndoAction = null;
+    let undoToastTimer = null;
+    let currentTargetBatch = 'all';
+    let batchPricingType = 'per_session';
+    let currentDraftFile = null;
+    let draftQuestions = [];
+    let takingHomework = null;
+    let takingStudent = null;
+    let quizSelectedAnswers = {};
+
+    // DỮ LIỆU MẪU BÀI TẬP VÀ NHẬN XÉT
     let homeworks = [
       {
         id: 'BT01',
+        classId: 'class_eng_exam10',
         title: 'Unit 5 Review: Inversion & Relative Clauses',
-        lessonNote: 'Bài tập rèn luyện đảo ngữ và mệnh đề quan hệ',
+        lessonNote: 'Đảo ngữ và Mệnh đề quan hệ',
         deadline: '2026-11-07',
-        content: 'Hoàn thành 30 câu viết lại câu và bài đọc hiểu Reading Comprehension trang 45-47.',
-        attachedFile: 'De_kiem_tra_Unit5_ChuyenAnh.pdf',
+        content: 'Hoàn thành bài tập trắc nghiệm trực tuyến bên dưới để củng cố kiến thức.',
+        attachedFile: 'Unit5_Grammar_Revision.pdf',
         questions: [
           {
             id: 'q1',
-            text: 'Not only ______ late, but he also forgot his homework notebook.',
-            options: ['A. he was', 'B. was he', 'C. did he', 'D. he did'],
-            correct: 1, // B
-            explanation: 'Đảo ngữ với "Not only" đứng đầu câu: Not only + Trợ động từ/To be + S + V'
+            text: 'If it ______ tomorrow, we will postpone the outdoor speaking session.',
+            options: ['A. rains', 'B. will rain', 'C. rained', 'D. would rain'],
+            correct: 0,
+            explanation: 'Câu điều kiện loại 1: Mệnh đề If dùng thì hiện tại đơn (If it rains).'
           },
           {
             id: 'q2',
-            text: 'The girl ______ brother won the national English contest is my best friend.',
-            options: ['A. whose', 'B. who', 'C. whom', 'D. which'],
-            correct: 0, // A
-            explanation: '"Whose" là đại từ quan hệ chỉ quyền sở hữu bổ nghĩa cho danh từ brother.'
-          },
-          {
-            id: 'q3',
-            text: 'Hardly ______ home when the torrential rain started.',
-            options: ['A. had arrived I', 'B. I had arrived', 'C. had I arrived', 'D. did I arrive'],
-            correct: 2, // C
-            explanation: 'Cấu trúc đảo ngữ: Hardly + had + S + V(pII) + when + S + V(quá khứ)'
+            text: 'She has lived in Hanoi ______ ten years.',
+            options: ['A. since', 'B. for', 'C. in', 'D. at'],
+            correct: 1,
+            explanation: '"For" đi với khoảng thời gian (for ten years), "since" đi với mốc thời gian.'
           }
         ],
         submissions: {
-          HS01: { submitted: true, score: 9.5, feedback: 'Áp dụng cấu trúc đảo ngữ với Not only... but also rất nhuần nhuyễn.' },
-          HS02: { submitted: true, score: 10, feedback: 'Bài làm xuất sắc, ngữ pháp và từ vựng chuẩn xác.' },
-          HS03: { submitted: false, score: null, feedback: '' },
-          HS04: { submitted: true, score: 8.5, feedback: 'Chú ý chia thì quá khứ hoàn thành ở câu 14 nhé.' },
-          HS05: { submitted: false, score: null, feedback: '' },
-          HS06: { submitted: true, score: null, feedback: '' }
-        }
-      },
-      {
-        id: 'BT02',
-        title: 'Vocab Quiz & Reading: Environmental Issues',
-        lessonNote: 'Từ vựng chủ đề Môi trường và phát âm đuôi -ed/-s',
-        deadline: '2026-11-04',
-        content: 'Học thuộc 25 từ vựng mới, làm bài tập tìm lỗi sai trong đoạn văn ngắn.',
-        attachedFile: null,
-        questions: [
-          {
-            id: 'q1',
-            text: 'Choose the word with different pronunciation of "-ed":',
-            options: ['A. played', 'B. watched', 'C. planned', 'D. lived'],
-            correct: 1, // B (đuôi /t/)
-            explanation: '"watched" phát âm là /t/, các từ còn lại phát âm là /d/.'
-          },
-          {
-            id: 'q2',
-            text: 'Deforestation causes severe damage to the local ______.',
-            options: ['A. ecosystem', 'B. ecology', 'C. ecologist', 'D. ecological'],
-            correct: 0, // A
-            explanation: 'Cần danh từ "ecosystem" (hệ sinh thái) sau tính từ local.'
-          }
-        ],
-        submissions: {
-          HS01: { submitted: true, score: 9.0, feedback: 'Nhớ từ vựng tốt, phát âm có tiến bộ rõ rệt.' },
-          HS02: { submitted: true, score: 9.5, feedback: 'Tốt.' },
-          HS03: { submitted: true, score: 6.5, feedback: 'Cần ôn lại cách phân biệt đuôi /t/, /d/ và /id/.' },
-          HS04: { submitted: true, score: 8.0, feedback: 'Làm bài cẩn thận, nắm vững cấu trúc cơ bản.' },
-          HS05: { submitted: true, score: 7.0, feedback: 'Chưa học kỹ collocations của chủ đề này.' },
-          HS06: { submitted: true, score: 8.5, feedback: 'Làm tốt.' }
+          'ENG10_01': { submitted: true, score: 10, feedback: 'Xuất sắc! Nắm rất chắc ngữ pháp.' },
+          'ENG10_02': { submitted: true, score: 9.5, feedback: 'Làm bài rất tốt.' }
         }
       }
     ];
@@ -1180,76 +1435,44 @@
     let remarks = [
       {
         id: 'NX01',
-        studentId: 'HS01',
+        classId: 'class_eng_exam10',
+        studentId: 'ENG10_01',
         date: '04/11/2026',
         sessionName: 'Buổi 8: Luyện đề Chuyên Anh & Viết lại câu',
         understanding: 'Tiếp thu tốt, làm bài nhanh',
         content: 'Minh Quân phản xạ từ vựng rất nhanh, nắm vững cấu trúc câu phức. Hôm nay xung phong đọc bài mẫu trước lớp.',
-        parentReply: 'Gia đình cảm ơn cô, cháu về nhà rất thích phương pháp dạy của cô Diễm ạ!',
+        parentReply: 'Gia đình cảm ơn cô Diễm ạ!',
         replyDate: '04/11 - 21:30'
-      },
-      {
-        id: 'NX02',
-        studentId: 'HS03',
-        date: '04/11/2026',
-        sessionName: 'Buổi 8: Luyện đề Chuyên Anh & Viết lại câu',
-        understanding: 'Hôm nay vắng mặt',
-        content: 'Hôm nay Hoàng Nam vắng, cô đã gửi phiếu bài tập và link file nghe qua Zalo để con xem trước và làm bù.',
-        parentReply: 'Dạ vâng hôm nay cháu bị sốt nhẹ, mai cháu đỡ tôi sẽ nhắc cháu nghe và làm bài cô gửi ạ.',
-        replyDate: '04/11 - 20:15'
-      },
-      {
-        id: 'NX03',
-        studentId: 'HS05',
-        date: '04/11/2026',
-        sessionName: 'Buổi 8: Luyện đề Chuyên Anh & Viết lại câu',
-        understanding: 'Hôm nay vắng mặt',
-        content: 'Con vắng buổi thứ 2 trong tháng này. Nội dung luyện đề đang ở giai đoạn tăng tốc, nhờ phụ huynh đôn đốc con theo kịp các bạn.',
-        parentReply: '',
-        replyDate: null
       }
     ];
 
-    // Trạng thái ứng dụng
-    let currentRole = 'teacher';
-    let currentTab = 'attendance';
-    let selectedParentStudentId = 'HS01';
-    let selectedStudentIds = [];
-    let currentTargetBatch = 'all';
-    let batchPricingType = 'per_session';
-    let editingStudent = null;
-    let partialPaymentStudent = null;
-    let detailedStudent = null;
-    let lastUndoAction = null;
-    let undoToastTimer = null;
-
-    // Biến phụ trách soạn câu hỏi và làm bài thi
-    let draftQuestions = [];
-    let currentDraftFile = null;
-    let takingHomework = null;
-    let takingStudent = null;
-    let quizSelectedAnswers = {};
-
-    // TÍNH TOÁN SỐ BUỔI ĐI HỌC VÀ HỌC PHÍ CỦA HỌC SINH
+    // HÀM TÍNH TOÁN TỔNG SỐ BUỔI ĐI HỌC VÀ VẮNG CỦA HỌC SINH
     function getAttendanceSummary(student) {
+      if (!student) return { presentCount: 0, absentCount: 0, totalRecorded: 0 };
       const history = student.attendanceHistory || {};
-      const totalRecorded = Object.keys(history).length;
-      const presentCount = Object.values(history).filter(s => s === 'present').length;
+      const dates = Object.keys(history);
+      const totalRecorded = dates.length;
+      let presentCount = 0;
+      dates.forEach(d => {
+        if (history[d] === 'present') presentCount++;
+      });
       const absentCount = totalRecorded - presentCount;
       return { presentCount, absentCount, totalRecorded };
     }
 
+    // HÀM TÍNH TOÁN HỌC PHÍ CỤ THỂ CỦA HỌC SINH
     function calculateStudentFee(student) {
+      if (!student) return { baseAmount: 0, finalAmount: 0, paid: 0, remaining: 0, isFullyPaid: true, presentCount: 0 };
       const { presentCount } = getAttendanceSummary(student);
       let baseAmount = 0;
       if (student.pricingType === 'monthly') {
         baseAmount = Number(student.monthlyFixedPrice) || 0;
       } else {
-        baseAmount = presentCount * (Number(student.pricePerSession) || 0);
+        baseAmount = presentCount * (Number(student.pricePerSession) || 45000);
       }
       const finalAmount = Math.max(0, baseAmount + (Number(student.discountOrExtra) || 0));
       const paid = Number(student.paidAmount) || 0;
-      const remaining = finalAmount - paid;
+      const remaining = Math.max(0, finalAmount - paid);
       return {
         baseAmount,
         finalAmount,
@@ -1260,10 +1483,193 @@
       };
     }
 
+    // HÀM RÚT GỌN TÊN: ƯU TIÊN LẤY 2 TÊN CUỐI
+    function getShortName(fullName) {
+      if (!fullName) return '';
+      const parts = fullName.trim().split(/\s+/);
+      if (parts.length <= 2) return fullName;
+      return parts.slice(-2).join(' ');
+    }
+
     // =========================================================
-    // RENDER TAB 1: ĐIỂM DANH (ĐI HỌC / VẮNG & SỬA HỌC PHÍ TỪNG EM TRỰC TIẾP)
+    // HÀM HIỂN THỊ THỜI KHÓA BIỂU DẠNG MA TRẬN (LƯỚI THEO PHÒNG VÀ CÁC THỨ TRONG TUẦN)
+    // =========================================================
+    function renderWeeklyScheduleGrid() {
+      const tbody = document.getElementById('matrixScheduleTableBody');
+      const legendContainer = document.getElementById('classLegendList');
+      if (!tbody) return;
+
+      // Danh sách các ngày trong tuần
+      const daysOfWeek = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+
+      // Cấu hình 2 phòng và 2 ca cố định (mỗi lớp 2 buổi/tuần)
+      const roomRows = [
+        {
+          roomName: 'P.101',
+          timeSlot: '18h00 - 19h30',
+          subLabel: 'Ca 1 (Tối)',
+          slots: {
+            'Thứ 2': 'class_eng_6a',
+            'Thứ 3': 'class_eng_7a',
+            'Thứ 4': 'class_eng_8a',
+            'Thứ 5': 'class_eng_6a',
+            'Thứ 6': 'class_eng_7a',
+            'Thứ 7': 'class_eng_8a',
+            'Chủ Nhật': null
+          }
+        },
+        {
+          roomName: 'P.201',
+          timeSlot: '19h45 - 21h15',
+          subLabel: 'Ca 2 (Tối / Sáng CN)',
+          slots: {
+            'Thứ 2': 'class_eng_9a',
+            'Thứ 3': 'class_eng_comm',
+            'Thứ 4': 'class_eng_ielts',
+            'Thứ 5': 'class_eng_9a',
+            'Thứ 6': 'class_eng_comm',
+            'Thứ 7': null,
+            'Chủ Nhật': 'class_eng_ielts'
+          }
+        }
+      ];
+
+      // 1. Vẽ các hàng ma trận
+      tbody.innerHTML = roomRows.map((row, rIdx) => {
+        return `
+          <tr class="hover:bg-slate-100/50 transition">
+            <!-- Cột Phòng & Giờ -->
+            <td class="p-2 font-bold border-r border-slate-200 bg-white text-slate-800 text-center h-[72px]">
+              <div class="text-xs sm:text-sm font-black text-indigo-950">${row.roomName}</div>
+              <div class="text-[10px] text-indigo-600 font-extrabold mt-0.5 leading-none">${row.timeSlot}</div>
+              <div class="text-[9px] text-slate-400 font-medium mt-0.5">${row.subLabel}</div>
+            </td>
+
+            <!-- 7 Cột từ Thứ 2 đến Chủ Nhật -->
+            ${daysOfWeek.map(day => {
+              const classId = row.slots[day];
+              const isTodayCol = day === 'Thứ 4'; // Giả lập hôm nay Thứ Tư
+              const cls = classesList.find(c => c.id === classId);
+
+              if (!cls) {
+                return `
+                  <td class="p-1 border-r border-slate-200 ${isTodayCol ? 'bg-amber-50/40' : 'bg-slate-50/50'} text-slate-300 text-[11px] italic h-[72px]">
+                    <div class="h-full flex items-center justify-center">--</div>
+                  </td>
+                `;
+              }
+
+              const isSelected = isClassSelected && cls.id === currentClassId;
+              const studentCount = (classStudentsMap[cls.id] || []).length;
+              const customTime = (day === 'Chủ Nhật' && cls.id === 'class_eng_ielts') ? '08h30 - 10h00' : (cls.timeSlot ? cls.timeSlot.replace('Ca 1 (', '').replace('Ca 2 (', '').replace(')', '') : '18h00-19h30');
+
+              return `
+                <td class="p-1 border-r border-slate-200 ${isTodayCol ? 'bg-amber-50/60 ring-1 ring-amber-300/60' : ''} h-[72px]">
+                  <div
+                    onclick="selectClassFromSchedule('${cls.id}')"
+                    class="p-1.5 rounded-xl border transition-all cursor-pointer shadow-xs active:scale-95 text-left flex flex-col justify-between h-full ${cls.colorBg} ${
+                      isSelected ? 'ring-2 ring-indigo-600 font-bold scale-[1.02]' : ''
+                    }"
+                    title="Bấm để mở danh sách học sinh ${cls.class_name}"
+                  >
+                    <div>
+                      <div class="flex items-center justify-between gap-1">
+                        <span class="text-[9px] font-black px-1 py-0.2 rounded ${cls.badgeColor} leading-none">
+                          ${cls.code}
+                        </span>
+                        <span class="text-[9px] font-bold text-slate-500 leading-none">
+                          ${studentCount} HS
+                        </span>
+                      </div>
+                      <div class="font-extrabold text-[11px] sm:text-xs leading-tight mt-1 text-slate-900 truncate">
+                        ${cls.class_name}
+                      </div>
+                    </div>
+
+                    <div class="pt-0.5 mt-0.5 border-t border-black/5 text-[9px] sm:text-[10px] text-slate-600 font-medium truncate leading-tight">
+                      ${customTime}
+                    </div>
+                  </div>
+                </td>
+              `;
+            }).join('')}
+          </tr>
+        `;
+      }).join('');
+
+      // 2. Vẽ danh sách chú thích 6 lớp bên dưới
+      if (legendContainer) {
+        legendContainer.innerHTML = classesList.map(c => {
+          const isSelected = isClassSelected && c.id === currentClassId;
+          const studentCount = (classStudentsMap[c.id] || []).length;
+          return `
+            <button
+              type="button"
+              onclick="selectClassFromSchedule('${c.id}')"
+              class="p-2 rounded-xl border text-left transition flex items-center justify-between gap-1.5 active:scale-95 ${c.colorBg} ${
+                isSelected ? 'ring-2 ring-indigo-600 font-bold' : 'opacity-90 hover:opacity-100'
+              }"
+            >
+              <div class="min-w-0">
+                <div class="text-[10px] font-black text-slate-900 truncate">${c.class_name}</div>
+                <div class="text-[9px] text-slate-600 font-medium">${c.days.join(' & ')} • ${c.room}</div>
+              </div>
+              <span class="text-[10px] font-black px-1.5 py-0.5 rounded ${c.badgeColor} shrink-0">
+                ${studentCount} HS
+              </span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      lucide.createIcons();
+    }
+
+    function selectClassFromSchedule(classId) {
+      isClassSelected = true;
+      onClassChange(classId, true);
+    }
+
+    function hideStudentListAndShowSchedule() {
+      isClassSelected = false;
+      const detailSec = document.getElementById('attendanceDetailSection');
+      if (detailSec) detailSec.classList.add('hidden');
+
+      const scheduleSec = document.getElementById('scheduleSection');
+      if (scheduleSec) scheduleSec.classList.remove('hidden'); // HIỆN LẠI THỜI KHÓA BIỂU
+      
+      const select = document.getElementById('classListSelect');
+      if (select) select.value = "";
+      
+      renderWeeklyScheduleGrid();
+      if (scheduleSec) scheduleSec.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // =========================================================
+    // RENDER TAB 1: ĐIỂM DANH LỚP HIỆN TẠI (TRÊN) & THỜI KHÓA BIỂU (DƯỚI)
     // =========================================================
     function renderAttendanceTab() {
+      const detailSec = document.getElementById('attendanceDetailSection');
+      const scheduleSec = document.getElementById('scheduleSection');
+      
+      // KIỂM SOÁT HIỂN THỊ: NẾU ĐÃ CHỌN LỚP -> ẨN THỜI KHÓA BIỂU, CHỈ HIỆN DANH SÁCH HỌC SINH
+      if (!isClassSelected) {
+        if (detailSec) detailSec.classList.add('hidden');
+        if (scheduleSec) scheduleSec.classList.remove('hidden');
+        renderWeeklyScheduleGrid();
+        return;
+      }
+
+      // ĐÃ CHỌN LỚP: HIỆN DANH SÁCH HỌC SINH, BIẾN MẤT THỜI KHÓA BIỂU
+      if (detailSec) detailSec.classList.remove('hidden');
+      if (scheduleSec) scheduleSec.classList.add('hidden');
+
+      const cls = classesList.find(c => c.id === currentClassId);
+      const nameDisp = document.getElementById('currentSelectedClassNameDisplay');
+      if (nameDisp && cls) {
+        nameDisp.textContent = `${cls.class_name}`;
+      }
+
       const presentCount = students.filter(s => s.status === 'present').length;
       const absentCount = students.length - presentCount;
 
@@ -1273,84 +1679,86 @@
       document.getElementById('tabBadgeAttendance').textContent = `${presentCount}/${students.length}`;
 
       const listContainer = document.getElementById('attendanceStudentList');
-      listContainer.innerHTML = '';
+      if (listContainer) {
+        listContainer.innerHTML = '';
 
-      students.forEach((student, idx) => {
-        const summary = getAttendanceSummary(student);
-        const fee = calculateStudentFee(student);
-        const isPresent = student.status === 'present';
-        const div = document.createElement('div');
-        div.className = `px-2.5 sm:px-3.5 py-2 sm:py-2.5 flex items-center justify-between transition-colors ${
-          isPresent ? 'hover:bg-slate-50/80' : 'bg-rose-50/25 hover:bg-rose-50/40'
-        }`;
-        div.innerHTML = `
-          <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 pr-2">
-            <span class="text-[11px] font-bold text-slate-300 w-4 sm:w-5 shrink-0 text-center">${idx + 1}</span>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <button
-                  onclick="openStudentDetailModal('${student.id}')"
-                  class="font-bold text-slate-900 text-xs sm:text-sm text-left hover:text-blue-600 hover:underline truncate"
-                  title="Bấm xem lịch ngày đi/vắng của ${student.name}"
-                >
-                  ${student.name}
-                </button>
-                <span class="text-[10px] font-extrabold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-100 shrink-0">
-                  ${summary.presentCount}/${summary.totalRecorded}b
-                </span>
-                
-                <!-- NÚT ĐIỀU CHỈNH HỌC PHÍ TỪNG EM NGAY TẠI ĐÂY -->
-                <button
-                  onclick="openEditIndividualFeeModal('${student.id}')"
-                  title="Điều chỉnh học phí của ${student.name} (cập nhật đồng bộ sang tab Học phí)"
-                  class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 transition active:scale-95 shrink-0"
-                >
-                  <span>${student.pricingType === 'monthly' ? `${(student.monthlyFixedPrice/1000)}k/tháng` : `${(student.pricePerSession/1000)}k/b`}</span>
-                  <i data-lucide="pencil" class="w-2.5 h-2.5 text-amber-600"></i>
-                </button>
-
-                ${fee.remaining > 0 
-                  ? `<span class="text-[10px] text-rose-600 font-bold bg-rose-50 px-1.5 py-0.2 rounded border border-rose-100 shrink-0">Chưa nộp: ${(fee.remaining).toLocaleString('vi-VN')}đ</span>` 
-                  : `<span class="text-[10px] text-emerald-700 font-semibold shrink-0 sm:inline hidden">✓ Đã đủ</span>`
-                }
-              </div>
-              <div class="text-[10px] sm:text-xs text-slate-400 truncate">
-                ${student.school} ${student.parentPhone ? `• ${student.parentPhone}` : ''}
-              </div>
+        if (students.length === 0) {
+          listContainer.innerHTML = `
+            <div class="p-6 text-center text-xs text-slate-400">
+              Lớp học này chưa có học sinh nào. Bấm nút <strong>"+ Thêm HS"</strong> để thêm học sinh vào lớp.
             </div>
-          </div>
+          `;
+        } else {
+          students.forEach((student, idx) => {
+            const summary = getAttendanceSummary(student);
+            const isPresent = student.status === 'present';
+            const shortName = getShortName(student.name);
 
-          <!-- Nút chọn trạng thái siêu nhanh, không chiếm chỗ -->
-          <div class="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
-            <button
-              onclick="setAttendanceStatus('${student.id}', 'present')"
-              class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all active:scale-95 ${
-                isPresent
-                  ? 'bg-emerald-600 text-white shadow-2xs font-extrabold ring-1 ring-emerald-600'
-                  : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
-              }"
-              title="Ghi nhận Đi học"
-            >
-              <i data-lucide="check" class="w-3.5 h-3.5"></i>
-              <span>Đi học</span>
-            </button>
+            const div = document.createElement('div');
+            div.className = `px-2.5 sm:px-3.5 py-2 sm:py-2.5 flex items-center justify-between transition-colors ${
+              isPresent ? 'hover:bg-slate-50/80' : 'bg-rose-50/25 hover:bg-rose-50/40'
+            }`;
+            div.innerHTML = `
+              <div class="flex items-center space-x-2 sm:space-x-3 min-w-0 pr-2">
+                <span class="text-[11px] font-bold text-slate-300 w-4 sm:w-5 shrink-0 text-center">${idx + 1}</span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button
+                      onclick="openStudentDetailModal('${student.id}')"
+                      class="font-black text-slate-900 text-xs sm:text-sm text-left hover:text-blue-600 hover:underline truncate tracking-tight"
+                      title="Họ tên đầy đủ: ${student.name} • Ngày sinh: ${student.birthdate || 'Chưa cập nhật'}"
+                    >
+                      ${shortName}
+                    </button>
+                    
+                    <span class="text-[10px] font-extrabold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-100 shrink-0">
+                      ${summary.presentCount}B
+                    </span>
+                    ${summary.absentCount > 0 ? `
+                      <span class="text-[10px] font-extrabold text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-100 shrink-0">
+                        ${summary.absentCount}V
+                      </span>
+                    ` : ''}
+                  </div>
+                  <div class="text-[10px] sm:text-xs text-slate-400 truncate">
+                    ${student.school} ${student.parentPhone ? `• ${student.parentPhone}` : ''}
+                  </div>
+                </div>
+              </div>
 
-            <button
-              onclick="setAttendanceStatus('${student.id}', 'absent')"
-              class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all active:scale-95 ${
-                !isPresent
-                  ? 'bg-rose-600 text-white shadow-2xs font-extrabold ring-1 ring-rose-600'
-                  : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
-              }"
-              title="Ghi nhận Vắng"
-            >
-              <i data-lucide="x" class="w-3.5 h-3.5"></i>
-              <span>Vắng</span>
-            </button>
-          </div>
-        `;
-        listContainer.appendChild(div);
-      });
+              <!-- Nút chọn trạng thái siêu nhanh 1 chạm -->
+              <div class="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
+                <button
+                  onclick="setAttendanceStatus('${student.id}', 'present')"
+                  class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all active:scale-95 ${
+                    isPresent
+                      ? 'bg-emerald-600 text-white shadow-2xs font-extrabold ring-1 ring-emerald-600'
+                      : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+                  }"
+                  title="Ghi nhận Đi học"
+                >
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  <span>Đi học</span>
+                </button>
+
+                <button
+                  onclick="setAttendanceStatus('${student.id}', 'absent')"
+                  class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition-all active:scale-95 ${
+                    !isPresent
+                      ? 'bg-rose-600 text-white shadow-2xs font-extrabold ring-1 ring-rose-600'
+                      : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+                  }"
+                  title="Ghi nhận Vắng"
+                >
+                  <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                  <span>Vắng</span>
+                </button>
+              </div>
+            `;
+            listContainer.appendChild(div);
+          });
+        }
+      }
 
       lucide.createIcons();
     }
@@ -1385,162 +1793,159 @@
     }
 
     // =========================================================
-    // RENDER TAB 2: BÀI TẬP VỀ NHÀ (THÔNG MINH & TỰ ĐỘNG CHẤM)
+    // MODAL ĐIỂM DANH NHANH HỌC SINH VẮNG HÔM NAY (ĐẾN MUỘN/ĐẾN SAU)
     // =========================================================
-    function renderHomeworkTab() {
-      const container = document.getElementById('homeworkListContainer');
-      document.getElementById('tabBadgeHomework').textContent = homeworks.length;
-      container.innerHTML = '';
+    function openAbsentQuickCheckModal() {
+      const absentList = students.filter(s => s.status === 'absent');
+      const listContainer = document.getElementById('absentStudentsQuickList');
+      listContainer.innerHTML = '';
 
-      homeworks.forEach(hw => {
-        const submittedCount = Object.values(hw.submissions).filter(s => s.submitted).length;
-        const qCount = hw.questions ? hw.questions.length : 0;
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm";
-
-        let studentsGridHtml = '';
-        students.forEach(s => {
-          const sub = hw.submissions[s.id] || { submitted: false };
-          studentsGridHtml += `
-            <div class="p-2.5 rounded-lg border border-slate-100 bg-slate-50 flex items-center justify-between">
-              <div>
-                <div class="text-xs font-bold text-slate-800">${s.name}</div>
-                <div class="text-[11px]">
-                  ${sub.submitted ? '<span class="text-emerald-600 font-medium">✓ Đã nộp</span>' : '<span class="text-rose-500 font-medium">Chưa làm</span>'}
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5">
-                ${sub.score !== null && sub.score !== undefined 
-                  ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-extrabold text-xs rounded">${sub.score}đ</span>`
-                  : sub.submitted ? '<span class="text-[11px] text-amber-700 font-medium">Chờ chấm</span>' : '<span class="text-slate-300">-</span>'}
-                <button
-                  onclick="openTakeQuizModal('${hw.id}', '${s.id}')"
-                  title="Mở giao diện làm bài hoặc xem lại bài làm của ${s.name}"
-                  class="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-blue-600 transition"
-                >
-                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
-          `;
-        });
-
-        card.innerHTML = `
-          <div class="p-4 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700">${hw.id}</span>
-                <span class="text-xs text-rose-600 font-semibold">Hạn: ${hw.deadline}</span>
-                <span class="text-xs text-slate-400">• ${hw.lessonNote}</span>
-                ${qCount > 0 ? `<span class="text-[11px] px-2 py-0.2 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded font-bold">${qCount} câu trắc nghiệm tự chấm</span>` : ''}
-              </div>
-              <h4 class="font-bold text-sm text-slate-900 mt-1">${hw.title}</h4>
-              <p class="text-xs text-slate-600 mt-0.5">${hw.content}</p>
-              
-              ${hw.attachedFile ? `
-                <div class="mt-2 inline-flex items-center gap-1.5 text-xs text-blue-700 font-semibold bg-white border border-blue-200 px-2.5 py-1 rounded-lg">
-                  <i data-lucide="paperclip" class="w-3.5 h-3.5 text-blue-500"></i>
-                  <span>File đính kèm: <strong>${hw.attachedFile}</strong></span>
-                  <button type="button" onclick="viewAttachedMockFile('${hw.attachedFile}')" class="text-blue-600 underline ml-1 hover:text-blue-800">Tải về / Xem</button>
-                </div>
-              ` : ''}
-            </div>
-
-            <div class="flex items-center gap-2 self-start sm:self-auto">
-              <div class="text-xs bg-white px-3 py-1.5 rounded-lg border border-slate-200 font-semibold">
-                Đã nộp: <strong class="text-blue-600">${submittedCount}/${students.length}</strong>
-              </div>
-              <button
-                onclick="openTakeQuizModal('${hw.id}', 'HS01')"
-                class="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition flex items-center gap-1"
-                title="Làm thử bài thi này"
-              >
-                <i data-lucide="play" class="w-3 h-3"></i>
-                <span>Xem thử đề</span>
-              </button>
-            </div>
-          </div>
-          <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            ${studentsGridHtml}
+      if (absentList.length === 0) {
+        listContainer.innerHTML = `
+          <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100 text-center text-xs text-emerald-800 font-bold">
+            ✓ Tuyệt vời! Hôm nay cả lớp đều đã đi học đầy đủ.
           </div>
         `;
-        container.appendChild(card);
-      });
+      } else {
+        absentList.forEach(s => {
+          const item = document.createElement('div');
+          item.className = "p-2.5 bg-rose-50/70 border border-rose-200 rounded-xl flex items-center justify-between text-xs";
+          item.innerHTML = `
+            <div class="min-w-0 pr-2">
+              <div class="font-black text-slate-900">${getShortName(s.name)}</div>
+              <div class="text-[10px] text-slate-500 truncate">${s.name} • ${s.parentPhone || 'Chưa có SĐT'}</div>
+            </div>
+            <button
+              type="button"
+              onclick="markLateStudentPresent('${s.id}')"
+              class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold rounded-lg text-[11px] flex items-center gap-1 shadow-xs shrink-0"
+              title="Ghi nhận con đã đến lớp"
+            >
+              <i data-lucide="check" class="w-3 h-3"></i>
+              <span>Vừa đến học</span>
+            </button>
+          `;
+          listContainer.appendChild(item);
+        });
+      }
+
+      openModal('modalAbsentQuickCheck');
       lucide.createIcons();
     }
 
-    function onParentStudentChange(val) {
-      selectedParentStudentId = val;
-      renderParentView();
+    function markLateStudentPresent(studentId) {
+      setAttendanceStatus(studentId, 'present');
+      openAbsentQuickCheckModal(); // Cập nhật lại danh sách vắng trong modal
     }
 
-    function promptParentReply(remarkId) {
-      const text = prompt("Nhập lời nhắn trao đổi gửi cô Diễm:");
-      // Bài tập về nhà của con (Phụ huynh xem & con làm trực tiếp tại đây)
-      const hwList = document.getElementById('parentHomeworkList');
-      hwList.innerHTML = '';
-      homeworks.forEach(hw => {
-        const sub = hw.submissions[student.id] || { submitted: false };
-        const qCount = hw.questions ? hw.questions.length : 0;
-        const d = document.createElement('div');
-        d.className = "p-3.5 rounded-lg border border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
-        d.innerHTML = `
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-xs font-bold text-slate-900">${hw.title}</span>
-              ${qCount > 0 ? `<span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded">Trắc nghiệm Online (${qCount} câu)</span>` : ''}
+    // =========================================================
+    // MODAL XEM LỊCH CHI TIẾT KHI CLICK VÀO TÊN HỌC SINH (SỬA CHÍNH XÁC ID HỌC SINH)
+    // =========================================================
+    function openStudentDetailModal(studentId) {
+      // Tìm kiếm chính xác học sinh trong danh sách của lớp hiện tại hoặc tất cả các lớp
+      let student = students.find(s => String(s.id) === String(studentId));
+      if (!student) {
+        for (const clsId in classStudentsMap) {
+          const found = classStudentsMap[clsId].find(s => String(s.id) === String(studentId));
+          if (found) {
+            student = found;
+            break;
+          }
+        }
+      }
+      if (!student) return;
+      detailedStudent = student;
+
+      const summary = getAttendanceSummary(student);
+      const fee = calculateStudentFee(student);
+      const shortName = getShortName(student.name);
+
+      const shortNameEl = document.getElementById('modalDetailShortName');
+      if (shortNameEl) shortNameEl.textContent = shortName;
+
+      const badgeEl = document.getElementById('modalDetailIdBadge');
+      if (badgeEl) badgeEl.textContent = student.id;
+
+      const fullNameEl = document.getElementById('modalDetailFullName');
+      if (fullNameEl) fullNameEl.textContent = student.name;
+
+      const birthEl = document.getElementById('modalDetailBirthdate');
+      if (birthEl) birthEl.textContent = student.birthdate || 'Chưa cập nhật';
+
+      const subtextEl = document.getElementById('modalDetailSubtext');
+      if (subtextEl) subtextEl.textContent = `${student.school || 'Lớp'} • PH: ${student.parentName || 'Phụ huynh'} (${student.parentPhone || 'Chưa có SĐT'})`;
+      
+      // Hiển thị số buổi gọn: 8B (Đi học), 2V (Vắng)
+      const presentCountEl = document.getElementById('modalDetailPresentCount');
+      if (presentCountEl) {
+        presentCountEl.textContent = `${summary.presentCount}B ${summary.absentCount > 0 ? `(${summary.absentCount}V)` : ''}`;
+      }
+
+      // Học phí mỗi buổi của học sinh
+      const sessionFee = student.pricingType === 'monthly' 
+        ? `${Number(student.monthlyFixedPrice || 0).toLocaleString('vi-VN')} đ (tháng)` 
+        : `${Number(student.pricePerSession || 45000).toLocaleString('vi-VN')} đ`;
+
+      const feePerSessionEl = document.getElementById('modalDetailFeePerSession');
+      if (feePerSessionEl) feePerSessionEl.textContent = sessionFee;
+
+      const paidAmountEl = document.getElementById('modalDetailPaidAmount');
+      if (paidAmountEl) paidAmountEl.textContent = `${fee.paid.toLocaleString('vi-VN')} đ`;
+
+      const unpaidAmountEl = document.getElementById('modalDetailUnpaidAmount');
+      if (unpaidAmountEl) unpaidAmountEl.textContent = fee.remaining > 0 ? `${fee.remaining.toLocaleString('vi-VN')} đ` : '0 đ';
+
+      // Nút sửa nhanh học phí riêng của học sinh này từ trong modal
+      const editBtn = document.getElementById('modalDetailEditFeeBtn');
+      if (editBtn) {
+        editBtn.onclick = () => {
+          closeModal('modalStudentDetail');
+          openEditIndividualFeeModal(student.id);
+        };
+      }
+
+      const grid = document.getElementById('modalDetailDatesGrid');
+      if (grid) {
+        grid.innerHTML = '';
+        SESSION_DATES.forEach((dateStr, idx) => {
+          const isPres = student.attendanceHistory?.[dateStr] === 'present';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.onclick = () => toggleDayInModal(student.id, dateStr);
+          btn.className = `p-2.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+            isPres ? 'bg-emerald-50 border-emerald-200 text-emerald-900 hover:bg-emerald-100' : 'bg-rose-50 border-rose-200 text-rose-900 hover:bg-rose-100'
+          }`;
+          btn.innerHTML = `
+            <div class="flex items-center justify-between w-full">
+              <span class="text-[11px] font-bold text-slate-600">Buổi ${idx + 1}</span>
+              <i data-lucide="${isPres ? 'check-circle-2' : 'x-circle'}" class="w-3.5 h-3.5 text-${isPres ? 'emerald' : 'rose'}-600"></i>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">${hw.content}</p>
-            <div class="text-[11px] text-rose-600 font-semibold mt-1">Hạn nộp: ${hw.deadline}</div>
-            
-            ${hw.attachedFile ? `
-              <div class="mt-1.5 inline-flex items-center gap-1.5 text-xs text-blue-700 font-medium">
-                <i data-lucide="paperclip" class="w-3 h-3 text-blue-500"></i>
-                <span>Đề bài: ${hw.attachedFile}</span>
-                <button type="button" onclick="viewAttachedMockFile('${hw.attachedFile}')" class="underline text-blue-600 font-bold ml-1">Xem file</button>
-              </div>
-            ` : ''}
-
-            ${sub.feedback ? `<div class="mt-1.5 text-xs text-slate-700 bg-white p-2 rounded border border-slate-200"><strong>Cô Diễm nhận xét:</strong> "${sub.feedback}"</div>` : ''}
-          </div>
-
-          <div class="self-end sm:self-center flex items-center gap-2">
-            ${sub.submitted
-              ? `
-                <div class="text-right">
-                  <span class="px-3 py-1 rounded bg-emerald-100 text-emerald-800 font-bold text-xs inline-block">
-                    ${sub.score !== null ? `${sub.score} điểm` : 'Đã nộp bài'}
-                  </span>
-                  <button onclick="openTakeQuizModal('${hw.id}', '${student.id}')" class="block text-[11px] text-blue-600 hover:underline mt-0.5">
-                    Xem lại kết quả
-                  </button>
-                </div>
-              `
-              : `
-                <button
-                  onclick="openTakeQuizModal('${hw.id}', '${student.id}')"
-                  class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition"
-                >
-                  <i data-lucide="edit" class="w-3.5 h-3.5"></i>
-                  <span>Làm bài ngay</span>
-                </button>
-              `
-            }
-          </div>
-        `;
-        hwList.appendChild(d);
-      });
+            <div class="font-mono text-[11px] text-slate-500 mt-1">${dateStr}</div>
+            <div class="text-[11px] font-extrabold mt-1">
+              <span class="text-${isPres ? 'emerald-700' : 'rose-600'}">${isPres ? '✓ Đi học' : '✗ Vắng'}</span>
+            </div>
+          `;
+          grid.appendChild(btn);
+        });
+      }
 
       openModal('modalStudentDetail');
       lucide.createIcons();
     }
 
     function toggleDayInModal(studentId, dateStr) {
-      const student = students.find(s => s.id === studentId);
+      let student = students.find(s => String(s.id) === String(studentId));
+      if (!student) {
+        for (const clsId in classStudentsMap) {
+          const found = classStudentsMap[clsId].find(s => String(s.id) === String(studentId));
+          if (found) { student = found; break; }
+        }
+      }
       if (!student) return;
+      if (!student.attendanceHistory) student.attendanceHistory = {};
       const current = student.attendanceHistory[dateStr] || 'absent';
       student.attendanceHistory[dateStr] = current === 'present' ? 'absent' : 'present';
-      openStudentDetailModal(studentId); // re-render modal
+      openStudentDetailModal(studentId); // re-render modal với đúng học sinh
       renderAll();
     }
 
@@ -1580,7 +1985,7 @@
         text: `Câu ${qIndex}: `,
         options: ['A. Đáp án 1', 'B. Đáp án 2', 'C. Đáp án 3', 'D. Đáp án 4'],
         correct: 0,
-        explanation: 'Giải thích ngữ pháp...'
+        explanation: 'Giải thích chi tiết...'
       });
       renderDraftQuestions();
     }
@@ -1709,6 +2114,7 @@
 
       const newHw = {
         id: `BT0${homeworks.length + 1}`,
+        classId: currentClassId,
         title,
         lessonNote: note,
         deadline,
@@ -1736,7 +2142,7 @@
       quizSelectedAnswers = {};
 
       document.getElementById('quizModalTitle').textContent = hw.title;
-      document.getElementById('quizModalStudentName').textContent = `Học sinh: ${student.name} (${student.school})`;
+      document.getElementById('quizModalStudentName').textContent = student ? `Học sinh: ${student.name} (${student.school})` : '';
 
       // File đính kèm nếu có
       const fileBox = document.getElementById('quizAttachedFileBox');
@@ -1748,7 +2154,7 @@
       }
 
       // Kiểm tra xem học sinh đã có điểm nộp trước đó chưa
-      const sub = hw.submissions[student.id] || { submitted: false };
+      const sub = (hw.submissions && student && hw.submissions[student.id]) || { submitted: false };
       const summaryBox = document.getElementById('quizResultSummaryBox');
       const submitBtn = document.getElementById('btnSubmitQuiz');
 
@@ -1769,8 +2175,8 @@
       if (!hw.questions || hw.questions.length === 0) {
         list.innerHTML = `
           <div class="p-4 bg-slate-50 rounded-xl text-center text-xs text-slate-500">
-            Bài tập này không có câu hỏi trắc nghiệm trực tuyến. Học sinh làm bài ra vở theo dặn dò của cô:
-            <div class="mt-2 font-bold text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200">${hw.content}</div>
+            Bài tập này không có câu hỏi trắc nghiệm trực tuyến. Học sinh làm bài ra vở theo dặn dò của giáo viên:
+            <div class="mt-2 font-bold text-slate-800 bg-white p-2.5 rounded-lg border border-slate-200">${hw.content || 'Xem hướng dẫn chi tiết của giáo viên.'}</div>
           </div>
         `;
       } else {
@@ -1838,15 +2244,16 @@
         if (finalScore === 10) {
           feedback = `Xuất sắc! Con đã làm đúng 100% (${correctCount}/${questions.length} câu).`;
         } else if (finalScore >= 8) {
-          feedback = `Làm bài rất tốt! Đúng ${correctCount}/${questions.length} câu. Chú ý các câu ngữ pháp bị nhầm.`;
+          feedback = `Làm bài rất tốt! Đúng ${correctCount}/${questions.length} câu. Chú ý các câu bị nhầm.`;
         } else if (finalScore >= 5) {
-          feedback = `Đã đạt yêu cầu (${correctCount}/${questions.length} câu). Cần ôn lại các quy tắc ngữ pháp của bài.`;
+          feedback = `Đã đạt yêu cầu (${correctCount}/${questions.length} câu). Cần ôn lại các quy tắc của bài.`;
         } else {
           feedback = `Con cần xem lại lý thuyết và làm bài cẩn thận hơn (${correctCount}/${questions.length} câu).`;
         }
       }
 
       // Cập nhật kết quả vào bài tập
+      if (!takingHomework.submissions) takingHomework.submissions = {};
       takingHomework.submissions[takingStudent.id] = {
         submitted: true,
         score: finalScore,
@@ -1864,7 +2271,7 @@
     }
 
     function viewAttachedMockFile(fileName) {
-      alert(`[Demo] Đang mở tài liệu: ${fileName || 'De_kiem_tra.pdf'}\nFile đề bài đã được đính kèm sẵn cho học sinh tải về.`);
+      alert(`[Tài liệu đính kèm] ${fileName || 'De_bai.pdf'}\nĐã mở file tài liệu cho học sinh xem và tải về.`);
     }
 
     // =========================================================
@@ -1877,8 +2284,8 @@
 
       document.getElementById('editFeeStudentName').textContent = `${student.name} (${student.school})`;
       document.getElementById('editFeePricingType').value = student.pricingType || 'per_session';
-      document.getElementById('editFeePricePerSession').value = student.pricePerSession || 120000;
-      document.getElementById('editFeeMonthlyPrice').value = student.monthlyFixedPrice || 900000;
+      document.getElementById('editFeePricePerSession').value = student.pricePerSession || 45000;
+      document.getElementById('editFeeMonthlyPrice').value = student.monthlyFixedPrice || 350000;
       document.getElementById('editFeeDiscountOrExtra').value = student.discountOrExtra || 0;
       document.getElementById('editFeePaidAmount').value = student.paidAmount || 0;
 
@@ -1925,6 +2332,7 @@
         title.textContent = `Điền học phí cho (${selectedStudentIds.length}) học sinh đã chọn`;
       }
       setBatchPricingType('per_session');
+      document.getElementById('batchAmountInput').value = 45000;
       openModal('modalBatchFee');
     }
 
@@ -1971,51 +2379,6 @@
     }
 
     // =========================================================
-    // MODAL SỬA CHI TIẾT HỌC PHÍ TỪNG HỌC SINH
-    // =========================================================
-    function openEditIndividualFeeModal(studentId) {
-      const student = students.find(s => s.id === studentId);
-      if (!student) return;
-      editingStudent = student;
-
-      document.getElementById('editFeeStudentName').textContent = `${student.name} (${student.school})`;
-      document.getElementById('editFeePricingType').value = student.pricingType || 'per_session';
-      document.getElementById('editFeePricePerSession').value = student.pricePerSession || 120000;
-      document.getElementById('editFeeMonthlyPrice').value = student.monthlyFixedPrice || 900000;
-      document.getElementById('editFeeDiscountOrExtra').value = student.discountOrExtra || 0;
-      document.getElementById('editFeePaidAmount').value = student.paidAmount || 0;
-
-      toggleEditFeeFields(student.pricingType || 'per_session');
-      openModal('modalEditIndividualFee');
-    }
-
-    function toggleEditFeeFields(val) {
-      const per = document.getElementById('editFeePerSessionField');
-      const mon = document.getElementById('editFeeMonthlyField');
-      if (val === 'per_session') {
-        per.classList.remove('hidden');
-        mon.classList.add('hidden');
-      } else {
-        per.classList.add('hidden');
-        mon.classList.remove('hidden');
-      }
-    }
-
-    function handleSaveIndividualFee(e) {
-      e.preventDefault();
-      if (!editingStudent) return;
-
-      editingStudent.pricingType = document.getElementById('editFeePricingType').value;
-      editingStudent.pricePerSession = Number(document.getElementById('editFeePricePerSession').value) || 0;
-      editingStudent.monthlyFixedPrice = Number(document.getElementById('editFeeMonthlyPrice').value) || 0;
-      editingStudent.discountOrExtra = Number(document.getElementById('editFeeDiscountOrExtra').value) || 0;
-      editingStudent.paidAmount = Number(document.getElementById('editFeePaidAmount').value) || 0;
-
-      closeModal('modalEditIndividualFee');
-      renderAll();
-    }
-
-    // =========================================================
     // MODAL XUẤT TIN NHẮN ZALO BÁO HỌC PHÍ
     // =========================================================
     function openZaloInvoiceModal(studentId) {
@@ -2024,11 +2387,15 @@
 
       const fee = calculateStudentFee(student);
       const summary = getAttendanceSummary(student);
+      const cls = classesList.find(c => c.id === currentClassId);
+      const className = cls ? cls.class_name : 'Lớp Học';
+      const teacherName = cls ? (cls.teacher || 'Giáo viên') : 'Giáo viên';
+
       const pricingDesc = student.pricingType === 'monthly'
         ? `Học phí trọn gói tháng: ${Number(student.monthlyFixedPrice).toLocaleString('vi-VN')} đ`
         : `Đơn giá: ${Number(student.pricePerSession).toLocaleString('vi-VN')} đ/buổi × ${summary.presentCount} buổi = ${(summary.presentCount * student.pricePerSession).toLocaleString('vi-VN')} đ`;
 
-      const msg = `Kính gửi phụ huynh em ${student.name},\nCô Diễm gửi thông tin đối soát học phí tháng 10/2026 của con tại Lớp Tiếng Anh - Cô Diễm:\n- Số buổi đã tham gia: ${summary.presentCount}/${summary.totalRecorded} buổi.\n- Hình thức tính: ${pricingDesc}.\n${student.discountOrExtra !== 0 ? `- Điều chỉnh/Phụ thu: ${student.discountOrExtra.toLocaleString('vi-VN')} đ\n` : ''}- Tổng học phí: ${fee.finalAmount.toLocaleString('vi-VN')} đ.\n- Đã thanh toán: ${fee.paid.toLocaleString('vi-VN')} đ.\n- Số tiền chưa nộp: ${fee.remaining > 0 ? `${fee.remaining.toLocaleString('vi-VN')} đ` : 'Đã hoàn thành'}.\n\nKính mong phụ huynh kiểm tra đối soát và hoàn tất học phí cho con trước ngày 10 hàng tháng. Cô Diễm xin cảm ơn!`;
+      const msg = `Kính gửi phụ huynh em ${student.name},\n${teacherName} gửi thông tin đối soát học phí tháng 10/2026 của con tại ${className}:\n- Số buổi đã tham gia: ${summary.presentCount}/${summary.totalRecorded} buổi.\n- Hình thức tính: ${pricingDesc}.\n${student.discountOrExtra !== 0 ? `- Điều chỉnh/Phụ thu: ${student.discountOrExtra.toLocaleString('vi-VN')} đ\n` : ''}- Tổng học phí: ${fee.finalAmount.toLocaleString('vi-VN')} đ.\n- Đã thanh toán: ${fee.paid.toLocaleString('vi-VN')} đ.\n- Số tiền chưa nộp: ${fee.remaining > 0 ? `${fee.remaining.toLocaleString('vi-VN')} đ` : 'Đã hoàn thành'}.\n\nKính mong phụ huynh kiểm tra đối soát và hoàn tất học phí cho con trước ngày 10 hàng tháng. Xin trân trọng cảm ơn!`;
 
       document.getElementById('zaloModalTargetName').textContent = `Gửi tới PH em: ${student.name} (${student.parentPhone})`;
       document.getElementById('zaloMessageContent').value = msg;
@@ -2051,6 +2418,7 @@
     // =========================================================
     function openAddStudentModal() {
       document.getElementById('addStudentName').value = '';
+      document.getElementById('addStudentDob').value = '2012-05-15';
       document.getElementById('addStudentSchool').value = '';
       document.getElementById('addStudentParentName').value = '';
       document.getElementById('addStudentPhone').value = '';
@@ -2060,21 +2428,31 @@
     async function handleCreateStudent(e) {
       e.preventDefault();
       const name = document.getElementById('addStudentName').value.trim();
+      const rawDob = document.getElementById('addStudentDob').value;
+      let dobDisplay = '15/05/2012';
+      if (rawDob) {
+        const parts = rawDob.split('-');
+        if (parts.length === 3) dobDisplay = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
       const school = document.getElementById('addStudentSchool').value.trim() || 'THCS';
       const pName = document.getElementById('addStudentParentName').value.trim() || 'Phụ huynh';
       const phone = document.getElementById('addStudentPhone').value.trim();
 
-      const newId = `HS0${students.length + 1}`;
+      const cls = classesList.find(c => c.id === currentClassId);
+      const defaultFee = cls ? cls.fee_per_session : 45000;
+
+      const newId = `HS_${Date.now()}`;
       const newStudent = {
         id: newId,
         name: name,
+        birthdate: dobDisplay,
         school: school,
         parentName: pName,
         parentPhone: phone,
         status: 'present',
         attendanceHistory: { '04/11/2026': 'present' },
         pricingType: 'per_session',
-        pricePerSession: 120000,
+        pricePerSession: defaultFee,
         monthlyFixedPrice: 0,
         discountOrExtra: 0,
         paidAmount: 0
@@ -2085,6 +2463,7 @@
       // Thử lưu lên Supabase nếu có cấu trúc bảng
       try {
         await client.from('students').insert([{
+          class_id: currentClassId,
           student_name: name,
           parent_phone: phone,
           school: school
@@ -2098,268 +2477,307 @@
     }
 
     // =========================================================
-    // MODAL GIAO BÀI TẬP & NHẬN XÉT MỚI
+    // RENDER TAB 4: HỌC PHÍ CHI TIẾT
     // =========================================================
-    function openNewHomeworkModal() {
-      document.getElementById('newHwTitle').value = '';
-      document.getElementById('newHwLessonNote').value = '';
-      document.getElementById('newHwDeadline').value = '';
-      document.getElementById('newHwContent').value = '';
-      openModal('modalNewHomework');
-    }
+    function renderFinanceTab() {
+      let totalExpected = 0;
+      let totalCollected = 0;
+      let totalDebt = 0;
 
-    function handleCreateHomework(e) {
-      e.preventDefault();
-      const title = document.getElementById('newHwTitle').value.trim();
-      const note = document.getElementById('newHwLessonNote').value.trim() || 'Bài tập rèn luyện';
-      const deadline = document.getElementById('newHwDeadline').value;
-      const content = document.getElementById('newHwContent').value.trim();
+      const tbody = document.getElementById('financeTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
 
-      const initialSubs = {};
-      students.forEach(s => {
-        initialSubs[s.id] = { submitted: false, score: null, feedback: '' };
+      students.forEach(student => {
+        const fee = calculateStudentFee(student);
+        totalExpected += fee.finalAmount;
+        totalCollected += fee.paid;
+        if (fee.remaining > 0) totalDebt += fee.remaining;
+
+        const isSelected = selectedStudentIds.includes(student.id);
+        const shortName = getShortName(student.name);
+
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-slate-50 transition ${isSelected ? 'bg-blue-50/40' : ''}`;
+        tr.innerHTML = `
+          <td class="p-3 text-center">
+            <input
+              type="checkbox"
+              ${isSelected ? 'checked' : ''}
+              onchange="toggleSelectStudent('${student.id}', this.checked)"
+              class="rounded text-blue-600 cursor-pointer"
+            />
+          </td>
+          <td class="py-3 px-3">
+            <button
+              onclick="openStudentDetailModal('${student.id}')"
+              class="font-black text-slate-900 text-left hover:text-blue-600 hover:underline block leading-tight"
+            >
+              ${shortName}
+            </button>
+            <span class="text-[10px] text-slate-400 font-mono">${student.name} • ${student.parentPhone || ''}</span>
+          </td>
+          <td class="py-3 px-3">
+            <span class="font-extrabold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+              ${fee.presentCount} buổi
+            </span>
+          </td>
+          <td class="py-3 px-3">
+            ${student.pricingType === 'monthly' ? `
+              <div><span class="font-bold text-slate-700">Trọn gói:</span> ${Number(student.monthlyFixedPrice).toLocaleString('vi-VN')} đ/tháng</div>
+            ` : `
+              <div><span class="font-bold text-slate-700">${Number(student.pricePerSession).toLocaleString('vi-VN')} đ/buổi</span></div>
+            `}
+            ${student.discountOrExtra !== 0 ? `
+              <span class="text-[11px] block font-medium ${student.discountOrExtra > 0 ? 'text-rose-600' : 'text-emerald-600'}">
+                ${student.discountOrExtra > 0 ? `+ Phụ thu: ${student.discountOrExtra.toLocaleString('vi-VN')}đ` : `- Giảm giá: ${Math.abs(student.discountOrExtra).toLocaleString('vi-VN')}đ`}
+              </span>
+            ` : ''}
+          </td>
+          <td class="py-3 px-3 font-extrabold text-slate-900">
+            ${fee.finalAmount.toLocaleString('vi-VN')} đ
+          </td>
+          <td class="py-3 px-3 font-bold text-emerald-700">
+            ${fee.paid.toLocaleString('vi-VN')} đ
+          </td>
+          <td class="py-3 px-3">
+            ${fee.remaining > 0 ? `
+              <span class="font-extrabold text-rose-600">${fee.remaining.toLocaleString('vi-VN')} đ</span>
+            ` : `
+              <span class="text-slate-400 font-medium">0 đ</span>
+            `}
+          </td>
+          <td class="py-3 px-3 text-center">
+            ${fee.isFullyPaid ? `
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">Đã nộp đủ</span>
+            ` : fee.paid > 0 ? `
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">Thu 1 phần</span>
+            ` : `
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800">Chưa nộp</span>
+            `}
+          </td>
+          <td class="py-3 px-3 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <button
+                onclick="openPartialPaymentModal('${student.id}')"
+                title="Thu một phần tiền"
+                class="px-2 py-1 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-300 font-bold text-[11px] flex items-center gap-1 transition"
+              >
+                <i data-lucide="coins" class="w-3 h-3 text-amber-600"></i>
+                <span class="hidden sm:inline">Thu 1 phần</span>
+              </button>
+
+              ${fee.isFullyPaid ? `
+                <button
+                  onclick="handleTogglePaymentStatus('${student.id}')"
+                  title="Hủy thu tiền"
+                  class="px-2 py-1 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-bold text-[11px] flex items-center gap-1 transition"
+                >
+                  <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                  <span>Hủy thu</span>
+                </button>
+              ` : `
+                <button
+                  onclick="handleTogglePaymentStatus('${student.id}')"
+                  title="Đã thu đủ"
+                  class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 font-bold text-[11px] flex items-center gap-1 shadow-sm transition"
+                >
+                  <i data-lucide="check" class="w-3 h-3"></i>
+                  <span>Đã thu đủ</span>
+                </button>
+              `}
+
+              <button
+                onclick="openEditIndividualFeeModal('${student.id}')"
+                title="Chỉnh sửa học phí em này"
+                class="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
+              >
+                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+              </button>
+
+              <button
+                onclick="openZaloInvoiceModal('${student.id}')"
+                title="Tạo tin nhắn Zalo gửi phụ huynh"
+                class="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
+              >
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
 
-      const newHw = {
-        id: `BT0${homeworks.length + 1}`,
-        title,
-        lessonNote: note,
-        deadline,
-        content,
-        submissions: initialSubs
-      };
+      document.getElementById('statTotalExpectedFee').textContent = `${totalExpected.toLocaleString('vi-VN')} đ`;
+      document.getElementById('statTotalCollectedFee').textContent = `${totalCollected.toLocaleString('vi-VN')} đ`;
+      document.getElementById('statTotalUnpaidFee').textContent = `${totalDebt.toLocaleString('vi-VN')} đ`;
 
-      homeworks.unshift(newHw);
-      closeModal('modalNewHomework');
-      renderAll();
-    }
-
-    function openNewRemarkModal() {
-      const select = document.getElementById('newRemarkStudentSelect');
-      select.innerHTML = '';
-      students.forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = `${s.name} (${s.school})`;
-        select.appendChild(opt);
-      });
-      document.getElementById('newRemarkContent').value = '';
-      openModal('modalNewRemark');
-    }
-
-    function handleCreateRemark(e) {
-      e.preventDefault();
-      const studentId = document.getElementById('newRemarkStudentSelect').value;
-      const understanding = document.getElementById('newRemarkUnderstanding').value;
-      const content = document.getElementById('newRemarkContent').value.trim();
-
-      const newRemark = {
-        id: `NX0${remarks.length + 1}`,
-        studentId,
-        date: '04/11/2026',
-        sessionName: 'Buổi học ngày 04/11/2026',
-        understanding,
-        content,
-        parentReply: '',
-        replyDate: null
-      };
-
-      remarks.unshift(newRemark);
-      closeModal('modalNewRemark');
-      renderAll();
-    }
-
-    // =========================================================
-    // CHECKBOX CHỌN HỌC SINH TÍNH TIỀN HÀNG LOẠT
-    // =========================================================
-    function toggleSelectStudent(id, checked) {
-      if (checked) {
-        if (!selectedStudentIds.includes(id)) selectedStudentIds.push(id);
+      document.getElementById('selectedStudentsCountDisplay').textContent = selectedStudentIds.length;
+      document.getElementById('btnApplyBatchSelectedText').textContent = `Áp dụng cho (${selectedStudentIds.length}) em đã chọn`;
+      const btnBatch = document.getElementById('btnApplyBatchSelected');
+      if (selectedStudentIds.length > 0) {
+        btnBatch.disabled = false;
+        btnBatch.className = "px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer";
       } else {
-        selectedStudentIds = selectedStudentIds.filter(item => item !== id);
+        btnBatch.disabled = true;
+        btnBatch.className = "px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-100 text-slate-400 cursor-not-allowed";
       }
-      renderFinanceTab();
+
       updateSelectAllCheckboxState();
-    }
-
-    function toggleSelectAllStudents(checked) {
-      if (checked) {
-        selectedStudentIds = students.map(s => s.id);
-      } else {
-        selectedStudentIds = [];
-      }
-      renderFinanceTab();
-    }
-
-    function updateSelectAllCheckboxState() {
-      const cb = document.getElementById('selectAllCheckbox');
-      if (cb) {
-        cb.checked = selectedStudentIds.length === students.length && students.length > 0;
-      }
-    }
-
-    // =========================================================
-    // TOAST HOÀN TÁC (UNDO TOAST)
-    // =========================================================
-    function showUndoToast(action) {
-      lastUndoAction = action;
-      const toast = document.getElementById('undoToast');
-      const msg = document.getElementById('undoToastMessage');
-      msg.textContent = action.message;
-      toast.classList.remove('hidden');
-
-      if (undoToastTimer) clearTimeout(undoToastTimer);
-      undoToastTimer = setTimeout(() => {
-        hideUndoToast();
-      }, 6500);
       lucide.createIcons();
     }
 
-    function hideUndoToast() {
-      document.getElementById('undoToast').classList.add('hidden');
-      lastUndoAction = null;
-    }
-
-    function handleUndoPayment() {
-      if (!lastUndoAction) return;
-      const student = students.find(s => s.id === lastUndoAction.studentId);
-      if (student) {
-        student.paidAmount = lastUndoAction.previousAmount;
-        renderAll();
-      }
-      hideUndoToast();
-    }
-
     // =========================================================
-    // TIỆN ÍCH MODAL
+    // RENDER TAB 2: BÀI TẬP VỀ NHÀ
     // =========================================================
-    function openModal(modalId) {
-      document.getElementById(modalId).classList.remove('hidden');
-      lucide.createIcons();
-    }
+    function renderHomeworkTab() {
+      const container = document.getElementById('homeworkListContainer');
+      if (!container) return;
+      container.innerHTML = '';
 
-    function closeModal(modalId) {
-      document.getElementById(modalId).classList.add('hidden');
-    }
+      const classHws = homeworks.filter(h => !h.classId || h.classId === currentClassId);
+      document.getElementById('tabBadgeHomework').textContent = classHws.length;
 
-    function onClassChange(val) {
-      currentClassId = val;
-      updateClassFeeBadge();
-      renderAll();
-    }
-
-    function updateClassFeeBadge() {
-      const cls = classesList.find(c => c.id === currentClassId);
-      const fee = cls ? Number(cls.fee_per_session || 120000) : 120000;
-      const textElem = document.getElementById('quickClassFeeText');
-      if (textElem) {
-        textElem.textContent = `${fee.toLocaleString('vi-VN')}đ/buổi`;
-      }
-    }
-
-    // MODAL TẠO LỚP & SỬA LỚP / HỌC PHÍ
-    function openCreateClassModal() {
-      document.getElementById('newClassNameInput').value = '';
-      document.getElementById('newClassFeeInput').value = 120000;
-      openModal('modalCreateClass');
-    }
-
-    async function handleCreateClass(e) {
-      e.preventDefault();
-      const name = document.getElementById('newClassNameInput').value.trim();
-      const fee = Number(document.getElementById('newClassFeeInput').value) || 120000;
-      if (!name) return;
-
-      const newId = `class_${Date.now()}`;
-      const newClass = {
-        id: newId,
-        class_name: name,
-        fee_per_session: fee
-      };
-
-      classesList.push(newClass);
-      currentClassId = newId;
-
-      // Lưu lên Supabase
-      try {
-        await client.from('classes').insert([{
-          class_name: name,
-          fee_per_session: fee
-        }]);
-      } catch (err) {
-        console.warn("Lỗi lưu lớp Supabase:", err);
+      if (classHws.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-xs text-slate-400 bg-white rounded-xl border border-slate-200">
+            Chưa có bài tập nào cho lớp này. Bấm "Tạo đề bài tập mới" để giao bài.
+          </div>
+        `;
+        return;
       }
 
-      renderClassSelectOptions();
-      closeModal('modalCreateClass');
-      updateClassFeeBadge();
-      renderAll();
-    }
+      classHws.forEach(hw => {
+        const subCount = Object.values(hw.submissions || {}).filter(s => s && s.submitted).length;
+        const total = students.length;
 
-    function openEditClassModal() {
-      const cls = classesList.find(c => c.id === currentClassId) || classesList[0];
-      if (!cls) return;
-      document.getElementById('editClassNameInput').value = cls.class_name;
-      document.getElementById('editClassFeeInput').value = cls.fee_per_session || 120000;
-      document.getElementById('syncStudentsFeeCheckbox').checked = true;
-      openModal('modalEditClass');
-    }
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm";
+        card.innerHTML = `
+          <div class="p-3.5 sm:p-4 border-b border-slate-100 bg-slate-50/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 font-mono">${hw.id}</span>
+                <span class="text-xs text-rose-600 font-semibold">Hạn: ${hw.deadline}</span>
+                <span class="text-xs text-slate-400">• ${hw.lessonNote}</span>
+                ${hw.attachedFile ? `
+                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                    <i data-lucide="paperclip" class="w-3 h-3"></i> ${hw.attachedFile}
+                  </span>
+                ` : ''}
+                ${hw.questions && hw.questions.length > 0 ? `
+                  <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    <i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> Đề tự chấm (${hw.questions.length} câu)
+                  </span>
+                ` : ''}
+              </div>
+              <h4 class="font-bold text-sm text-slate-900 mt-1">${hw.title}</h4>
+              <p class="text-xs text-slate-600 mt-0.5">${hw.content || ''}</p>
+            </div>
 
-    async function handleSaveClassSettings(e) {
-      e.preventDefault();
-      const cls = classesList.find(c => c.id === currentClassId);
-      if (!cls) return;
+            <div class="text-xs bg-white px-3 py-1.5 rounded-lg border border-slate-200 self-start sm:self-auto font-semibold shrink-0">
+              Tỉ lệ nộp: <strong class="text-blue-600">${subCount}/${total}</strong>
+            </div>
+          </div>
 
-      const newName = document.getElementById('editClassNameInput').value.trim();
-      const newFee = Number(document.getElementById('editClassFeeInput').value) || 120000;
-      const syncStudents = document.getElementById('syncStudentsFeeCheckbox').checked;
-
-      cls.class_name = newName;
-      cls.fee_per_session = newFee;
-
-      // Cập nhật cả học phí của học sinh nếu được chọn
-      if (syncStudents) {
-        students.forEach(s => {
-          if (s.pricingType === 'per_session') {
-            s.pricePerSession = newFee;
-          }
-        });
-      }
-
-      // Cập nhật Supabase
-      try {
-        await client.from('classes').update({
-          class_name: newName,
-          fee_per_session: newFee
-        }).eq('id', cls.id);
-      } catch (err) {
-        console.warn("Lỗi cập nhật lớp Supabase:", err);
-      }
-
-      renderClassSelectOptions();
-      closeModal('modalEditClass');
-      updateClassFeeBadge();
-      renderAll();
-    }
-
-    function renderClassSelectOptions() {
-      const select = document.getElementById('classListSelect');
-      if (!select) return;
-      select.innerHTML = '';
-      classesList.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = `${c.class_name} • ${Number(c.fee_per_session).toLocaleString('vi-VN')}đ/buổi`;
-        opt.className = 'text-slate-900';
-        if (c.id === currentClassId) opt.selected = true;
-        select.appendChild(opt);
+          <div class="p-3 sm:p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+            ${students.map(s => {
+              const sub = (hw.submissions && hw.submissions[s.id]) || { submitted: false };
+              const shortName = getShortName(s.name);
+              return `
+                <div class="p-2 rounded-lg border border-slate-100 bg-slate-50 flex items-center justify-between">
+                  <div class="min-w-0 pr-1">
+                    <div class="text-xs font-bold text-slate-800 truncate">${shortName}</div>
+                    <div class="text-[10px]">
+                      ${sub.submitted ? '<span class="text-emerald-600 font-semibold">✓ Đã làm</span>' : '<span class="text-rose-500 font-semibold">Chưa làm</span>'}
+                    </div>
+                  </div>
+                  ${sub.score !== null && sub.score !== undefined ? `
+                    <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 font-black text-xs rounded">${sub.score}đ</span>
+                  ` : sub.submitted ? `
+                    <span class="text-[10px] text-amber-700 font-medium">Chờ chấm</span>
+                  ` : '<span class="text-slate-300">-</span>'}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+        container.appendChild(card);
       });
-      updateClassFeeBadge();
+
+      lucide.createIcons();
     }
 
     // =========================================================
-    // CHUYỂN ĐỔI TAB & VAI TRÒ (TEACHER / PARENT)
+    // RENDER TAB 3: NHẬN XÉT BUỔI HỌC
     // =========================================================
+    function renderRemarksTab() {
+      const container = document.getElementById('remarksListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const classRemarks = remarks.filter(r => !r.classId || r.classId === currentClassId);
+
+      if (classRemarks.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-xs text-slate-400 bg-white rounded-xl border border-slate-200">
+            Chưa có nhận xét nào cho lớp này. Bấm "Viết nhận xét buổi này" để gửi đánh giá tới phụ huynh.
+          </div>
+        `;
+        return;
+      }
+
+      classRemarks.forEach(rm => {
+        const student = students.find(s => s.id === rm.studentId);
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-2.5";
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="font-extrabold text-slate-900 text-sm">${getShortName(student?.name || 'Học sinh')}</span>
+                <span class="text-xs text-slate-400">(${student?.name || ''})</span>
+              </div>
+              <div class="text-xs text-slate-500 mt-0.5">${rm.sessionName} • ${rm.date}</div>
+            </div>
+            <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold border border-blue-200 text-[11px]">
+              ${rm.understanding}
+            </span>
+          </div>
+
+          <div class="p-3 bg-slate-50 rounded-lg text-xs text-slate-700 border border-slate-100 leading-relaxed">
+            ${rm.content}
+          </div>
+
+          ${rm.parentReply ? `
+            <div class="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-100 text-xs text-emerald-900">
+              <div class="font-bold text-[11px] text-emerald-700 flex justify-between">
+                <span>Phụ huynh phản hồi:</span>
+                <span class="font-normal text-slate-400">${rm.replyDate || ''}</span>
+              </div>
+              <p class="italic mt-0.5">"${rm.parentReply}"</p>
+            </div>
+          ` : ''}
+        `;
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    // =========================================================
+    // CÁC HÀM TIỆN ÍCH MODAL, ĐIỀU HƯỚNG VÀ THAO TÁC LỚP HỌC
+    // =========================================================
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
     function switchRole(role) {
       currentRole = role;
       const btnTeacher = document.getElementById('roleBtnTeacher');
@@ -2374,86 +2792,505 @@
         btnParent.className = "px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all flex items-center space-x-1 text-slate-600 hover:text-slate-900 active:scale-95";
         teacherView.classList.remove('hidden');
         parentView.classList.add('hidden');
-        if (classSelector) classSelector.classList.remove('hidden');
-        if (parentSelector) parentSelector.classList.add('hidden');
+        classSelector.classList.remove('hidden');
+        parentSelector.classList.add('hidden');
       } else {
         btnParent.className = "px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all flex items-center space-x-1 bg-white text-emerald-700 shadow-xs active:scale-95";
         btnTeacher.className = "px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all flex items-center space-x-1 text-slate-600 hover:text-slate-900 active:scale-95";
         teacherView.classList.add('hidden');
         parentView.classList.remove('hidden');
-        if (classSelector) classSelector.classList.add('hidden');
-        if (parentSelector) parentSelector.classList.remove('hidden');
+        classSelector.classList.add('hidden');
+        parentSelector.classList.remove('hidden');
+        renderParentSelectOptions();
         renderParentView();
+      }
+      lucide.createIcons();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      const tabs = ['attendance', 'homework', 'remarks', 'finance'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        const content = document.getElementById(`tabContent-${t}`);
+        if (t === tab) {
+          btn.className = "tab-btn flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all whitespace-nowrap bg-blue-600 text-white shadow-xs active:scale-95 shrink-0";
+          content.classList.remove('hidden');
+        } else {
+          btn.className = "tab-btn flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm transition-all whitespace-nowrap text-slate-600 hover:bg-slate-100 active:scale-95 shrink-0";
+          content.classList.add('hidden');
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function updateClassFeeBadge() {
+      const cls = classesList.find(c => c.id === currentClassId);
+      const feeTextEl = document.getElementById('quickClassFeeText');
+      if (feeTextEl) {
+        const fee = cls ? (cls.fee_per_session || 45000) : 45000;
+        feeTextEl.textContent = `${Number(fee).toLocaleString('vi-VN')}đ/buổi`;
       }
     }
 
-    function switchTab(tabName) {
-      currentTab = tabName;
-      const tabs = ['attendance', 'homework', 'remarks', 'finance'];
+    function renderClassSelectOptions() {
+      const select = document.getElementById('classListSelect');
+      if (!select) return;
+      select.innerHTML = '';
+      
+      const defaultOpt = document.createElement('option');
+      defaultOpt.value = "";
+      defaultOpt.textContent = "-- Chọn lớp để xem danh sách HS --";
+      defaultOpt.className = "bg-slate-900 text-slate-400";
+      if (!isClassSelected) defaultOpt.selected = true;
+      select.appendChild(defaultOpt);
 
-      tabs.forEach(t => {
-        const content = document.getElementById(`tabContent-${t}`);
-        const btn = document.getElementById(`tabBtn-${t}`);
-        if (!content || !btn) return;
-
-        if (t === tabName) {
-          content.classList.remove('hidden');
-          btn.className = "tab-btn flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all whitespace-nowrap bg-blue-600 text-white shadow-xs active:scale-95 shrink-0";
-        } else {
-          content.classList.add('hidden');
-          btn.className = "tab-btn flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl font-semibold text-xs sm:text-sm transition-all whitespace-nowrap text-slate-600 hover:bg-slate-100 active:scale-95 shrink-0";
-        }
+      classesList.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.class_name}`;
+        opt.className = "bg-slate-900 text-white";
+        if (isClassSelected && c.id === currentClassId) opt.selected = true;
+        select.appendChild(opt);
       });
+      updateClassFeeBadge();
+    }
+
+    function onClassChange(newClassId, forceOpen = true) {
+      if (!newClassId) {
+        hideStudentListAndShowSchedule();
+        return;
+      }
+      isClassSelected = forceOpen;
+      currentClassId = newClassId;
+      const select = document.getElementById('classListSelect');
+      if (select && select.value !== newClassId) {
+        select.value = newClassId;
+      }
+      if (!classStudentsMap[newClassId]) {
+        classStudentsMap[newClassId] = [];
+      }
+      students = classStudentsMap[newClassId];
+      selectedStudentIds = [];
+      renderAll();
+
+      if (isClassSelected) {
+        const detailSec = document.getElementById('attendanceDetailSection');
+        if (detailSec) {
+          detailSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+
+    // Modal Cài đặt & Tạo lớp
+    function openEditClassModal() {
+      const cls = classesList.find(c => c.id === currentClassId);
+      if (!cls) return;
+      document.getElementById('editClassNameInput').value = cls.class_name;
+      document.getElementById('editClassFeeInput').value = cls.fee_per_session || 45000;
+      openModal('modalEditClass');
+    }
+
+    function openCreateClassModal() {
+      document.getElementById('newClassNameInput').value = '';
+      document.getElementById('newClassFeeInput').value = 45000;
+      openModal('modalCreateClass');
+    }
+
+    async function handleCreateClass(e) {
+      e.preventDefault();
+      const name = document.getElementById('newClassNameInput').value.trim();
+      const fee = Number(document.getElementById('newClassFeeInput').value) || 45000;
+      if (!name) return;
+
+      const newId = `class_eng_${Date.now()}`;
+      const newClass = {
+        id: newId,
+        class_name: name,
+        fee_per_session: fee,
+        teacher: 'Cô Diễm',
+        dayOfWeek: 'Linh hoạt',
+        schedule: '18:00 - 19:30',
+        room: 'Phòng 203',
+        badge: 'Lớp mới',
+        isToday: false
+      };
+
+      classesList.push(newClass);
+      classStudentsMap[newId] = [];
+      currentClassId = newId;
+      students = classStudentsMap[newId];
+
+      try {
+        await client.from('classes').insert([{
+          id: newId,
+          class_name: name,
+          fee_per_session: fee
+        }]);
+      } catch (err) {
+        console.warn("Lưu lớp local:", err);
+      }
+
+      closeModal('modalCreateClass');
+      renderClassSelectOptions();
+      renderAll();
+    }
+
+    async function handleSaveClassSettings(e) {
+      e.preventDefault();
+      const name = document.getElementById('editClassNameInput').value.trim();
+      const fee = Number(document.getElementById('editClassFeeInput').value) || 45000;
+      const syncStudents = document.getElementById('syncStudentsFeeCheckbox').checked;
+
+      const cls = classesList.find(c => c.id === currentClassId);
+      if (cls) {
+        cls.class_name = name;
+        cls.fee_per_session = fee;
+      }
+
+      if (syncStudents) {
+        students.forEach(s => {
+          if (s.pricingType !== 'monthly') {
+            s.pricePerSession = fee;
+          }
+        });
+      }
+
+      try {
+        await client.from('classes').update({
+          class_name: name,
+          fee_per_session: fee
+        }).eq('id', currentClassId);
+      } catch (err) {
+        console.warn("Cập nhật lớp local:", err);
+      }
+
+      closeModal('modalEditClass');
+      renderClassSelectOptions();
+      renderAll();
+    }
+
+    // Quản lý checkbox học sinh
+    function toggleSelectStudent(id, checked) {
+      if (checked) {
+        if (!selectedStudentIds.includes(id)) selectedStudentIds.push(id);
+      } else {
+        selectedStudentIds = selectedStudentIds.filter(x => x !== id);
+      }
+      renderFinanceTab();
+    }
+
+    function toggleSelectAllStudents(checked) {
+      if (checked) {
+        selectedStudentIds = students.map(s => s.id);
+      } else {
+        selectedStudentIds = [];
+      }
+      renderFinanceTab();
+    }
+
+    function updateSelectAllCheckboxState() {
+      const selectAll = document.getElementById('selectAllCheckbox');
+      if (!selectAll) return;
+      if (students.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+      } else if (selectedStudentIds.length === students.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+      } else if (selectedStudentIds.length > 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+      } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+      }
+    }
+
+    // Toggle thu tiền nhanh & Toast hoàn tác
+    function handleTogglePaymentStatus(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      const fee = calculateStudentFee(student);
+      const wasPaid = fee.isFullyPaid;
+      const oldAmount = student.paidAmount;
+
+      student.paidAmount = wasPaid ? 0 : fee.finalAmount;
+
+      lastUndoAction = {
+        studentId: student.id,
+        previousPaidAmount: oldAmount,
+        message: wasPaid ? `Đã hủy thu tiền cho ${getShortName(student.name)}` : `Đã thu đủ ${fee.finalAmount.toLocaleString('vi-VN')}đ cho ${getShortName(student.name)}`
+      };
+
+      showUndoToast(lastUndoAction.message);
+      renderAll();
+    }
+
+    function showUndoToast(msg) {
+      const toast = document.getElementById('undoToast');
+      const msgEl = document.getElementById('undoToastMessage');
+      if (!toast || !msgEl) return;
+      msgEl.textContent = msg;
+      toast.classList.remove('hidden');
+
+      if (undoToastTimer) clearTimeout(undoToastTimer);
+      undoToastTimer = setTimeout(() => {
+        hideUndoToast();
+      }, 5000);
+    }
+
+    function hideUndoToast() {
+      const toast = document.getElementById('undoToast');
+      if (toast) toast.classList.add('hidden');
+    }
+
+    function handleUndoPayment() {
+      if (!lastUndoAction) return;
+      const student = students.find(s => s.id === lastUndoAction.studentId);
+      if (student) {
+        student.paidAmount = lastUndoAction.previousPaidAmount;
+      }
+      hideUndoToast();
+      lastUndoAction = null;
+      renderAll();
+    }
+
+    // Thu 1 phần
+    function openPartialPaymentModal(studentId) {
+      const student = students.find(s => s.id === studentId);
+      if (!student) return;
+      partialPaymentStudent = student;
+      const fee = calculateStudentFee(student);
+
+      document.getElementById('partialModalStudentName').textContent = `${student.name} (${student.school})`;
+      document.getElementById('partialModalTotalFee').textContent = `${fee.finalAmount.toLocaleString('vi-VN')} đ`;
+      document.getElementById('partialModalPreviouslyPaid').textContent = `${(student.paidAmount || 0).toLocaleString('vi-VN')} đ`;
+
+      const input = document.getElementById('partialPaymentAmountInput');
+      input.value = student.paidAmount > 0 ? student.paidAmount : Math.round(fee.finalAmount / 2);
+      updatePartialModalRemaining();
+      openModal('modalPartialPayment');
+    }
+
+    function updatePartialModalRemaining() {
+      if (!partialPaymentStudent) return;
+      const fee = calculateStudentFee(partialPaymentStudent);
+      const entered = Number(document.getElementById('partialPaymentAmountInput').value) || 0;
+      const rem = Math.max(0, fee.finalAmount - entered);
+      document.getElementById('partialModalRemainingCalculated').textContent = `${rem.toLocaleString('vi-VN')} đ`;
+    }
+
+    function setPartialInputPercent(percent) {
+      if (!partialPaymentStudent) return;
+      const fee = calculateStudentFee(partialPaymentStudent);
+      document.getElementById('partialPaymentAmountInput').value = Math.round(fee.finalAmount * percent);
+      updatePartialModalRemaining();
+    }
+
+    function setPartialInputValue(val) {
+      document.getElementById('partialPaymentAmountInput').value = val;
+      updatePartialModalRemaining();
+    }
+
+    function handleSavePartialPayment(e) {
+      e.preventDefault();
+      if (!partialPaymentStudent) return;
+      const entered = Number(document.getElementById('partialPaymentAmountInput').value) || 0;
+      const oldAmount = partialPaymentStudent.paidAmount;
+      partialPaymentStudent.paidAmount = entered;
+
+      lastUndoAction = {
+        studentId: partialPaymentStudent.id,
+        previousPaidAmount: oldAmount,
+        message: `Đã cập nhật thu: ${entered.toLocaleString('vi-VN')}đ cho ${getShortName(partialPaymentStudent.name)}`
+      };
+
+      closeModal('modalPartialPayment');
+      showUndoToast(lastUndoAction.message);
+      renderAll();
+    }
+
+    // Render Phụ Huynh
+    function renderParentSelectOptions() {
+      const select = document.getElementById('parentStudentSelect');
+      if (!select) return;
+      select.innerHTML = '';
+      students.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} (${s.school})`;
+        if (s.id === selectedParentStudentId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function onParentStudentChange(val) {
+      selectedParentStudentId = val;
+      renderParentView();
+    }
+
+    function renderParentView() {
+      const student = students.find(s => s.id === selectedParentStudentId) || students[0];
+      if (!student) return;
+
+      const summary = getAttendanceSummary(student);
+      const fee = calculateStudentFee(student);
+
+      const nameEl = document.getElementById('parentStudentFullNameDisplay');
+      if (nameEl) nameEl.textContent = `${student.name} (${student.school})`;
+
+      const subEl = document.getElementById('parentStudentSubtextDisplay');
+      if (subEl) subEl.textContent = `PH: ${student.parentName || 'Phụ huynh'} • ${student.parentPhone || 'Chưa có SĐT'}`;
+
+      const todayBadge = document.getElementById('parentTodayStatusBadge');
+      if (todayBadge) {
+        if (student.status === 'present') {
+          todayBadge.innerHTML = `<span class="px-3 py-1.5 rounded-lg text-xs font-black bg-emerald-100 text-emerald-800 flex items-center gap-1.5"><i data-lucide="check" class="w-4 h-4"></i> Hôm nay ĐI HỌC</span>`;
+        } else {
+          todayBadge.innerHTML = `<span class="px-3 py-1.5 rounded-lg text-xs font-black bg-rose-100 text-rose-800 flex items-center gap-1.5"><i data-lucide="x" class="w-4 h-4"></i> Hôm nay VẮNG</span>`;
+        }
+      }
+
+      const feeBadge = document.getElementById('parentFeeStatusBadge');
+      if (feeBadge) {
+        feeBadge.className = `text-xs px-2.5 py-0.5 rounded-full font-bold ${fee.isFullyPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`;
+        feeBadge.textContent = fee.isFullyPaid ? 'Đã nộp đủ' : 'Chưa nộp';
+      }
+
+      document.getElementById('parentPresentCountDisplay').textContent = `${summary.presentCount} buổi`;
+      document.getElementById('parentTotalFeeDisplay').textContent = `${fee.finalAmount.toLocaleString('vi-VN')} đ`;
+      document.getElementById('parentPaidFeeDisplay').textContent = `${fee.paid.toLocaleString('vi-VN')} đ`;
+      document.getElementById('parentRemainingFeeDisplay').textContent = `${fee.remaining.toLocaleString('vi-VN')} đ`;
+
+      // Lịch buổi học
+      const grid = document.getElementById('parentSessionsGrid');
+      if (grid) {
+        grid.innerHTML = '';
+        SESSION_DATES.forEach((dateStr, idx) => {
+          const isPres = student.attendanceHistory?.[dateStr] === 'present';
+          const card = document.createElement('div');
+          card.className = `p-3 rounded-xl border text-xs flex flex-col justify-between ${isPres ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950' : 'bg-rose-50/70 border-rose-200 text-rose-950'}`;
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-700">Buổi ${idx + 1}</span>
+              <i data-lucide="${isPres ? 'check' : 'x'}" class="w-4 h-4 text-${isPres ? 'emerald' : 'rose'}-600"></i>
+            </div>
+            <div class="font-mono text-xs text-slate-600 mt-1">${dateStr}</div>
+            <div class="mt-2 font-bold text-[11px] text-${isPres ? 'emerald' : 'rose'}-700">
+              ${isPres ? '✓ Đi học' : '✗ Vắng'}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      // Bài tập phụ huynh
+      const hwContainer = document.getElementById('parentHomeworkList');
+      if (hwContainer) {
+        hwContainer.innerHTML = '';
+        const classHws = homeworks.filter(h => !h.classId || h.classId === currentClassId);
+        if (classHws.length === 0) {
+          hwContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">Chưa có bài tập nào.</div>`;
+        } else {
+          classHws.forEach(hw => {
+            const sub = (hw.submissions && hw.submissions[student.id]) || { submitted: false };
+            const div = document.createElement('div');
+            div.className = "p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+            div.innerHTML = `
+              <div>
+                <div class="text-xs font-bold text-slate-900">${hw.title}</div>
+                <p class="text-xs text-slate-500 mt-0.5">${hw.content || ''}</p>
+                <div class="text-[11px] text-rose-600 font-semibold mt-1">Hạn nộp: ${hw.deadline}</div>
+                ${sub.feedback ? `<div class="mt-1.5 text-xs text-slate-700 bg-white p-2 rounded border border-slate-200"><strong>Cô nhận xét:</strong> "${sub.feedback}"</div>` : ''}
+              </div>
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <button
+                  type="button"
+                  onclick="openTakeQuizModal('${hw.id}', '${student.id}')"
+                  class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs shadow-xs"
+                >
+                  ${sub.submitted ? 'Xem lại bài làm' : 'Làm bài ngay'}
+                </button>
+              </div>
+            `;
+            hwContainer.appendChild(div);
+          });
+        }
+      }
+
+      // Nhận xét phụ huynh
+      const remContainer = document.getElementById('parentRemarksList');
+      if (remContainer) {
+        remContainer.innerHTML = '';
+        const studentRemarks = remarks.filter(r => r.studentId === student.id);
+        if (studentRemarks.length === 0) {
+          remContainer.innerHTML = `<div class="p-4 text-center text-xs text-slate-400">Chưa có nhận xét nào cho con.</div>`;
+        } else {
+          studentRemarks.forEach(rm => {
+            const div = document.createElement('div');
+            div.className = "p-3.5 rounded-xl border border-slate-200 bg-white space-y-2";
+            div.innerHTML = `
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-slate-800">${rm.sessionName}</span>
+                <span class="text-slate-400">${rm.date}</span>
+              </div>
+              <div class="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100">${rm.content}</div>
+              ${rm.parentReply ? `
+                <div class="text-xs bg-emerald-50/70 p-2.5 rounded-lg border border-emerald-100">
+                  <span class="font-bold text-emerald-800">Phụ huynh đã nhắn: </span>
+                  <span class="italic text-slate-700">"${rm.parentReply}"</span>
+                </div>
+              ` : ''}
+            `;
+            remContainer.appendChild(div);
+          });
+        }
+      }
+
+      lucide.createIcons();
     }
 
     // =========================================================
     // KHỞI TẠO VÀ TẢI DỮ LIỆU TỪ SUPABASE (CÓ FALLBACK DỰ PHÒNG)
     // =========================================================
     async function initSupabaseData() {
+      // Đảm bảo nạp dữ liệu lớp mặc định ban đầu
+      if (!currentClassId || !classStudentsMap[currentClassId]) {
+        currentClassId = 'class_eng_8a';
+      }
+      students = classStudentsMap[currentClassId] || [];
+      isClassSelected = false; // Luôn mặc định chỉ hiện Thời Khóa Biểu khi vừa vào
+      renderClassSelectOptions();
+      renderAll();
+
       try {
-        // Tải danh sách lớp từ Supabase
         const { data: classesData, error: classErr } = await client
           .from('classes')
           .select('*')
           .order('created_at', { ascending: false });
 
         if (!classErr && classesData && classesData.length > 0) {
-          classesList = classesData.map(c => ({
-            id: c.id,
-            class_name: c.class_name,
-            fee_per_session: Number(c.fee_per_session || 120000)
-          }));
-          currentClassId = classesList[0].id;
-        }
-
-        renderClassSelectOptions();
-
-        // Tải danh sách học sinh từ Supabase
-        const { data: remoteStudents, error: studentErr } = await client
-          .from('students')
-          .select('*');
-
-        if (!studentErr && remoteStudents && remoteStudents.length > 0) {
-          // Kết hợp danh sách từ Supabase với bộ nhớ local hiện tại
-          remoteStudents.forEach((rs, i) => {
-            const exists = students.find(s => s.id === rs.id || s.name === rs.student_name);
+          classesData.forEach(c => {
+            const exists = classesList.find(x => x.id === c.id || x.class_name === c.class_name);
             if (!exists) {
-              students.push({
-                id: rs.id || `HS0${students.length + 1}`,
-                name: rs.student_name || 'Học sinh mới',
-                school: rs.school || 'THCS',
-                parentName: rs.parent_name || 'Phụ huynh',
-                parentPhone: rs.parent_phone || '',
-                status: 'present',
-                attendanceHistory: { '04/11/2026': 'present' },
-                pricingType: 'per_session',
-                pricePerSession: 120000,
-                monthlyFixedPrice: 0,
-                discountOrExtra: 0,
-                paidAmount: 0
+              classesList.push({
+                id: c.id,
+                class_name: c.class_name,
+                code: 'TA-NEW',
+                fee_per_session: Number(c.fee_per_session || 45000),
+                teacher: 'Ms. Diễm',
+                days: ['Linh hoạt'],
+                timeSlot: '18:00 - 19:30',
+                room: 'P.101',
+                colorBg: 'bg-slate-100 border-slate-300 text-slate-950',
+                badgeColor: 'bg-slate-700 text-white',
+                isToday: false
               });
+              if (!classStudentsMap[c.id]) classStudentsMap[c.id] = [];
             }
           });
+          renderClassSelectOptions();
         }
       } catch (err) {
         console.warn("Chế độ Offline/Local fallback đang hoạt động:", err);
@@ -2463,24 +3300,32 @@
     }
 
     // =========================================================
-    // RENDER TOÀN BỘ ỨNG DỤNG
+    // RENDER TOÀN BỘ ỨNG DỤNG AN TOÀN (BẢO VỆ TỪNG TAB)
     // =========================================================
     function renderAll() {
-      updateClassFeeBadge();
-      renderAttendanceTab();
-      renderHomeworkTab();
-      renderRemarksTab();
-      renderFinanceTab();
-      if (currentRole === 'parent') {
-        renderParentView();
-      }
-      lucide.createIcons();
+      try { updateClassFeeBadge(); } catch (e) { console.error(e); }
+      try { renderAttendanceTab(); } catch (e) { console.error(e); }
+      try { renderHomeworkTab(); } catch (e) { console.error(e); }
+      try { renderRemarksTab(); } catch (e) { console.error(e); }
+      try { renderFinanceTab(); } catch (e) { console.error(e); }
+      try {
+        if (currentRole === 'parent') {
+          renderParentView();
+        }
+      } catch (e) { console.error(e); }
+      try {
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      } catch (e) { console.error(e); }
     }
 
-    // Tự động chạy khi mở web
-    window.onload = function () {
+    // Tự động chạy ngay lập tức khi vừa nạp trang không bị chậm trễ
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSupabaseData);
+    } else {
       initSupabaseData();
-    };
+    }
   </script>
 </body>
 </html>
