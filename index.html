@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pidi - Sổ Lớp Nhỏ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 max-w-md mx-auto">
+  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
+    <h1 class="text-xl font-bold text-slate-800">Pidi - Sổ Lớp Nhỏ</h1>
+    <p class="text-xs text-slate-500">Quản lý lớp học & điểm danh nhanh</p>
+  </div>
+
+  <!-- Form tạo lớp -->
+  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
+    <h2 class="font-semibold text-sm mb-2 text-slate-700">Tạo Lớp Mới</h2>
+    <input id="className" type="text" placeholder="Tên lớp (VD: Lớp Tiếng Anh)" class="w-full border p-2 rounded mb-2 text-sm">
+    <input id="classFee" type="number" placeholder="Học phí/buổi (VD: 50000)" class="w-full border p-2 rounded mb-2 text-sm">
+    <button onclick="createClass()" class="w-full bg-blue-600 text-white font-medium py-2 rounded text-sm hover:bg-blue-700">Tạo Lớp</button>
+  </div>
+
+  <!-- Thêm học sinh -->
+  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
+    <h2 class="font-semibold text-sm mb-2 text-slate-700">Thêm Học Sinh</h2>
+    <select id="classList" onchange="loadStudents()" class="w-full border p-2 rounded mb-2 text-sm"></select>
+    <input id="studentName" type="text" placeholder="Họ tên học sinh" class="w-full border p-2 rounded mb-2 text-sm">
+    <input id="parentPhone" type="text" placeholder="Số điện thoại phụ huynh" class="w-full border p-2 rounded mb-2 text-sm">
+    <button onclick="addStudent()" class="w-full bg-emerald-600 text-white font-medium py-2 rounded text-sm hover:bg-emerald-700">Thêm Vào Lớp</button>
+  </div>
+
+  <!-- Danh sách điểm danh hôm nay -->
+  <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-4">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="font-semibold text-sm text-slate-700">Điểm Danh Hôm Nay</h2>
+      <button onclick="loadStudents()" class="text-xs text-blue-600">Làm mới</button>
+    </div>
+    <div id="attendanceList" class="space-y-2 text-sm text-slate-600">
+      Chưa có học sinh nào.
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://gsjatlnmeynwllptqdqf.supabase.co";
+    const SUPABASE_ANON_KEY = "DIEN_PUBLISHABLE_KEY_VAO_DAY";
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function createClass() {
+      const name = document.getElementById('className').value;
+      const fee = document.getElementById('classFee').value;
+      if (!name) return alert("Vui lòng nhập tên lớp");
+      await client.from('classes').insert([{ class_name: name, fee_per_session: fee }]);
+      alert("Đã tạo lớp thành công!");
+      document.getElementById('className').value = '';
+      loadClasses();
+    }
+
+    async function loadClasses() {
+      const { data } = await client.from('classes').select('*');
+      const select = document.getElementById('classList');
+      select.innerHTML = '';
+      if (!data || data.length === 0) return;
+      data.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.class_name} (${Number(c.fee_per_session).toLocaleString()}đ/buổi)`;
+        select.appendChild(opt);
+      });
+      loadStudents();
+    }
+
+    async function addStudent() {
+      const classId = document.getElementById('classList').value;
+      const name = document.getElementById('studentName').value;
+      const phone = document.getElementById('parentPhone').value;
+      if (!name) return alert("Vui lòng nhập tên học sinh");
+      await client.from('students').insert([{ class_id: classId, student_name: name, parent_phone: phone }]);
+      alert("Đã thêm học sinh!");
+      document.getElementById('studentName').value = '';
+      document.getElementById('parentPhone').value = '';
+      loadStudents();
+    }
+
+    async function loadStudents() {
+      const classId = document.getElementById('classList').value;
+      if (!classId) return;
+      const { data: students } = await client.from('students').select('*').eq('class_id', classId);
+      const list = document.getElementById('attendanceList');
+      list.innerHTML = '';
+      if (!students || students.length === 0) {
+        list.innerHTML = '<p class="text-xs text-slate-400">Lớp chưa có học sinh nào</p>';
+        return;
+      }
+      students.forEach(s => {
+        const div = document.createElement('div');
+        div.className = "flex justify-between items-center p-2 bg-slate-50 border rounded";
+        div.innerHTML = `
+          <div>
+            <div class="font-medium text-slate-800">${s.student_name}</div>
+            <div class="text-xs text-slate-400">${s.parent_phone || 'Chưa có SĐT'}</div>
+          </div>
+          <button onclick="markPresent('${s.id}')" class="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium hover:bg-green-200">
+            ✓ Có mặt
+          </button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    async function markPresent(studentId) {
+      await client.from('attendances').insert([{ student_id: studentId, status: 'present' }]);
+      alert("Đã ghi nhận có mặt!");
+    }
+
+    loadClasses();
+  </script>
+</body>
+</html>
