@@ -1298,113 +1298,132 @@
 
     const DEFAULT_CLASSES_LIST = [
       {
-        id: 'class_ta_6_1',
-        class_name: 'LỚP TIẾNG ANH 6.1',
-        code: 'TA-6.1',
+        id: 'class_eng_6a',
+        class_name: 'Tiếng Anh 6A',
+        code: 'TA-6A',
         room: 'P.101',
         schedules: [
-          { day: 'Thứ 3', startTime: '19:30', endTime: '21:00' },
-          { day: 'Thứ 7', startTime: '09:30', endTime: '11:00' }
+          { day: 'Thứ 2', startTime: '18:00', endTime: '19:30' },
+          { day: 'Thứ 5', startTime: '18:00', endTime: '19:30' }
         ],
-        days: ['Thứ 3', 'Thứ 7'],
-        timeSlot: '19h30 - 21h00',
+        days: ['Thứ 2', 'Thứ 5'],
+        timeSlot: '18h00 - 19h30',
         colorBg: 'bg-[#e8fbf0] hover:bg-[#d5f8e3] border-[#6ee7b7] text-slate-900',
         badgeColor: 'bg-[#10b981] text-white',
         fee_per_session: 45000
       },
       {
-        id: 'class_ta_6_2',
-        class_name: 'LỚP TIẾNG ANH 6.2',
-        code: 'TA-6.2',
-        room: 'P.102',
+        id: 'class_eng_7a',
+        class_name: 'Tiếng Anh 7A',
+        code: 'TA-7A',
+        room: 'P.101',
         schedules: [
-          { day: 'Thứ 7', startTime: '14:30', endTime: '16:00' },
-          { day: 'Chủ Nhật', startTime: '16:30', endTime: '18:00' }
+          { day: 'Thứ 3', startTime: '18:00', endTime: '19:30' },
+          { day: 'Thứ 6', startTime: '18:00', endTime: '19:30' }
         ],
-        days: ['Thứ 7', 'Chủ Nhật'],
-        timeSlot: '14h30 - 16h00',
+        days: ['Thứ 3', 'Thứ 6'],
+        timeSlot: '18h00 - 19h30',
         colorBg: 'bg-[#fef9c3]/70 hover:bg-[#fef08a] border-[#facc15] text-slate-900',
         badgeColor: 'bg-[#f59e0b] text-white',
         fee_per_session: 45000
       },
       {
-        id: 'class_ta_5',
-        class_name: 'LỚP TIẾNG ANH 5',
-        code: 'TA-5',
-        room: 'P.201',
+        id: 'class_eng_8a',
+        class_name: 'Tiếng Anh 8A',
+        code: 'TA-8A',
+        room: 'P.101',
         schedules: [
-          { day: 'Thứ 4', startTime: '19:00', endTime: '21:00' },
-          { day: 'Chủ Nhật', startTime: '14:30', endTime: '16:30' }
+          { day: 'Thứ 4', startTime: '18:00', endTime: '19:30' },
+          { day: 'Thứ 7', startTime: '18:00', endTime: '19:30' }
         ],
-        days: ['Thứ 4', 'Chủ Nhật'],
-        timeSlot: '19h00 - 21h00',
+        days: ['Thứ 4', 'Thứ 7'],
+        timeSlot: '18h00 - 19h30',
         colorBg: 'bg-[#e0f2fe]/80 hover:bg-[#bae6fd] border-[#38bdf8] text-slate-900',
         badgeColor: 'bg-[#0284c7] text-white',
         fee_per_session: 45000
       },
       {
-        id: 'class_ta_4',
-        class_name: 'LỚP TIẾNG ANH 4',
-        code: 'TA-4',
-        room: 'P.202',
+        id: 'class_eng_exam10',
+        class_name: 'Tiếng Anh 9A (Vào 10)',
+        code: 'TA-9A',
+        room: 'P.201',
         schedules: [
-          { day: 'Thứ 7', startTime: '19:15', endTime: '21:15' },
-          { day: 'Chủ Nhật', startTime: '19:15', endTime: '21:15' }
+          { day: 'Thứ 2', startTime: '19:45', endTime: '21:15' },
+          { day: 'Thứ 5', startTime: '19:45', endTime: '21:15' }
         ],
-        days: ['Thứ 7', 'Chủ Nhật'],
-        timeSlot: '19h15 - 21h15',
+        days: ['Thứ 2', 'Thứ 5'],
+        timeSlot: '19h45 - 21h15',
         colorBg: 'bg-[#ffedd5]/80 hover:bg-[#fed7aa] border-[#fb923c] text-slate-900',
         badgeColor: 'bg-[#ea580c] text-white',
+        fee_per_session: 45000
+      },
+      {
+        id: 'class_eng_comm',
+        class_name: 'Giao Tiếp & Phát Âm',
+        code: 'TA-GT',
+        room: 'P.201',
+        schedules: [
+          { day: 'Thứ 3', startTime: '19:45', endTime: '21:15' },
+          { day: 'Thứ 6', startTime: '19:45', endTime: '21:15' }
+        ],
+        days: ['Thứ 3', 'Thứ 6'],
+        timeSlot: '19h45 - 21h15',
+        colorBg: 'bg-[#f3e8ff]/80 hover:bg-[#e9d5ff] border-[#c084fc] text-slate-900',
+        badgeColor: 'bg-[#9333ea] text-white',
+        fee_per_session: 45000
+      },
+      {
+        id: 'class_eng_ielts',
+        class_name: 'Chuyên Anh & IELTS',
+        code: 'TA-IELTS',
+        room: 'P.201',
+        schedules: [
+          { day: 'Thứ 4', startTime: '19:45', endTime: '21:15' },
+          { day: 'Chủ Nhật', startTime: '19:45', endTime: '21:15' }
+        ],
+        days: ['Thứ 4', 'Chủ Nhật'],
+        timeSlot: '19h45 - 21h15',
+        colorBg: 'bg-[#ffe4e6]/80 hover:bg-[#fecdd3] border-[#f43f5e]/50 text-slate-900',
+        badgeColor: 'bg-[#e11d48] text-white',
         fee_per_session: 45000
       }
     ];
 
     const DEFAULT_CLASS_STUDENTS_MAP = {
-      'class_ta_6_1': [
-        { id: '61_01', name: 'Ninh Ngọc Hà', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '61_02', name: 'Trung', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '61_03', name: 'Dũng', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '61_04', name: 'Nguyễn Đức Trí', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
+      'class_eng_6a': [
+        { id: '6A01', name: 'Nguyễn Hải Đăng', dob: '14/05/2014', school: 'THCS Lê Quý Đôn', parentName: 'Nguyễn Văn Hải', parentPhone: '0912 111 222', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: '6A02', name: 'Trần Thảo Linh', dob: '22/08/2014', school: 'THCS Marie Curie', parentName: 'Lê Thị Thu', parentPhone: '0988 222 333', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: '6A03', name: 'Phạm Đức Minh', dob: '03/02/2014', school: 'THCS Cầu Giấy', parentName: 'Phạm Văn Thành', parentPhone: '0903 333 444', status: 'absent', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'absent','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: '6A04', name: 'Vũ Hoàng Bách', dob: '19/11/2014', school: 'THCS Giảng Võ', parentName: 'Vũ Quốc Toàn', parentPhone: '0977 444 555', status: 'present', paidAmount: 180000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'absent','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: '6A05', name: 'Lê Mai Trang', dob: '11/04/2014', school: 'THCS Archimedes', parentName: 'Lê Minh Tuấn', parentPhone: '0934 555 666', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
       ],
-      'class_ta_6_2': [
-        { id: '62_01', name: 'Nghĩa', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '62_02', name: 'Ngọc', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '62_03', name: 'Bảo', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '62_04', name: 'Dương', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '62_05', name: 'Diễm', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
+      'class_eng_7a': [
+        { id: '7A01', name: 'Hoàng Quốc Bảo', dob: '12/03/2013', school: 'THCS Chu Văn An', parentName: 'Hoàng Văn Lâm', parentPhone: '0912 666 777', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: '7A02', name: 'Đặng Tuệ Mẫn', dob: '25/07/2013', school: 'THCS Giảng Võ', parentName: 'Đặng Quốc Huy', parentPhone: '0988 777 888', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: '7A03', name: 'Bùi Gia Khiêm', dob: '08/09/2013', school: 'THCS Lê Quý Đôn', parentName: 'Bùi Trọng Nghĩa', parentPhone: '0903 888 999', status: 'absent', paidAmount: 180000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'absent','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
       ],
-      'class_ta_5': [
-        { id: '5_01', name: 'Nguyễn Tùng Dương', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_02', name: 'Phạm Thùy Tiên', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_03', name: 'Nguyễn Mai Phương', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_04', name: 'Nguyễn Ánh Diệp Anh', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_05', name: 'Bùi Ngọc Bích', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_06', name: 'Trần Mạnh Cường', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_07', name: 'Đào Thanh Trúc', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_08', name: 'Nguyễn Bảo Khánh', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_09', name: 'Nguyễn Ngọc Tùng', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '5_10', name: 'Nguyễn Vũ Ngọc Lam', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
+      'class_eng_8a': [
+        { id: '8A01', name: 'Đỗ Quỳnh Anh', dob: '17/01/2012', school: 'THCS Cầu Giấy', parentName: 'Đỗ Văn Dũng', parentPhone: '0912 999 000', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: '8A02', name: 'Vũ Đức Thịnh', dob: '05/10/2012', school: 'THCS Yên Hòa', parentName: 'Vũ Hồng Nam', parentPhone: '0988 000 111', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
       ],
-      'class_ta_4': [
-        { id: '4_01', name: 'Lê Khánh Linh', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_02', name: 'Nguyễn Thái Sơn', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_03', name: 'Đinh Quang Khải', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_04', name: 'Nguyễn Tùng Lâm', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_05', name: 'Bùi Trung Thực', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_06', name: 'Bùi Quỳnh Hoa', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_07', name: 'Nguyễn Bảo Trâm', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_08', name: 'Đỗ Anh Tuấn', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_09', name: 'Lê Hà Chi', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_10', name: 'Phạm Bảo Phúc', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_11', name: 'Phan Anh Vũ', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_12', name: 'Lương Xuân Trường', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
-        { id: '4_13', name: 'Nguyễn Hà My', dob: '', school: '', parentName: '', parentPhone: '', status: 'present', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
+      'class_eng_exam10': [
+        { id: 'HS01', name: 'Nguyễn Minh Quân', dob: '15/03/2011', school: 'THCS Lê Quý Đôn', parentName: 'Nguyễn Văn Hùng', parentPhone: '0912 345 678', status: 'present', paidAmount: 315000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'absent','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: 'HS02', name: 'Trần Bảo Anh', dob: '20/07/2011', school: 'THCS Giảng Võ', parentName: 'Lê Thu Trang', parentPhone: '0988 765 432', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: 'HS03', name: 'Lê Hoàng Nam', dob: '05/11/2011', school: 'THCS Chu Văn An', parentName: 'Lê Minh Tuấn', parentPhone: '0903 112 233', status: 'absent', paidAmount: 0, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'absent','14/10/2026':'present','17/10/2026':'present','21/10/2026':'absent','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: 'HS04', name: 'Phạm Quỳnh Chi', dob: '18/02/2011', school: 'THCS Cầu Giấy', parentName: 'Phạm Quốc Bảo', parentPhone: '0977 889 900', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} },
+        { id: 'HS05', name: 'Đặng Quốc Huy', dob: '09/09/2011', school: 'THCS Marie Curie', parentName: 'Vũ Thanh Hằng', parentPhone: '0934 556 677', status: 'absent', paidAmount: 180000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'absent','17/10/2026':'absent','21/10/2026':'present','24/10/2026':'present','28/10/2026':'absent','31/10/2026':'present'} }
+      ],
+      'class_eng_comm': [
+        { id: 'GT01', name: 'Phan Thảo Vy', dob: '08/04/2010', school: 'THPT Kim Liên', parentName: 'Phan Văn Hòa', parentPhone: '0912 333 444', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
+      ],
+      'class_eng_ielts': [
+        { id: 'IL01', name: 'Nguyễn Đăng Khoa', dob: '27/05/2009', school: 'Chuyên Hà Nội - Amsterdam', parentName: 'Nguyễn Văn Quang', parentPhone: '0912 555 666', status: 'present', paidAmount: 360000, pricePerSession: 45000, attendanceHistory: {'07/10/2026':'present','10/10/2026':'present','14/10/2026':'present','17/10/2026':'present','21/10/2026':'present','24/10/2026':'present','28/10/2026':'present','31/10/2026':'present'} }
       ]
     };
 
-    let classesList = JSON.parse(localStorage.getItem('dipi_classes_list_v4')) || DEFAULT_CLASSES_LIST;
-    let classStudentsMap = JSON.parse(localStorage.getItem('dipi_students_map_v4')) || DEFAULT_CLASS_STUDENTS_MAP;
-    let currentClassId = classesList[0]?.id || 'class_ta_6_1';
+    let classesList = JSON.parse(localStorage.getItem('dipi_classes_list')) || DEFAULT_CLASSES_LIST;
+    let classStudentsMap = JSON.parse(localStorage.getItem('dipi_students_map')) || DEFAULT_CLASS_STUDENTS_MAP;
+    let currentClassId = classesList[0]?.id || 'class_eng_6a';
     let isClassSelected = false;
     let students = classStudentsMap[currentClassId] || [];
     let currentRole = 'teacher';
@@ -1448,8 +1467,8 @@
 
     function saveAllToLocalStorage() {
       try {
-        localStorage.setItem('dipi_classes_list_v4', JSON.stringify(classesList));
-        localStorage.setItem('dipi_students_map_v4', JSON.stringify(classStudentsMap));
+        localStorage.setItem('dipi_classes_list', JSON.stringify(classesList));
+        localStorage.setItem('dipi_students_map', JSON.stringify(classStudentsMap));
       } catch (err) {
         console.error('Lỗi lưu localStorage:', err);
       }
