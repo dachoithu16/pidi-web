@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Lớp Tiếng Anh - Cô Diễm | Quản Lý Lớp & Học Phí</title>
+  <title>DiPi - Sổ Lớp Nhỏ | Quản Lý Lớp Học Thông Minh</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- SheetJS (xlsx) CDN để xuất file Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Thư viện xlsx-js-style CDN để hỗ trợ Cell Styles (màu nền, màu chữ, viền, căn lề) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -55,16 +55,61 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-14 sm:h-16">
         
-        <!-- Logo & Tên lớp -->
-        <div class="flex items-center space-x-2 sm:space-x-3">
-          <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-blue-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 font-extrabold text-xs sm:text-sm tracking-wider shrink-0 ring-2 ring-indigo-100">
-            ENG
+        <!-- Logo & Tên thương hiệu DiPi - Sổ Lớp Nhỏ -->
+        <div class="flex items-center space-x-2.5 sm:space-x-3.5">
+          <!-- Vector SVG Logo dựa trên logo.jfif: Hoa trắng, nhụy vàng, 2 lá xanh trên nền squircle cam ấm -->
+          <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl overflow-hidden shadow-md shadow-orange-500/20 shrink-0 ring-1 ring-orange-200/60 hover:scale-105 transition-transform flex items-center justify-center bg-[#f7ebe4]">
+            <svg viewBox="0 0 120 120" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="dipiBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fa8644" />
+                  <stop offset="50%" stop-color="#e95c32" />
+                  <stop offset="100%" stop-color="#555f52" />
+                </linearGradient>
+                <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#466f68" />
+                  <stop offset="100%" stop-color="#33524c" />
+                </linearGradient>
+              </defs>
+              
+              <!-- Nền bo góc mềm mại đặc trưng squircle -->
+              <rect x="6" y="6" width="108" height="108" rx="38" fill="url(#dipiBgGrad)" />
+              
+              <!-- Cành và cuống hoa -->
+              <path d="M58 48 C 58 64, 62 76, 56 94 C 54.5 98.5, 52 97.5, 52 93 C 55 78, 52 64, 53 48 Z" fill="#3a5d57" />
+              
+              <!-- Lá bên trái cong tròn -->
+              <path d="M54 67 C 36 67, 34 50, 47 44 C 57 39, 58 54, 54 67 Z" fill="url(#leafGrad)" />
+              
+              <!-- Lá bên phải nhọn dài hơn -->
+              <path d="M56 65 C 60 52, 70 42, 85 41 C 88 56, 75 70, 56 65 Z" fill="url(#leafGrad)" />
+              <path d="M57 63 C 67 55, 78 48, 83 43" stroke="#2a4540" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.6" />
+
+              <!-- Bông hoa trắng 5 cánh nhỏ xinh phía trên -->
+              <g transform="translate(53, 38)">
+                <!-- Cánh hoa xoay đều -->
+                <ellipse cx="0" cy="-8.5" rx="3.4" ry="4.8" fill="#ffffff" />
+                <ellipse cx="7.8" cy="-2.5" rx="3.4" ry="4.8" transform="rotate(72 7.8 -2.5)" fill="#ffffff" />
+                <ellipse cx="4.8" cy="7.2" rx="3.4" ry="4.8" transform="rotate(144 4.8 7.2)" fill="#ffffff" />
+                <ellipse cx="-4.8" cy="7.2" rx="3.4" ry="4.8" transform="rotate(216 -4.8 7.2)" fill="#ffffff" />
+                <ellipse cx="-7.8" cy="-2.5" rx="3.4" ry="4.8" transform="rotate(288 -7.8 -2.5)" fill="#ffffff" />
+                <!-- Nhụy vàng với các chấm nhỏ -->
+                <circle cx="0" cy="0" r="3.6" fill="#f59e0b" />
+                <circle cx="-1.2" cy="-1" r="0.7" fill="#fbbf24" />
+                <circle cx="1.2" cy="-1" r="0.7" fill="#fbbf24" />
+                <circle cx="0" cy="1.3" r="0.7" fill="#d97706" />
+              </g>
+            </svg>
           </div>
+
           <div>
-            <h1 class="text-xs sm:text-base font-bold text-slate-900 tracking-tight leading-tight">
-              Lớp Tiếng Anh - Cô Diễm
+            <h1 class="text-sm sm:text-lg font-extrabold text-slate-900 tracking-tight leading-tight flex items-center gap-1.5">
+              <span>DiPi - Sổ Lớp Nhỏ</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse hidden sm:inline-block"></span>
             </h1>
-            <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium hidden sm:block">Hệ thống quản lý lớp học & học phí thông minh</p>
+            <p class="text-[10px] sm:text-[11px] text-slate-500 font-semibold tracking-tight hidden sm:block">
+              Hệ thống quản lý lớp học thông minh
+            </p>
           </div>
         </div>
 
@@ -1926,6 +1971,7 @@
     }
 
     function handleExportAttendanceExcel() {
+      // Kiểm tra thư viện XLSX (xlsx-js-style)
       if (typeof XLSX === 'undefined') {
         showUndoToast('Đang tải thư viện Excel, vui lòng thử lại sau 2 giây...');
         return;
@@ -1945,24 +1991,26 @@
         return;
       }
 
-      // Tạo cấu trúc dữ liệu theo định dạng ma trận
+      // 1. Tạo cấu trúc dữ liệu AOA
       const excelRows = [];
 
       // Dòng 1: Tiêu đề lớp học
-      excelRows.push([`BẢNG ĐIỂM DANH & HỌC PHÍ - ${cls.class_name}`]);
+      excelRows.push([`BẢNG ĐIỂM DANH & HỌC PHÍ - ${cls.class_name.toUpperCase()}`]);
       // Dòng 2: Thời gian xuất & thông tin chi tiết
       excelRows.push([`Kỳ học: Tháng ${selectedMonth}`, `Phòng học: ${cls.room || 'P.101'}`, `Khung giờ: ${cls.timeSlot || ''}`, `Ngày xuất: ${getTodayFullDateString()}`]);
-      // Dòng 3: Dòng trống ngăn cách
+      // Dòng 3: Ngăn cách
       excelRows.push([]);
 
       // Dòng 4: Header các cột
       const headerRow = ['STT', 'Họ và tên học sinh'];
       monthDates.forEach((d, idx) => {
         const shortDate = d.slice(0, 5); // DD/MM
-        headerRow.push(`Buổi ${idx + 1} (${shortDate})`);
+        headerRow.push(`Buổi ${idx + 1}\n(${shortDate})`);
       });
-      headerRow.push('Số buổi đi', 'Số buổi vắng', 'Đơn giá (VNĐ)', 'Học phí cần thu (VNĐ)', 'Đã thu (VNĐ)', 'Còn nợ (VNĐ)', 'Trạng thái');
+      headerRow.push('Số buổi đi', 'Số buổi vắng', 'Đơn giá (đ)', 'Cần nộp (đ)', 'Đã nộp (đ)', 'Chưa nộp (Còn nợ)', 'Trạng thái');
       excelRows.push(headerRow);
+
+      const headerRowIndex = 3; // 0-indexed (dòng 4 trong Excel)
 
       // Điền thông tin từng học sinh
       students.forEach((s, idx) => {
@@ -1997,7 +2045,7 @@
         const totalExpected = presentCount * price;
         const debt = unpaidCount * price;
         const paid = Math.max(0, totalExpected - debt);
-        const statusText = totalExpected === 0 ? 'Chưa học' : (debt === 0 ? 'Đã hoàn thành' : (paid > 0 ? 'Đóng một phần' : 'Chưa đóng'));
+        const statusText = totalExpected === 0 ? 'CHƯA HỌC' : (debt === 0 ? 'ĐÃ THU ĐỦ' : (paid > 0 ? 'ĐÓNG 1 PHẦN' : 'CHƯA THU'));
 
         row.push(presentCount, absentCount, price, totalExpected, paid, debt, statusText);
         excelRows.push(row);
@@ -2039,37 +2087,257 @@
       excelRows.push([]);
       excelRows.push(totalRow);
 
-      // Chuyển mảng thành Sheet
+      // Chuyển mảng thành Worksheet
       const worksheet = XLSX.utils.aoa_to_sheet(excelRows);
 
-      // Cấu hình độ rộng các cột tự động
+      // 2. Định nghĩa các style cell (Border, Font, Fill, Alignment)
+      const borderThin = {
+        top: { style: 'thin', color: { rgb: 'CBD5E1' } },
+        bottom: { style: 'thin', color: { rgb: 'CBD5E1' } },
+        left: { style: 'thin', color: { rgb: 'CBD5E1' } },
+        right: { style: 'thin', color: { rgb: 'CBD5E1' } }
+      };
+
+      const styleTitle = {
+        font: { name: 'Calibri', sz: 16, bold: true, color: { rgb: '1E293B' } },
+        alignment: { vertical: 'center', horizontal: 'left' }
+      };
+
+      const styleSubTitle = {
+        font: { name: 'Calibri', sz: 11, italic: true, color: { rgb: '475569' } },
+        alignment: { vertical: 'center', horizontal: 'left' }
+      };
+
+      const styleHeader = {
+        fill: { fgColor: { rgb: '1E293B' } }, // Nền xanh than tối
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'FFFFFF' } },
+        alignment: { vertical: 'center', horizontal: 'center', wrapText: true },
+        border: borderThin
+      };
+
+      const styleCellDefault = {
+        font: { name: 'Calibri', sz: 11, color: { rgb: '0F172A' } },
+        alignment: { vertical: 'center', horizontal: 'left' },
+        border: borderThin
+      };
+
+      const styleCellCenter = {
+        font: { name: 'Calibri', sz: 11, color: { rgb: '0F172A' } },
+        alignment: { vertical: 'center', horizontal: 'center' },
+        border: borderThin
+      };
+
+      const styleCheckPresent = {
+        fill: { fgColor: { rgb: 'ECFDF5' } }, // Nền xanh ngọc nhạt
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '059669' } },
+        alignment: { vertical: 'center', horizontal: 'center' },
+        border: borderThin
+      };
+
+      const styleCheckAbsent = {
+        fill: { fgColor: { rgb: 'FEF2F2' } }, // Nền đỏ hồng phấn nhạt
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'DC2626' } },
+        alignment: { vertical: 'center', horizontal: 'center' },
+        border: borderThin
+      };
+
+      // CỘT 1: Học phí cần thu (Nền vàng hổ phách nhạt #FEF3C7, chữ nâu đậm #92400E)
+      const styleExpectedFee = {
+        fill: { fgColor: { rgb: 'FEF3C7' } },
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '92400E' } },
+        alignment: { vertical: 'center', horizontal: 'right' },
+        border: borderThin,
+        numFmt: '#,##0'
+      };
+
+      // CỘT 2: Đã nộp (Nền xanh lam nhạt #E0F2FE, chữ xanh sẫm #075985)
+      const stylePaidFee = {
+        fill: { fgColor: { rgb: 'E0F2FE' } },
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '075985' } },
+        alignment: { vertical: 'center', horizontal: 'right' },
+        border: borderThin,
+        numFmt: '#,##0'
+      };
+
+      // CỘT 3: Chưa thu / Còn nợ khi > 0 (Nền hồng đỏ nổi bật #FEE2E2, chữ đỏ cảnh báo #991B1B)
+      const styleDebtFeeAlert = {
+        fill: { fgColor: { rgb: 'FEE2E2' } },
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '991B1B' } },
+        alignment: { vertical: 'center', horizontal: 'right' },
+        border: borderThin,
+        numFmt: '#,##0'
+      };
+
+      // CỘT 3: Chưa thu khi = 0 (Đã nộp xong hết - nền xanh ngọc #D1FAE5, chữ xanh đậm #065F46)
+      const styleDebtFeeZero = {
+        fill: { fgColor: { rgb: 'D1FAE5' } },
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '065F46' } },
+        alignment: { vertical: 'center', horizontal: 'right' },
+        border: borderThin,
+        numFmt: '#,##0'
+      };
+
+      // Trạng thái: ĐÃ THU ĐỦ (Xanh lá)
+      const styleStatusPaid = {
+        fill: { fgColor: { rgb: 'D1FAE5' } },
+        font: { name: 'Calibri', sz: 10.5, bold: true, color: { rgb: '065F46' } },
+        alignment: { vertical: 'center', horizontal: 'center' },
+        border: borderThin
+      };
+
+      // Trạng thái: CHƯA THU (Đỏ hồng)
+      const styleStatusUnpaid = {
+        fill: { fgColor: { rgb: 'FEE2E2' } },
+        font: { name: 'Calibri', sz: 10.5, bold: true, color: { rgb: '991B1B' } },
+        alignment: { vertical: 'center', horizontal: 'center' },
+        border: borderThin
+      };
+
+      // Trạng thái: ĐÓNG 1 PHẦN (Vàng cam)
+      const styleStatusPartial = {
+        fill: { fgColor: { rgb: 'FEF3C7' } },
+        font: { name: 'Calibri', sz: 10.5, bold: true, color: { rgb: 'B45309' } },
+        alignment: { vertical: 'center', horizontal: 'center' },
+        border: borderThin
+      };
+
+      // Dòng tổng cộng cuối bảng
+      const styleGrandTotal = {
+        fill: { fgColor: { rgb: 'F1F5F9' } },
+        font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '0F172A' } },
+        alignment: { vertical: 'center', horizontal: 'center' },
+        border: borderThin
+      };
+
+      // 3. Quét & áp dụng styles cho từng cell trong worksheet
+      const range = XLSX.utils.decode_range(worksheet['!ref']);
+      const totalDatesCount = monthDates.length;
+      
+      const colIdxExpected = 2 + totalDatesCount + 3; // Cần nộp
+      const colIdxPaid = colIdxExpected + 1;         // Đã nộp
+      const colIdxDebt = colIdxExpected + 2;         // Chưa nộp / Còn nợ
+      const colIdxStatus = colIdxExpected + 3;       // Trạng thái
+
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+          if (!worksheet[cellRef]) continue;
+
+          // Dòng 1: Tiêu đề lớn
+          if (R === 0) {
+            worksheet[cellRef].s = styleTitle;
+            continue;
+          }
+          // Dòng 2: Subtitle thông tin
+          if (R === 1) {
+            worksheet[cellRef].s = styleSubTitle;
+            continue;
+          }
+          // Dòng 3: Dòng trống
+          if (R === 2) continue;
+
+          // Dòng 4: Header các cột
+          if (R === headerRowIndex) {
+            worksheet[cellRef].s = styleHeader;
+            continue;
+          }
+
+          // Dòng cuối: Tổng cộng
+          if (R === range.e.r) {
+            const isMoneyCol = (C === colIdxExpected || C === colIdxPaid || C === colIdxDebt);
+            worksheet[cellRef].s = {
+              ...styleGrandTotal,
+              alignment: { vertical: 'center', horizontal: isMoneyCol ? 'right' : 'center' },
+              numFmt: isMoneyCol ? '#,##0' : undefined
+            };
+            continue;
+          }
+
+          // Các dòng dữ liệu học sinh (từ dòng 5 đến sát dòng tổng cộng)
+          const cellVal = worksheet[cellRef].v;
+
+          if (C === 0) {
+            // Cột STT
+            worksheet[cellRef].s = styleCellCenter;
+          } else if (C === 1) {
+            // Cột Tên học sinh
+            worksheet[cellRef].s = { ...styleCellDefault, font: { name: 'Calibri', sz: 11, bold: true, color: { rgb: '0F172A' } } };
+          } else if (C >= 2 && C < 2 + totalDatesCount) {
+            // Các cột buổi học
+            if (cellVal === '✓') worksheet[cellRef].s = styleCheckPresent;
+            else if (cellVal === 'V') worksheet[cellRef].s = styleCheckAbsent;
+            else worksheet[cellRef].s = styleCellCenter;
+          } else if (C === 2 + totalDatesCount || C === 2 + totalDatesCount + 1) {
+            // Số buổi đi / vắng
+            worksheet[cellRef].s = styleCellCenter;
+          } else if (C === 2 + totalDatesCount + 2) {
+            // Đơn giá
+            worksheet[cellRef].s = { ...styleCellDefault, alignment: { vertical: 'center', horizontal: 'right' }, numFmt: '#,##0' };
+          } else if (C === colIdxExpected) {
+            // Cần nộp (Nổi bật màu Amber pastel)
+            worksheet[cellRef].s = styleExpectedFee;
+          } else if (C === colIdxPaid) {
+            // Đã nộp (Nổi bật màu xanh lam nhạt)
+            worksheet[cellRef].s = stylePaidFee;
+          } else if (C === colIdxDebt) {
+            // Còn nợ (Nổi bật cảnh báo đỏ hồng nếu > 0, xanh ngọc nếu = 0)
+            const debtNum = Number(cellVal) || 0;
+            worksheet[cellRef].s = (debtNum > 0) ? styleDebtFeeAlert : styleDebtFeeZero;
+          } else if (C === colIdxStatus) {
+            // Trạng thái
+            if (cellVal === 'ĐÃ THU ĐỦ') worksheet[cellRef].s = styleStatusPaid;
+            else if (cellVal === 'CHƯA THU') worksheet[cellRef].s = styleStatusUnpaid;
+            else if (cellVal === 'ĐÓNG 1 PHẦN') worksheet[cellRef].s = styleStatusPartial;
+            else worksheet[cellRef].s = styleCellCenter;
+          } else {
+            worksheet[cellRef].s = styleCellDefault;
+          }
+        }
+      }
+
+      // 4. Cấu hình độ rộng các cột tự động và thoáng đẹp
       const colWidths = [
         { wch: 6 },  // STT
-        { wch: 24 }  // Tên HS
+        { wch: 26 }  // Tên HS
       ];
-      monthDates.forEach(() => colWidths.push({ wch: 14 }));
-      colWidths.push({ wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 });
+      monthDates.forEach(() => colWidths.push({ wch: 13 })); // Mỗi buổi học
+      colWidths.push(
+        { wch: 12 }, // Số buổi đi
+        { wch: 13 }, // Số buổi vắng
+        { wch: 14 }, // Đơn giá
+        { wch: 18 }, // Cần nộp (Màu hổ phách)
+        { wch: 16 }, // Đã nộp (Màu xanh lam)
+        { wch: 20 }, // Còn nợ (Màu đỏ hồng cảnh báo)
+        { wch: 17 }  // Trạng thái
+      );
       worksheet['!cols'] = colWidths;
 
-      // Hợp nhất ô cho tiêu đề dòng 1
-      worksheet['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: Math.min(headerRow.length - 1, 8) } },
-        { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } }
+      // Chiều cao hàng
+      worksheet['!rows'] = [
+        { hpt: 28 }, // Dòng 1: Tiêu đề
+        { hpt: 20 }, // Dòng 2: Subtitle
+        { hpt: 10 }, // Dòng 3: Khoảng cách
+        { hpt: 30 }  // Dòng 4: Header
       ];
 
-      // Tạo Workbook và xuất file
+      // Hợp nhất ô cho tiêu đề
+      worksheet['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: Math.min(headerRow.length - 1, 8) } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } }
+      ];
+
+      // 5. Tạo Workbook và xuất file
       const workbook = XLSX.utils.book_new();
       const safeSheetName = `T${selectedMonth.replace('/', '_')}`.slice(0, 31);
       XLSX.utils.book_append_sheet(workbook, worksheet, safeSheetName);
 
-      // Đặt tên file: DiemDanh_[TenLop]_[Thang].xlsx
       const cleanClassName = cls.class_name.replace(/[^a-zA-Z0-9]/g, '_');
       const cleanMonth = selectedMonth.replace('/', '_');
       const fileName = `DiemDanh_${cleanClassName}_${cleanMonth}.xlsx`;
 
       XLSX.writeFile(workbook, fileName);
       closeModal('modalExportExcel');
-      showUndoToast(`Đã tải file ${fileName} thành công!`);
+      showUndoToast(`Đã xuất file ${fileName} với bảng màu tài chính nổi bật!`);
     }
 
     function updateAttendanceBulkActionBar() {
