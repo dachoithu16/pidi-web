@@ -1580,19 +1580,26 @@
       const savedClasses = localStorage.getItem(`${prefix}_classes_v16`);
       const savedStudents = localStorage.getItem(`${prefix}_students_v16`);
 
-      if (savedClasses && savedStudents) {
-        classesList = JSON.parse(savedClasses);
-        classStudentsMap = JSON.parse(savedStudents);
-      } else if (!currentUser) {
-        // Khách vãng lai chưa đăng nhập: Nạp dữ liệu mẫu để trải nghiệm thử nghiệm
-        classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
-        classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
-        saveAllToLocalStorage();
+      if (currentUser) {
+        // TÀI KHOẢN ĐÃ ĐĂNG NHẬP:
+        // Nếu đã từng lưu dữ liệu của tài khoản này thì nạp lại, ngược lại khởi tạo hoàn toàn RỖNG (0 lớp, 0 học sinh)
+        if (savedClasses && savedStudents) {
+          classesList = JSON.parse(savedClasses);
+          classStudentsMap = JSON.parse(savedStudents);
+        } else {
+          classesList = [];
+          classStudentsMap = {};
+        }
       } else {
-        // TÀI KHOẢN MỚI ĐĂNG NHẬP: Bắt đầu hoàn toàn từ 0 (không lấy dữ liệu mẫu)
-        classesList = [];
-        classStudentsMap = {};
-        saveAllToLocalStorage();
+        // TÀI KHOẢN KHÁCH CHƯA ĐĂNG NHẬP:
+        if (savedClasses && savedStudents) {
+          classesList = JSON.parse(savedClasses);
+          classStudentsMap = JSON.parse(savedStudents);
+        } else {
+          classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
+          classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
+          saveAllToLocalStorage();
+        }
       }
 
       currentClassId = classesList.length > 0 ? classesList[0].id : null;
@@ -1757,11 +1764,12 @@
       ]
     };
 
-    let classesList = JSON.parse(localStorage.getItem('dipi_classes_list_v15')) || DEFAULT_CLASSES_LIST;
-    let classStudentsMap = JSON.parse(localStorage.getItem('dipi_students_map_v15')) || DEFAULT_CLASS_STUDENTS_MAP;
-    let currentClassId = classesList[0]?.id || 'class_ta_6_1';
+    // Khởi tạo ban đầu là rỗng, chỉ được gán khi loadScopedUserData() chạy
+    let classesList = [];
+    let classStudentsMap = {};
+    let currentClassId = null;
     let isClassSelected = false;
-    let students = classStudentsMap[currentClassId] || [];
+    let students = [];
     let currentRole = 'teacher';
     let currentTab = 'attendance';
     let selectedStudentIds = [];
