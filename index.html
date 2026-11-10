@@ -1572,29 +1572,47 @@
 
     // ==================== PHÂN QUYỀN DỮ LIỆU THEO TỪNG USER_ID ====================
     function getStorageKeyPrefix() {
-      return currentUser?.id ? `dipi_${currentUser.id}` : 'dipi_guest';
+      return (currentUser && currentUser.id) ? `dipi_user_${currentUser.id}` : 'dipi_guest';
     }
 
     function loadScopedUserData() {
       const prefix = getStorageKeyPrefix();
-      const savedClasses = localStorage.getItem(`${prefix}_classes_v16`);
-      const savedStudents = localStorage.getItem(`${prefix}_students_v16`);
+      const savedClasses = localStorage.getItem(`${prefix}_classes`);
+      const savedStudents = localStorage.getItem(`${prefix}_students`);
 
-      if (currentUser) {
+      if (currentUser && currentUser.id) {
         // TÀI KHOẢN ĐÃ ĐĂNG NHẬP:
-        // Nếu đã từng lưu dữ liệu của tài khoản này thì nạp lại, ngược lại khởi tạo hoàn toàn RỖNG (0 lớp, 0 học sinh)
-        if (savedClasses && savedStudents) {
-          classesList = JSON.parse(savedClasses);
-          classStudentsMap = JSON.parse(savedStudents);
+        // Khởi tạo hoàn toàn từ 0 nếu là tài khoản mới (không có dữ liệu trước đó)
+        if (savedClasses) {
+          try {
+            classesList = JSON.parse(savedClasses) || [];
+          } catch (e) {
+            classesList = [];
+          }
         } else {
           classesList = [];
+        }
+
+        if (savedStudents) {
+          try {
+            classStudentsMap = JSON.parse(savedStudents) || {};
+          } catch (e) {
+            classStudentsMap = {};
+          }
+        } else {
           classStudentsMap = {};
         }
       } else {
-        // TÀI KHOẢN KHÁCH CHƯA ĐĂNG NHẬP:
+        // TÀI KHOẢN KHÁCH VÃNG LAI:
         if (savedClasses && savedStudents) {
-          classesList = JSON.parse(savedClasses);
-          classStudentsMap = JSON.parse(savedStudents);
+          try {
+            classesList = JSON.parse(savedClasses);
+            classStudentsMap = JSON.parse(savedStudents);
+          } catch (e) {
+            classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
+            classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
+            saveAllToLocalStorage();
+          }
         } else {
           classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
           classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
@@ -1613,8 +1631,8 @@
     function saveAllToLocalStorage() {
       try {
         const prefix = getStorageKeyPrefix();
-        localStorage.setItem(`${prefix}_classes_v16`, JSON.stringify(classesList));
-        localStorage.setItem(`${prefix}_students_v16`, JSON.stringify(classStudentsMap));
+        localStorage.setItem(`${prefix}_classes`, JSON.stringify(classesList));
+        localStorage.setItem(`${prefix}_students`, JSON.stringify(classStudentsMap));
       } catch (err) {
         console.error('Lỗi lưu localStorage:', err);
       }
@@ -1844,15 +1862,6 @@
 
     // Chỉnh sửa đơn giá học phí
     let activePriceEditTarget = null; // null: hàng loạt, string: studentId
-
-    function saveAllToLocalStorage() {
-      try {
-        localStorage.setItem('dipi_classes_list_v15', JSON.stringify(classesList));
-        localStorage.setItem('dipi_students_map_v15', JSON.stringify(classStudentsMap));
-      } catch (err) {
-        console.error('Lỗi lưu localStorage:', err);
-      }
-    }
 
     function getShortName(fullName) {
       if (!fullName) return '';
@@ -3019,14 +3028,20 @@
       const firstSlot = formSchedulesState.create[0];
       const timeSlotStr = `${firstSlot.startTime.replace(':', 'h')} - ${firstSlot.endTime.replace(':', 'h')}`;
 
+      const schedulesCopy = JSON.parse(JSON.stringify(formSchedulesState.create));
+      const calculatedDates = generateClassSessionDates(schedulesCopy);
+
       const newClassObj = {
         id: `class_eng_${Date.now()}`,
         class_name: name,
         code: code,
         room: room,
         timeSlot: timeSlotStr,
-        schedules: JSON.parse(JSON.stringify(formSchedulesState.create)),
-        days: formSchedulesState.create.map(s => s.day),
+        schedules: schedulesCopy,
+        days: schedulesCopy.map(s => s.day),
+        sessionDates: calculatedDates,
+        createdAt: new Date().toISOString(),
+        userId: currentUser?.id || 'guest',
         colorBg: 'bg-[#e0f2fe]/80 hover:bg-[#bae6fd] border-[#38bdf8] text-slate-900',
         badgeColor: 'bg-[#0284c7] text-white',
         fee_per_session: fee
@@ -3043,7 +3058,7 @@
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
       renderAll();
-      showUndoToast(`Đã tạo lớp ${name} và tính lịch học tự động...`);
+      showUndoToast(`Đã tạo lớp ${name} và tính ${calculatedDates.length} buổi học tự động...`);
     }
 
     // ==================== TAB HỌC PHÍ & BỘ LỌC 1 HÀNG DUY NHẤT ====================
@@ -3566,6 +3581,7 @@
         status: 'unrecorded',
         paidSessions: [],
         attendanceHistory: initialAttendanceHistory,
+        userId: currentUser?.id || 'guest',
         createdAt: new Date().toISOString()
       };
 
