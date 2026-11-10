@@ -1378,7 +1378,7 @@
   <!-- ==================== LOGIC JAVASCRIPT HOÀN CHỈNH ==================== -->
   <script>
     // ==================== CẤU HÌNH SUPABASE CLIENT TRỰC TIẾP ====================
-    const SUPABASE_URL = 'https://gcjstlnmeynu21ptqdqt.supabase.co';
+    const SUPABASE_URL = 'https://gsjatlnmeynwllptqdqf.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_-57pVqsTKuC3sYvM3nkkBg_NLcRFSVK';
     
     let supabaseClient = null;
@@ -1388,11 +1388,6 @@
     function initSupabaseClient() {
       if (typeof supabase === 'undefined' || !supabase.createClient) {
         console.warn('Thư viện Supabase SDK chưa sẵn sàng.');
-        return;
-      }
-
-      if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === 'DÁN_KEY_VÀO_ĐÂY') {
-        console.warn('Vui lòng thay thế chuỗi SUPABASE_ANON_KEY bằng Anon Key thật từ Supabase Project Dashboard.');
         return;
       }
 
