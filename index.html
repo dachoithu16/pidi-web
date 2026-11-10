@@ -1583,15 +1583,22 @@
       if (savedClasses && savedStudents) {
         classesList = JSON.parse(savedClasses);
         classStudentsMap = JSON.parse(savedStudents);
-      } else {
-        // Dữ liệu mẫu khởi tạo ban đầu cho tài khoản mới
+      } else if (!currentUser) {
+        // Khách vãng lai chưa đăng nhập: Nạp dữ liệu mẫu để trải nghiệm thử nghiệm
         classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
         classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
         saveAllToLocalStorage();
+      } else {
+        // TÀI KHOẢN MỚI ĐĂNG NHẬP: Bắt đầu hoàn toàn từ 0 (không lấy dữ liệu mẫu)
+        classesList = [];
+        classStudentsMap = {};
+        saveAllToLocalStorage();
       }
 
-      currentClassId = classesList[0]?.id || 'class_ta_6_1';
-      students = classStudentsMap[currentClassId] || [];
+      currentClassId = classesList.length > 0 ? classesList[0].id : null;
+      students = currentClassId ? (classStudentsMap[currentClassId] || []) : [];
+      isClassSelected = false;
+
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
     }
@@ -1780,8 +1787,16 @@
 
     // Lấy danh sách ngày học riêng cho từng lớp dựa trên lịch dạy của lớp đó
     function getCurrentClassSessionDates(clsId = currentClassId) {
+      if (!clsId) return [];
       const cls = classesList.find(c => c.id === clsId);
-      if (!cls || !Array.isArray(cls.schedules) || cls.schedules.length === 0) {
+      if (!cls) return [];
+      
+      // Nếu lớp đã lưu sẵn sessionDates thì ưu tiên dùng
+      if (Array.isArray(cls.sessionDates) && cls.sessionDates.length > 0) {
+        return cls.sessionDates;
+      }
+
+      if (!Array.isArray(cls.schedules) || cls.schedules.length === 0) {
         return [];
       }
       return generateClassSessionDates(cls.schedules);
@@ -1792,6 +1807,10 @@
 
     // Hàm đồng bộ ngày điểm danh của lớp hiện tại
     function syncActiveAttendanceDateForCurrentClass() {
+      if (!currentClassId) {
+        activeAttendanceDate = getTodayFullDateString();
+        return;
+      }
       const classDates = getCurrentClassSessionDates(currentClassId);
       const todayStr = getTodayFullDateString();
 
@@ -1800,7 +1819,7 @@
       } else if (classDates.includes(activeAttendanceDate)) {
         // Giữ nguyên activeAttendanceDate nếu nó thuộc lớp này
       } else if (classDates.length > 0) {
-        // Tìm ngày gần nhất trong tháng 11/2026 hoặc lấy ngày cuối cùng
+        // Tìm ngày gần nhất trong tháng 11/2026 hoặc lấy ngày đầu tiên
         const novDates = classDates.filter(d => d.includes('/11/2026'));
         activeAttendanceDate = novDates.length > 0 ? novDates[0] : classDates[0];
       } else {
@@ -1877,6 +1896,12 @@
     function renderClassSelectOptions() {
       const select = document.getElementById('classListSelect');
       if (!select) return;
+
+      if (classesList.length === 0) {
+        select.innerHTML = `<option value="">(Chưa có lớp học)</option>`;
+        return;
+      }
+
       select.innerHTML = classesList.map(c => `
         <option value="${c.id}" ${c.id === currentClassId ? 'selected' : ''}>
           ${c.class_name}
@@ -1946,6 +1971,25 @@
 
       const todayCardsContainer = document.getElementById('todayMobileCardsWrapper');
       const todayClasses = [];
+
+      // Nếu tài khoản mới chưa có bất kỳ lớp học nào: Hiển thị Empty State
+      if (classesList.length === 0) {
+        if (todayCardsContainer) {
+          todayCardsContainer.innerHTML = `
+            <div class="p-6 rounded-2xl border-2 border-dashed border-indigo-200 text-center bg-indigo-50/40 space-y-2">
+              <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto">
+                <i data-lucide="folder-plus" class="w-5 h-5"></i>
+              </div>
+              <h4 class="font-extrabold text-sm text-slate-900">Chào mừng bạn đến với DiPi!</h4>
+              <p class="text-xs text-slate-500 max-w-sm mx-auto">Bạn chưa có lớp học nào. Hãy bấm "Tạo lớp mới" bên dưới để thiết lập lịch học và sĩ số.</p>
+              <button type="button" onclick="openCreateClassModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm active:scale-95 inline-flex items-center gap-1.5 mt-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Tạo lớp học đầu tiên</span>
+              </button>
+            </div>
+          `;
+        }
+      }
 
       DAYS_OF_WEEK.forEach(day => {
         const colId = dayColMap[day];
@@ -2020,7 +2064,7 @@
         `;
       });
 
-      if (todayCardsContainer) {
+      if (todayCardsContainer && classesList.length > 0) {
         if (todayClasses.length === 0) {
           todayCardsContainer.innerHTML = `
             <div class="p-3 rounded-2xl border border-dashed border-slate-200 text-center bg-white text-xs text-slate-400 font-medium">
@@ -2836,6 +2880,8 @@
       cls.schedules = JSON.parse(JSON.stringify(formSchedulesState.edit));
       cls.days = cls.schedules.map(s => s.day);
       cls.timeSlot = `${cls.schedules[0].startTime.replace(':', 'h')} - ${cls.schedules[0].endTime.replace(':', 'h')}`;
+      cls.sessionDates = generateClassSessionDates(cls.schedules);
+      cls.updatedAt = new Date().toISOString();
 
       if (syncStudentFees) {
         students = students.map(s => ({ ...s, pricePerSession: fee }));
@@ -2847,7 +2893,7 @@
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
       renderAll();
-      showUndoToast(`Đã lưu và tự tính lại ngày học cho lớp ${name}...`);
+      showUndoToast(`Đã lưu và tự tính lại ${cls.sessionDates.length} buổi học cho lớp ${name}...`);
     }
 
     // ==================== TẠO LỚP MỚI VỚI CHỌN LỊCH THỨ ====================
@@ -3498,13 +3544,21 @@
       const name = document.getElementById('newStudentName')?.value.trim();
       const fee = Number(document.getElementById('newStudentFeePerSession')?.value) || 40000;
 
+      // Khởi tạo trước các ngày học của lớp vào attendanceHistory của học sinh ở trạng thái unrecorded
+      const initialAttendanceHistory = {};
+      const classDates = getCurrentClassSessionDates(targetClassId);
+      classDates.forEach(d => {
+        initialAttendanceHistory[d] = 'unrecorded';
+      });
+
       const newStudentObj = {
         id: `HS_${Date.now()}`,
         name: name,
         pricePerSession: fee,
         status: 'unrecorded',
         paidSessions: [],
-        attendanceHistory: {}
+        attendanceHistory: initialAttendanceHistory,
+        createdAt: new Date().toISOString()
       };
 
       if (!classStudentsMap[targetClassId]) classStudentsMap[targetClassId] = [];
@@ -3519,7 +3573,7 @@
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
       renderAll();
-      showUndoToast(`Đã thêm học sinh ${name}...`);
+      showUndoToast(`Đã thêm học sinh ${name} và lưu trữ thành công...`);
     }
 
     // ==================== BÀI TẬP VỀ NHÀ ====================
