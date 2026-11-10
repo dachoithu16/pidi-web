@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- SheetJS (xlsx) CDN để xuất file Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -333,6 +335,15 @@
               <div class="flex items-center gap-1.5">
                 <button
                   type="button"
+                  onclick="openExportExcelModal()"
+                  class="text-[10.5px] sm:text-xs font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm flex items-center gap-1 active:scale-95"
+                  title="Xuất bảng điểm danh & học phí ra Excel"
+                >
+                  <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+                  <span>Xuất Excel</span>
+                </button>
+                <button
+                  type="button"
                   onclick="openAddStudentModal()"
                   class="text-[10.5px] sm:text-xs font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm flex items-center gap-1 active:scale-95"
                 >
@@ -342,7 +353,7 @@
                 <button
                   type="button"
                   onclick="markAllAttendance('present')"
-                  class="text-[10.5px] sm:text-xs font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm flex items-center gap-1 active:scale-95"
+                  class="text-[10.5px] sm:text-xs font-bold px-2 py-1 sm:px-3 sm:py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm flex items-center gap-1 active:scale-95"
                 >
                   <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
                   <span>Tất cả đi học</span>
@@ -643,6 +654,51 @@
   <div id="undoToast" class="hidden fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 backdrop-blur-md text-white px-4 py-2 sm:px-6 sm:py-2.5 rounded-full shadow-2xl border border-white/10 animate-slide-down-toast text-xs sm:text-sm font-medium pointer-events-none whitespace-nowrap text-center transition-all flex items-center gap-2">
     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
     <span id="undoToastMessage">Đã cập nhật...</span>
+  </div>
+
+  <!-- ==================== MODAL XUẤT EXCEL THEO THÁNG ==================== -->
+  <div id="modalExportExcel" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-4 sm:p-5 border border-slate-200/90 shadow-2xl space-y-3.5">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-2">
+          <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i>
+          <span>Xuất dữ liệu Excel</span>
+        </h3>
+        <button onclick="closeModal('modalExportExcel')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Lớp đang chọn:</label>
+          <div id="exportClassPreviewName" class="p-2 rounded-xl bg-slate-50 border border-slate-200 font-extrabold text-indigo-700">
+            --
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Chọn tháng cần xuất file:</label>
+          <select id="exportMonthSelect" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 cursor-pointer">
+            <option value="11/2026" selected>Tháng 11/2026</option>
+            <option value="10/2026">Tháng 10/2026</option>
+            <option value="12/2026">Tháng 12/2026</option>
+          </select>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/60 text-emerald-800 text-[11px] leading-relaxed">
+          File Excel xuất ra sẽ bao gồm: Ma trận điểm danh từng buổi học (Buổi 1, 2, ...), tổng số buổi đi học, số buổi vắng, tổng tiền học phí và trạng thái thanh toán của từng học sinh.
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeModal('modalExportExcel')" class="px-3 py-1.5 text-xs text-slate-500 font-semibold hover:text-slate-800">Hủy</button>
+        <button type="button" onclick="handleExportAttendanceExcel()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition active:scale-95 flex items-center gap-1.5">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>Tải file Excel (.xlsx)</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ==================== MODAL SỬA THỜI KHÓA BIỂU & CÀI ĐẶT LỚP ==================== -->
@@ -976,6 +1032,22 @@
           </div>
         </div>
 
+        <!-- Khối chọn các thứ học trong tuần cho lớp mới -->
+        <div class="space-y-2 bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80">
+          <label class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+            <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600"></i>
+            <span>Lịch học trong tuần (Hệ thống sẽ tự tính ngày theo các thứ này) *</span>
+          </label>
+
+          <div class="flex flex-wrap gap-1.5" id="newClassDayPills">
+            <!-- Render động bằng JS -->
+          </div>
+
+          <div id="newClassDayScheduleSlots" class="space-y-2 pt-1">
+            <!-- Render động bằng JS -->
+          </div>
+        </div>
+
         <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
           <button type="button" onclick="closeModal('modalCreateClass')" class="px-3.5 py-1.5 text-xs text-slate-500 font-semibold hover:text-slate-800">Hủy</button>
           <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition active:scale-95">Tạo lớp</button>
@@ -1142,15 +1214,43 @@
 
   <!-- ==================== LOGIC JAVASCRIPT HOÀN CHỈNH ==================== -->
   <script>
-    // Danh sách ngày học bao gồm cả Tháng 10 và Tháng 11
-    const SESSION_DATES = [
-      '07/10/2026', '10/10/2026', '14/10/2026', '17/10/2026',
-      '21/10/2026', '24/10/2026', '28/10/2026', '31/10/2026',
-      '04/11/2026', '07/11/2026', '11/11/2026', '14/11/2026',
-      '18/11/2026', '21/11/2026', '25/11/2026', '28/11/2026'
-    ];
-
     const DAYS_OF_WEEK = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
+    const DAY_TO_JS_INDEX = {
+      'Chủ Nhật': 0,
+      'Thứ 2': 1,
+      'Thứ 3': 2,
+      'Thứ 4': 3,
+      'Thứ 5': 4,
+      'Thứ 6': 5,
+      'Thứ 7': 6
+    };
+
+    // Hàm tính toán các ngày học trong tháng dựa trên lịch thứ của lớp
+    function generateClassSessionDates(classSchedules, targetMonths = [
+      { month: 10, year: 2026 },
+      { month: 11, year: 2026 },
+      { month: 12, year: 2026 }
+    ]) {
+      if (!Array.isArray(classSchedules) || classSchedules.length === 0) return [];
+      const scheduledDayIndexes = classSchedules.map(s => DAY_TO_JS_INDEX[s.day]).filter(i => i !== undefined);
+      if (scheduledDayIndexes.length === 0) return [];
+
+      const resultDates = [];
+
+      targetMonths.forEach(({ month, year }) => {
+        const daysInMonth = new Date(year, month, 0).getDate();
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateObj = new Date(year, month - 1, day);
+          if (scheduledDayIndexes.includes(dateObj.getDay())) {
+            const d = String(day).padStart(2, '0');
+            const m = String(month).padStart(2, '0');
+            resultDates.push(`${d}/${m}/${year}`);
+          }
+        }
+      });
+
+      return resultDates;
+    }
 
     const DEFAULT_CLASSES_LIST = [
       {
@@ -1258,8 +1358,8 @@
       ]
     };
 
-    let classesList = JSON.parse(localStorage.getItem('dipi_classes_list_v14')) || DEFAULT_CLASSES_LIST;
-    let classStudentsMap = JSON.parse(localStorage.getItem('dipi_students_map_v14')) || DEFAULT_CLASS_STUDENTS_MAP;
+    let classesList = JSON.parse(localStorage.getItem('dipi_classes_list_v15')) || DEFAULT_CLASSES_LIST;
+    let classStudentsMap = JSON.parse(localStorage.getItem('dipi_students_map_v15')) || DEFAULT_CLASS_STUDENTS_MAP;
     let currentClassId = classesList[0]?.id || 'class_ta_6_1';
     let isClassSelected = false;
     let students = classStudentsMap[currentClassId] || [];
@@ -1270,16 +1370,57 @@
     let currentScheduleViewMode = 'today';
 
     let formSchedulesState = {
-      edit: []
+      edit: [],
+      create: [
+        { day: 'Thứ 2', startTime: '18:00', endTime: '19:30' },
+        { day: 'Thứ 5', startTime: '18:00', endTime: '19:30' }
+      ]
     };
 
-    // Mặc định ngày điểm danh là 07/11/2026 (Tháng 11)
-    let activeAttendanceDate = '07/11/2026';
+    // Hàm lấy chuỗi ngày hôm nay thực tế theo định dạng DD/MM/YYYY
+    function getTodayFullDateString() {
+      const now = new Date();
+      const d = String(now.getDate()).padStart(2, '0');
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const y = now.getFullYear();
+      return `${d}/${m}/${y}`;
+    }
+
+    // Lấy danh sách ngày học riêng cho từng lớp dựa trên lịch dạy của lớp đó
+    function getCurrentClassSessionDates(clsId = currentClassId) {
+      const cls = classesList.find(c => c.id === clsId);
+      if (!cls || !Array.isArray(cls.schedules) || cls.schedules.length === 0) {
+        return [];
+      }
+      return generateClassSessionDates(cls.schedules);
+    }
+
+    // Ngày điểm danh đang chọn
+    let activeAttendanceDate = '';
+
+    // Hàm đồng bộ ngày điểm danh của lớp hiện tại
+    function syncActiveAttendanceDateForCurrentClass() {
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      const todayStr = getTodayFullDateString();
+
+      if (classDates.includes(todayStr)) {
+        activeAttendanceDate = todayStr;
+      } else if (classDates.includes(activeAttendanceDate)) {
+        // Giữ nguyên activeAttendanceDate nếu nó thuộc lớp này
+      } else if (classDates.length > 0) {
+        // Tìm ngày gần nhất trong tháng 11/2026 hoặc lấy ngày cuối cùng
+        const novDates = classDates.filter(d => d.includes('/11/2026'));
+        activeAttendanceDate = novDates.length > 0 ? novDates[0] : classDates[0];
+      } else {
+        activeAttendanceDate = todayStr;
+      }
+    }
 
     // Bộ lọc học phí
     let financeFilterMode = 'month'; // 'month' hoặc 'range'
-    let currentFinanceMonth = '11/2026';
-    let selectedFinanceDates = SESSION_DATES.filter(d => d.includes('/11/2026'));
+    const todayNow = new Date();
+    let currentFinanceMonth = `${String(todayNow.getMonth() + 1).padStart(2, '0')}/${todayNow.getFullYear()}`;
+    let selectedFinanceDates = [];
     let tempSelectedFinanceDates = [];
 
     // Chỉnh sửa đơn giá học phí
@@ -1287,8 +1428,8 @@
 
     function saveAllToLocalStorage() {
       try {
-        localStorage.setItem('dipi_classes_list_v14', JSON.stringify(classesList));
-        localStorage.setItem('dipi_students_map_v14', JSON.stringify(classStudentsMap));
+        localStorage.setItem('dipi_classes_list_v15', JSON.stringify(classesList));
+        localStorage.setItem('dipi_students_map_v15', JSON.stringify(classStudentsMap));
       } catch (err) {
         console.error('Lỗi lưu localStorage:', err);
       }
@@ -1355,6 +1496,8 @@
       currentClassId = newClassId;
       isClassSelected = true;
       students = classStudentsMap[currentClassId] || [];
+      syncActiveAttendanceDateForCurrentClass();
+      syncFinanceDatesForCurrentClass();
       renderAll();
     }
 
@@ -1362,6 +1505,8 @@
       currentClassId = clsId;
       isClassSelected = true;
       students = classStudentsMap[currentClassId] || [];
+      syncActiveAttendanceDateForCurrentClass();
+      syncFinanceDatesForCurrentClass();
       renderAll();
     }
 
@@ -1394,7 +1539,7 @@
       }
     }
 
-    // ==================== THỜI KHÓA BIỂU 7 CỘT (CA SỚM XẾP TRƯỚC, KHÔNG CÓ Ô TRỐNG) ====================
+    // ==================== THỜI KHÓA BIỂU 7 CỘT ====================
     function renderWeeklyScheduleGrid() {
       const todayInfo = getCurrentDayOfWeekInfo();
       const dayColMap = {
@@ -1521,13 +1666,26 @@
       }
     }
 
-    // ==================== BỘ CHỌN NGÀY ĐIỂM DANH (RESET BUỔI 1 MỖI THÁNG) ====================
+    // ==================== BỘ CHỌN NGÀY ĐIỂM DANH (ĐỘNG THEO LỚP & RESET BUỔI 1 MỖI THÁNG) ====================
     function renderActiveAttendanceDateSelect() {
       const sel = document.getElementById('activeAttendanceDateSelect');
       if (!sel) return;
 
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      const todayStr = getTodayFullDateString();
+
+      if (classDates.length === 0) {
+        sel.innerHTML = `<option value="${todayStr}">Hôm nay (${todayStr})</option>`;
+        activeAttendanceDate = todayStr;
+        return;
+      }
+
+      if (!classDates.includes(activeAttendanceDate)) {
+        activeAttendanceDate = classDates.includes(todayStr) ? todayStr : classDates[0];
+      }
+
       const sessionsByMonth = {};
-      SESSION_DATES.forEach(d => {
+      classDates.forEach(d => {
         const parts = d.split('/');
         const monthKey = `${parts[1]}/${parts[2]}`;
         if (!sessionsByMonth[monthKey]) sessionsByMonth[monthKey] = [];
@@ -1541,9 +1699,11 @@
           const parts = dateStr.split('/');
           const shortDate = `${parts[0]}/${parts[1]}`;
           const isAct = dateStr === activeAttendanceDate;
+          const isToday = dateStr === todayStr;
+          const labelToday = isToday ? ' • Hôm nay' : '';
           optionsHtml.push(`
             <option value="${dateStr}" ${isAct ? 'selected' : ''}>
-              Buổi ${idx + 1} (${shortDate})
+              Buổi ${idx + 1} (${shortDate}${labelToday})
             </option>
           `);
         });
@@ -1558,7 +1718,7 @@
       showUndoToast(`Đang điểm danh cho ngày ${newDate}...`);
     }
 
-    // ==================== ĐIỂM DANH 3 TRẠNG THÁI (KHÔNG TÍNH VẮNG KHỐNG) ====================
+    // ==================== ĐIỂM DANH 3 TRẠNG THÁI ====================
     function getStudentAttendanceCounts(student) {
       let presentCount = 0;
       let absentCount = 0;
@@ -1682,13 +1842,21 @@
       if (!s.attendanceHistory) s.attendanceHistory = {};
 
       const currentStatus = s.attendanceHistory[activeAttendanceDate] || 'unrecorded';
-      s.attendanceHistory[activeAttendanceDate] = (currentStatus === targetStatus) ? 'unrecorded' : targetStatus;
-      s.status = s.attendanceHistory[activeAttendanceDate];
+      const finalStatus = (currentStatus === targetStatus) ? 'unrecorded' : targetStatus;
+      
+      // Ghi nhận trực tiếp vào lịch sử ngày activeAttendanceDate
+      s.attendanceHistory[activeAttendanceDate] = finalStatus;
+      s.status = finalStatus;
 
+      // Lưu ngay vào classStudentsMap và localStorage
       classStudentsMap[currentClassId] = students;
       saveAllToLocalStorage();
+
       renderAttendanceTab();
       renderFinanceTab();
+
+      const statusText = finalStatus === 'present' ? 'Đi học' : (finalStatus === 'absent' ? 'Vắng' : 'Chưa điểm danh');
+      showUndoToast(`Đã lưu ${s.name}: ${statusText} (${activeAttendanceDate})`);
     }
 
     function markAllAttendance(status) {
@@ -1701,7 +1869,7 @@
       saveAllToLocalStorage();
       renderAttendanceTab();
       renderFinanceTab();
-      showUndoToast(`Đã đánh dấu tất cả ${status === 'present' ? 'Đi học' : 'Vắng'} ngày ${activeAttendanceDate}...`);
+      showUndoToast(`Đã lưu tất cả ${status === 'present' ? 'Đi học' : 'Vắng'} ngày ${activeAttendanceDate}...`);
     }
 
     function toggleStudentAttendanceSelection(studentId, checked) {
@@ -1723,6 +1891,185 @@
       const cb = document.getElementById('selectAllAttendanceCheckbox');
       if (cb) cb.checked = false;
       renderAttendanceTab();
+    }
+
+    // ==================== XUẤT DỮ LIỆU ĐIỂM DANH & HỌC PHÍ RA EXCEL (.XLSX) ====================
+    function openExportExcelModal() {
+      const cls = classesList.find(c => c.id === currentClassId);
+      const nameEl = document.getElementById('exportClassPreviewName');
+      if (nameEl) {
+        nameEl.innerText = cls ? `${cls.class_name} (${cls.room || 'P.101'})` : 'Chưa chọn lớp';
+      }
+
+      // Tự động sinh danh sách tháng có lịch dạy của lớp
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      const monthSet = new Set();
+      classDates.forEach(d => {
+        const parts = d.split('/');
+        if (parts.length === 3) {
+          monthSet.add(`${parts[1]}/${parts[2]}`);
+        }
+      });
+
+      const selectEl = document.getElementById('exportMonthSelect');
+      if (selectEl && monthSet.size > 0) {
+        const sortedMonths = Array.from(monthSet).sort();
+        const curM = `${String(todayNow.getMonth() + 1).padStart(2, '0')}/${todayNow.getFullYear()}`;
+        selectEl.innerHTML = sortedMonths.map(m => `
+          <option value="${m}" ${m === curM || (sortedMonths.length === 1) ? 'selected' : ''}>
+            Tháng ${m}
+          </option>
+        `).join('');
+      }
+
+      openModal('modalExportExcel');
+    }
+
+    function handleExportAttendanceExcel() {
+      if (typeof XLSX === 'undefined') {
+        showUndoToast('Đang tải thư viện Excel, vui lòng thử lại sau 2 giây...');
+        return;
+      }
+
+      const cls = classesList.find(c => c.id === currentClassId);
+      if (!cls) return;
+
+      const selectedMonth = document.getElementById('exportMonthSelect')?.value || '11/2026';
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      
+      // Lọc các ngày học trong tháng đã chọn
+      const monthDates = classDates.filter(d => d.includes(`/${selectedMonth}`));
+
+      if (monthDates.length === 0) {
+        showUndoToast(`Lớp không có buổi học nào trong tháng ${selectedMonth}!`);
+        return;
+      }
+
+      // Tạo cấu trúc dữ liệu theo định dạng ma trận
+      const excelRows = [];
+
+      // Dòng 1: Tiêu đề lớp học
+      excelRows.push([`BẢNG ĐIỂM DANH & HỌC PHÍ - ${cls.class_name}`]);
+      // Dòng 2: Thời gian xuất & thông tin chi tiết
+      excelRows.push([`Kỳ học: Tháng ${selectedMonth}`, `Phòng học: ${cls.room || 'P.101'}`, `Khung giờ: ${cls.timeSlot || ''}`, `Ngày xuất: ${getTodayFullDateString()}`]);
+      // Dòng 3: Dòng trống ngăn cách
+      excelRows.push([]);
+
+      // Dòng 4: Header các cột
+      const headerRow = ['STT', 'Họ và tên học sinh'];
+      monthDates.forEach((d, idx) => {
+        const shortDate = d.slice(0, 5); // DD/MM
+        headerRow.push(`Buổi ${idx + 1} (${shortDate})`);
+      });
+      headerRow.push('Số buổi đi', 'Số buổi vắng', 'Đơn giá (VNĐ)', 'Học phí cần thu (VNĐ)', 'Đã thu (VNĐ)', 'Còn nợ (VNĐ)', 'Trạng thái');
+      excelRows.push(headerRow);
+
+      // Điền thông tin từng học sinh
+      students.forEach((s, idx) => {
+        const row = [idx + 1, s.name];
+        let presentCount = 0;
+        let absentCount = 0;
+        const history = s.attendanceHistory || {};
+        const paidList = s.paidSessions || [];
+        const price = Number(s.pricePerSession) || 40000;
+
+        monthDates.forEach(d => {
+          const st = history[d];
+          if (st === 'present') {
+            row.push('✓');
+            presentCount++;
+          } else if (st === 'absent') {
+            row.push('V');
+            absentCount++;
+          } else {
+            row.push('-');
+          }
+        });
+
+        // Tính toán học phí của tháng được chọn
+        let unpaidCount = 0;
+        monthDates.forEach(d => {
+          if (history[d] === 'present' && !paidList.includes(d)) {
+            unpaidCount++;
+          }
+        });
+
+        const totalExpected = presentCount * price;
+        const debt = unpaidCount * price;
+        const paid = Math.max(0, totalExpected - debt);
+        const statusText = totalExpected === 0 ? 'Chưa học' : (debt === 0 ? 'Đã hoàn thành' : (paid > 0 ? 'Đóng một phần' : 'Chưa đóng'));
+
+        row.push(presentCount, absentCount, price, totalExpected, paid, debt, statusText);
+        excelRows.push(row);
+      });
+
+      // Dòng tổng kết cuối bảng
+      const totalRow = ['TỔNG CỘNG', `${students.length} học sinh`];
+      monthDates.forEach(d => {
+        let presentInDate = 0;
+        students.forEach(s => {
+          if (s.attendanceHistory?.[d] === 'present') presentInDate++;
+        });
+        totalRow.push(`${presentInDate} HS`);
+      });
+
+      let grandTotalExpected = 0;
+      let grandTotalPaid = 0;
+      let grandTotalDebt = 0;
+      students.forEach(s => {
+        const price = Number(s.pricePerSession) || 40000;
+        const history = s.attendanceHistory || {};
+        const paidList = s.paidSessions || [];
+        let pCount = 0;
+        let unCount = 0;
+        monthDates.forEach(d => {
+          if (history[d] === 'present') {
+            pCount++;
+            if (!paidList.includes(d)) unCount++;
+          }
+        });
+        const exp = pCount * price;
+        const d = unCount * price;
+        grandTotalExpected += exp;
+        grandTotalDebt += d;
+        grandTotalPaid += (exp - d);
+      });
+
+      totalRow.push('', '', '', grandTotalExpected, grandTotalPaid, grandTotalDebt, '');
+      excelRows.push([]);
+      excelRows.push(totalRow);
+
+      // Chuyển mảng thành Sheet
+      const worksheet = XLSX.utils.aoa_to_sheet(excelRows);
+
+      // Cấu hình độ rộng các cột tự động
+      const colWidths = [
+        { wch: 6 },  // STT
+        { wch: 24 }  // Tên HS
+      ];
+      monthDates.forEach(() => colWidths.push({ wch: 14 }));
+      colWidths.push({ wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 });
+      worksheet['!cols'] = colWidths;
+
+      // Hợp nhất ô cho tiêu đề dòng 1
+      worksheet['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: Math.min(headerRow.length - 1, 8) } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } }
+      ];
+
+      // Tạo Workbook và xuất file
+      const workbook = XLSX.utils.book_new();
+      const safeSheetName = `T${selectedMonth.replace('/', '_')}`.slice(0, 31);
+      XLSX.utils.book_append_sheet(workbook, worksheet, safeSheetName);
+
+      // Đặt tên file: DiemDanh_[TenLop]_[Thang].xlsx
+      const cleanClassName = cls.class_name.replace(/[^a-zA-Z0-9]/g, '_');
+      const cleanMonth = selectedMonth.replace('/', '_');
+      const fileName = `DiemDanh_${cleanClassName}_${cleanMonth}.xlsx`;
+
+      XLSX.writeFile(workbook, fileName);
+      closeModal('modalExportExcel');
+      showUndoToast(`Đã tải file ${fileName} thành công!`);
     }
 
     function updateAttendanceBulkActionBar() {
@@ -1882,11 +2229,181 @@
 
       saveAllToLocalStorage();
       closeModal('modalEditClass');
+      syncActiveAttendanceDateForCurrentClass();
+      syncFinanceDatesForCurrentClass();
       renderAll();
-      showUndoToast(`Đã lưu cài đặt lớp ${name}...`);
+      showUndoToast(`Đã lưu và tự tính lại ngày học cho lớp ${name}...`);
+    }
+
+    // ==================== TẠO LỚP MỚI VỚI CHỌN LỊCH THỨ ====================
+    function openCreateClassModal() {
+      document.getElementById('newClassNameInput').value = '';
+      document.getElementById('newClassRoomInput').value = 'P.101';
+      document.getElementById('newClassCodeInput').value = '';
+      document.getElementById('newClassFeeInput').value = 40000;
+      formSchedulesState.create = [
+        { day: 'Thứ 2', startTime: '18:00', endTime: '19:30' },
+        { day: 'Thứ 5', startTime: '18:00', endTime: '19:30' }
+      ];
+      renderNewClassDayPills();
+      openModal('modalCreateClass');
+    }
+
+    function renderNewClassDayPills() {
+      const pillsContainer = document.getElementById('newClassDayPills');
+      const slotsContainer = document.getElementById('newClassDayScheduleSlots');
+      if (!pillsContainer || !slotsContainer) return;
+
+      const currentDays = formSchedulesState.create.map(s => s.day);
+
+      pillsContainer.innerHTML = DAYS_OF_WEEK.map(day => {
+        const isSelected = currentDays.includes(day);
+        return `
+          <button
+            type="button"
+            onclick="toggleNewClassScheduleDay('${day}')"
+            class="px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 ${
+              isSelected ? 'bg-emerald-600 text-white shadow-2xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+            }"
+          >
+            <i data-lucide="${isSelected ? 'check' : 'plus'}" class="w-3 h-3"></i>
+            <span>${day}</span>
+          </button>
+        `;
+      }).join('');
+
+      if (formSchedulesState.create.length === 0) {
+        slotsContainer.innerHTML = `
+          <div class="p-2.5 text-center text-xs text-slate-400 bg-white rounded-xl border border-dashed border-slate-200">
+            Chưa chọn ngày học nào. Vui lòng bấm chọn các thứ ở trên.
+          </div>
+        `;
+      } else {
+        slotsContainer.innerHTML = formSchedulesState.create.map((item, idx) => `
+          <div class="bg-white rounded-xl border border-slate-200 p-2.5 flex items-center justify-between gap-2 shadow-2xs">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+              <span class="font-extrabold text-xs sm:text-sm text-slate-900">${item.day}</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+              <span class="text-slate-500 font-semibold text-[11px]">Từ:</span>
+              <input
+                type="text"
+                value="${item.startTime}"
+                maxlength="5"
+                onchange="formSchedulesState.create[${idx}].startTime = this.value"
+                class="w-16 px-1.5 py-1 text-xs font-mono font-extrabold text-slate-900 border border-slate-300 rounded-lg text-center"
+              >
+              <span class="text-slate-400">-</span>
+              <input
+                type="text"
+                value="${item.endTime}"
+                maxlength="5"
+                onchange="formSchedulesState.create[${idx}].endTime = this.value"
+                class="w-16 px-1.5 py-1 text-xs font-mono font-extrabold text-slate-900 border border-slate-300 rounded-lg text-center"
+              >
+              <button
+                type="button"
+                onclick="toggleNewClassScheduleDay('${item.day}')"
+                class="w-6 h-6 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 flex items-center justify-center transition"
+                title="Xóa ngày"
+              >
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      safeCreateIcons();
+    }
+
+    function toggleNewClassScheduleDay(day) {
+      const idx = formSchedulesState.create.findIndex(s => s.day === day);
+      if (idx >= 0) {
+        formSchedulesState.create.splice(idx, 1);
+      } else {
+        const sample = formSchedulesState.create[0] || { startTime: '18:00', endTime: '19:30' };
+        formSchedulesState.create.push({
+          day: day,
+          startTime: sample.startTime,
+          endTime: sample.endTime
+        });
+        formSchedulesState.create.sort((a, b) => DAYS_OF_WEEK.indexOf(a.day) - DAYS_OF_WEEK.indexOf(b.day));
+      }
+      renderNewClassDayPills();
+    }
+
+    function handleCreateClass(e) {
+      e.preventDefault();
+      const name = document.getElementById('newClassNameInput').value.trim();
+      const room = document.getElementById('newClassRoomInput').value.trim() || 'P.101';
+      const code = document.getElementById('newClassCodeInput').value.trim() || 'TA';
+      const fee = Number(document.getElementById('newClassFeeInput').value) || 40000;
+
+      if (formSchedulesState.create.length === 0) {
+        showUndoToast('Vui lòng chọn ít nhất 1 ngày học trong tuần cho lớp mới...');
+        return;
+      }
+
+      const firstSlot = formSchedulesState.create[0];
+      const timeSlotStr = `${firstSlot.startTime.replace(':', 'h')} - ${firstSlot.endTime.replace(':', 'h')}`;
+
+      const newClassObj = {
+        id: `class_eng_${Date.now()}`,
+        class_name: name,
+        code: code,
+        room: room,
+        timeSlot: timeSlotStr,
+        schedules: JSON.parse(JSON.stringify(formSchedulesState.create)),
+        days: formSchedulesState.create.map(s => s.day),
+        colorBg: 'bg-[#e0f2fe]/80 hover:bg-[#bae6fd] border-[#38bdf8] text-slate-900',
+        badgeColor: 'bg-[#0284c7] text-white',
+        fee_per_session: fee
+      };
+
+      classesList.push(newClassObj);
+      classStudentsMap[newClassObj.id] = [];
+      currentClassId = newClassObj.id;
+      isClassSelected = true;
+      students = [];
+
+      saveAllToLocalStorage();
+      closeModal('modalCreateClass');
+      syncActiveAttendanceDateForCurrentClass();
+      syncFinanceDatesForCurrentClass();
+      renderAll();
+      showUndoToast(`Đã tạo lớp ${name} và tính lịch học tự động...`);
     }
 
     // ==================== TAB HỌC PHÍ & BỘ LỌC 1 HÀNG DUY NHẤT ====================
+    function syncFinanceDatesForCurrentClass() {
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      if (financeFilterMode === 'month') {
+        if (currentFinanceMonth === 'all') {
+          selectedFinanceDates = [...classDates];
+        } else {
+          selectedFinanceDates = classDates.filter(d => d.includes(`/${currentFinanceMonth}`));
+        }
+      } else {
+        const fromVal = document.getElementById('financeDateFromInput')?.value;
+        const toVal = document.getElementById('financeDateToInput')?.value;
+        if (fromVal && toVal) {
+          const fromDate = new Date(fromVal);
+          const toDate = new Date(toVal);
+          selectedFinanceDates = classDates.filter(d => {
+            const [day, month, year] = d.split('/').map(Number);
+            const cur = new Date(year, month - 1, day);
+            return cur >= fromDate && cur <= toDate;
+          });
+        } else {
+          selectedFinanceDates = classDates.filter(d => d.includes(`/${currentFinanceMonth}`));
+        }
+      }
+      updateFinanceDateBadge();
+    }
+
     function switchFinanceFilterMode(mode) {
       financeFilterMode = mode;
       const monthBtn = document.getElementById('filterModeMonthBtn');
@@ -1915,10 +2432,11 @@
 
     function onFinanceMonthFilterChange(val) {
       currentFinanceMonth = val;
+      const classDates = getCurrentClassSessionDates(currentClassId);
       if (val === 'all') {
-        selectedFinanceDates = [...SESSION_DATES];
+        selectedFinanceDates = [...classDates];
       } else {
-        selectedFinanceDates = SESSION_DATES.filter(d => d.includes(`/${val}`));
+        selectedFinanceDates = classDates.filter(d => d.includes(`/${val}`));
       }
       updateFinanceDateBadge();
       renderFinanceTab();
@@ -1931,8 +2449,9 @@
 
       const fromDate = new Date(fromVal);
       const toDate = new Date(toVal);
+      const classDates = getCurrentClassSessionDates(currentClassId);
 
-      selectedFinanceDates = SESSION_DATES.filter(d => {
+      selectedFinanceDates = classDates.filter(d => {
         const [day, month, year] = d.split('/').map(Number);
         const cur = new Date(year, month - 1, day);
         return cur >= fromDate && cur <= toDate;
@@ -1962,7 +2481,9 @@
       const container = document.getElementById('financeDatesListContainer');
       if (!container) return;
 
-      container.innerHTML = SESSION_DATES.map((d) => {
+      const classDates = getCurrentClassSessionDates(currentClassId);
+
+      container.innerHTML = classDates.map((d) => {
         const isChecked = tempSelectedFinanceDates.includes(d);
         const parts = d.split('/');
         return `
@@ -1993,7 +2514,8 @@
     }
 
     function selectAllFinanceDatesModal(val) {
-      tempSelectedFinanceDates = val ? [...SESSION_DATES] : [];
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      tempSelectedFinanceDates = val ? [...classDates] : [];
       openSelectFinanceDatesModal();
     }
 
@@ -2240,7 +2762,7 @@
       showUndoToast(`Đã cập nhật đơn giá mới: ${formatMoneyK(newPrice)}/buổi...`);
     }
 
-    // ==================== CÁC MODAL KHÁC ====================
+    // ==================== MODAL XEM & SỬA HỌC SINH ====================
     let activeDetailStudent = null;
     function openStudentDetailModal(studentId) {
       const s = students.find(item => item.id === studentId);
@@ -2257,8 +2779,9 @@
       if (grid) {
         if (!s.attendanceHistory) s.attendanceHistory = {};
 
+        const classDates = getCurrentClassSessionDates(currentClassId);
         const sessionsByMonth = {};
-        SESSION_DATES.forEach(d => {
+        classDates.forEach(d => {
           const parts = d.split('/');
           const monthKey = parts[1];
           if (!sessionsByMonth[monthKey]) sessionsByMonth[monthKey] = [];
@@ -2378,51 +2901,10 @@
 
       saveAllToLocalStorage();
       closeModal('modalAddStudent');
+      syncActiveAttendanceDateForCurrentClass();
+      syncFinanceDatesForCurrentClass();
       renderAll();
       showUndoToast(`Đã thêm học sinh ${name}...`);
-    }
-
-    function openCreateClassModal() {
-      document.getElementById('newClassNameInput').value = '';
-      document.getElementById('newClassRoomInput').value = 'P.101';
-      document.getElementById('newClassCodeInput').value = '';
-      document.getElementById('newClassFeeInput').value = 40000;
-      openModal('modalCreateClass');
-    }
-
-    function handleCreateClass(e) {
-      e.preventDefault();
-      const name = document.getElementById('newClassNameInput').value.trim();
-      const room = document.getElementById('newClassRoomInput').value.trim() || 'P.101';
-      const code = document.getElementById('newClassCodeInput').value.trim() || 'TA';
-      const fee = Number(document.getElementById('newClassFeeInput').value) || 40000;
-
-      const newClassObj = {
-        id: `class_eng_${Date.now()}`,
-        class_name: name,
-        code: code,
-        room: room,
-        timeSlot: '18h00 - 19h30',
-        schedules: [
-          { day: 'Thứ 2', startTime: '18:00', endTime: '19:30' },
-          { day: 'Thứ 5', startTime: '18:00', endTime: '19:30' }
-        ],
-        days: ['Thứ 2', 'Thứ 5'],
-        colorBg: 'bg-[#e0f2fe]/80 hover:bg-[#bae6fd] border-[#38bdf8] text-slate-900',
-        badgeColor: 'bg-[#0284c7] text-white',
-        fee_per_session: fee
-      };
-
-      classesList.push(newClassObj);
-      classStudentsMap[newClassObj.id] = [];
-      currentClassId = newClassObj.id;
-      isClassSelected = true;
-      students = [];
-
-      saveAllToLocalStorage();
-      closeModal('modalCreateClass');
-      renderAll();
-      showUndoToast(`Đã tạo lớp ${name}...`);
     }
 
     // ==================== BÀI TẬP VỀ NHÀ ====================
@@ -2524,7 +3006,8 @@
       }
 
       if (grid) {
-        grid.innerHTML = SESSION_DATES.map((d, idx) => {
+        const classDates = getCurrentClassSessionDates(currentClassId);
+        grid.innerHTML = classDates.map((d, idx) => {
           const st = student.attendanceHistory?.[d] || 'unrecorded';
           return `
             <div class="p-2 rounded-xl border text-center ${st === 'present' ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200'}">
@@ -2571,8 +3054,12 @@
         }
       });
 
-      if (tabKey === 'finance') renderFinanceTab();
-      else if (tabKey === 'classes') renderClassesManagementTab();
+      if (tabKey === 'finance') {
+        syncFinanceDatesForCurrentClass();
+        renderFinanceTab();
+      } else if (tabKey === 'classes') {
+        renderClassesManagementTab();
+      }
       safeCreateIcons();
     }
 
@@ -2627,6 +3114,8 @@
         }
 
         students = classStudentsMap[currentClassId] || [];
+        syncActiveAttendanceDateForCurrentClass();
+        syncFinanceDatesForCurrentClass();
         renderAll();
       } catch (err) {
         console.error('Lỗi khởi tạo ứng dụng:', err);
