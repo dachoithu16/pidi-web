@@ -1098,11 +1098,11 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL THÊM HỌC SINH MỚI (TỪ FILE 6 ĐƯỢC TÍCH HỢP VÀO 14) ==================== -->
+  <!-- ==================== MODAL THÊM HỌC SINH MỚI (TÍCH HỢP TOÀN DIỆN EXCEL / WORD / DÁN NHANH) ==================== -->
   <div id="modalAddStudent" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-xl w-full p-4 sm:p-6 border border-slate-200/90 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
       
-      <!-- Header Modal & Tabs chuyển chế độ Thêm 1 em / Thêm hàng loạt -->
+      <!-- Header Modal & Tabs chuyển chế độ Thêm 1 em / Nạp từ file -->
       <div class="space-y-3 border-b border-slate-100 pb-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -1111,15 +1111,15 @@
             </div>
             <div>
               <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Thêm học sinh</h3>
-              <p class="text-[11px] text-slate-400 font-medium">Nhập từng em hoặc nạp danh sách tự động từ Excel/Word</p>
+              <p class="text-[11px] text-slate-400 font-medium">Thêm từng em hoặc nạp danh sách tự động từ Excel/Word</p>
             </div>
           </div>
-          <button onclick="closeModal('modalAddStudent')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+          <button type="button" onclick="closeModal('modalAddStudent')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
 
-        <!-- Tab Switcher -->
+        <!-- 2 Tab Switcher -->
         <div class="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs">
           <button
             type="button"
@@ -1143,7 +1143,7 @@
         </div>
       </div>
 
-      <!-- TAB 1: FORM THÊM 1 HỌC SINH -->
+      <!-- TAB 1: FORM THÊM 1 HỌC SINH (CHI TIẾT TỪ FILE 6) -->
       <form id="formAddSingleStudent" onsubmit="handleCreateStudent(event)" class="space-y-3">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Lớp học *</label>
@@ -1228,8 +1228,7 @@
 
       <!-- TAB 2: KHỐI NHẬP HÀNG LOẠT (FILE EXCEL / WORD / DÁN TEXT) -->
       <div id="formAddBatchStudent" class="hidden space-y-3.5">
-        
-        <!-- Chọn lớp đích nạp học sinh -->
+        <!-- Khối chọn lớp và đơn giá -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 bg-slate-50 p-3 rounded-2xl border border-slate-200">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Lớp học cần thêm vào *</label>
@@ -1305,7 +1304,7 @@
           <textarea
             id="batchStudentPasteTextarea"
             rows="3"
-            placeholder="Mỗi học sinh 1 dòng. Ví dụ:&#10;1. Nguyễn Văn An - 0912345678 - Bác Hùng&#10;Trần Thị Mai	0987654321	THCS Cầu Giấy"
+            placeholder="Mỗi học sinh 1 dòng (có thể dán 1 em hoặc nhiều em). Ví dụ:&#10;1. Nguyễn Văn An - 0912345678 - Bác Hùng&#10;Trần Thị Mai	0987654321	THCS Cầu Giấy"
             class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
           ></textarea>
         </div>
@@ -1349,7 +1348,7 @@
           </div>
         </div>
 
-        <!-- Nút hành động của Tab hàng loạt -->
+        <!-- Nút hành động -->
         <div class="flex items-center justify-between pt-2 border-t border-slate-100">
           <button
             type="button"
@@ -1366,10 +1365,9 @@
             class="px-4 py-2 bg-emerald-600 disabled:bg-slate-300 disabled:cursor-not-allowed hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition active:scale-95 flex items-center gap-1.5"
           >
             <i data-lucide="check" class="w-3.5 h-3.5"></i>
-            <span id="btnConfirmBatchImportText">Xác nhận nạp vào lớp</span>
+            <span id="btnConfirmBatchImportText">Xác nhận thêm học sinh</span>
           </button>
         </div>
-
       </div>
 
     </div>
@@ -1500,24 +1498,7 @@
               <span>Thêm học sinh</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600"></i>
             </div>
-            <p class="text-[10px] text-slate-500 font-medium">Nhập thông tin từng học sinh</p>
-          </div>
-        </button>
-
-        <button
-          type="button"
-          onclick="closeQuickActionMenu(); openAddStudentModal('batch');"
-          class="w-full p-2.5 sm:p-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 hover:bg-emerald-100/60 transition flex items-center gap-3 text-left group active:scale-[0.98]"
-        >
-          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-            <i data-lucide="file-spreadsheet" class="w-4 h-4 sm:w-5 sm:h-5"></i>
-          </div>
-          <div class="min-w-0 flex-1">
-            <div class="font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between">
-              <span>Nhập HS từ Excel / Word</span>
-              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600"></i>
-            </div>
-            <p class="text-[10px] text-slate-500 font-medium">Nạp nhanh cả danh sách tự động</p>
+            <p class="text-[10px] text-slate-500 font-medium">Thêm từng em hoặc nạp từ Excel, Word</p>
           </div>
         </button>
 
@@ -1534,6 +1515,7 @@
               <span>Thêm lớp học</span>
               <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600"></i>
             </div>
+            <p class="text-[10px] text-slate-500 font-medium">Thiết lập thời khóa biểu và phòng học</p>
           </div>
         </button>
       </div>
@@ -3438,9 +3420,9 @@
       showUndoToast(`Đã sao chép giờ của ${src.day} cho toàn bộ các ngày...`);
     }
 
-    // ==================== THÊM HỌC SINH MỚI & NHẬP TỪ EXCEL/WORD ====================
+    // ==================== THÊM HỌC SINH MỚI TỰ ĐỘNG (EXCEL / WORD / DÁN NHANH) ====================
     let currentAddStudentTab = 'single'; // 'single' hoặc 'batch'
-    let parsedBatchStudents = []; // Danh sách học sinh tạm đọc từ file / textarea
+    let parsedBatchStudents = [];
 
     function switchAddStudentTab(mode) {
       currentAddStudentTab = mode;
@@ -3463,8 +3445,7 @@
         batchBtn?.classList.remove('text-slate-600');
         singleBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-2xs', 'font-bold');
         singleBtn?.classList.add('text-slate-600');
-        
-        // Đồng bộ lớp đích cho Tab Batch
+
         const batchClassSelect = document.getElementById('batchStudentTargetClassSelect');
         if (batchClassSelect) {
           batchClassSelect.innerHTML = classesList.map(c => `
@@ -3478,6 +3459,13 @@
       safeCreateIcons();
     }
 
+    function onNewStudentClassChanged(targetClassId) {
+      const cls = classesList.find(c => c.id === targetClassId);
+      if (cls) {
+        document.getElementById('newStudentFeePerSession').value = cls.fee_per_session || 40000;
+      }
+    }
+
     function onBatchClassChanged(targetClassId) {
       const cls = classesList.find(c => c.id === targetClassId);
       const feeInput = document.getElementById('batchStudentFeeInput');
@@ -3487,9 +3475,10 @@
     }
 
     function openAddStudentModal(initialTab = 'single') {
-      const sel = document.getElementById('newStudentClassSelect');
-      if (sel) {
-        sel.innerHTML = classesList.map(c => `
+      // 1. Khởi tạo danh sách lớp cho Tab Thêm 1 em
+      const singleClassSelect = document.getElementById('newStudentClassSelect');
+      if (singleClassSelect) {
+        singleClassSelect.innerHTML = classesList.map(c => `
           <option value="${c.id}" ${c.id === currentClassId ? 'selected' : ''}>
             ${c.class_name} (${c.room || 'P.101'})
           </option>
@@ -3504,7 +3493,19 @@
       document.getElementById('newStudentDob').value = '';
       document.getElementById('newStudentSchool').value = '';
 
-      // Reset khối batch
+      // 2. Khởi tạo danh sách lớp cho Tab Nạp file
+      const batchClassSelect = document.getElementById('batchStudentTargetClassSelect');
+      if (batchClassSelect) {
+        batchClassSelect.innerHTML = classesList.map(c => `
+          <option value="${c.id}" ${c.id === currentClassId ? 'selected' : ''}>
+            ${c.class_name} (${c.room || 'P.101'})
+          </option>
+        `).join('');
+      }
+      const activeTargetId = batchClassSelect?.value || currentClassId;
+      onBatchClassChanged(activeTargetId);
+
+      // Reset file và khung preview
       parsedBatchStudents = [];
       const fileInput = document.getElementById('batchFileInput');
       if (fileInput) fileInput.value = '';
@@ -3514,13 +3515,6 @@
 
       switchAddStudentTab(initialTab);
       openModal('modalAddStudent');
-    }
-
-    function onNewStudentClassChanged(targetClassId) {
-      const cls = classesList.find(c => c.id === targetClassId);
-      if (cls) {
-        document.getElementById('newStudentFeePerSession').value = cls.fee_per_session || 40000;
-      }
     }
 
     // ==================== TẢI FILE MẪU EXCEL CHUẨN ====================
@@ -3637,7 +3631,6 @@
         if (nameColIdx !== -1) {
           rawName = String(row[nameColIdx] || '').trim();
         } else {
-          // Nếu không thấy cột rõ ràng, lấy cột chuỗi đầu tiên không phải số STT
           for (let c = 0; c < row.length; c++) {
             const cell = String(row[c] || '').trim();
             if (cell && isNaN(cell) && cell.length >= 2) {
@@ -3701,7 +3694,6 @@
       const list = [];
 
       lines.forEach(line => {
-        // Tách theo Tab nếu copy từ Excel/Word sang
         if (line.includes('\t')) {
           const parts = line.split('\t').map(p => p.trim()).filter(p => p.length > 0);
           let rawName = cleanStudentNameString(parts[0] && !isNaN(parts[0]) && parts.length > 1 ? parts[1] : parts[0]);
@@ -3718,12 +3710,10 @@
           return;
         }
 
-        // Tách theo dấu gạch ngang '-', dấu phẩy ',' nếu có
         let namePart = line;
         let phonePart = '';
         let extraPart = '';
 
-        // Tách SĐT nếu có trong chuỗi (dãy 10 số)
         const phoneMatch = line.match(/(0\d{9})/);
         if (phoneMatch) {
           phonePart = phoneMatch[1];
@@ -3761,7 +3751,6 @@
 
     function cleanStudentNameString(str) {
       if (!str) return '';
-      // Loại bỏ số thứ tự đầu dòng: "1.", "1/", "1 -", "[1]", "STT 1",...
       return str
         .replace(/^(STT\s*)?\d+[\.\/\)\-\:\s]+/i, '')
         .replace(/^[-•*]\s*/, '')
@@ -3795,7 +3784,7 @@
         confirmBtn.disabled = selectedCount === 0;
       }
       if (confirmBtnText) {
-        confirmBtnText.innerText = `Xác nhận nạp ${selectedCount} học sinh`;
+        confirmBtnText.innerText = `Xác nhận thêm ${selectedCount} học sinh`;
       }
 
       if (selectAll) {
@@ -3893,7 +3882,7 @@
 
       const approvedList = parsedBatchStudents.filter(s => s.selected && s.name.trim().length > 0);
       if (approvedList.length === 0) {
-        showUndoToast('Chưa chọn học sinh nào để nạp!');
+        showUndoToast('Chưa chọn học sinh nào để thêm!');
         return;
       }
 
@@ -3937,53 +3926,7 @@
       syncFinanceDatesForCurrentClass();
       renderAll();
 
-      showUndoToast(`Đã nạp thành công ${approvedList.length} học sinh vào lớp ${targetClass?.class_name || ''}!`);
-    }
-
-    function handleCreateStudent(e) {
-      e.preventDefault();
-      const targetClassId = document.getElementById('newStudentClassSelect')?.value || currentClassId;
-      const name = document.getElementById('newStudentName')?.value.trim();
-      const fee = Number(document.getElementById('newStudentFeePerSession')?.value) || 40000;
-      const parentPhone = document.getElementById('newStudentParentPhone')?.value.trim() || '';
-      const parentName = document.getElementById('newStudentParentName')?.value.trim() || '';
-      const dob = document.getElementById('newStudentDob')?.value.trim() || '';
-      const school = document.getElementById('newStudentSchool')?.value.trim() || '';
-
-      const initialAttendanceHistory = {};
-      const classDates = getCurrentClassSessionDates(targetClassId);
-      classDates.forEach(d => {
-        initialAttendanceHistory[d] = 'unrecorded';
-      });
-
-      const newStudentObj = {
-        id: `HS_${Date.now()}`,
-        name: name,
-        pricePerSession: fee,
-        parentPhone: parentPhone,
-        parentName: parentName,
-        dob: dob,
-        school: school,
-        status: 'unrecorded',
-        paidSessions: [],
-        attendanceHistory: initialAttendanceHistory,
-        userId: currentUser?.id || 'guest',
-        createdAt: new Date().toISOString()
-      };
-
-      if (!classStudentsMap[targetClassId]) classStudentsMap[targetClassId] = [];
-      classStudentsMap[targetClassId].push(newStudentObj);
-
-      currentClassId = targetClassId;
-      isClassSelected = true;
-      students = classStudentsMap[currentClassId];
-
-      saveAllToLocalStorage();
-      closeModal('modalAddStudent');
-      syncActiveAttendanceDateForCurrentClass();
-      syncFinanceDatesForCurrentClass();
-      renderAll();
-      showUndoToast(`Đã thêm học sinh ${name} vào lớp...`);
+      showUndoToast(`Đã thêm thành công ${approvedList.length} học sinh vào lớp ${targetClass?.class_name || ''}!`);
     }
 
     // ==================== TAB HỌC PHÍ & BỘ LỌC 1 HÀNG ====================
