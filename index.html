@@ -352,29 +352,34 @@
         <!-- KHỐI DANH SÁCH HỌC SINH & ĐIỂM DANH -->
         <div id="studentAttendanceSection" class="hidden space-y-2.5">
           
-          <!-- Thanh điều hướng: ĐÃ BỎ TÊN LỚP VÀ CHẤM XANH, CHỈ CÒN BỘ CHỌN NGÀY VÀ NÚT THỜI KHÓA BIỂU -->
-          <div class="flex items-center justify-between gap-2 bg-gradient-to-r from-indigo-50/90 via-white to-blue-50/90 border border-indigo-100 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-sm">
+          <!-- Thanh điều hướng: NÚT THỜI KHÓA BIỂU RA GIỮA, NỀN TRẮNG CHỮ TÍM GỌN GÀNG -->
+          <div class="relative flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 bg-gradient-to-r from-indigo-50/90 via-white to-blue-50/90 border border-indigo-100 px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl shadow-sm">
             <!-- Bộ chọn ngày điểm danh (Buổi X DD/MM) -->
-            <div class="flex items-center gap-1.5 min-w-0 flex-1">
+            <div class="flex items-center gap-1.5 min-w-0 z-10">
               <i data-lucide="calendar" class="w-4 h-4 text-indigo-600 shrink-0"></i>
               <select
                 id="activeAttendanceDateSelect"
                 onchange="onChangeActiveAttendanceDate(this.value)"
-                class="bg-white border border-indigo-200 text-indigo-900 font-extrabold text-xs sm:text-sm py-1 px-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-2xs max-w-xs sm:max-w-sm truncate"
+                class="bg-white border border-indigo-200 text-indigo-900 font-extrabold text-xs sm:text-sm py-1.5 px-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer shadow-2xs max-w-xs sm:max-w-sm truncate"
               >
                 <!-- Render động các ngày học -->
               </select>
             </div>
 
-            <!-- Nút quay lại thời khóa biểu rộng rãi -->
-            <button
-              type="button"
-              onclick="closeStudentListAndShowSchedule()"
-              class="px-3 py-1.5 rounded-xl bg-white text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200/80 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm shrink-0 whitespace-nowrap active:scale-95"
-            >
-              <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-              <span>Thời khóa biểu</span>
-            </button>
+            <!-- Nút quay lại Thời Khóa Biểu: Căn giữa trên PC, nền trắng chữ tím, to hơn và rõ nét -->
+            <div class="w-full sm:w-auto sm:absolute sm:left-1/2 sm:-translate-x-1/2 flex justify-center z-20">
+              <button
+                type="button"
+                onclick="closeStudentListAndShowSchedule()"
+                class="w-full sm:w-auto px-5 py-2 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800 active:scale-95 border-2 border-indigo-200 hover:border-indigo-300 text-xs sm:text-sm font-extrabold tracking-wide transition-all flex items-center justify-center gap-2 shadow-sm shrink-0"
+              >
+                <i data-lucide="calendar" class="w-4 h-4 text-indigo-600"></i>
+                <span>Thời Khóa Biểu</span>
+              </button>
+            </div>
+
+            <!-- Khoảng đệm giả lập bên phải trên PC để cân đối layout -->
+            <div class="hidden sm:block w-24"></div>
           </div>
 
           <!-- Thống kê sĩ số của lớp -->
@@ -1717,14 +1722,23 @@
     };
 
     // Hàm tính toán các ngày học trong tháng dựa trên lịch thứ của lớp
-    function generateClassSessionDates(classSchedules, targetMonths = [
-      { month: 10, year: 2026 },
-      { month: 11, year: 2026 },
-      { month: 12, year: 2026 }
-    ]) {
+    function generateClassSessionDates(classSchedules, targetMonths = null) {
       if (!Array.isArray(classSchedules) || classSchedules.length === 0) return [];
       const scheduledDayIndexes = classSchedules.map(s => DAY_TO_JS_INDEX[s.day]).filter(i => i !== undefined);
       if (scheduledDayIndexes.length === 0) return [];
+
+      // Tự động sinh dải 6 tháng: 2 tháng trước, tháng hiện tại và 3 tháng tới theo đồng hồ hệ thống
+      if (!targetMonths) {
+        targetMonths = [];
+        const baseDate = new Date();
+        for (let offset = -2; offset <= 3; offset++) {
+          const d = new Date(baseDate.getFullYear(), baseDate.getMonth() + offset, 1);
+          targetMonths.push({
+            month: d.getMonth() + 1,
+            year: d.getFullYear()
+          });
+        }
+      }
 
       const resultDates = [];
 
@@ -1738,6 +1752,13 @@
             resultDates.push(`${d}/${m}/${year}`);
           }
         }
+      });
+
+      // Sắp xếp các ngày tăng dần theo thứ tự thời gian
+      resultDates.sort((a, b) => {
+        const [d1, m1, y1] = a.split('/').map(Number);
+        const [d2, m2, y2] = b.split('/').map(Number);
+        return new Date(y1, m1 - 1, d1) - new Date(y2, m2 - 1, d2);
       });
 
       return resultDates;
@@ -1884,15 +1905,18 @@
       const cls = classesList.find(c => c.id === clsId);
       if (!cls) return [];
       
-      // Nếu lớp đã lưu sẵn sessionDates thì ưu tiên dùng
+      // Nếu lớp đã có lịch dạy schedules, luôn tính toán lại để đảm bảo đúng ngày thực tế trong các tháng
+      if (Array.isArray(cls.schedules) && cls.schedules.length > 0) {
+        const calculated = generateClassSessionDates(cls.schedules);
+        cls.sessionDates = calculated;
+        return calculated;
+      }
+
       if (Array.isArray(cls.sessionDates) && cls.sessionDates.length > 0) {
         return cls.sessionDates;
       }
 
-      if (!Array.isArray(cls.schedules) || cls.schedules.length === 0) {
-        return [];
-      }
-      return generateClassSessionDates(cls.schedules);
+      return [];
     }
 
     // Ngày điểm danh đang chọn
@@ -1912,9 +1936,11 @@
       } else if (classDates.includes(activeAttendanceDate)) {
         // Giữ nguyên activeAttendanceDate nếu nó thuộc lớp này
       } else if (classDates.length > 0) {
-        // Tìm ngày gần nhất trong tháng 11/2026 hoặc lấy ngày đầu tiên
-        const novDates = classDates.filter(d => d.includes('/11/2026'));
-        activeAttendanceDate = novDates.length > 0 ? novDates[0] : classDates[0];
+        // Ưu tiên chọn ngày gần nhất trong tháng hiện tại
+        const now = new Date();
+        const curMonthStr = `/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        const curMonthDates = classDates.filter(d => d.includes(curMonthStr));
+        activeAttendanceDate = curMonthDates.length > 0 ? curMonthDates[0] : classDates[0];
       } else {
         activeAttendanceDate = todayStr;
       }
@@ -1926,6 +1952,45 @@
     let currentFinanceMonth = `${String(todayNow.getMonth() + 1).padStart(2, '0')}/${todayNow.getFullYear()}`;
     let selectedFinanceDates = [];
     let tempSelectedFinanceDates = [];
+
+    // Tự động sinh danh sách tùy chọn tháng trong bộ lọc học phí dựa theo ngày học thực tế của lớp
+    function renderFinanceMonthOptions() {
+      const selectEl = document.getElementById('financeMonthFilterSelect');
+      if (!selectEl) return;
+
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      const monthSet = new Set();
+      classDates.forEach(d => {
+        const parts = d.split('/');
+        if (parts.length === 3) {
+          monthSet.add(`${parts[1]}/${parts[2]}`);
+        }
+      });
+
+      const now = new Date();
+      const thisMonth = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+
+      if (monthSet.size === 0) {
+        monthSet.add(thisMonth);
+      }
+
+      const sortedMonths = Array.from(monthSet).sort((a, b) => {
+        const [m1, y1] = a.split('/').map(Number);
+        const [m2, y2] = b.split('/').map(Number);
+        return (y1 * 12 + m1) - (y2 * 12 + m2);
+      });
+
+      if (!sortedMonths.includes(currentFinanceMonth) && currentFinanceMonth !== 'all') {
+        currentFinanceMonth = sortedMonths.includes(thisMonth) ? thisMonth : sortedMonths[sortedMonths.length - 1];
+      }
+
+      selectEl.innerHTML = `
+        <option value="all" ${currentFinanceMonth === 'all' ? 'selected' : ''}>Tất cả các tháng</option>
+        ${sortedMonths.map(m => `
+          <option value="${m}" ${m === currentFinanceMonth ? 'selected' : ''}>Tháng ${m}</option>
+        `).join('')}
+      `;
+    }
 
     // Chỉnh sửa đơn giá học phí
     let activePriceEditTarget = null; // null: hàng loạt, string: studentId
@@ -3130,6 +3195,7 @@
 
     // ==================== TAB HỌC PHÍ & BỘ LỌC 1 HÀNG DUY NHẤT ====================
     function syncFinanceDatesForCurrentClass() {
+      renderFinanceMonthOptions();
       const classDates = getCurrentClassSessionDates(currentClassId);
       if (financeFilterMode === 'month') {
         if (currentFinanceMonth === 'all') {
@@ -3143,6 +3209,7 @@
         if (fromVal && toVal) {
           const fromDate = new Date(fromVal);
           const toDate = new Date(toVal);
+          toDate.setHours(23, 59, 59, 999);
           selectedFinanceDates = classDates.filter(d => {
             const [day, month, year] = d.split('/').map(Number);
             const cur = new Date(year, month - 1, day);
@@ -3200,6 +3267,7 @@
 
       const fromDate = new Date(fromVal);
       const toDate = new Date(toVal);
+      toDate.setHours(23, 59, 59, 999);
       const classDates = getCurrentClassSessionDates(currentClassId);
 
       selectedFinanceDates = classDates.filter(d => {
@@ -3215,8 +3283,17 @@
     function applyQuickRangeThisMonth() {
       const fromInput = document.getElementById('financeDateFromInput');
       const toInput = document.getElementById('financeDateToInput');
-      if (fromInput) fromInput.value = '2026-11-01';
-      if (toInput) toInput.value = '2026-11-30';
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth();
+      const firstDay = new Date(y, m, 1);
+      const lastDay = new Date(y, m + 1, 0);
+
+      const fStr = `${firstDay.getFullYear()}-${String(firstDay.getMonth() + 1).padStart(2, '0')}-${String(firstDay.getDate()).padStart(2, '0')}`;
+      const lStr = `${lastDay.getFullYear()}-${String(lastDay.getMonth() + 1).padStart(2, '0')}-${String(lastDay.getDate()).padStart(2, '0')}`;
+
+      if (fromInput) fromInput.value = fStr;
+      if (toInput) toInput.value = lStr;
       onFinanceDateRangeChange();
     }
 
