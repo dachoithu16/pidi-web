@@ -968,28 +968,119 @@
             <label class="block text-[11px] font-bold text-slate-700 mb-1">Hướng dẫn làm bài</label>
             <input type="text" id="assignmentDescInput" placeholder="VD: Học sinh đọc kỹ đề bài và chọn đáp án tương ứng trên phiếu trả lời..." class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white font-medium">
           </div>
+        </div>
+        <!-- HÀNG CHIA ĐÔI 50/50 TRÊN CÙNG 1 HÀNG NGANG -->
+        <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+          
+          <!-- CỘT TRÁI: TẢI ĐỀ BÀI LÊN -->
+          <div class="bg-indigo-50/40 rounded-2xl border border-indigo-200/80 p-2.5 sm:p-3 flex flex-col justify-between space-y-2.5 min-w-0">
+            <div class="flex items-center justify-between gap-1.5">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <div class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                  <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="font-extrabold text-[11px] sm:text-xs text-indigo-950 truncate">Tải đề bài lên</h4>
+                  <p class="text-[10px] text-indigo-700/80 truncate">Tự động nhận diện & điền câu hỏi</p>
+                </div>
+              </div>
 
-          <!-- Tải file đề bài & Tự động nhận diện câu hỏi -->
-          <div class="sm:col-span-3 pt-1">
-            <div class="flex items-center justify-between mb-1.5">
-              <label class="text-xs font-extrabold text-slate-800 flex items-center gap-1.5">
-                <i data-lucide="file-text" class="w-4 h-4 text-indigo-600"></i>
-                <span>Tải file đề bài (Tự động nhận diện & điền câu hỏi vào phiếu)</span>
-              </label>
-              <span id="assignmentAttachedFileName" class="text-[11px] font-semibold text-emerald-700 hidden">Đã nạp file</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <span id="assignmentAttachedFileName" class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 hidden max-w-[80px] sm:max-w-[100px] truncate">Đã nạp</span>
+                <button
+                  type="button"
+                  id="btnClearExamFile"
+                  onclick="clearExamPaperUpload()"
+                  class="hidden inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[10px] sm:text-[10.5px] font-bold transition active:scale-95"
+                  title="Hủy file đề bài đã tải lên"
+                >
+                  <i data-lucide="x" class="w-3 h-3"></i>
+                  <span>Hủy file</span>
+                </button>
+              </div>
             </div>
 
-            <label class="flex flex-col items-center justify-center p-3 border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-white rounded-xl cursor-pointer transition text-center group">
+            <label class="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-3 border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-white rounded-xl cursor-pointer transition text-center group min-h-[88px]">
               <input type="file" id="assignmentExamFileInput" accept=".docx, .txt" onchange="handleExamPaperUpload(event)" class="sr-only">
-              <div class="flex items-center gap-2 text-indigo-600 group-hover:scale-105 transition-transform">
-                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                <span class="text-xs font-bold">Chọn tệp đề bài (.DOCX hoặc .TXT)</span>
+              <div class="flex items-center gap-1.5 text-indigo-600 group-hover:scale-105 transition-transform">
+                <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i>
+                <span class="text-[11px] sm:text-xs font-bold">Chọn tệp đề bài (.DOCX, .TXT)</span>
               </div>
-              <span class="text-[10px] text-slate-400 mt-0.5">Hệ thống tự động đọc văn bản và điền câu hỏi theo đúng thứ tự vào phiếu trả lời</span>
+              <span class="text-[10px] text-slate-400 mt-1 line-clamp-2">Tự động đọc văn bản và điền câu hỏi theo thứ tự vào phiếu</span>
             </label>
 
-            <div id="assignmentExamPreviewBox" class="hidden mt-2 p-3 bg-white rounded-xl border border-slate-200 text-xs max-h-48 overflow-y-auto space-y-2"></div>
+            <div id="assignmentExamPreviewBox" class="hidden p-2 bg-white rounded-xl border border-slate-200 text-[11px] max-h-28 overflow-y-auto space-y-1"></div>
           </div>
+
+          <!-- CỘT PHẢI: ĐIỀN ĐÁP ÁN & TẢI ĐÁP ÁN LÊN -->
+          <div class="bg-amber-50/60 rounded-2xl border border-amber-200/90 p-2.5 sm:p-3 flex flex-col justify-between space-y-2.5 min-w-0">
+            <div class="flex items-center justify-between gap-1.5">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0">
+                  <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="font-extrabold text-[11px] sm:text-xs text-amber-950 truncate">Điền đáp án & tải đáp án lên</h4>
+                  <p id="answerFileStatusText" class="text-[10px] text-amber-800/80 truncate">Tải file đáp án (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <label class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[10px] sm:text-[10.5px] font-bold shadow-2xs cursor-pointer transition active:scale-95">
+                  <input type="file" id="assignmentAnswerFileInput" accept=".docx, .xlsx, .xls, .csv, .txt" onchange="handleAnswerFileUpload(event)" class="sr-only">
+                  <i data-lucide="file-check-2" class="w-3 h-3 shrink-0"></i>
+                  <span class="hidden sm:inline">Tải đáp án</span>
+                  <span class="sm:hidden">Up file</span>
+                </label>
+                <button
+                  type="button"
+                  id="btnClearAnswerFile"
+                  onclick="clearAnswerFileUpload()"
+                  class="hidden inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[10px] sm:text-[10.5px] font-bold transition active:scale-95"
+                  title="Hủy file đáp án đã tải lên"
+                >
+                  <i data-lucide="x" class="w-3 h-3"></i>
+                  <span>Hủy file</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex gap-1.5">
+              <textarea
+                id="quickAnswerPasteInput"
+                rows="2"
+                placeholder="Gõ chuỗi liền (ABCD...) hoặc dán 1.A 2.B..."
+                class="flex-1 min-w-0 px-2 py-1.5 text-xs rounded-xl border border-amber-200 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+              ></textarea>
+
+              <div class="flex flex-col justify-between gap-1 shrink-0">
+                <select id="quickAnswerTargetMode" class="px-1.5 py-1 text-[10px] rounded-lg border border-amber-200 bg-white font-bold text-slate-700 focus:outline-none cursor-pointer">
+                  <option value="auto">Tự nhận</option>
+                  <option value="mcq">Trắc nghiệm</option>
+                  <option value="short">Viết ngắn</option>
+                </select>
+                <button
+                  type="button"
+                  onclick="handleQuickAnswerInputApply()"
+                  class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[10.5px] font-bold transition active:scale-95 flex items-center justify-center gap-1"
+                >
+                  <i data-lucide="wand-2" class="w-3 h-3 text-amber-400"></i>
+                  <span>Điền</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-1 pt-1 border-t border-amber-200/60 text-[10px] sm:text-[10.5px]">
+              <span class="text-slate-500 font-medium hidden sm:inline">Điền nhanh TN:</span>
+              <div class="flex items-center gap-1 flex-wrap">
+                <button type="button" onclick="fillAllMcqAnswers('A')" class="px-1.5 py-0.5 rounded bg-white hover:bg-indigo-50 border border-slate-200 font-bold text-indigo-700">Tất cả A</button>
+                <button type="button" onclick="fillAllMcqAnswers('B')" class="px-1.5 py-0.5 rounded bg-white hover:bg-indigo-50 border border-slate-200 font-bold text-indigo-700">Tất cả B</button>
+                <button type="button" onclick="fillAllMcqAnswers('C')" class="px-1.5 py-0.5 rounded bg-white hover:bg-indigo-50 border border-slate-200 font-bold text-indigo-700">Tất cả C</button>
+                <button type="button" onclick="fillAllMcqAnswers('D')" class="px-1.5 py-0.5 rounded bg-white hover:bg-indigo-50 border border-slate-200 font-bold text-indigo-700">Tất cả D</button>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- BỘ CHỌN CÁC MỤC TRẢ LỜI ONLINE -->
@@ -2627,9 +2718,18 @@
       document.getElementById('assignmentExamFileInput').value = '';
       document.getElementById('assignmentAttachedFileName').classList.add('hidden');
       document.getElementById('assignmentExamPreviewBox').classList.add('hidden');
+      document.getElementById('btnClearExamFile')?.classList.add('hidden');
 
       builderMcqState = { enabled: true, items: createDefaultMcqItems(20) };
       builderShortState = { enabled: false, items: createDefaultShortItems(20) };
+
+      const ansFileInp = document.getElementById('assignmentAnswerFileInput');
+      if (ansFileInp) ansFileInp.value = '';
+      document.getElementById('btnClearAnswerFile')?.classList.add('hidden');
+      const ansPasteInp = document.getElementById('quickAnswerPasteInput');
+      if (ansPasteInp) ansPasteInp.value = '';
+      const ansStatus = document.getElementById('answerFileStatusText');
+      if (ansStatus) ansStatus.innerText = 'Tải file đáp án (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi';
 
       document.getElementById('chkEnableMcq').checked = true;
       document.getElementById('chkEnableShort').checked = false;
@@ -2641,29 +2741,43 @@
       openModal('modalCreateAssignment');
     }
 
-    function toggleBuilderSection(sectionKey, isChecked) {
-      if (sectionKey === 'mcq') {
-        builderMcqState.enabled = isChecked;
-        if (isChecked && builderMcqState.items.length === 0) {
+    function clearExamPaperUpload() {
+      builderUploadedExamPaper = null;
+      const fileInp = document.getElementById('assignmentExamFileInput');
+      if (fileInp) fileInp.value = '';
+      document.getElementById('assignmentAttachedFileName')?.classList.add('hidden');
+      document.getElementById('btnClearExamFile')?.classList.add('hidden');
+      const previewBox = document.getElementById('assignmentExamPreviewBox');
+      if (previewBox) {
+        previewBox.innerHTML = '';
+        previewBox.classList.add('hidden');
+      }
+      showUndoToast('Đã hủy file đề bài!');
+    }
+
+    function toggleBuilderSection(type, checked) {
+      if (type === 'mcq') {
+        builderMcqState.enabled = checked;
+        if (checked && builderMcqState.items.length === 0) {
           builderMcqState.items = createDefaultMcqItems(20);
-          renderBuilderMcqGrid();
         }
-      } else if (sectionKey === 'short') {
-        builderShortState.enabled = isChecked;
-        if (isChecked && builderShortState.items.length === 0) {
+      } else if (type === 'short') {
+        builderShortState.enabled = checked;
+        if (checked && builderShortState.items.length === 0) {
           builderShortState.items = createDefaultShortItems(20);
-          renderBuilderShortList();
         }
       }
       syncBuilderSectionVisibility();
+      renderBuilderMcqGrid();
+      renderBuilderShortList();
       updateTotalAssignmentScore();
     }
 
     function syncBuilderSectionVisibility() {
-      const mcqBox = document.getElementById('builderSectionMcq');
-      const shortBox = document.getElementById('builderSectionShort');
-      if (builderMcqState.enabled) mcqBox?.classList.remove('hidden'); else mcqBox?.classList.add('hidden');
-      if (builderShortState.enabled) shortBox?.classList.remove('hidden'); else shortBox?.classList.add('hidden');
+      const mcqSec = document.getElementById('builderSectionMcq');
+      const shortSec = document.getElementById('builderSectionShort');
+      if (mcqSec) mcqSec.classList.toggle('hidden', !builderMcqState.enabled);
+      if (shortSec) shortSec.classList.toggle('hidden', !builderShortState.enabled);
     }
 
     function adjustMcqQuestionCount(delta) {
@@ -2680,13 +2794,6 @@
       } else if (delta < 0 && builderMcqState.items.length > 1) {
         builderMcqState.items.pop();
       }
-      renderBuilderMcqGrid();
-      updateTotalAssignmentScore();
-    }
-
-    function removeSpecificMcqItem(idx) {
-      if (builderMcqState.items.length <= 1) return;
-      builderMcqState.items.splice(idx, 1);
       renderBuilderMcqGrid();
       updateTotalAssignmentScore();
     }
@@ -2708,300 +2815,453 @@
       updateTotalAssignmentScore();
     }
 
-    function removeSpecificShortItem(idx) {
-      if (builderShortState.items.length <= 1) return;
-      builderShortState.items.splice(idx, 1);
-      renderBuilderShortList();
-      updateTotalAssignmentScore();
-    }
-
-    function updateTotalAssignmentScore() {
-      const totalQuestions = (builderMcqState.enabled ? builderMcqState.items.length : 0) + (builderShortState.enabled ? builderShortState.items.length : 0);
-      const badge = document.getElementById('assignmentTotalScoreBadge');
-      if (badge) {
-        badge.innerText = `Tổng: ${totalQuestions} câu (Thang 10 điểm)`;
-      }
-    }
-
     function renderBuilderMcqGrid() {
       const container = document.getElementById('mcqQuestionsGridContainer');
       const countLabel = document.getElementById('mcqCountLabel');
-      if (!container) return;
       if (countLabel) countLabel.innerText = builderMcqState.items.length;
+      if (!container) return;
 
-      container.innerHTML = builderMcqState.items.map((item, idx) => {
-        const opts = item.optionTexts || { A: '', B: '', C: '', D: '' };
-        const hasOptionText = opts.A || opts.B || opts.C || opts.D;
-
-        return `
-          <div class="bg-white rounded-xl border border-indigo-100 p-2.5 flex flex-col gap-1.5 shadow-2xs">
-            <div class="flex items-center justify-between gap-1.5">
-              <span class="font-extrabold text-xs text-indigo-900 shrink-0">Câu ${idx + 1}:</span>
-              <div class="flex items-center gap-1 flex-1 justify-center">
-                ${['A', 'B', 'C', 'D'].map(opt => `
-                  <button
-                    type="button"
-                    onclick="builderMcqState.items[${idx}].correctAnswer = '${opt}'; renderBuilderMcqGrid();"
-                    class="w-7 h-7 rounded-lg text-xs font-extrabold transition ${
-                      item.correctAnswer === opt
-                        ? 'bg-indigo-600 text-white shadow-2xs'
-                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
-                    }"
-                  >
-                    ${opt}
-                  </button>
-                `).join('')}
-              </div>
-              <button
-                type="button"
-                onclick="removeSpecificMcqItem(${idx})"
-                class="w-6 h-6 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition shrink-0"
-              >
-                <i data-lucide="x" class="w-3.5 h-3.5"></i>
-              </button>
-            </div>
+      container.innerHTML = builderMcqState.items.map((item, idx) => `
+        <div class="bg-white p-2.5 rounded-xl border border-indigo-100 shadow-2xs space-y-1.5">
+          <div class="flex items-center justify-between gap-1.5">
+            <span class="text-xs font-extrabold text-indigo-800 shrink-0">Câu ${idx + 1}:</span>
             <input
               type="text"
               value="${(item.prompt || '').replace(/"/g, '&quot;')}"
-              placeholder="Nội dung câu hỏi ${idx + 1}..."
               onchange="builderMcqState.items[${idx}].prompt = this.value"
-              class="w-full px-2 py-1 text-[11px] rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-400 bg-slate-50/70 font-semibold text-slate-800"
+              placeholder="Nội dung câu hỏi (tùy chọn)..."
+              class="flex-1 min-w-0 px-2 py-0.5 text-[11px] rounded border border-slate-200 focus:border-indigo-400 focus:outline-none"
             >
-            ${hasOptionText ? `
-              <div class="grid grid-cols-2 gap-1 pt-0.5 text-[10.5px]">
-                ${['A', 'B', 'C', 'D'].map(opt => `
-                  <div class="flex items-center gap-1 bg-slate-50 px-1.5 py-0.5 rounded border ${item.correctAnswer === opt ? 'border-indigo-300 bg-indigo-50/50 text-indigo-900 font-bold' : 'border-slate-100 text-slate-600'}">
-                    <span class="font-extrabold shrink-0">${opt}.</span>
-                    <input
-                      type="text"
-                      value="${(opts[opt] || '').replace(/"/g, '&quot;')}"
-                      onchange="if(!builderMcqState.items[${idx}].optionTexts) builderMcqState.items[${idx}].optionTexts={}; builderMcqState.items[${idx}].optionTexts['${opt}']=this.value"
-                      class="w-full bg-transparent focus:outline-none truncate"
-                    >
-                  </div>
-                `).join('')}
-              </div>
-            ` : ''}
+            <div class="flex items-center gap-1 shrink-0">
+              ${['A', 'B', 'C', 'D'].map(letter => `
+                <button
+                  type="button"
+                  onclick="builderMcqState.items[${idx}].correctAnswer = '${letter}'; renderBuilderMcqGrid();"
+                  class="w-6 h-6 rounded-lg text-[11px] font-extrabold transition ${
+                    item.correctAnswer === letter
+                      ? 'bg-indigo-600 text-white shadow-2xs'
+                      : 'bg-slate-100 hover:bg-indigo-50 text-slate-600'
+                  }"
+                >
+                  ${letter}
+                </button>
+              `).join('')}
+            </div>
           </div>
-        `;
-      }).join('');
-      safeCreateIcons();
+        </div>
+      `).join('');
     }
 
     function renderBuilderShortList() {
       const container = document.getElementById('shortQuestionsListContainer');
       const countLabel = document.getElementById('shortCountLabel');
-      if (!container) return;
       if (countLabel) countLabel.innerText = builderShortState.items.length;
+      if (!container) return;
 
       container.innerHTML = builderShortState.items.map((item, idx) => `
-        <div class="bg-white rounded-xl border border-emerald-100 p-2.5 flex items-center gap-2 shadow-2xs">
-          <span class="font-extrabold text-xs text-emerald-900 w-12 shrink-0">Câu ${idx + 1}:</span>
-          <input
-            type="text"
-            value="${(item.prompt || '').replace(/"/g, '&quot;')}"
-            placeholder="Nội dung câu hỏi ${idx + 1}..."
-            onchange="builderShortState.items[${idx}].prompt = this.value"
-            class="flex-1 px-2.5 py-1 text-xs rounded-lg border border-slate-200 focus:outline-none focus:border-emerald-400 font-semibold text-slate-800"
-          >
-          <input
-            type="text"
-            value="${(item.correctAnswer || '').replace(/"/g, '&quot;')}"
-            placeholder="Đáp án đúng (tự chấm)..."
-            onchange="builderShortState.items[${idx}].correctAnswer = this.value"
-            class="w-36 sm:w-44 px-2.5 py-1 text-xs rounded-lg border border-emerald-200 bg-emerald-50/40 focus:outline-none font-bold text-emerald-800"
-          >
-          <button
-            type="button"
-            onclick="removeSpecificShortItem(${idx})"
-            class="w-6 h-6 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition shrink-0"
-          >
-            <i data-lucide="x" class="w-3.5 h-3.5"></i>
-          </button>
+        <div class="bg-white p-2.5 rounded-xl border border-emerald-100 shadow-2xs grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+          <div class="sm:col-span-6 flex items-center gap-1.5">
+            <span class="text-xs font-extrabold text-emerald-800 shrink-0">Câu ${idx + 1}:</span>
+            <input
+              type="text"
+              value="${(item.prompt || '').replace(/"/g, '&quot;')}"
+              onchange="builderShortState.items[${idx}].prompt = this.value"
+              placeholder="Nội dung câu hỏi..."
+              class="flex-1 min-w-0 px-2 py-1 text-xs rounded-lg border border-slate-200 focus:border-emerald-400 focus:outline-none"
+            >
+          </div>
+          <div class="sm:col-span-6 flex items-center gap-1.5">
+            <span class="text-[10.5px] font-bold text-slate-400 shrink-0">Đáp án:</span>
+            <input
+              type="text"
+              value="${(item.correctAnswer || '').replace(/"/g, '&quot;')}"
+              onchange="builderShortState.items[${idx}].correctAnswer = this.value"
+              placeholder="Đáp án đúng tự chấm..."
+              class="flex-1 min-w-0 px-2 py-1 text-xs rounded-lg border border-emerald-200 bg-emerald-50/30 font-bold text-emerald-900 focus:outline-none"
+            >
+          </div>
         </div>
       `).join('');
-      safeCreateIcons();
     }
 
-    // ==================== NHẬN DIỆN TỰ ĐỘNG TỪ FILE ĐỀ BÀI (.DOCX / .TXT) ====================
+    function updateTotalAssignmentScore() {
+      const badge = document.getElementById('assignmentTotalScoreBadge');
+      if (!badge) return;
+      const totalQ = (builderMcqState.enabled ? builderMcqState.items.length : 0) + (builderShortState.enabled ? builderShortState.items.length : 0);
+      const each = totalQ > 0 ? (10 / totalQ).toFixed(2).replace(/\.00$/, '') : 0;
+      badge.innerText = `Tổng: 10 điểm (${totalQ} câu • ${each}đ/câu)`;
+    }
+
     async function handleExamPaperUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
-      const previewBox = document.getElementById('assignmentExamPreviewBox');
-      const badge = document.getElementById('assignmentAttachedFileName');
 
-      let extractedRawText = '';
+      const fileNameEl = document.getElementById('assignmentAttachedFileName');
+      const previewBox = document.getElementById('assignmentExamPreviewBox');
+      const fileName = file.name.toLowerCase();
 
       try {
-        if (file.name.toLowerCase().endsWith('.docx')) {
+        let rawText = '';
+        let htmlContent = '';
+
+        if (fileName.endsWith('.docx')) {
           const arrayBuffer = await file.arrayBuffer();
-          const htmlResult = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-          const textResult = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-          extractedRawText = textResult.value || '';
-          builderUploadedExamPaper = { fileName: file.name, fileType: 'docx', htmlContent: htmlResult.value || '', textContent: extractedRawText };
+          const textRes = await mammoth.extractRawText({ arrayBuffer });
+          rawText = textRes.value || '';
+          const htmlRes = await mammoth.convertToHtml({ arrayBuffer });
+          htmlContent = htmlRes.value || '';
         } else {
-          extractedRawText = await file.text();
-          builderUploadedExamPaper = { fileName: file.name, fileType: 'text', textContent: extractedRawText };
+          rawText = await file.text();
+          htmlContent = `<pre class="whitespace-pre-wrap font-sans">${rawText}</pre>`;
         }
 
-        if (badge) {
-          badge.innerText = `Đã đính kèm: ${file.name}`;
-          badge.classList.remove('hidden');
-        }
+        builderUploadedExamPaper = {
+          fileName: file.name,
+          textContent: rawText,
+          htmlContent: htmlContent
+        };
 
+        if (fileNameEl) {
+          fileNameEl.innerText = `Đã nạp: ${file.name}`;
+          fileNameEl.classList.remove('hidden');
+        }
+        document.getElementById('btnClearExamFile')?.classList.remove('hidden');
         if (previewBox) {
-          previewBox.innerHTML = `
-            <div class="flex flex-wrap items-center justify-between gap-2 pb-1.5 border-b border-slate-100">
-              <span class="font-bold text-indigo-700 flex items-center gap-1">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                <span>Văn bản nhận diện từ ${file.name}</span>
-              </span>
-              <div class="flex items-center gap-1">
-                <button type="button" onclick="autoParseQuestionsFromExamPaper('auto')" class="px-2 py-0.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10.5px] transition">
-                  Tự phân loại vào phiếu
-                </button>
-                <button type="button" onclick="autoParseQuestionsFromExamPaper('mcq')" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10.5px] transition">
-                  Nạp tất cả sang Trắc nghiệm
-                </button>
-                <button type="button" onclick="autoParseQuestionsFromExamPaper('short')" class="px-2 py-0.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10.5px] transition">
-                  Nạp tất cả sang Trả lời ngắn
-                </button>
-              </div>
-            </div>
-            <div class="max-h-28 overflow-y-auto text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg">
-              ${builderUploadedExamPaper.htmlContent || `<pre class="whitespace-pre-wrap">${extractedRawText}</pre>`}
-            </div>
-          `;
+          previewBox.innerHTML = htmlContent;
           previewBox.classList.remove('hidden');
         }
 
-        autoParseQuestionsFromExamPaper('auto');
+        autoParseExamPaperIntoSheet(rawText);
       } catch (err) {
-        console.error('Lỗi đọc file đề:', err);
-        showUndoToast('Không thể đọc file này, vui lòng thử file .DOCX hoặc .TXT!');
+        console.error('Lỗi đọc file đề bài:', err);
+        showUndoToast('Không thể đọc file đề bài, vui lòng thử lại!');
       }
     }
 
-    function autoParseQuestionsFromExamPaper(targetMode = 'auto') {
-      const rawText = builderUploadedExamPaper?.textContent || '';
-      if (!rawText.trim()) {
-        showUndoToast('Không tìm thấy nội dung văn bản trong file!');
+    function autoParseExamPaperIntoSheet(rawText) {
+      if (!rawText || !rawText.trim()) return;
+
+      const questionRegex = /(?:^|\n)\s*(?:Câu|Question|Bài)?\s*(\d+)\s*[\.\:\)]\s*([\s\S]*?)(?=(?:\n\s*(?:Câu|Question|Bài)?\s*\d+\s*[\.\:\)]|$))/gi;
+      const parsedBlocks = [];
+      let match;
+
+      while ((match = questionRegex.exec(rawText)) !== null) {
+        const qNum = parseInt(match[1], 10);
+        const blockBody = (match[2] || '').trim();
+        if (!blockBody) continue;
+
+        const optMatch = blockBody.match(/([\s\S]*?)(?:^|\n|\s)A[\.\)]\s*([\s\S]*?)(?:\n|\s)B[\.\)]\s*([\s\S]*?)(?:\n|\s)C[\.\)]\s*([\s\S]*?)(?:\n|\s)D[\.\)]\s*([\s\S]*)$/i);
+        if (optMatch) {
+          parsedBlocks.push({
+            number: qNum,
+            type: 'mcq',
+            prompt: optMatch[1].trim(),
+            optionTexts: {
+              A: optMatch[2].trim(),
+              B: optMatch[3].trim(),
+              C: optMatch[4].trim(),
+              D: optMatch[5].trim()
+            }
+          });
+        } else {
+          parsedBlocks.push({
+            number: qNum,
+            type: 'short',
+            prompt: blockBody.replace(/\s+/g, ' ').trim()
+          });
+        }
+      }
+
+      if (parsedBlocks.length === 0) {
+        showUndoToast('Đã đính kèm đề bài để học sinh đọc trực tiếp!');
         return;
       }
 
-      const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-      const parsedBlocks = [];
-      let currentBlock = null;
+      const mcqBlocks = parsedBlocks.filter(b => b.type === 'mcq');
+      const shortBlocks = parsedBlocks.filter(b => b.type === 'short');
 
-      const questionStartRegex = /^(?:Câu|Question|Bài)?\s*(\d+)[\.\)\:\-\s]+(.+)$/i;
-
-      lines.forEach(line => {
-        const qMatch = line.match(questionStartRegex);
-        if (qMatch) {
-          if (currentBlock) parsedBlocks.push(currentBlock);
-          currentBlock = {
-            order: Number(qMatch[1]),
-            prompt: qMatch[2].trim(),
-            options: { A: '', B: '', C: '', D: '' },
-            hasOptions: false,
-            correctAnswer: ''
-          };
-        } else if (currentBlock) {
-          const keyMatch = line.match(/^(?:Đáp án|Key|Answer)\s*[\:\-]?\s*([A-D])\b/i);
-          if (keyMatch) {
-            currentBlock.correctAnswer = keyMatch[1].toUpperCase();
-            return;
-          }
-
-          const inlineOptionsRegex = /([A-D])[\.\)]\s*([^A-D]+?)(?=(?:\s+[A-D][\.\)]|$))/g;
-          let optMatch;
-          let foundInline = false;
-          while ((optMatch = inlineOptionsRegex.exec(line)) !== null) {
-            const letter = optMatch[1].toUpperCase();
-            const text = optMatch[2].trim();
-            if (text) {
-              currentBlock.options[letter] = text;
-              currentBlock.hasOptions = true;
-              foundInline = true;
-            }
-          }
-
-          if (!foundInline) {
-            currentBlock.prompt += ' ' + line;
-          }
-        }
-      });
-
-      if (currentBlock) parsedBlocks.push(currentBlock);
-
-      if (parsedBlocks.length === 0) {
-        lines.forEach((line, i) => {
-          parsedBlocks.push({
-            order: i + 1,
-            prompt: line,
-            options: { A: '', B: '', C: '', D: '' },
-            hasOptions: false,
-            correctAnswer: ''
-          });
-        });
-      }
-
-      parsedBlocks.sort((a, b) => a.order - b.order);
-
-      const mcqList = [];
-      const shortList = [];
-
-      parsedBlocks.forEach((blk, idx) => {
-        if (targetMode === 'mcq' || (targetMode === 'auto' && blk.hasOptions)) {
-          mcqList.push({
-            id: `mcq_parsed_${Date.now()}_${idx}`,
-            number: mcqList.length + 1,
-            prompt: blk.prompt,
-            optionTexts: blk.options,
-            correctAnswer: blk.correctAnswer || 'A',
-            points: 0.5
-          });
-        } else {
-          shortList.push({
-            id: `short_parsed_${Date.now()}_${idx}`,
-            number: shortList.length + 1,
-            prompt: blk.prompt,
-            correctAnswer: blk.correctAnswer || '',
-            points: 0.5
-          });
-        }
-      });
-
-      const chkMcq = document.getElementById('chkEnableMcq');
-      const chkShort = document.getElementById('chkEnableShort');
-
-      if (mcqList.length > 0) {
+      if (mcqBlocks.length > 0) {
         builderMcqState.enabled = true;
-        builderMcqState.items = mcqList;
-        if (chkMcq) chkMcq.checked = true;
-        renderBuilderMcqGrid();
-      } else if (targetMode !== 'auto') {
-        builderMcqState.enabled = false;
-        builderMcqState.items = [];
-        if (chkMcq) chkMcq.checked = false;
+        document.getElementById('chkEnableMcq').checked = true;
+        builderMcqState.items = mcqBlocks.map((b, idx) => ({
+          id: `mcq_parsed_${Date.now()}_${idx}`,
+          number: idx + 1,
+          prompt: b.prompt,
+          optionTexts: b.optionTexts,
+          correctAnswer: builderMcqState.items[idx]?.correctAnswer || 'A',
+          points: 0.5
+        }));
       }
 
-      if (shortList.length > 0) {
+      if (shortBlocks.length > 0) {
         builderShortState.enabled = true;
-        builderShortState.items = shortList;
-        if (chkShort) chkShort.checked = true;
-        renderBuilderShortList();
-      } else if (targetMode !== 'auto') {
-        builderShortState.enabled = false;
-        builderShortState.items = [];
-        if (chkShort) chkShort.checked = false;
+        document.getElementById('chkEnableShort').checked = true;
+        builderShortState.items = shortBlocks.map((b, idx) => ({
+          id: `short_parsed_${Date.now()}_${idx}`,
+          number: idx + 1,
+          prompt: b.prompt,
+          correctAnswer: builderShortState.items[idx]?.correctAnswer || '',
+          points: 0.5
+        }));
       }
 
       syncBuilderSectionVisibility();
+      renderBuilderMcqGrid();
+      renderBuilderShortList();
       updateTotalAssignmentScore();
       safeCreateIcons();
 
       showUndoToast(`Đã tự động điền ${parsedBlocks.length} câu hỏi theo đúng thứ tự vào phiếu trả lời!`);
+    }
+
+    // ==================== ĐIỀN ĐÁP ÁN NHANH & NHẬN DIỆN TỪ FILE ĐÁP ÁN ====================
+    function fillAllMcqAnswers(letter) {
+      if (!builderMcqState.enabled) {
+        builderMcqState.enabled = true;
+        if (builderMcqState.items.length === 0) builderMcqState.items = createDefaultMcqItems(20);
+        const chkMcq = document.getElementById('chkEnableMcq');
+        if (chkMcq) chkMcq.checked = true;
+        syncBuilderSectionVisibility();
+      }
+      builderMcqState.items.forEach(item => { item.correctAnswer = letter; });
+      renderBuilderMcqGrid();
+      updateTotalAssignmentScore();
+      showUndoToast(`Đã đặt tất cả ${builderMcqState.items.length} câu trắc nghiệm là đáp án ${letter}!`);
+    }
+
+    async function handleAnswerFileUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const fileName = file.name.toLowerCase();
+      const statusEl = document.getElementById('answerFileStatusText');
+      const mode = document.getElementById('quickAnswerTargetMode')?.value || 'auto';
+
+      try {
+        let extractedText = '';
+        if (fileName.endsWith('.docx')) {
+          const res = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+          extractedText = res.value || '';
+        } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv')) {
+          const data = new Uint8Array(await file.arrayBuffer());
+          const wb = XLSX.read(data, { type: 'array' });
+          const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
+          // Chuyển các hàng Excel thành dạng text chuẩn để bộ nhận diện xử lý đồng nhất
+          extractedText = rows.map(row => (row || []).filter(cell => cell !== undefined && cell !== null && String(cell).trim() !== '').join('\t')).join('\n');
+        } else {
+          extractedText = await file.text();
+        }
+
+        const pasteBox = document.getElementById('quickAnswerPasteInput');
+        if (pasteBox) pasteBox.value = extractedText.trim();
+
+        const appliedCount = applyQuickAnswersFromText(extractedText, mode);
+        if (statusEl) {
+          statusEl.innerText = `Đã nhận diện ${appliedCount} đáp án từ "${file.name}"`;
+        }
+        document.getElementById('btnClearAnswerFile')?.classList.remove('hidden');
+      } catch (err) {
+        console.error('Lỗi đọc file đáp án:', err);
+        showUndoToast('Không thể đọc file đáp án, vui lòng kiểm tra lại định dạng!');
+      }
+    }
+
+    function clearAnswerFileUpload() {
+      const ansFileInp = document.getElementById('assignmentAnswerFileInput');
+      if (ansFileInp) ansFileInp.value = '';
+      const pasteBox = document.getElementById('quickAnswerPasteInput');
+      if (pasteBox) pasteBox.value = '';
+      document.getElementById('btnClearAnswerFile')?.classList.add('hidden');
+      const statusEl = document.getElementById('answerFileStatusText');
+      if (statusEl) {
+        statusEl.innerText = 'Tải file đáp án (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi';
+      }
+      showUndoToast('Đã hủy file đáp án!');
+    }
+
+    function handleQuickAnswerInputApply() {
+      const rawText = document.getElementById('quickAnswerPasteInput')?.value || '';
+      const mode = document.getElementById('quickAnswerTargetMode')?.value || 'auto';
+      if (!rawText.trim()) {
+        showUndoToast('Vui lòng nhập hoặc dán danh sách đáp án trước!');
+        return;
+      }
+      const appliedCount = applyQuickAnswersFromText(rawText, mode);
+      const statusEl = document.getElementById('answerFileStatusText');
+      if (statusEl && appliedCount > 0) {
+        statusEl.innerText = `Đã điền thành công ${appliedCount} đáp án vào phiếu!`;
+      }
+    }
+
+    function applyQuickAnswersFromText(rawText, targetMode = 'auto') {
+      const cleaned = rawText.trim();
+      if (!cleaned) return 0;
+
+      // 1. Kiểm tra trường hợp giáo viên gõ chuỗi đáp án liền không dấu cách (VD: "ABCDABCD..." hoặc "A B C D A B...")
+      const compactLetters = cleaned.replace(/[\s,;\-\.\|]/g, '').toUpperCase();
+      const isPureMcqSequence = /^[A-D]{2,}$/.test(compactLetters);
+
+      if ((targetMode === 'auto' || targetMode === 'mcq') && isPureMcqSequence) {
+        const letters = compactLetters.split('');
+        applyParsedMcqMap(letters.map((ans, i) => ({ index: i, answer: ans })));
+        showUndoToast(`Đã điền nhanh ${letters.length} đáp án trắc nghiệm!`);
+        return letters.length;
+      }
+
+      // 2. Phân tích dạng có đánh số thứ tự hoặc bảng Excel (VD: "1. A", "1A", "Câu 1: B", "1\tA", hoặc "1. goes")
+      const numberedMcqEntries = [];
+      const numberedShortEntries = [];
+
+      // Tách theo dòng hoặc cụm số câu
+      const lines = cleaned.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const pairRegex = /(?:Câu|Question|Bài)?\s*(\d+)\s*[\.\)\:\-\t\s]\s*([^\d\n\t]+?)(?=(?:\s+(?:Câu|Question|Bài)?\s*\d+\s*[\.\)\:\-\t\s]|$))/gi;
+
+      let matchedAnyNumbered = false;
+      lines.forEach(line => {
+        // Nếu là dòng từ Excel phân tách bằng Tab: VD "1\tA\t2\tB" hoặc "1\tgoes"
+        if (line.includes('\t')) {
+          const cells = line.split('\t').map(c => c.trim()).filter(Boolean);
+          for (let i = 0; i < cells.length; i++) {
+            const numMatch = cells[i].match(/^(?:Câu|Question)?\s*(\d+)[\.\:\)]?$/i);
+            if (numMatch && cells[i + 1]) {
+              const qIdx = parseInt(numMatch[1], 10) - 1;
+              const ansVal = cells[i + 1].trim();
+              if (qIdx >= 0 && ansVal) {
+                matchedAnyNumbered = true;
+                if (/^[A-D]$/i.test(ansVal)) numberedMcqEntries.push({ index: qIdx, answer: ansVal.toUpperCase() });
+                else numberedShortEntries.push({ index: qIdx, answer: ansVal });
+                i++;
+              }
+            }
+          }
+          return;
+        }
+
+        let m;
+        pairRegex.lastIndex = 0;
+        let lineHasPair = false;
+        while ((m = pairRegex.exec(line)) !== null) {
+          const qIdx = parseInt(m[1], 10) - 1;
+          const ansVal = m[2].replace(/^[\.\)\:\-\s]+|[\.\;\,\s]+$/g, '').trim();
+          if (qIdx >= 0 && ansVal) {
+            lineHasPair = true;
+            matchedAnyNumbered = true;
+            if (/^[A-D]$/i.test(ansVal)) {
+              numberedMcqEntries.push({ index: qIdx, answer: ansVal.toUpperCase() });
+            } else {
+              numberedShortEntries.push({ index: qIdx, answer: ansVal });
+            }
+          }
+        }
+
+        // Nếu dòng không có số thứ tự, xử lý tuần tự theo dòng
+        if (!lineHasPair && !matchedAnyNumbered) {
+          const cleanLine = line.replace(/^(?:Câu|Question)?\s*\d+[\.\)\:\-\s]+/i, '').trim();
+          if (cleanLine) {
+            if (/^[A-D]$/i.test(cleanLine)) {
+              numberedMcqEntries.push({ index: numberedMcqEntries.length, answer: cleanLine.toUpperCase() });
+            } else {
+              numberedShortEntries.push({ index: numberedShortEntries.length, answer: cleanLine });
+            }
+          }
+        }
+      });
+
+      let totalApplied = 0;
+
+      // Xử lý đổ dữ liệu vào phiếu Trắc nghiệm
+      if (targetMode === 'mcq') {
+        const allForMcq = [
+          ...numberedMcqEntries,
+          ...numberedShortEntries.filter(e => /^[A-D]/i.test(e.answer)).map(e => ({ index: e.index, answer: e.answer.charAt(0).toUpperCase() }))
+        ];
+        if (allForMcq.length > 0) {
+          applyParsedMcqMap(allForMcq);
+          totalApplied += allForMcq.length;
+        }
+      } else if (targetMode === 'short') {
+        const allForShort = [...numberedShortEntries, ...numberedMcqEntries];
+        if (allForShort.length > 0) {
+          applyParsedShortMap(allForShort);
+          totalApplied += allForShort.length;
+        }
+      } else {
+        // Chế độ Tự nhận diện (auto)
+        if (numberedMcqEntries.length > 0) {
+          applyParsedMcqMap(numberedMcqEntries);
+          totalApplied += numberedMcqEntries.length;
+        }
+        if (numberedShortEntries.length > 0) {
+          applyParsedShortMap(numberedShortEntries);
+          totalApplied += numberedShortEntries.length;
+        }
+      }
+
+      if (totalApplied > 0) {
+        showUndoToast(`Đã tự động điền ${totalApplied} đáp án vào phiếu!`);
+      } else {
+        showUndoToast('Không tìm thấy định dạng đáp án hợp lệ trong nội dung!');
+      }
+      return totalApplied;
+    }
+
+    function applyParsedMcqMap(entries) {
+      if (!entries || entries.length === 0) return;
+      builderMcqState.enabled = true;
+      const chkMcq = document.getElementById('chkEnableMcq');
+      if (chkMcq) chkMcq.checked = true;
+
+      const maxIdx = Math.max(...entries.map(e => e.index));
+      while (builderMcqState.items.length <= maxIdx) {
+        const nextNum = builderMcqState.items.length + 1;
+        builderMcqState.items.push({
+          id: `mcq_auto_${Date.now()}_${nextNum}`,
+          number: nextNum,
+          prompt: '',
+          optionTexts: { A: '', B: '', C: '', D: '' },
+          correctAnswer: 'A',
+          points: 0.5
+        });
+      }
+
+      entries.forEach(({ index, answer }) => {
+        if (builderMcqState.items[index] && ['A', 'B', 'C', 'D'].includes(answer)) {
+          builderMcqState.items[index].correctAnswer = answer;
+        }
+      });
+
+      syncBuilderSectionVisibility();
+      renderBuilderMcqGrid();
+      updateTotalAssignmentScore();
+    }
+
+    function applyParsedShortMap(entries) {
+      if (!entries || entries.length === 0) return;
+      builderShortState.enabled = true;
+      const chkShort = document.getElementById('chkEnableShort');
+      if (chkShort) chkShort.checked = true;
+
+      const maxIdx = Math.max(...entries.map(e => e.index));
+      while (builderShortState.items.length <= maxIdx) {
+        const nextNum = builderShortState.items.length + 1;
+        builderShortState.items.push({
+          id: `short_auto_${Date.now()}_${nextNum}`,
+          number: nextNum,
+          prompt: '',
+          correctAnswer: '',
+          points: 0.5
+        });
+      }
+
+      entries.forEach(({ index, answer }) => {
+        if (builderShortState.items[index]) {
+          builderShortState.items[index].correctAnswer = answer;
+        }
+      });
+
+      syncBuilderSectionVisibility();
+      renderBuilderShortList();
+      updateTotalAssignmentScore();
     }
 
     function handleSaveAssignment(e) {
