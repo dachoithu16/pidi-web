@@ -50,6 +50,11 @@
       background-color: #f8fafc !important;
       z-index: 20;
     }
+    select option {
+      background-color: #ffffff;
+      color: #0f172a;
+      font-weight: 600;
+    }
     .yt-dropdown-scroll::-webkit-scrollbar {
       width: 6px;
     }
@@ -203,14 +208,16 @@
             <select
               id="classListSelect"
               onchange="onClassChange(this.value)"
-              class="bg-transparent text-white font-bold text-[11px] sm:text-[13px] focus:outline-none cursor-pointer pr-1 truncate max-w-[130px] sm:max-w-[240px]"
+              class="bg-slate-800 text-white font-bold text-[11px] sm:text-[13px] focus:outline-none cursor-pointer pr-1 truncate max-w-[130px] sm:max-w-[240px]"
             >
               <!-- Render động -->
             </select>
 
+            <!-- Nút BÁNH RĂNG cài đặt lớp -->
             <button 
               type="button"
               onclick="openEditClassModal()" 
+              id="btnOpenEditClass"
               class="w-6 h-6 rounded-md hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition shrink-0"
               title="Cài đặt lớp học"
             >
@@ -225,7 +232,7 @@
           <select
             id="parentStudentSelect"
             onchange="onParentStudentChange(this.value)"
-            class="bg-transparent text-white font-bold text-[11px] sm:text-sm focus:outline-none cursor-pointer max-w-[140px]"
+            class="bg-slate-800 text-white font-bold text-[11px] sm:text-sm focus:outline-none cursor-pointer max-w-[140px]"
           >
             <!-- Render động -->
           </select>
@@ -394,6 +401,7 @@
                   class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 cursor-pointer"
                   title="Chọn tất cả"
                 >
+                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 w-6 text-center shrink-0">STT</span>
                 <h3 class="font-bold text-slate-800 text-xs sm:text-sm">Danh sách học sinh</h3>
               </div>
 
@@ -562,6 +570,7 @@
                       class="rounded text-indigo-600 focus:ring-0 w-4 h-4 cursor-pointer"
                     >
                   </th>
+                  <th class="py-2.5 sm:py-3 px-1 sm:px-2 text-center w-8 sm:w-10">STT</th>
                   <th class="py-2.5 sm:py-3 px-2.5 sm:px-3.5 sticky-student-col">Học sinh</th>
                   <th class="py-2.5 sm:py-3 px-1.5 sm:px-2 text-center w-12 sm:w-16">Buổi</th>
                   <th class="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right">Đơn giá</th>
@@ -1764,7 +1773,6 @@
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
         await loadUserDataFromCloud(session, true);
-        showUndoToast('Đã tải dữ liệu mới nhất từ tài khoản đám mây!');
       }
     }
 
@@ -1792,12 +1800,8 @@
       supabaseClient.auth.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
           await applyUserSession(session);
-          if (event === 'SIGNED_IN') {
-            showUndoToast(`Xin chào ${currentUser?.full_name || 'Thầy/Cô'}!`);
-          }
         } else if (event === 'SIGNED_OUT') {
           await applyUserSession(null);
-          showUndoToast('Đã đăng xuất tài khoản.');
         }
       });
     }
@@ -1906,7 +1910,6 @@
             setAuthError(error.message.includes('Invalid login') ? 'Email hoặc mật khẩu không chính xác.' : error.message);
           } else {
             closeModal('modalAuth');
-            showUndoToast('Đăng nhập thành công!');
           }
         } else {
           const { data, error } = await supabaseClient.auth.signUp({ email, password });
@@ -1914,7 +1917,6 @@
             setAuthError(`Đăng ký thất bại: ${error.message}`);
           } else if (data?.session) {
             closeModal('modalAuth');
-            showUndoToast('Tạo tài khoản và đăng nhập thành công!');
           } else {
             setAuthError('Đăng ký thành công! Vui lòng kiểm tra hộp thư đến để kích hoạt tài khoản.');
           }
@@ -2043,6 +2045,7 @@
 
     let classesList = [];
     let classStudentsMap = {};
+    const ALL_CLASSES_ID = 'ALL_CLASSES';
     let currentClassId = null;
     let isClassSelected = false;
     let students = [];
@@ -2116,14 +2119,48 @@
 
       // Khôi phục đúng lớp và trạng thái xem danh sách lớp trước khi ấn F5 (nếu có)
       const savedClassId = localStorage.getItem('dipi_ui_class_id');
-      if (savedClassId && classesList.some(c => c.id === savedClassId)) {
+      if (savedClassId === ALL_CLASSES_ID && classesList.length > 0) {
+        currentClassId = ALL_CLASSES_ID;
+        students = getStudentsForClass(ALL_CLASSES_ID);
+      } else if (savedClassId && classesList.some(c => c.id === savedClassId)) {
         currentClassId = savedClassId;
-        students = classStudentsMap[currentClassId] || [];
+        students = getStudentsForClass(currentClassId);
       }
       isClassSelected = localStorage.getItem('dipi_ui_class_selected') === '1' && Boolean(currentClassId);
 
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
+    }
+
+    function getStudentsForClass(clsId) {
+      if (clsId === ALL_CLASSES_ID) {
+        const merged = [];
+        classesList.forEach(cls => {
+          const list = classStudentsMap[cls.id] || [];
+          list.forEach(st => {
+            st._classId = cls.id;
+            st._className = cls.class_name;
+            merged.push(st);
+          });
+        });
+        return merged;
+      }
+      const cls = classesList.find(c => c.id === clsId);
+      const list = classStudentsMap[clsId] || [];
+      list.forEach(st => {
+        st._classId = clsId;
+        st._className = cls ? cls.class_name : '';
+      });
+      return list;
+    }
+
+    function findStudentAndClassById(studentId) {
+      for (const cls of classesList) {
+        const list = classStudentsMap[cls.id] || [];
+        const found = list.find(s => s.id === studentId);
+        if (found) return { student: found, classId: cls.id, classObj: cls };
+      }
+      return null;
     }
     let cloudSyncDebounceTimer = null;
     let isCloudSyncInProgress = false;
@@ -2238,10 +2275,10 @@
           localStorage.setItem(`${prefix}_last_synced_at`, new Date().toISOString());
         }
 
-        if (!currentClassId || !classesList.find(c => c.id === currentClassId)) {
+        if (currentClassId !== ALL_CLASSES_ID && (!currentClassId || !classesList.find(c => c.id === currentClassId))) {
           currentClassId = classesList.length > 0 ? classesList[0].id : null;
         }
-        students = currentClassId ? (classStudentsMap[currentClassId] || []) : [];
+        students = currentClassId ? getStudentsForClass(currentClassId) : [];
         syncActiveAttendanceDateForCurrentClass();
         syncFinanceDatesForCurrentClass();
         renderAll();
@@ -2484,6 +2521,20 @@
 
     function getCurrentClassSessionDates(clsId = currentClassId) {
       if (!clsId) return [];
+      if (clsId === ALL_CLASSES_ID) {
+        const dateSet = new Set();
+        classesList.forEach(cls => {
+          const dates = Array.isArray(cls.schedules) && cls.schedules.length > 0
+            ? generateClassSessionDates(cls.schedules)
+            : (cls.sessionDates || []);
+          dates.forEach(d => dateSet.add(d));
+        });
+        return Array.from(dateSet).sort((a, b) => {
+          const [d1, m1, y1] = a.split('/').map(Number);
+          const [d2, m2, y2] = b.split('/').map(Number);
+          return new Date(y1, m1 - 1, d1) - new Date(y2, m2 - 1, d2);
+        });
+      }
       const cls = classesList.find(c => c.id === clsId);
       if (!cls) return [];
       if (Array.isArray(cls.schedules) && cls.schedules.length > 0) {
@@ -2561,16 +2612,24 @@
       const select = document.getElementById('classListSelect');
       if (!select) return;
       if (classesList.length === 0) {
-        select.innerHTML = `<option value="">(Chưa có lớp học)</option>`;
+        select.innerHTML = `<option value="" class="bg-white text-slate-900">(Chưa có lớp học)</option>`;
         return;
       }
-      select.innerHTML = classesList.map(c => `<option value="${c.id}" ${c.id === currentClassId ? 'selected' : ''}>${c.class_name}</option>`).join('');
+      const totalAllStudents = classesList.reduce((sum, c) => sum + ((classStudentsMap[c.id] || []).length), 0);
+      const totalOption = `<option value="${ALL_CLASSES_ID}" class="bg-white text-slate-900 font-bold" ${currentClassId === ALL_CLASSES_ID ? 'selected' : ''}>Tổng Lớp (${totalAllStudents} HS)</option>`;
+      const classOptions = classesList.map(c => `<option value="${c.id}" class="bg-white text-slate-900 font-bold" ${c.id === currentClassId ? 'selected' : ''}>${c.class_name}</option>`).join('');
+      select.innerHTML = totalOption + classOptions;
+
+      const editBtn = document.getElementById('btnOpenEditClass');
+      if (editBtn) {
+        editBtn.classList.toggle('opacity-40', currentClassId === ALL_CLASSES_ID);
+      }
     }
 
     function onClassChange(newClassId) {
       currentClassId = newClassId;
       isClassSelected = true;
-      students = classStudentsMap[currentClassId] || [];
+      students = getStudentsForClass(currentClassId);
       saveUiNavigationState();
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
@@ -2720,13 +2779,11 @@
 
       const listContainer = document.getElementById('studentAttendanceList');
       if (!listContainer) return;
-
       if (students.length === 0) {
-        listContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Lớp chưa có học sinh. Bấm "+ Thêm HS" để thêm.</div>`;
+        listContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-500 bg-white">Lớp chưa có học sinh. Bấm "+ Thêm HS" để thêm.</div>`;
         return;
       }
-
-      listContainer.innerHTML = students.map(s => {
+      listContainer.innerHTML = students.map((s, idx) => {
         const status = s.attendanceHistory?.[activeAttendanceDate] || 'unrecorded';
         const isPresent = status === 'present';
         const isAbsent = status === 'absent';
@@ -2734,33 +2791,40 @@
         const displayName = getShortName(s.name);
         let bCount = 0, vCount = 0;
         Object.values(s.attendanceHistory || {}).forEach(v => { if (v === 'present') bCount++; if (v === 'absent') vCount++; });
+        const classTag = (currentClassId === ALL_CLASSES_ID && s._className)
+          ? `<span class="text-[9.5px] font-bold px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 border border-indigo-200/70 truncate max-w-[110px]">${s._className}</span>`
+          : '';
 
         return `
-          <div class="px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between gap-2 hover:bg-slate-50/80 transition ${isSelected ? 'bg-indigo-50/40' : ''}">
+          <div class="px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between gap-2 transition ${isSelected ? 'bg-indigo-50/80 text-slate-900' : 'bg-white text-slate-900 hover:bg-slate-50'}">
             <div class="flex items-center gap-2 min-w-0 flex-1">
               <input type="checkbox" class="w-4 h-4 rounded text-indigo-600 cursor-pointer shrink-0" ${isSelected ? 'checked' : ''} onchange="toggleStudentAttendanceSelection('${s.id}', this.checked)">
+              <span class="text-[11px] sm:text-xs font-extrabold text-slate-500 w-6 text-center shrink-0">${idx + 1}</span>
               <div onclick="openStudentDetailModal('${s.id}')" class="cursor-pointer min-w-0 flex-1 group">
-                <div class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-indigo-600 truncate">${displayName}</div>
-                <div class="text-[10.5px] text-slate-500 font-semibold mt-0.5 flex items-center gap-1.5">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-indigo-600 truncate">${displayName}</span>
+                  ${classTag}
+                </div>
+                <div class="text-[10.5px] text-slate-600 font-semibold mt-0.5 flex items-center gap-1.5">
                   <span class="text-emerald-700 bg-emerald-50 px-1 rounded border border-emerald-200/60 font-bold">${bCount}B</span>
                   <span>•</span>
                   <span class="text-rose-700 bg-rose-50 px-1 rounded border border-rose-200/60 font-bold">${vCount}V</span>
-                  ${s.parentPhone ? `<span class="hidden sm:inline text-slate-400">• ${s.parentPhone}</span>` : ''}
-                  ${s.school ? `<span class="hidden sm:inline text-slate-400">• ${s.school}</span>` : ''}
+                  ${s.parentPhone ? `<span class="hidden sm:inline text-slate-500">• ${s.parentPhone}</span>` : ''}
+                  ${s.school ? `<span class="hidden sm:inline text-slate-500">• ${s.school}</span>` : ''}
                 </div>
               </div>
             </div>
 
             <div class="flex items-center gap-1 shrink-0">
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'present')" class="px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 ${isPresent ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}">
+              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'present')" class="px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 ${isPresent ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/70'}">
                 <i data-lucide="check" class="w-3.5 h-3.5"></i><span>Đi học</span>
               </button>
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'absent')" class="px-2 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 ${isAbsent ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}">
+              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'absent')" class="px-2 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 ${isAbsent ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/70'}">
                 <i data-lucide="x" class="w-3.5 h-3.5"></i><span>Vắng</span>
               </button>
             </div>
 
-            <div onclick="openStudentDetailModal('${s.id}')" class="hidden sm:flex w-36 md:w-44 pl-3 border-l border-slate-100 items-center justify-between text-xs font-extrabold text-slate-800 hover:text-indigo-600 cursor-pointer shrink-0 truncate">
+            <div onclick="openStudentDetailModal('${s.id}')" class="hidden sm:flex w-36 md:w-44 pl-3 border-l border-slate-200 items-center justify-between text-xs font-extrabold text-slate-900 hover:text-indigo-600 cursor-pointer shrink-0 truncate">
               <span class="truncate">${displayName}</span>
               <span class="w-2 h-2 rounded-full ${isPresent ? 'bg-emerald-500' : (isAbsent ? 'bg-rose-500' : 'bg-slate-300')} shrink-0 ml-1"></span>
             </div>
@@ -2772,12 +2836,13 @@
     }
 
     function toggleStudentAttendance(studentId, targetStatus) {
-      const s = students.find(item => item.id === studentId);
+      const found = findStudentAndClassById(studentId);
+      const s = found ? found.student : students.find(item => item.id === studentId);
       if (!s) return;
       if (!s.attendanceHistory) s.attendanceHistory = {};
       const cur = s.attendanceHistory[activeAttendanceDate] || 'unrecorded';
       s.attendanceHistory[activeAttendanceDate] = (cur === targetStatus) ? 'unrecorded' : targetStatus;
-      classStudentsMap[currentClassId] = students;
+      students = getStudentsForClass(currentClassId);
       saveAllToLocalStorage();
       renderAttendanceTab();
       renderFinanceTab();
@@ -2788,7 +2853,7 @@
         if (!s.attendanceHistory) s.attendanceHistory = {};
         s.attendanceHistory[activeAttendanceDate] = status;
       });
-      classStudentsMap[currentClassId] = students;
+      students = getStudentsForClass(currentClassId);
       saveAllToLocalStorage();
       renderAttendanceTab();
       renderFinanceTab();
@@ -2827,8 +2892,10 @@
       const count = selectedAttendanceStudentIds.length;
       if (count === 0) return;
       openConfirmModal(`Xóa ${count} học sinh đã chọn?`, 'Dữ liệu các học sinh này sẽ bị xóa khỏi lớp.', () => {
-        students = students.filter(s => !selectedAttendanceStudentIds.includes(s.id));
-        classStudentsMap[currentClassId] = students;
+        Object.keys(classStudentsMap).forEach(cId => {
+          classStudentsMap[cId] = (classStudentsMap[cId] || []).filter(s => !selectedAttendanceStudentIds.includes(s.id));
+        });
+        students = getStudentsForClass(currentClassId);
         selectedAttendanceStudentIds = [];
         saveAllToLocalStorage();
         renderAll();
@@ -2872,11 +2939,12 @@
     }
 
     function openAddStudentModal(initialTab = 'single') {
+      const defaultTargetClassId = currentClassId === ALL_CLASSES_ID ? (classesList[0]?.id || '') : currentClassId;
       const sel = document.getElementById('newStudentClassSelect');
       if (sel) {
-        sel.innerHTML = classesList.map(c => `<option value="${c.id}" ${c.id === currentClassId ? 'selected' : ''}>${c.class_name}</option>`).join('');
+        sel.innerHTML = classesList.map(c => `<option value="${c.id}" ${c.id === defaultTargetClassId ? 'selected' : ''}>${c.class_name}</option>`).join('');
       }
-      const curCls = classesList.find(c => c.id === currentClassId);
+      const curCls = classesList.find(c => c.id === defaultTargetClassId);
       document.getElementById('newStudentName').value = '';
       document.getElementById('newStudentFeePerSession').value = curCls?.fee_per_session || 40000;
       document.getElementById('newStudentParentPhone').value = '';
@@ -4038,6 +4106,10 @@
     }
 
     function openEditClassModal() {
+      if (currentClassId === ALL_CLASSES_ID) {
+        showUndoToast('Đang ở chế độ Tổng Lớp. Vui lòng chọn từng lớp cụ thể để cài đặt!');
+        return;
+      }
       const cls = classesList.find(c => c.id === currentClassId);
       if (!cls) return;
       document.getElementById('editClassNameInput').value = cls.class_name || '';
@@ -4078,6 +4150,7 @@
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
       renderAll();
+      showUndoToast(`Đã sửa thông tin lớp ${cls.class_name}!`);
     }
 
     function openCreateClassModal() {
@@ -4232,46 +4305,74 @@
 
     function updateFinanceDateBadge() {
       const badge = document.getElementById('customDatesCountBadge');
-      if (badge) badge.innerText = `Chọn buổi (${selectedFinanceDates.length} buổi)`;
+      if (badge) {
+        badge.innerText = `Chọn buổi (${selectedFinanceDates.length} buổi)`;
+      }
     }
 
     function openSelectFinanceDatesModal() {
       tempSelectedFinanceDates = [...selectedFinanceDates];
       const container = document.getElementById('financeDatesListContainer');
       if (!container) return;
-      container.innerHTML = getCurrentClassSessionDates(currentClassId).map(d => `
-        <label class="flex items-center justify-between p-2 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer text-xs">
-          <div class="flex items-center gap-2">
-            <input type="checkbox" class="rounded text-indigo-600" ${tempSelectedFinanceDates.includes(d) ? 'checked' : ''} onchange="toggleTempFinanceDate('${d}', this.checked)">
-            <span class="font-bold text-slate-800">${d}</span>
-          </div>
-          <span class="text-[10px] text-slate-400 font-mono">T.${d.split('/')[1]}</span>
-        </label>
-      `).join('');
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      container.innerHTML = classDates.map(d => {
+        const isChecked = tempSelectedFinanceDates.includes(d);
+        const parts = d.split('/');
+        return `
+          <label class="flex items-center justify-between p-2 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer text-xs">
+            <div class="flex items-center gap-2">
+              <input type="checkbox" class="rounded text-indigo-600" ${isChecked ? 'checked' : ''} onchange="toggleTempFinanceDate('${d}', this.checked)">
+              <span class="font-bold text-slate-800">${d}</span>
+            </div>
+            <span class="text-[10px] text-slate-400 font-mono">T.${parts[1]}</span>
+          </label>
+        `;
+      }).join('');
       openModal('modalSelectFinanceDates');
     }
 
     function toggleTempFinanceDate(dateStr, checked) {
-      if (checked) { if (!tempSelectedFinanceDates.includes(dateStr)) tempSelectedFinanceDates.push(dateStr); }
-      else { tempSelectedFinanceDates = tempSelectedFinanceDates.filter(d => d !== dateStr); }
+      if (checked) {
+        if (!tempSelectedFinanceDates.includes(dateStr)) tempSelectedFinanceDates.push(dateStr);
+      } else {
+        tempSelectedFinanceDates = tempSelectedFinanceDates.filter(d => d !== dateStr);
+      }
     }
 
     function selectAllFinanceDatesModal(val) {
-      tempSelectedFinanceDates = val ? [...getCurrentClassSessionDates(currentClassId)] : [];
+      const classDates = getCurrentClassSessionDates(currentClassId);
+      tempSelectedFinanceDates = val ? [...classDates] : [];
       openSelectFinanceDatesModal();
     }
 
     function applyCustomFinanceDates() {
+      if (tempSelectedFinanceDates.length === 0) {
+        showUndoToast('Vui lòng chọn ít nhất 1 buổi để tính tiền...');
+        return;
+      }
       selectedFinanceDates = [...tempSelectedFinanceDates];
       updateFinanceDateBadge();
       closeModal('modalSelectFinanceDates');
       renderFinanceTab();
+      showUndoToast(`Đã áp dụng ${selectedFinanceDates.length} buổi tính học phí.`);
+    }
+
+    function getActiveFinancePeriodKey() {
+      if (financeFilterMode === 'month') {
+        return `month_${currentFinanceMonth}`;
+      }
+      const f = document.getElementById('financeDateFromInput')?.value || '';
+      const t = document.getElementById('financeDateToInput')?.value || '';
+      return `range_${f}_${t}`;
     }
 
     function calculateStudentFeeForSelectedDates(student) {
       const price = Number(student.pricePerSession) || 40000;
       const history = student.attendanceHistory || {};
-      const paidList = student.paidSessions || [];
+      const paidList = Array.isArray(student.paidSessions) ? student.paidSessions : [];
+      const paidPeriods = Array.isArray(student.paidPeriods) ? student.paidPeriods : [];
+      const periodKey = getActiveFinancePeriodKey();
+
       let presentCount = 0;
       let unpaidCount = 0;
       selectedFinanceDates.forEach(d => {
@@ -4280,10 +4381,15 @@
           if (!paidList.includes(d)) unpaidCount++;
         }
       });
+
       const finalAmount = presentCount * price;
       const remaining = unpaidCount * price;
       const paid = Math.max(0, finalAmount - remaining);
-      return { presentCount, price, finalAmount, paid, remaining, isFullyPaid: remaining === 0 && presentCount > 0 };
+      const isMarkedPaidPeriod = paidPeriods.includes(periodKey) ||
+        (selectedFinanceDates.length > 0 && selectedFinanceDates.every(d => paidList.includes(d)));
+      const isFullyPaid = (presentCount > 0 && remaining === 0) || isMarkedPaidPeriod;
+
+      return { presentCount, price, finalAmount, paid, remaining, isFullyPaid };
     }
 
     function renderFinanceTab() {
@@ -4302,27 +4408,36 @@
       const tbody = document.getElementById('financeTableBody');
       if (!tbody) return;
       if (students.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-xs text-slate-400">Chưa có dữ liệu học sinh.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" class="p-6 text-center text-xs text-slate-500 bg-white">Chưa có dữ liệu học sinh.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = students.map(s => {
+      tbody.innerHTML = students.map((s, idx) => {
         const fee = calculateStudentFeeForSelectedDates(s);
         const displayName = getShortName(s.name);
+        const classSubLabel = (currentClassId === ALL_CLASSES_ID && s._className)
+          ? `<div class="text-[9.5px] font-semibold text-indigo-600 truncate max-w-[110px]">${s._className}</div>`
+          : '';
         return `
-          <tr class="hover:bg-slate-50/80 transition group/row bg-white">
-            <td class="py-2.5 px-2 text-center"><input type="checkbox" ${selectedStudentIds.includes(s.id) ? 'checked' : ''} onchange="toggleSelectStudent('${s.id}', this.checked)" class="rounded text-indigo-600 w-4 h-4"></td>
-            <td class="py-2.5 px-2.5 font-extrabold text-slate-900 cursor-pointer whitespace-nowrap sticky-student-col bg-white" onclick="openStudentDetailModal('${s.id}')">${displayName}</td>
-            <td class="py-2.5 px-1.5 text-center font-extrabold text-indigo-700 bg-indigo-50/30">${fee.presentCount}</td>
-            <td class="py-2.5 px-1.5 text-right"><button type="button" onclick="openEditFeePriceModal('${s.id}')" class="font-mono text-xs font-semibold hover:text-indigo-600">${formatMoneyK(fee.price)}</button></td>
-            <td class="py-2.5 px-1.5 text-right font-extrabold font-mono text-xs">${formatMoneyK(fee.finalAmount)}</td>
-            <td class="py-2.5 px-1.5 text-right font-bold text-emerald-600 font-mono text-xs">${formatMoneyK(fee.paid)}</td>
-            <td class="py-2.5 px-1.5 text-right font-bold text-rose-600 font-mono text-xs">${formatMoneyK(fee.remaining)}</td>
-            <td class="py-2.5 px-1.5 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${fee.isFullyPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${fee.isFullyPaid ? 'Đủ' : 'Chưa'}</span></td>
-            <td class="py-2.5 px-2 text-right">
-              ${fee.isFullyPaid ? `<button type="button" onclick="resetPaidSessionsForStudent('${s.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 font-bold text-xs">Hủy thu</button>` : `<button type="button" onclick="markFullyPaidForStudent('${s.id}')" class="px-3 py-1 rounded-lg bg-emerald-600 text-white font-bold text-xs">Thu đủ</button>`}
+          <tr class="bg-white text-slate-800 hover:bg-slate-50 transition group/row">
+            <td class="py-2.5 px-2 text-center bg-white"><input type="checkbox" ${selectedStudentIds.includes(s.id) ? 'checked' : ''} onchange="toggleSelectStudent('${s.id}', this.checked)" class="rounded text-indigo-600 w-4 h-4 cursor-pointer"></td>
+            <td class="py-2.5 px-1 sm:px-2 text-center font-bold text-slate-500 text-xs bg-white">${idx + 1}</td>
+            <td class="py-2.5 px-2.5 font-extrabold text-slate-900 cursor-pointer whitespace-nowrap sticky-student-col bg-white group-hover/row:bg-slate-50" onclick="openStudentDetailModal('${s.id}')">
+              <div class="text-slate-900">${displayName}</div>
+              ${classSubLabel}
             </td>
-            <td class="hidden sm:table-cell py-2.5 px-3 text-left border-l border-slate-100 font-extrabold text-xs">${displayName}</td>
+            <td class="py-2.5 px-1.5 text-center font-extrabold text-indigo-700 bg-indigo-50/40">${fee.presentCount}</td>
+            <td class="py-2.5 px-1.5 text-right bg-white"><button type="button" onclick="openEditFeePriceModal('${s.id}')" class="font-mono text-xs font-semibold text-slate-700 hover:text-indigo-600">${formatMoneyK(fee.price)}</button></td>
+            <td class="py-2.5 px-1.5 text-right font-extrabold font-mono text-xs text-slate-900 bg-white">${formatMoneyK(fee.finalAmount)}</td>
+            <td class="py-2.5 px-1.5 text-right font-bold text-emerald-600 font-mono text-xs bg-white">${formatMoneyK(fee.paid)}</td>
+            <td class="py-2.5 px-1.5 text-right font-bold text-rose-600 font-mono text-xs bg-white">${formatMoneyK(fee.remaining)}</td>
+            <td class="py-2.5 px-1.5 text-center bg-white"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${fee.isFullyPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${fee.isFullyPaid ? 'Đã thu' : 'Chưa thu'}</span></td>
+            <td class="py-2.5 px-2 text-right bg-white">
+              ${fee.isFullyPaid
+                ? `<button type="button" onclick="resetPaidSessionsForStudent('${s.id}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs transition active:scale-95">Hủy thu</button>`
+                : `<button type="button" onclick="markFullyPaidForStudent('${s.id}')" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-2xs active:scale-95">Thu đủ</button>`}
+            </td>
+            <td class="hidden sm:table-cell py-2.5 px-3 text-left border-l border-slate-100 font-extrabold text-xs text-slate-900 bg-white">${displayName}</td>
           </tr>
         `;
       }).join('');
@@ -4339,21 +4454,43 @@
     }
 
     function markFullyPaidForStudent(studentId) {
-      const s = students.find(x => x.id === studentId);
+      const found = findStudentAndClassById(studentId);
+      const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
-      if (!s.paidSessions) s.paidSessions = [];
-      selectedFinanceDates.forEach(d => { if (!s.paidSessions.includes(d)) s.paidSessions.push(d); });
+      if (!Array.isArray(s.paidSessions)) s.paidSessions = [];
+      if (!Array.isArray(s.paidPeriods)) s.paidPeriods = [];
+
+      const targetDates = selectedFinanceDates.length > 0
+        ? selectedFinanceDates
+        : getCurrentClassSessionDates(found ? found.classId : currentClassId);
+
+      targetDates.forEach(d => { if (!s.paidSessions.includes(d)) s.paidSessions.push(d); });
+      const periodKey = getActiveFinancePeriodKey();
+      if (!s.paidPeriods.includes(periodKey)) s.paidPeriods.push(periodKey);
+
+      students = getStudentsForClass(currentClassId);
       saveAllToLocalStorage();
       renderFinanceTab();
       showUndoToast(`Đã thu đủ học phí của ${s.name}!`);
     }
 
     function resetPaidSessionsForStudent(studentId) {
-      const s = students.find(x => x.id === studentId);
+      const found = findStudentAndClassById(studentId);
+      const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
-      s.paidSessions = (s.paidSessions || []).filter(d => !selectedFinanceDates.includes(d));
+
+      const targetDates = selectedFinanceDates.length > 0
+        ? selectedFinanceDates
+        : getCurrentClassSessionDates(found ? found.classId : currentClassId);
+
+      s.paidSessions = (s.paidSessions || []).filter(d => !targetDates.includes(d));
+      const periodKey = getActiveFinancePeriodKey();
+      s.paidPeriods = (s.paidPeriods || []).filter(k => k !== periodKey);
+
+      students = getStudentsForClass(currentClassId);
       saveAllToLocalStorage();
       renderFinanceTab();
+      showUndoToast(`Đã hủy thu học phí của ${s.name}!`);
     }
 
     function openEditFeePriceModal(studentId) {
@@ -4374,9 +4511,15 @@
       saveAllToLocalStorage();
       closeModal('modalEditFeePrice');
       renderFinanceTab();
+      showUndoToast(`Đã cập nhật đơn giá học phí mới!`);
     }
 
     function openExportExcelModal() {
+      if (currentClassId === ALL_CLASSES_ID) {
+        document.getElementById('exportClassPreviewName').innerText = `Tổng Lớp (${students.length} HS)`;
+        openModal('modalExportExcel');
+        return;
+      }
       const cls = classesList.find(c => c.id === currentClassId);
       document.getElementById('exportClassPreviewName').innerText = cls ? cls.class_name : '--';
       openModal('modalExportExcel');
@@ -4384,15 +4527,16 @@
 
     function handleExportAttendanceExcel() {
       if (typeof XLSX === 'undefined') return;
-      const cls = classesList.find(c => c.id === currentClassId);
+      const isAll = currentClassId === ALL_CLASSES_ID;
+      const cls = isAll ? { class_name: 'Tong_Lop' } : classesList.find(c => c.id === currentClassId);
       if (!cls) return;
       const selectedMonth = document.getElementById('exportMonthSelect').value || '11/2026';
       const monthDates = getCurrentClassSessionDates(currentClassId).filter(d => d.includes(`/${selectedMonth}`));
-      const rows = [[`BẢNG ĐIỂM DANH - ${cls.class_name}`], ['STT', 'Họ và tên', ...monthDates, 'Tổng buổi']];
+      const rows = [[`BẢNG ĐIỂM DANH - ${cls.class_name}`], ['STT', 'Họ và tên', ...(isAll ? ['Lớp'] : []), ...monthDates, 'Tổng buổi']];
       students.forEach((s, idx) => {
         let p = 0;
         const marks = monthDates.map(d => { if (s.attendanceHistory?.[d] === 'present') { p++; return '✓'; } return '-'; });
-        rows.push([idx + 1, s.name, ...marks, p]);
+        rows.push([idx + 1, s.name, ...(isAll ? [s._className || ''] : []), ...marks, p]);
       });
       const ws = XLSX.utils.aoa_to_sheet(rows);
       const wb = XLSX.utils.book_new();
@@ -4450,14 +4594,18 @@
       saveAllToLocalStorage();
       closeModal('modalStudentDetail');
       renderAll();
+      showUndoToast(`Đã lưu thông tin học sinh ${activeDetailStudent.name}!`);
     }
 
     function openConfirmSingleDeleteModal() {
       if (!activeDetailStudent) return;
       const target = activeDetailStudent;
       openConfirmModal(`Xóa học sinh ${target.name}?`, 'Học sinh sẽ bị xóa khỏi danh sách lớp.', () => {
-        students = students.filter(x => x.id !== target.id);
-        classStudentsMap[currentClassId] = students;
+        const targetClsId = target._classId || currentClassId;
+        if (classStudentsMap[targetClsId]) {
+          classStudentsMap[targetClsId] = classStudentsMap[targetClsId].filter(x => x.id !== target.id);
+        }
+        students = getStudentsForClass(currentClassId);
         saveAllToLocalStorage();
         closeModal('modalStudentDetail');
         renderAll();
@@ -4469,65 +4617,88 @@
     function renderClassesManagementTab() {
       const tbody = document.getElementById('classesManagementList');
       if (!tbody) return;
-      tbody.innerHTML = classesList.map(cls => `
-        <tr onclick="onClassChange('${cls.id}'); switchTab('attendance');" class="hover:bg-slate-50 cursor-pointer">
-          <td class="py-2.5 px-3 font-bold text-slate-900">${cls.class_name}</td>
-          <td class="py-2.5 px-2 text-center font-mono text-indigo-700">${cls.timeSlot || '18h00 - 19h30'}</td>
-          <td class="py-2.5 px-1 text-center font-bold">${(classStudentsMap[cls.id] || []).length} HS</td>
-          <td class="py-2.5 px-1 text-right text-slate-400"><i data-lucide="chevron-right" class="w-4 h-4 ml-auto"></i></td>
-        </tr>
-      `).join('');
+      if (classesList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-xs text-slate-500 bg-white">Chưa có lớp học nào.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = classesList.map(cls => {
+        const isCurrent = cls.id === currentClassId;
+        return `
+          <tr onclick="onClassChange('${cls.id}'); switchTab('attendance');" class="${isCurrent ? 'bg-indigo-50/70' : 'bg-white'} hover:bg-indigo-50/40 cursor-pointer transition">
+            <td class="py-2.5 px-3 font-bold text-slate-900">${cls.class_name}</td>
+            <td class="py-2.5 px-2 text-center font-mono font-semibold text-indigo-700">${cls.timeSlot || '18h00 - 19h30'}</td>
+            <td class="py-2.5 px-1 text-center font-bold text-slate-800">${(classStudentsMap[cls.id] || []).length} HS</td>
+            <td class="py-2.5 px-1 text-right text-slate-500"><i data-lucide="chevron-right" class="w-4 h-4 ml-auto"></i></td>
+          </tr>
+        `;
+      }).join('');
+      safeCreateIcons();
     }
 
     let selectedParentStudentId = '';
-    function renderParentSelectOptions() {
-      const sel = document.getElementById('parentStudentSelect');
-      if (!sel) return;
-      const all = Object.values(classStudentsMap).flat();
-      if (!selectedParentStudentId && all.length > 0) selectedParentStudentId = all[0].id;
-      sel.innerHTML = all.map(s => `<option value="${s.id}" ${s.id === selectedParentStudentId ? 'selected' : ''}>${s.name}</option>`).join('');
-    }
 
-    function onParentStudentChange(val) {
-      selectedParentStudentId = val;
+    function onParentStudentChange(studentId) {
+      selectedParentStudentId = studentId;
       renderParentView();
     }
 
     function renderParentView() {
-      renderParentSelectOptions();
-      const all = Object.values(classStudentsMap).flat();
-      const student = all.find(s => s.id === selectedParentStudentId) || students[0];
+      const allStudents = getStudentsForClass(ALL_CLASSES_ID);
+      const sel = document.getElementById('parentStudentSelect');
+      if (sel) {
+        if (allStudents.length === 0) {
+          sel.innerHTML = `<option value="">(Chưa có học sinh)</option>`;
+        } else {
+          if (!selectedParentStudentId || !allStudents.some(s => s.id === selectedParentStudentId)) {
+            selectedParentStudentId = allStudents[0].id;
+          }
+          sel.innerHTML = allStudents.map(s => `<option value="${s.id}" ${s.id === selectedParentStudentId ? 'selected' : ''}>${s.name}</option>`).join('');
+        }
+      }
+
+      const student = allStudents.find(s => s.id === selectedParentStudentId) || allStudents[0];
       const card = document.getElementById('parentOverviewCard');
-      const grid = document.getElementById('parentAttendanceGrid');
       const hwList = document.getElementById('studentHomeworkCardsList');
-      if (!student) return;
+      const grid = document.getElementById('parentAttendanceGrid');
+
+      if (!student) {
+        if (card) card.innerHTML = `<div class="text-xs text-slate-500 text-center py-4">Chưa có dữ liệu học sinh.</div>`;
+        if (hwList) hwList.innerHTML = '';
+        if (grid) grid.innerHTML = '';
+        return;
+      }
 
       if (card) {
         card.innerHTML = `
           <div class="flex items-center justify-between">
-            <h3 class="font-extrabold text-base text-slate-900">${student.name}</h3>
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900">${student.name}</h3>
+              <div class="text-xs text-slate-500 mt-0.5">Lớp: <strong class="text-indigo-700">${student._className || ''}</strong></div>
+            </div>
             <span class="px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800">Đang theo học</span>
           </div>
-          <div class="text-xs text-slate-500 mt-1">Lớp: ${classesList.find(c => c.id === currentClassId)?.class_name || ''}</div>
         `;
       }
 
       if (hwList) {
-        const classHws = homeworks.filter(h => h.classId === currentClassId || !h.classId);
-        if (classHws.length === 0) {
-          hwList.innerHTML = `<div class="text-xs text-slate-400 italic">Hiện chưa có bài tập nào được giao.</div>`;
+        const classHomeworks = homeworks.filter(h => !h.classId || h.classId === student._classId);
+        if (classHomeworks.length === 0) {
+          hwList.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">Hiện chưa có bài tập nào được giao.</div>`;
         } else {
-          hwList.innerHTML = classHws.map(hw => {
+          hwList.innerHTML = classHomeworks.map(hw => {
             const sub = homeworkSubmissions.find(s => s.homeworkId === hw.id && s.studentId === student.id);
             return `
-              <div class="p-3 rounded-2xl border border-slate-200 flex items-center justify-between gap-2 bg-slate-50/50">
-                <div>
-                  <div class="font-extrabold text-xs sm:text-sm text-slate-900">${hw.title}</div>
-                  <div class="text-[11px] text-slate-500 mt-0.5">Hạn nộp: ${hw.deadline} ${sub ? `• <span class="text-emerald-700 font-bold">Đã nộp (${sub.score}/10đ)</span>` : ''}</div>
-                  ${sub?.teacherComment ? `<div class="text-[11px] text-indigo-700 font-semibold mt-1">Lời phê: "${sub.teacherComment}"</div>` : ''}
+              <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center justify-between gap-2">
+                <div class="min-w-0 flex-1">
+                  <div class="font-bold text-xs sm:text-sm text-slate-900 truncate">${hw.title}</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">
+                    Hạn nộp: <span class="font-semibold text-rose-600">${hw.deadline}</span>
+                    ${sub ? ` • <span class="font-extrabold text-emerald-700">Điểm: ${sub.score}/10</span>` : ''}
+                  </div>
+                  ${sub?.teacherComment ? `<div class="text-[11px] text-indigo-700 mt-1 bg-indigo-50 px-2 py-0.5 rounded">Lời phê: ${sub.teacherComment}</div>` : ''}
                 </div>
-                <button type="button" onclick="openTakeHomeworkModal('${hw.id}', false)" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shrink-0 shadow-xs">
-                  ${sub ? 'Làm lại' : 'Làm bài ngay'}
+                <button type="button" onclick="openTakeHomeworkModal('${hw.id}', false)" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shrink-0 shadow-2xs">
+                  ${sub ? 'Làm lại' : 'Làm bài'}
                 </button>
               </div>
             `;
@@ -4536,13 +4707,16 @@
       }
 
       if (grid) {
-        grid.innerHTML = getCurrentClassSessionDates(currentClassId).slice(0, 8).map((d, idx) => {
+        const classDates = getCurrentClassSessionDates(student._classId).slice(0, 12);
+        grid.innerHTML = classDates.map((d, idx) => {
           const st = student.attendanceHistory?.[d] || 'unrecorded';
           return `
-            <div class="p-2 rounded-xl border text-center ${st === 'present' ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200'}">
-              <div class="text-[9.5px] font-bold">Buổi ${idx + 1}</div>
-              <div class="text-[10.5px] font-mono mt-0.5">${d}</div>
-              <div class="text-[11px] font-bold mt-1 ${st === 'present' ? 'text-emerald-700' : 'text-slate-400'}">${st === 'present' ? '✓ Đi học' : '--'}</div>
+            <div class="p-2 rounded-xl border text-center ${st === 'present' ? 'bg-emerald-50 border-emerald-300' : (st === 'absent' ? 'bg-rose-50 border-rose-300' : 'bg-slate-50 border-slate-200')}">
+              <div class="text-[9.5px] font-bold text-slate-600">Buổi ${idx + 1}</div>
+              <div class="text-[10.5px] font-mono mt-0.5 text-slate-800">${d}</div>
+              <div class="text-[11px] font-bold mt-1 ${st === 'present' ? 'text-emerald-700' : (st === 'absent' ? 'text-rose-600' : 'text-slate-400')}">
+                ${st === 'present' ? '✓ Đi học' : (st === 'absent' ? '✗ Vắng' : '--')}
+              </div>
             </div>
           `;
         }).join('');
