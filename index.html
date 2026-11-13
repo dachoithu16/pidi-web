@@ -1062,7 +1062,7 @@
                 <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i>
                 <span class="text-[11px] sm:text-xs font-bold">Chọn tệp đề bài (.DOCX, .TXT)</span>
               </div>
-              <span class="text-[10px] text-slate-400 mt-1 line-clamp-2">Tự động đọc văn bản và điền câu hỏi theo thứ tự vào phiếu</span>
+              <span class="text-[10px] text-slate-400 mt-1 line-clamp-2">Đính kèm đề bài để học sinh đọc trực tiếp khi làm phiếu trả lời</span>
             </label>
 
             <div id="assignmentExamPreviewBox" class="hidden p-2 bg-white rounded-xl border border-slate-200 text-[11px] max-h-28 overflow-y-auto space-y-1"></div>
@@ -1105,7 +1105,7 @@
               <textarea
                 id="quickAnswerPasteInput"
                 rows="2"
-                placeholder="Gõ chuỗi liền (ABCD...) hoặc dán 1.A 2.B..."
+                placeholder="Gõ chuỗi liền (ABCD...) hoặc dán 1.A 2.B 3.goes..."
                 class="flex-1 min-w-0 px-2 py-1.5 text-xs rounded-xl border border-amber-200 bg-white font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/20"
               ></textarea>
 
@@ -1113,7 +1113,7 @@
                 <select id="quickAnswerTargetMode" class="px-1.5 py-1 text-[10px] rounded-lg border border-amber-200 bg-white font-bold text-slate-700 focus:outline-none cursor-pointer">
                   <option value="auto">Tự nhận</option>
                   <option value="mcq">Trắc nghiệm</option>
-                  <option value="short">Viết ngắn</option>
+                  <option value="short">Điền từ</option>
                 </select>
                 <button
                   type="button"
@@ -1139,73 +1139,61 @@
 
         </div>
 
-        <!-- BỘ CHỌN CÁC MỤC TRẢ LỜI ONLINE -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-extrabold text-slate-900 uppercase tracking-wide flex items-center gap-1.5">
-              <i data-lucide="check-square" class="w-4 h-4 text-indigo-600"></i>
-              <span>Chọn hình thức phiếu trả lời (Có thể chọn kết hợp)</span>
-            </label>
-            <span id="assignmentTotalScoreBadge" class="text-xs font-extrabold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-lg border border-indigo-200">
-              Tổng: 10 điểm
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <!-- Mục 1: Trắc nghiệm A, B, C, D -->
-            <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/40 cursor-pointer transition select-none">
-              <input type="checkbox" id="chkEnableMcq" checked onchange="toggleBuilderSection('mcq', this.checked)" class="w-4 h-4 rounded text-indigo-600 focus:ring-0">
-              <div>
-                <div class="font-extrabold text-xs sm:text-sm text-slate-900">1. Trắc nghiệm (A, B, C, D)</div>
-                <div class="text-[10.5px] text-slate-500">Phiếu chọn đáp án A, B, C, D (mặc định 20 câu)</div>
-              </div>
-            </label>
-
-            <!-- Mục 2: Trả lời ngắn -->
-            <label class="flex items-center gap-3 p-3 rounded-2xl border-2 border-slate-200 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/40 cursor-pointer transition select-none">
-              <input type="checkbox" id="chkEnableShort" onchange="toggleBuilderSection('short', this.checked)" class="w-4 h-4 rounded text-emerald-600 focus:ring-0">
-              <div>
-                <div class="font-extrabold text-xs sm:text-sm text-slate-900">2. Trả lời ngắn (Viết đáp án)</div>
-                <div class="text-[10.5px] text-slate-500">Phiếu nhập đáp án viết ngắn &lt; 20 từ (mặc định 20 câu)</div>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- BẢNG PHIẾU TRẢ LỜI MỤC 1: TRẮC NGHIỆM -->
-        <div id="builderSectionMcq" class="bg-indigo-50/30 rounded-2xl border border-indigo-200/80 p-3 sm:p-4 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-2">
+        <!-- PHIẾU TRẢ LỜI ONLINE: CHUYỂN ĐỔI LINH HOẠT GIỮA TRẮC NGHIỆM (A,B,C,D) VÀ ĐIỀN TỪ -->
+        <div class="bg-slate-50/90 rounded-2xl border border-slate-200/90 p-3 sm:p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 pb-2.5">
             <div class="flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
-              <h4 class="font-extrabold text-xs sm:text-sm text-indigo-950">
-                Phiếu trả lời Trắc nghiệm (<span id="mcqCountLabel">20</span> câu)
+              <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">
+                Phiếu trả lời (<span id="sheetQuestionCountLabel">20</span> câu)
               </h4>
+              <span id="assignmentTotalScoreBadge" class="text-[11px] font-extrabold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-200">
+                Tổng: 10 điểm
+              </span>
             </div>
-            <div class="flex items-center gap-1.5">
-              <button type="button" onclick="adjustMcqQuestionCount(-1)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-rose-50 text-rose-600 border border-slate-200 text-xs font-bold transition shadow-2xs">- Bớt 1 câu</button>
-              <button type="button" onclick="adjustMcqQuestionCount(1)" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-2xs">+ Thêm 1 câu</button>
+
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onclick="setAllSheetQuestionsType('mcq')"
+                class="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[11px] font-bold transition"
+                title="Chuyển tất cả các câu thành Trắc nghiệm A, B, C, D"
+              >
+                Tất cả Trắc nghiệm
+              </button>
+              <button
+                type="button"
+                onclick="setAllSheetQuestionsType('fill')"
+                class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-bold transition"
+                title="Chuyển tất cả các câu thành Điền từ"
+              >
+                Tất cả Điền từ
+              </button>
+              <button
+                type="button"
+                onclick="adjustSheetQuestionCount(-1)"
+                class="px-2.5 py-1 rounded-lg bg-white hover:bg-rose-50 text-rose-600 border border-slate-200 text-xs font-bold transition shadow-2xs"
+              >
+                - Bớt 1 câu
+              </button>
+              <button
+                type="button"
+                onclick="adjustSheetQuestionCount(1, 'mcq')"
+                class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-2xs"
+              >
+                + Thêm câu TN
+              </button>
+              <button
+                type="button"
+                onclick="adjustSheetQuestionCount(1, 'fill')"
+                class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-2xs"
+              >
+                + Thêm Điền từ
+              </button>
             </div>
           </div>
 
-          <div id="mcqQuestionsGridContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1"></div>
-        </div>
-
-        <!-- BẢNG PHIẾU TRẢ LỜI MỤC 2: TRẢ LỜI NGẮN -->
-        <div id="builderSectionShort" class="hidden bg-emerald-50/30 rounded-2xl border border-emerald-200/80 p-3 sm:p-4 space-y-3">
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-100 pb-2">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-              <h4 class="font-extrabold text-xs sm:text-sm text-emerald-950">
-                Phiếu trả lời ngắn (<span id="shortCountLabel">20</span> câu)
-              </h4>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button type="button" onclick="adjustShortQuestionCount(-1)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-rose-50 text-rose-600 border border-slate-200 text-xs font-bold transition shadow-2xs">- Bớt 1 câu</button>
-              <button type="button" onclick="adjustShortQuestionCount(1)" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-2xs">+ Thêm 1 câu</button>
-            </div>
-          </div>
-
-          <div id="shortQuestionsListContainer" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
+          <div id="answerSheetQuestionsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1"></div>
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
@@ -3116,35 +3104,17 @@
       showUndoToast(`Đã nạp ${approved.length} học sinh vào lớp!`);
     }
 
-    // ==================== BÀI TẬP & PHIẾU TRẢ LỜI TỰ ĐỘNG NHẬN DIỆN TỪ FILE ====================
-    let builderMcqState = { enabled: true, items: [] };
-    let builderShortState = { enabled: false, items: [] };
+    // ==================== BÀI TẬP & PHIẾU TRẢ LỜI (TRẮC NGHIỆM <-> ĐIỀN TỪ) ====================
+    let builderSheetItems = [];
     let builderUploadedExamPaper = null;
 
-    function createDefaultMcqItems(count = 20) {
+    function createDefaultSheetItems(count = 20, defaultType = 'mcq') {
       const arr = [];
       for (let i = 1; i <= count; i++) {
         arr.push({
-          id: `mcq_${Date.now()}_${i}`,
-          number: i,
-          prompt: '',
-          optionTexts: { A: '', B: '', C: '', D: '' },
-          correctAnswer: 'A',
-          points: 0.5
-        });
-      }
-      return arr;
-    }
-
-    function createDefaultShortItems(count = 20) {
-      const arr = [];
-      for (let i = 1; i <= count; i++) {
-        arr.push({
-          id: `short_${Date.now()}_${i}`,
-          number: i,
-          prompt: '',
-          correctAnswer: '',
-          points: 0.5
+          id: `q_${Date.now()}_${i}`,
+          type: defaultType, // 'mcq' hoặc 'fill'
+          correctAnswer: defaultType === 'mcq' ? 'A' : ''
         });
       }
       return arr;
@@ -3167,8 +3137,7 @@
       document.getElementById('assignmentExamPreviewBox').classList.add('hidden');
       document.getElementById('btnClearExamFile')?.classList.add('hidden');
 
-      builderMcqState = { enabled: true, items: createDefaultMcqItems(20) };
-      builderShortState = { enabled: false, items: createDefaultShortItems(20) };
+      builderSheetItems = createDefaultSheetItems(20, 'mcq');
 
       const ansFileInp = document.getElementById('assignmentAnswerFileInput');
       if (ansFileInp) ansFileInp.value = '';
@@ -3178,12 +3147,7 @@
       const ansStatus = document.getElementById('answerFileStatusText');
       if (ansStatus) ansStatus.innerText = 'Tải file đáp án (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi';
 
-      document.getElementById('chkEnableMcq').checked = true;
-      document.getElementById('chkEnableShort').checked = false;
-
-      syncBuilderSectionVisibility();
-      renderBuilderMcqGrid();
-      renderBuilderShortList();
+      renderAnswerSheetBuilder();
       updateTotalAssignmentScore();
       openModal('modalCreateAssignment');
     }
@@ -3202,139 +3166,110 @@
       showUndoToast('Đã hủy file đề bài!');
     }
 
-    function toggleBuilderSection(type, checked) {
-      if (type === 'mcq') {
-        builderMcqState.enabled = checked;
-        if (checked && builderMcqState.items.length === 0) {
-          builderMcqState.items = createDefaultMcqItems(20);
+    function toggleSingleQuestionType(idx) {
+      const item = builderSheetItems[idx];
+      if (!item) return;
+      if (item.type === 'mcq') {
+        item.type = 'fill';
+        item.correctAnswer = '';
+      } else {
+        item.type = 'mcq';
+        item.correctAnswer = 'A';
+      }
+      renderAnswerSheetBuilder();
+    }
+
+    function setAllSheetQuestionsType(targetType) {
+      builderSheetItems.forEach(item => {
+        if (item.type !== targetType) {
+          item.type = targetType;
+          item.correctAnswer = targetType === 'mcq' ? 'A' : '';
         }
-      } else if (type === 'short') {
-        builderShortState.enabled = checked;
-        if (checked && builderShortState.items.length === 0) {
-          builderShortState.items = createDefaultShortItems(20);
-        }
-      }
-      syncBuilderSectionVisibility();
-      renderBuilderMcqGrid();
-      renderBuilderShortList();
-      updateTotalAssignmentScore();
+      });
+      renderAnswerSheetBuilder();
+      showUndoToast(targetType === 'mcq' ? 'Đã chuyển tất cả sang Trắc nghiệm A, B, C, D!' : 'Đã chuyển tất cả sang Điền từ!');
     }
 
-    function syncBuilderSectionVisibility() {
-      const mcqSec = document.getElementById('builderSectionMcq');
-      const shortSec = document.getElementById('builderSectionShort');
-      if (mcqSec) mcqSec.classList.toggle('hidden', !builderMcqState.enabled);
-      if (shortSec) shortSec.classList.toggle('hidden', !builderShortState.enabled);
-    }
-
-    function adjustMcqQuestionCount(delta) {
+    function adjustSheetQuestionCount(delta, addType = 'mcq') {
       if (delta > 0) {
-        const nextNum = builderMcqState.items.length + 1;
-        builderMcqState.items.push({
-          id: `mcq_${Date.now()}_${nextNum}`,
-          number: nextNum,
-          prompt: '',
-          optionTexts: { A: '', B: '', C: '', D: '' },
-          correctAnswer: 'A',
-          points: 0.5
+        const nextNum = builderSheetItems.length + 1;
+        builderSheetItems.push({
+          id: `q_${Date.now()}_${nextNum}`,
+          type: addType,
+          correctAnswer: addType === 'mcq' ? 'A' : ''
         });
-      } else if (delta < 0 && builderMcqState.items.length > 1) {
-        builderMcqState.items.pop();
+      } else if (delta < 0 && builderSheetItems.length > 1) {
+        builderSheetItems.pop();
       }
-      renderBuilderMcqGrid();
+      renderAnswerSheetBuilder();
       updateTotalAssignmentScore();
     }
 
-    function adjustShortQuestionCount(delta) {
-      if (delta > 0) {
-        const nextNum = builderShortState.items.length + 1;
-        builderShortState.items.push({
-          id: `short_${Date.now()}_${nextNum}`,
-          number: nextNum,
-          prompt: '',
-          correctAnswer: '',
-          points: 0.5
-        });
-      } else if (delta < 0 && builderShortState.items.length > 1) {
-        builderShortState.items.pop();
-      }
-      renderBuilderShortList();
-      updateTotalAssignmentScore();
-    }
-
-    function renderBuilderMcqGrid() {
-      const container = document.getElementById('mcqQuestionsGridContainer');
-      const countLabel = document.getElementById('mcqCountLabel');
-      if (countLabel) countLabel.innerText = builderMcqState.items.length;
+    function renderAnswerSheetBuilder() {
+      const container = document.getElementById('answerSheetQuestionsContainer');
+      const countLabel = document.getElementById('sheetQuestionCountLabel');
+      if (countLabel) countLabel.innerText = builderSheetItems.length;
       if (!container) return;
 
-      container.innerHTML = builderMcqState.items.map((item, idx) => `
-        <div class="bg-white p-2.5 rounded-xl border border-indigo-100 shadow-2xs space-y-1.5">
-          <div class="flex items-center justify-between gap-1.5">
-            <span class="text-xs font-extrabold text-indigo-800 shrink-0">Câu ${idx + 1}:</span>
-            <input
-              type="text"
-              value="${(item.prompt || '').replace(/"/g, '&quot;')}"
-              onchange="builderMcqState.items[${idx}].prompt = this.value"
-              placeholder="Nội dung câu hỏi (tùy chọn)..."
-              class="flex-1 min-w-0 px-2 py-0.5 text-[11px] rounded border border-slate-200 focus:border-indigo-400 focus:outline-none"
-            >
-            <div class="flex items-center gap-1 shrink-0">
-              ${['A', 'B', 'C', 'D'].map(letter => `
-                <button
-                  type="button"
-                  onclick="builderMcqState.items[${idx}].correctAnswer = '${letter}'; renderBuilderMcqGrid();"
-                  class="w-6 h-6 rounded-lg text-[11px] font-extrabold transition ${
-                    item.correctAnswer === letter
-                      ? 'bg-indigo-600 text-white shadow-2xs'
-                      : 'bg-slate-100 hover:bg-indigo-50 text-slate-600'
-                  }"
+      container.innerHTML = builderSheetItems.map((item, idx) => {
+        const isMcq = item.type === 'mcq';
+        return `
+          <div class="bg-white px-3 py-2 rounded-xl border ${isMcq ? 'border-indigo-100' : 'border-emerald-200 bg-emerald-50/20'} shadow-2xs flex items-center justify-between gap-2">
+            <span class="text-xs font-extrabold ${isMcq ? 'text-indigo-900' : 'text-emerald-900'} shrink-0 min-w-[46px]">
+              Câu ${idx + 1}:
+            </span>
+
+            ${isMcq ? `
+              <div class="flex items-center gap-1.5 flex-1 justify-center">
+                ${['A', 'B', 'C', 'D'].map(letter => `
+                  <button
+                    type="button"
+                    onclick="builderSheetItems[${idx}].correctAnswer = '${letter}'; renderAnswerSheetBuilder();"
+                    class="w-7 h-7 rounded-lg text-xs font-extrabold transition ${
+                      item.correctAnswer === letter
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'bg-slate-100 hover:bg-indigo-50 text-slate-600'
+                    }"
+                  >
+                    ${letter}
+                  </button>
+                `).join('')}
+              </div>
+            ` : `
+              <div class="flex-1 min-w-0">
+                <input
+                  type="text"
+                  value="${(item.correctAnswer || '').replace(/"/g, '&quot;')}"
+                  onchange="builderSheetItems[${idx}].correctAnswer = this.value"
+                  placeholder="Điền từ / đáp án..."
+                  class="w-full px-2.5 py-1 text-xs rounded-lg border border-emerald-300 bg-white font-bold text-emerald-900 focus:outline-none focus:border-emerald-500"
                 >
-                  ${letter}
-                </button>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
+              </div>
+            `}
 
-    function renderBuilderShortList() {
-      const container = document.getElementById('shortQuestionsListContainer');
-      const countLabel = document.getElementById('shortCountLabel');
-      if (countLabel) countLabel.innerText = builderShortState.items.length;
-      if (!container) return;
-
-      container.innerHTML = builderShortState.items.map((item, idx) => `
-        <div class="bg-white p-2.5 rounded-xl border border-emerald-100 shadow-2xs grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
-          <div class="sm:col-span-6 flex items-center gap-1.5">
-            <span class="text-xs font-extrabold text-emerald-800 shrink-0">Câu ${idx + 1}:</span>
-            <input
-              type="text"
-              value="${(item.prompt || '').replace(/"/g, '&quot;')}"
-              onchange="builderShortState.items[${idx}].prompt = this.value"
-              placeholder="Nội dung câu hỏi..."
-              class="flex-1 min-w-0 px-2 py-1 text-xs rounded-lg border border-slate-200 focus:border-emerald-400 focus:outline-none"
+            <button
+              type="button"
+              onclick="toggleSingleQuestionType(${idx})"
+              class="px-2 py-1 rounded-lg text-[10px] font-bold transition shrink-0 flex items-center gap-1 border ${
+                isMcq
+                  ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200'
+                  : 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200'
+              }"
+              title="${isMcq ? 'Thay thế câu trắc nghiệm này bằng Điền từ' : 'Thay thế câu điền từ này bằng Trắc nghiệm A, B, C, D'}"
             >
+              <i data-lucide="repeat" class="w-3 h-3"></i>
+              <span>${isMcq ? 'Điền từ' : 'Trắc nghiệm'}</span>
+            </button>
           </div>
-          <div class="sm:col-span-6 flex items-center gap-1.5">
-            <span class="text-[10.5px] font-bold text-slate-400 shrink-0">Đáp án:</span>
-            <input
-              type="text"
-              value="${(item.correctAnswer || '').replace(/"/g, '&quot;')}"
-              onchange="builderShortState.items[${idx}].correctAnswer = this.value"
-              placeholder="Đáp án đúng tự chấm..."
-              class="flex-1 min-w-0 px-2 py-1 text-xs rounded-lg border border-emerald-200 bg-emerald-50/30 font-bold text-emerald-900 focus:outline-none"
-            >
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+      safeCreateIcons();
     }
 
     function updateTotalAssignmentScore() {
       const badge = document.getElementById('assignmentTotalScoreBadge');
       if (!badge) return;
-      const totalQ = (builderMcqState.enabled ? builderMcqState.items.length : 0) + (builderShortState.enabled ? builderShortState.items.length : 0);
+      const totalQ = builderSheetItems.length;
       const each = totalQ > 0 ? (10 / totalQ).toFixed(2).replace(/\.00$/, '') : 0;
       badge.innerText = `Tổng: 10 điểm (${totalQ} câu • ${each}đ/câu)`;
     }
@@ -3378,102 +3313,24 @@
           previewBox.classList.remove('hidden');
         }
 
-        autoParseExamPaperIntoSheet(rawText);
+        showUndoToast(`Đã đính kèm đề bài "${file.name}" cho học sinh xem khi làm phiếu trả lời!`);
       } catch (err) {
         console.error('Lỗi đọc file đề bài:', err);
         showUndoToast('Không thể đọc file đề bài, vui lòng thử lại!');
       }
     }
 
-    function autoParseExamPaperIntoSheet(rawText) {
-      if (!rawText || !rawText.trim()) return;
-
-      const questionRegex = /(?:^|\n)\s*(?:Câu|Question|Bài)?\s*(\d+)\s*[\.\:\)]\s*([\s\S]*?)(?=(?:\n\s*(?:Câu|Question|Bài)?\s*\d+\s*[\.\:\)]|$))/gi;
-      const parsedBlocks = [];
-      let match;
-
-      while ((match = questionRegex.exec(rawText)) !== null) {
-        const qNum = parseInt(match[1], 10);
-        const blockBody = (match[2] || '').trim();
-        if (!blockBody) continue;
-
-        const optMatch = blockBody.match(/([\s\S]*?)(?:^|\n|\s)A[\.\)]\s*([\s\S]*?)(?:\n|\s)B[\.\)]\s*([\s\S]*?)(?:\n|\s)C[\.\)]\s*([\s\S]*?)(?:\n|\s)D[\.\)]\s*([\s\S]*)$/i);
-        if (optMatch) {
-          parsedBlocks.push({
-            number: qNum,
-            type: 'mcq',
-            prompt: optMatch[1].trim(),
-            optionTexts: {
-              A: optMatch[2].trim(),
-              B: optMatch[3].trim(),
-              C: optMatch[4].trim(),
-              D: optMatch[5].trim()
-            }
-          });
-        } else {
-          parsedBlocks.push({
-            number: qNum,
-            type: 'short',
-            prompt: blockBody.replace(/\s+/g, ' ').trim()
-          });
-        }
-      }
-
-      if (parsedBlocks.length === 0) {
-        showUndoToast('Đã đính kèm đề bài để học sinh đọc trực tiếp!');
-        return;
-      }
-
-      const mcqBlocks = parsedBlocks.filter(b => b.type === 'mcq');
-      const shortBlocks = parsedBlocks.filter(b => b.type === 'short');
-
-      if (mcqBlocks.length > 0) {
-        builderMcqState.enabled = true;
-        document.getElementById('chkEnableMcq').checked = true;
-        builderMcqState.items = mcqBlocks.map((b, idx) => ({
-          id: `mcq_parsed_${Date.now()}_${idx}`,
-          number: idx + 1,
-          prompt: b.prompt,
-          optionTexts: b.optionTexts,
-          correctAnswer: builderMcqState.items[idx]?.correctAnswer || 'A',
-          points: 0.5
-        }));
-      }
-
-      if (shortBlocks.length > 0) {
-        builderShortState.enabled = true;
-        document.getElementById('chkEnableShort').checked = true;
-        builderShortState.items = shortBlocks.map((b, idx) => ({
-          id: `short_parsed_${Date.now()}_${idx}`,
-          number: idx + 1,
-          prompt: b.prompt,
-          correctAnswer: builderShortState.items[idx]?.correctAnswer || '',
-          points: 0.5
-        }));
-      }
-
-      syncBuilderSectionVisibility();
-      renderBuilderMcqGrid();
-      renderBuilderShortList();
-      updateTotalAssignmentScore();
-      safeCreateIcons();
-
-      showUndoToast(`Đã tự động điền ${parsedBlocks.length} câu hỏi theo đúng thứ tự vào phiếu trả lời!`);
-    }
-
     // ==================== ĐIỀN ĐÁP ÁN NHANH & NHẬN DIỆN TỪ FILE ĐÁP ÁN ====================
     function fillAllMcqAnswers(letter) {
-      if (!builderMcqState.enabled) {
-        builderMcqState.enabled = true;
-        if (builderMcqState.items.length === 0) builderMcqState.items = createDefaultMcqItems(20);
-        const chkMcq = document.getElementById('chkEnableMcq');
-        if (chkMcq) chkMcq.checked = true;
-        syncBuilderSectionVisibility();
-      }
-      builderMcqState.items.forEach(item => { item.correctAnswer = letter; });
-      renderBuilderMcqGrid();
-      updateTotalAssignmentScore();
-      showUndoToast(`Đã đặt tất cả ${builderMcqState.items.length} câu trắc nghiệm là đáp án ${letter}!`);
+      let updated = 0;
+      builderSheetItems.forEach(item => {
+        if (item.type === 'mcq') {
+          item.correctAnswer = letter;
+          updated++;
+        }
+      });
+      renderAnswerSheetBuilder();
+      showUndoToast(`Đã đặt đáp án ${letter} cho ${updated} câu trắc nghiệm!`);
     }
 
     async function handleAnswerFileUpload(e) {
@@ -3493,7 +3350,6 @@
           const data = new Uint8Array(await file.arrayBuffer());
           const wb = XLSX.read(data, { type: 'array' });
           const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
-          // Chuyển các hàng Excel thành dạng text chuẩn để bộ nhận diện xử lý đồng nhất
           extractedText = rows.map(row => (row || []).filter(cell => cell !== undefined && cell !== null && String(cell).trim() !== '').join('\t')).join('\n');
         } else {
           extractedText = await file.text();
@@ -3544,28 +3400,22 @@
       const cleaned = rawText.trim();
       if (!cleaned) return 0;
 
-      // 1. Kiểm tra trường hợp giáo viên gõ chuỗi đáp án liền không dấu cách (VD: "ABCDABCD..." hoặc "A B C D A B...")
+      // 1. Chuỗi đáp án trắc nghiệm liền nhau (VD: "ABCDABCD...")
       const compactLetters = cleaned.replace(/[\s,;\-\.\|]/g, '').toUpperCase();
-      const isPureMcqSequence = /^[A-D]{2,}$/.test(compactLetters);
-
-      if ((targetMode === 'auto' || targetMode === 'mcq') && isPureMcqSequence) {
+      if ((targetMode === 'auto' || targetMode === 'mcq') && /^[A-D]{2,}$/.test(compactLetters)) {
         const letters = compactLetters.split('');
-        applyParsedMcqMap(letters.map((ans, i) => ({ index: i, answer: ans })));
+        applyUnifiedSheetAnswers(letters.map((ans, i) => ({ index: i, type: 'mcq', answer: ans })));
         showUndoToast(`Đã điền nhanh ${letters.length} đáp án trắc nghiệm!`);
         return letters.length;
       }
 
-      // 2. Phân tích dạng có đánh số thứ tự hoặc bảng Excel (VD: "1. A", "1A", "Câu 1: B", "1\tA", hoặc "1. goes")
-      const numberedMcqEntries = [];
-      const numberedShortEntries = [];
-
-      // Tách theo dòng hoặc cụm số câu
+      // 2. Phân tích từng câu có số thứ tự hoặc theo dòng
+      const parsedEntries = [];
       const lines = cleaned.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
       const pairRegex = /(?:Câu|Question|Bài)?\s*(\d+)\s*[\.\)\:\-\t\s]\s*([^\d\n\t]+?)(?=(?:\s+(?:Câu|Question|Bài)?\s*\d+\s*[\.\)\:\-\t\s]|$))/gi;
 
       let matchedAnyNumbered = false;
       lines.forEach(line => {
-        // Nếu là dòng từ Excel phân tách bằng Tab: VD "1\tA\t2\tB" hoặc "1\tgoes"
         if (line.includes('\t')) {
           const cells = line.split('\t').map(c => c.trim()).filter(Boolean);
           for (let i = 0; i < cells.length; i++) {
@@ -3575,8 +3425,12 @@
               const ansVal = cells[i + 1].trim();
               if (qIdx >= 0 && ansVal) {
                 matchedAnyNumbered = true;
-                if (/^[A-D]$/i.test(ansVal)) numberedMcqEntries.push({ index: qIdx, answer: ansVal.toUpperCase() });
-                else numberedShortEntries.push({ index: qIdx, answer: ansVal });
+                const isMcq = targetMode === 'mcq' || (targetMode === 'auto' && /^[A-D]$/i.test(ansVal));
+                parsedEntries.push({
+                  index: qIdx,
+                  type: isMcq ? 'mcq' : 'fill',
+                  answer: isMcq ? ansVal.charAt(0).toUpperCase() : ansVal
+                });
                 i++;
               }
             }
@@ -3593,121 +3447,60 @@
           if (qIdx >= 0 && ansVal) {
             lineHasPair = true;
             matchedAnyNumbered = true;
-            if (/^[A-D]$/i.test(ansVal)) {
-              numberedMcqEntries.push({ index: qIdx, answer: ansVal.toUpperCase() });
-            } else {
-              numberedShortEntries.push({ index: qIdx, answer: ansVal });
-            }
+            const isMcq = targetMode === 'mcq' || (targetMode === 'auto' && /^[A-D]$/i.test(ansVal));
+            parsedEntries.push({
+              index: qIdx,
+              type: isMcq ? 'mcq' : 'fill',
+              answer: isMcq ? ansVal.charAt(0).toUpperCase() : ansVal
+            });
           }
         }
 
-        // Nếu dòng không có số thứ tự, xử lý tuần tự theo dòng
         if (!lineHasPair && !matchedAnyNumbered) {
           const cleanLine = line.replace(/^(?:Câu|Question)?\s*\d+[\.\)\:\-\s]+/i, '').trim();
           if (cleanLine) {
-            if (/^[A-D]$/i.test(cleanLine)) {
-              numberedMcqEntries.push({ index: numberedMcqEntries.length, answer: cleanLine.toUpperCase() });
-            } else {
-              numberedShortEntries.push({ index: numberedShortEntries.length, answer: cleanLine });
-            }
+            const isMcq = targetMode === 'mcq' || (targetMode === 'auto' && /^[A-D]$/i.test(cleanLine));
+            parsedEntries.push({
+              index: parsedEntries.length,
+              type: isMcq ? 'mcq' : 'fill',
+              answer: isMcq ? cleanLine.charAt(0).toUpperCase() : cleanLine
+            });
           }
         }
       });
 
-      let totalApplied = 0;
-
-      // Xử lý đổ dữ liệu vào phiếu Trắc nghiệm
-      if (targetMode === 'mcq') {
-        const allForMcq = [
-          ...numberedMcqEntries,
-          ...numberedShortEntries.filter(e => /^[A-D]/i.test(e.answer)).map(e => ({ index: e.index, answer: e.answer.charAt(0).toUpperCase() }))
-        ];
-        if (allForMcq.length > 0) {
-          applyParsedMcqMap(allForMcq);
-          totalApplied += allForMcq.length;
-        }
-      } else if (targetMode === 'short') {
-        const allForShort = [...numberedShortEntries, ...numberedMcqEntries];
-        if (allForShort.length > 0) {
-          applyParsedShortMap(allForShort);
-          totalApplied += allForShort.length;
-        }
-      } else {
-        // Chế độ Tự nhận diện (auto)
-        if (numberedMcqEntries.length > 0) {
-          applyParsedMcqMap(numberedMcqEntries);
-          totalApplied += numberedMcqEntries.length;
-        }
-        if (numberedShortEntries.length > 0) {
-          applyParsedShortMap(numberedShortEntries);
-          totalApplied += numberedShortEntries.length;
-        }
+      if (parsedEntries.length > 0) {
+        applyUnifiedSheetAnswers(parsedEntries);
+        showUndoToast(`Đã tự động điền ${parsedEntries.length} đáp án vào phiếu!`);
+        return parsedEntries.length;
       }
 
-      if (totalApplied > 0) {
-        showUndoToast(`Đã tự động điền ${totalApplied} đáp án vào phiếu!`);
-      } else {
-        showUndoToast('Không tìm thấy định dạng đáp án hợp lệ trong nội dung!');
-      }
-      return totalApplied;
+      showUndoToast('Không tìm thấy định dạng đáp án hợp lệ!');
+      return 0;
     }
 
-    function applyParsedMcqMap(entries) {
+    function applyUnifiedSheetAnswers(entries) {
       if (!entries || entries.length === 0) return;
-      builderMcqState.enabled = true;
-      const chkMcq = document.getElementById('chkEnableMcq');
-      if (chkMcq) chkMcq.checked = true;
-
       const maxIdx = Math.max(...entries.map(e => e.index));
-      while (builderMcqState.items.length <= maxIdx) {
-        const nextNum = builderMcqState.items.length + 1;
-        builderMcqState.items.push({
-          id: `mcq_auto_${Date.now()}_${nextNum}`,
-          number: nextNum,
-          prompt: '',
-          optionTexts: { A: '', B: '', C: '', D: '' },
-          correctAnswer: 'A',
-          points: 0.5
+      while (builderSheetItems.length <= maxIdx) {
+        const nextNum = builderSheetItems.length + 1;
+        builderSheetItems.push({
+          id: `q_auto_${Date.now()}_${nextNum}`,
+          type: 'mcq',
+          correctAnswer: 'A'
         });
       }
 
-      entries.forEach(({ index, answer }) => {
-        if (builderMcqState.items[index] && ['A', 'B', 'C', 'D'].includes(answer)) {
-          builderMcqState.items[index].correctAnswer = answer;
+      entries.forEach(({ index, type, answer }) => {
+        if (builderSheetItems[index]) {
+          builderSheetItems[index].type = type;
+          builderSheetItems[index].correctAnswer = type === 'mcq'
+            ? (['A', 'B', 'C', 'D'].includes(answer) ? answer : 'A')
+            : answer;
         }
       });
 
-      syncBuilderSectionVisibility();
-      renderBuilderMcqGrid();
-      updateTotalAssignmentScore();
-    }
-
-    function applyParsedShortMap(entries) {
-      if (!entries || entries.length === 0) return;
-      builderShortState.enabled = true;
-      const chkShort = document.getElementById('chkEnableShort');
-      if (chkShort) chkShort.checked = true;
-
-      const maxIdx = Math.max(...entries.map(e => e.index));
-      while (builderShortState.items.length <= maxIdx) {
-        const nextNum = builderShortState.items.length + 1;
-        builderShortState.items.push({
-          id: `short_auto_${Date.now()}_${nextNum}`,
-          number: nextNum,
-          prompt: '',
-          correctAnswer: '',
-          points: 0.5
-        });
-      }
-
-      entries.forEach(({ index, answer }) => {
-        if (builderShortState.items[index]) {
-          builderShortState.items[index].correctAnswer = answer;
-        }
-      });
-
-      syncBuilderSectionVisibility();
-      renderBuilderShortList();
+      renderAnswerSheetBuilder();
       updateTotalAssignmentScore();
     }
 
@@ -3718,47 +3511,34 @@
       const deadline = document.getElementById('assignmentDeadlineInput').value;
       const description = document.getElementById('assignmentDescInput').value.trim();
 
-      if (!builderMcqState.enabled && !builderShortState.enabled) {
-        showUndoToast('Vui lòng chọn ít nhất 1 hình thức trả lời!');
+      if (builderSheetItems.length === 0) {
+        showUndoToast('Phiếu trả lời phải có ít nhất 1 câu!');
         return;
       }
 
-      const allQuestions = [];
-      const totalCount = (builderMcqState.enabled ? builderMcqState.items.length : 0) + (builderShortState.enabled ? builderShortState.items.length : 0);
-      const pointPerQuestion = totalCount > 0 ? Number((10 / totalCount).toFixed(2)) : 0.5;
-
-      if (builderMcqState.enabled) {
-        builderMcqState.items.forEach((item, idx) => {
-          const opts = item.optionTexts || {};
-          const formattedOptions = ['A', 'B', 'C', 'D'].map(letter => ({
-            letter: letter,
-            label: opts[letter] ? `${letter}. ${opts[letter]}` : letter
-          }));
-
-          allQuestions.push({
+      const pointPerQuestion = Number((10 / builderSheetItems.length).toFixed(2));
+      const allQuestions = builderSheetItems.map((item, idx) => {
+        if (item.type === 'mcq') {
+          return {
             id: item.id,
             type: 'single_choice',
-            title: `Trắc nghiệm - Câu ${idx + 1}`,
-            prompt: item.prompt || `Chọn đáp án đúng cho Câu ${idx + 1}:`,
-            options: formattedOptions,
+            title: `Câu ${idx + 1}`,
+            prompt: '',
+            options: ['A', 'B', 'C', 'D'].map(letter => ({ letter, label: letter })),
             correctAnswer: item.correctAnswer || 'A',
             points: pointPerQuestion
-          });
-        });
-      }
-
-      if (builderShortState.enabled) {
-        builderShortState.items.forEach((item, idx) => {
-          allQuestions.push({
+          };
+        } else {
+          return {
             id: item.id,
             type: 'short_answer',
-            title: `Trả lời ngắn - Câu ${idx + 1}`,
-            prompt: item.prompt || `Nhập câu trả lời ngắn (< 20 từ) cho Câu ${idx + 1}:`,
+            title: `Câu ${idx + 1}`,
+            prompt: '',
             correctAnswer: item.correctAnswer || '',
             points: pointPerQuestion
-          });
-        });
-      }
+          };
+        }
+      });
 
       homeworks.unshift({
         id: `HW_${Date.now()}`,
@@ -3956,16 +3736,16 @@
       if (qContainer) {
         qContainer.innerHTML = (hw.questions || []).map((q, idx) => {
           const savedAns = activeStudentDraftAnswers[q.id] || '';
+          const qLabel = q.title || `Câu ${idx + 1}`;
           if (q.type === 'single_choice') {
             const opts = Array.isArray(q.options) ? q.options : ['A', 'B', 'C', 'D'].map(l => ({ letter: l, label: l }));
             return `
-              <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-200 space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-extrabold text-indigo-800">${q.title || `Câu ${idx + 1}`}</span>
-                  <span class="text-[10.5px] font-bold text-slate-400">${q.points || 0.5} điểm</span>
+              <div class="bg-slate-50/80 px-3 py-2.5 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs sm:text-sm font-extrabold text-indigo-900">${qLabel}:</span>
+                  ${q.prompt ? `<span class="text-xs text-slate-600">${q.prompt}</span>` : ''}
                 </div>
-                <p class="text-xs font-semibold text-slate-800">${q.prompt || ''}</p>
-                <div class="grid grid-cols-2 gap-1.5">
+                <div class="flex items-center gap-1.5">
                   ${opts.map(opt => {
                     const letter = typeof opt === 'object' ? opt.letter : opt;
                     const label = typeof opt === 'object' ? opt.label : opt;
@@ -3974,7 +3754,7 @@
                       <button
                         type="button"
                         onclick="selectStudentMcqAnswer('${q.id}', '${letter}')"
-                        class="p-2 rounded-xl border text-left text-xs font-bold transition ${
+                        class="min-w-[36px] h-8 px-2.5 rounded-xl border text-center text-xs font-extrabold transition ${
                           isPicked
                             ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
                             : 'bg-white hover:bg-indigo-50 text-slate-800 border-slate-200'
@@ -3990,21 +3770,20 @@
           } else {
             const wordCount = savedAns.trim() ? savedAns.trim().split(/\s+/).length : 0;
             return `
-              <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-200 space-y-1.5">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-extrabold text-emerald-800">${q.title || `Câu ${idx + 1}`}</span>
-                  <span class="text-[10.5px] font-bold text-slate-400">${q.points || 0.5} điểm</span>
+              <div class="bg-slate-50/80 px-3 py-2.5 rounded-2xl border border-slate-200 space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs sm:text-sm font-extrabold text-emerald-900 shrink-0">${qLabel}:</span>
+                  <input
+                    type="text"
+                    value="${String(savedAns).replace(/"/g, '&quot;')}"
+                    oninput="updateStudentShortAnswer('${q.id}', this.value)"
+                    placeholder="Điền từ / câu trả lời..."
+                    class="flex-1 min-w-0 px-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
+                  >
                 </div>
-                <p class="text-xs font-semibold text-slate-800">${q.prompt || ''}</p>
-                <input
-                  type="text"
-                  value="${String(savedAns).replace(/"/g, '&quot;')}"
-                  oninput="updateStudentShortAnswer('${q.id}', this.value)"
-                  placeholder="Nhập câu trả lời (< 20 từ)..."
-                  class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 bg-white font-bold text-slate-900 focus:outline-none focus:border-emerald-500"
-                >
-                <div id="word_count_${q.id}" class="text-[10px] ${wordCount > 20 ? 'text-rose-600 font-bold' : 'text-slate-400'}">
-                  Số từ: ${wordCount}/20 từ
+                ${q.prompt ? `<p class="text-xs text-slate-600 pl-1">${q.prompt}</p>` : ''}
+                <div id="word_count_${q.id}" class="text-[10px] text-right ${wordCount > 20 ? 'text-rose-600 font-bold' : 'text-slate-400'}">
+                  ${wordCount}/20 từ
                 </div>
               </div>
             `;
