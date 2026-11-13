@@ -1793,7 +1793,7 @@
         if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
           await applyUserSession(session);
           if (event === 'SIGNED_IN') {
-            showUndoToast(`Xin chào ${currentUser?.full_name || 'Thầy/Cô'}! Đã tự động đồng bộ dữ liệu.`);
+            showUndoToast(`Xin chào ${currentUser?.full_name || 'Thầy/Cô'}!`);
           }
         } else if (event === 'SIGNED_OUT') {
           await applyUserSession(null);
@@ -2432,38 +2432,13 @@
       }
     }
 
-    // Tự động đồng bộ ngầm khi chuyển tab, mở lại ứng dụng trên thiết bị khác hoặc có mạng trở lại
+    // Chỉ đồng bộ ngầm khi có mạng trở lại, không chạy vòng lặp liên tục
     function setupAutoCloudSyncListeners() {
-      const triggerAutoPull = async () => {
-        if (!supabaseClient || !currentUser?.id || isCloudSyncInProgress) return;
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) {
-          await loadUserDataFromCloud(session, false);
-        }
-      };
-
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-          triggerAutoPull();
-        }
-      });
-
-      window.addEventListener('focus', () => {
-        triggerAutoPull();
-      });
-
       window.addEventListener('online', () => {
         if (currentUser?.id) {
           syncUserDataToCloud(true);
         }
       });
-
-      // Đồng bộ ngầm tự động mỗi 15 giây khi đang mở trang
-      setInterval(() => {
-        if (document.visibilityState === 'visible') {
-          triggerAutoPull();
-        }
-      }, 15000);
     }
 
     // ==================== TIỆN ÍCH NGÀY THÁNG & UI ====================
@@ -4103,7 +4078,6 @@
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
       renderAll();
-      showUndoToast(`Đã lưu cài đặt lớp ${cls.class_name}!`);
     }
 
     function openCreateClassModal() {
@@ -4476,7 +4450,6 @@
       saveAllToLocalStorage();
       closeModal('modalStudentDetail');
       renderAll();
-      showUndoToast('Đã lưu hồ sơ học sinh!');
     }
 
     function openConfirmSingleDeleteModal() {
