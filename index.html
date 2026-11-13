@@ -2046,11 +2046,22 @@
     let currentClassId = null;
     let isClassSelected = false;
     let students = [];
-    let currentRole = 'teacher';
-    let currentTab = 'attendance';
+    let currentRole = localStorage.getItem('dipi_ui_role') || 'teacher';
+    let currentTab = localStorage.getItem('dipi_ui_tab') || 'attendance';
     let selectedStudentIds = [];
     let selectedAttendanceStudentIds = [];
     let currentScheduleViewMode = 'today';
+
+    function saveUiNavigationState() {
+      try {
+        localStorage.setItem('dipi_ui_role', currentRole);
+        localStorage.setItem('dipi_ui_tab', currentTab);
+        localStorage.setItem('dipi_ui_class_selected', isClassSelected ? '1' : '0');
+        if (currentClassId) {
+          localStorage.setItem('dipi_ui_class_id', currentClassId);
+        }
+      } catch (e) {}
+    }
 
     // Bài tập & Nộp bài
     let homeworks = [];
@@ -2102,6 +2113,14 @@
       currentClassId = classesList.length > 0 ? classesList[0].id : null;
       students = currentClassId ? (classStudentsMap[currentClassId] || []) : [];
       isClassSelected = false;
+
+      // Khôi phục đúng lớp và trạng thái xem danh sách lớp trước khi ấn F5 (nếu có)
+      const savedClassId = localStorage.getItem('dipi_ui_class_id');
+      if (savedClassId && classesList.some(c => c.id === savedClassId)) {
+        currentClassId = savedClassId;
+        students = classStudentsMap[currentClassId] || [];
+      }
+      isClassSelected = localStorage.getItem('dipi_ui_class_selected') === '1' && Boolean(currentClassId);
 
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
@@ -2577,6 +2596,7 @@
       currentClassId = newClassId;
       isClassSelected = true;
       students = classStudentsMap[currentClassId] || [];
+      saveUiNavigationState();
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
       renderAll();
@@ -2588,6 +2608,7 @@
 
     function closeStudentListAndShowSchedule() {
       isClassSelected = false;
+      saveUiNavigationState();
       renderAll();
     }
 
@@ -4558,6 +4579,7 @@
 
     function switchRole(role) {
       currentRole = role;
+      saveUiNavigationState();
       document.getElementById('teacherViewSection')?.classList.toggle('hidden', role !== 'teacher');
       document.getElementById('parentViewSection')?.classList.toggle('hidden', role === 'teacher');
       document.getElementById('parentStudentSelectBox')?.classList.toggle('hidden', role === 'teacher');
@@ -4576,12 +4598,29 @@
 
     function switchTab(tabKey) {
       currentTab = tabKey;
+      saveUiNavigationState();
       ['attendance', 'finance', 'homework', 'classes'].forEach(k => {
         const cap = k.charAt(0).toUpperCase() + k.slice(1);
         document.getElementById(`contentTab${cap}`)?.classList.toggle('hidden', k !== tabKey);
         const btnPc = document.getElementById(`tab${cap}Btn`);
-        if (k === tabKey) btnPc?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm', 'font-bold');
-        else btnPc?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm', 'font-bold');
+        const mobIconBg = document.getElementById(`mobileIconBg${cap}`);
+        const mobLabel = document.getElementById(`mobileLabel${cap}`);
+
+        if (k === tabKey) {
+          btnPc?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm', 'font-bold');
+          btnPc?.classList.remove('text-slate-600');
+          mobIconBg?.classList.add('bg-indigo-50', 'text-indigo-600');
+          mobIconBg?.classList.remove('text-slate-500');
+          mobLabel?.classList.add('font-bold', 'text-indigo-600');
+          mobLabel?.classList.remove('font-semibold', 'text-slate-600');
+        } else {
+          btnPc?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm', 'font-bold');
+          btnPc?.classList.add('text-slate-600');
+          mobIconBg?.classList.remove('bg-indigo-50', 'text-indigo-600');
+          mobIconBg?.classList.add('text-slate-500');
+          mobLabel?.classList.remove('font-bold', 'text-indigo-600');
+          mobLabel?.classList.add('font-semibold', 'text-slate-600');
+        }
       });
       if (tabKey === 'finance') { syncFinanceDatesForCurrentClass(); renderFinanceTab(); }
       if (tabKey === 'homework') renderHomeworkTab();
@@ -4625,6 +4664,10 @@
         if (bannerDate) bannerDate.innerText = `${today.dayName}, ${today.dateFormatted}`;
         const mobileTodayLabel = document.getElementById('mobileTodayBtnLabel');
         if (mobileTodayLabel) mobileTodayLabel.innerText = today.dayName;
+
+        // Khôi phục đúng tab và vai trò đang mở trước khi tải lại trang (F5)
+        switchTab(currentTab);
+        switchRole(currentRole);
         renderAll();
       } catch (err) {
         console.error('Lỗi khởi tạo:', err);
