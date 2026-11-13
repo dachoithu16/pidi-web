@@ -3421,7 +3421,27 @@
 
       // 2. Phân tích từng câu có số thứ tự, bảng Excel/Word hoặc danh sách cách nhau bởi dòng / dấu phẩy
       const parsedEntries = [];
-      const lines = cleaned.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const rawLines = cleaned.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+
+      // Gộp các dòng từ bảng Word/Excel khi số thứ tự câu nằm trên 1 dòng và đáp án nằm ngay dòng kế tiếp
+      const lines = [];
+      for (let i = 0; i < rawLines.length; i++) {
+        const cur = rawLines[i];
+        // Bỏ qua các dòng tiêu đề bảng phổ biến
+        if (/^(STT|Câu|Câu hỏi|Đáp án|Trả lời|Answer|Question)$/i.test(cur)) continue;
+
+        if (/^(?:Câu|Question|Bài)?\s*\d+\s*[\.\:\)\-]?$/i.test(cur) && i + 1 < rawLines.length) {
+          const nextLine = rawLines[i + 1];
+          if (!/^(?:Câu|Question|Bài)?\s*\d+\s*[\.\:\)\-]?$/i.test(nextLine)) {
+            const numOnly = cur.replace(/[^\d]/g, '');
+            lines.push(`${numOnly}. ${nextLine}`);
+            i++;
+            continue;
+          }
+        }
+        lines.push(cur);
+      }
+
       // Hỗ trợ đáp án chứa cả chữ, số (VD: 23, 12340, 596894) và khoảng trắng trước câu tiếp theo
       const pairRegex = /(?:Câu|Question|Bài)?\s*(\d+)\s*[\.\)\:\-\t]\s*(.+?)(?=(?:\s+(?:Câu|Question|Bài)?\s*\d+\s*[\.\)\:\-\t]|$))/gi;
 
@@ -3461,7 +3481,7 @@
           }
         }
 
-        // Trường hợp không đánh số thứ tự (từng dòng hoặc ngăn cách bởi dấu phẩy/chấm phẩy: "a, b, look, Ok, 23, 12340, 596894")
+        // Trường hợp không đánh số thứ tự (từng dòng hoặc ngăn cách bởi dấu phẩy/chấm phẩy)
         if (!lineHasPair && !matchedAnyNumbered) {
           const tokens = line.includes(',') || line.includes(';')
             ? line.split(/[,;]+/).map(t => t.trim()).filter(Boolean)
@@ -3485,7 +3505,7 @@
         applyUnifiedSheetAnswers(parsedEntries);
         const mcqCount = parsedEntries.filter(e => e.type === 'mcq').length;
         const fillCount = parsedEntries.filter(e => e.type === 'fill').length;
-        showUndoToast(`Đã điền ${parsedEntries.length} đáp án (${mcqCount} Trắc nghiệm, ${fillCount} Điền từ)!`);
+        showUndoToast(`Đã điều chỉnh phiếu thành ${builderSheetItems.length} câu (${mcqCount} Trắc nghiệm, ${fillCount} Điền từ)!`);
         return parsedEntries.length;
       }
 
@@ -3495,14 +3515,20 @@
 
     function applyUnifiedSheetAnswers(entries) {
       if (!entries || entries.length === 0) return;
-      const maxIdx = Math.max(...entries.map(e => e.index));
-      while (builderSheetItems.length <= maxIdx) {
-        const nextNum = builderSheetItems.length + 1;
-        builderSheetItems.push({
-          id: `q_auto_${Date.now()}_${nextNum}`,
-          type: 'mcq',
-          correctAnswer: 'A'
-        });
+      const targetCount = Math.max(...entries.map(e => e.index)) + 1;
+
+      // Điều chỉnh độ dài phiếu trả lời khớp chính xác với số lượng câu của đáp án
+      if (builderSheetItems.length > targetCount) {
+        builderSheetItems = builderSheetItems.slice(0, targetCount);
+      } else {
+        while (builderSheetItems.length < targetCount) {
+          const nextNum = builderSheetItems.length + 1;
+          builderSheetItems.push({
+            id: `q_auto_${Date.now()}_${nextNum}`,
+            type: 'mcq',
+            correctAnswer: 'A'
+          });
+        }
       }
 
       entries.forEach(({ index, type, answer }) => {
