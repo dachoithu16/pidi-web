@@ -3400,44 +3400,53 @@
       const cleaned = rawText.trim();
       if (!cleaned) return 0;
 
-      // 1. Chuỗi đáp án trắc nghiệm liền nhau (VD: "ABCDABCD...")
+      const isSingleChoiceLetter = (val) => /^[A-D]$/i.test(String(val || '').trim());
+      const classifyItem = (val) => {
+        const trimmed = String(val || '').trim();
+        const isMcq = targetMode === 'mcq' || (targetMode === 'auto' && isSingleChoiceLetter(trimmed));
+        return {
+          type: isMcq ? 'mcq' : 'fill',
+          answer: isMcq ? trimmed.charAt(0).toUpperCase() : trimmed
+        };
+      };
+
+      // 1. Chuỗi đáp án trắc nghiệm viết liền không dấu cách (VD: "ABCDABCD" hoặc "abcd")
       const compactLetters = cleaned.replace(/[\s,;\-\.\|]/g, '').toUpperCase();
-      if ((targetMode === 'auto' || targetMode === 'mcq') && /^[A-D]{2,}$/.test(compactLetters)) {
+      if ((targetMode === 'auto' || targetMode === 'mcq') && /^[A-D]{2,}$/.test(compactLetters) && !/\d/.test(cleaned)) {
         const letters = compactLetters.split('');
         applyUnifiedSheetAnswers(letters.map((ans, i) => ({ index: i, type: 'mcq', answer: ans })));
         showUndoToast(`Đã điền nhanh ${letters.length} đáp án trắc nghiệm!`);
         return letters.length;
       }
 
-      // 2. Phân tích từng câu có số thứ tự hoặc theo dòng
+      // 2. Phân tích từng câu có số thứ tự, bảng Excel/Word hoặc danh sách cách nhau bởi dòng / dấu phẩy
       const parsedEntries = [];
       const lines = cleaned.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-      const pairRegex = /(?:Câu|Question|Bài)?\s*(\d+)\s*[\.\)\:\-\t\s]\s*([^\d\n\t]+?)(?=(?:\s+(?:Câu|Question|Bài)?\s*\d+\s*[\.\)\:\-\t\s]|$))/gi;
+      // Hỗ trợ đáp án chứa cả chữ, số (VD: 23, 12340, 596894) và khoảng trắng trước câu tiếp theo
+      const pairRegex = /(?:Câu|Question|Bài)?\s*(\d+)\s*[\.\)\:\-\t]\s*(.+?)(?=(?:\s+(?:Câu|Question|Bài)?\s*\d+\s*[\.\)\:\-\t]|$))/gi;
 
       let matchedAnyNumbered = false;
       lines.forEach(line => {
+        // Trường hợp copy từ bảng Excel / Word (ngăn cách bằng Tab)
         if (line.includes('\t')) {
           const cells = line.split('\t').map(c => c.trim()).filter(Boolean);
           for (let i = 0; i < cells.length; i++) {
-            const numMatch = cells[i].match(/^(?:Câu|Question)?\s*(\d+)[\.\:\)]?$/i);
+            const numMatch = cells[i].match(/^(?:Câu|Question|Bài)?\s*(\d+)[\.\:\)]?$/i);
             if (numMatch && cells[i + 1]) {
               const qIdx = parseInt(numMatch[1], 10) - 1;
               const ansVal = cells[i + 1].trim();
               if (qIdx >= 0 && ansVal) {
                 matchedAnyNumbered = true;
-                const isMcq = targetMode === 'mcq' || (targetMode === 'auto' && /^[A-D]$/i.test(ansVal));
-                parsedEntries.push({
-                  index: qIdx,
-                  type: isMcq ? 'mcq' : 'fill',
-                  answer: isMcq ? ansVal.charAt(0).toUpperCase() : ansVal
-                });
+                const { type, answer } = classifyItem(ansVal);
+                parsedEntries.push({ index: qIdx, type, answer });
                 i++;
               }
             }
           }
-          return;
+          if (matchedAnyNumbered) return;
         }
 
+        // Trường hợp có đánh số thứ tự: "1. a", "2. look", "3. 23", "4. 12340", "5. 596894"
         let m;
         pairRegex.lastIndex = 0;
         let lineHasPair = false;
@@ -3447,31 +3456,36 @@
           if (qIdx >= 0 && ansVal) {
             lineHasPair = true;
             matchedAnyNumbered = true;
-            const isMcq = targetMode === 'mcq' || (targetMode === 'auto' && /^[A-D]$/i.test(ansVal));
-            parsedEntries.push({
-              index: qIdx,
-              type: isMcq ? 'mcq' : 'fill',
-              answer: isMcq ? ansVal.charAt(0).toUpperCase() : ansVal
-            });
+            const { type, answer } = classifyItem(ansVal);
+            parsedEntries.push({ index: qIdx, type, answer });
           }
         }
 
+        // Trường hợp không đánh số thứ tự (từng dòng hoặc ngăn cách bởi dấu phẩy/chấm phẩy: "a, b, look, Ok, 23, 12340, 596894")
         if (!lineHasPair && !matchedAnyNumbered) {
-          const cleanLine = line.replace(/^(?:Câu|Question)?\s*\d+[\.\)\:\-\s]+/i, '').trim();
-          if (cleanLine) {
-            const isMcq = targetMode === 'mcq' || (targetMode === 'auto' && /^[A-D]$/i.test(cleanLine));
-            parsedEntries.push({
-              index: parsedEntries.length,
-              type: isMcq ? 'mcq' : 'fill',
-              answer: isMcq ? cleanLine.charAt(0).toUpperCase() : cleanLine
-            });
-          }
+          const tokens = line.includes(',') || line.includes(';')
+            ? line.split(/[,;]+/).map(t => t.trim()).filter(Boolean)
+            : [line];
+
+          tokens.forEach(token => {
+            const cleanToken = token.replace(/^(?:Câu|Question|Bài)?\s*\d+[\.\)\:\-\s]+/i, '').trim();
+            if (cleanToken) {
+              const { type, answer } = classifyItem(cleanToken);
+              parsedEntries.push({
+                index: parsedEntries.length,
+                type,
+                answer
+              });
+            }
+          });
         }
       });
 
       if (parsedEntries.length > 0) {
         applyUnifiedSheetAnswers(parsedEntries);
-        showUndoToast(`Đã tự động điền ${parsedEntries.length} đáp án vào phiếu!`);
+        const mcqCount = parsedEntries.filter(e => e.type === 'mcq').length;
+        const fillCount = parsedEntries.filter(e => e.type === 'fill').length;
+        showUndoToast(`Đã điền ${parsedEntries.length} đáp án (${mcqCount} Trắc nghiệm, ${fillCount} Điền từ)!`);
         return parsedEntries.length;
       }
 
