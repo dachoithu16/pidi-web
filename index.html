@@ -1072,10 +1072,22 @@
                 <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i>
                 <span class="text-[11px] sm:text-xs font-bold">Chọn tệp đề bài (.DOCX, .TXT)</span>
               </div>
-              <span class="text-[10px] text-slate-400 mt-1 line-clamp-2">Đính kèm đề bài để học sinh đọc trực tiếp khi làm phiếu trả lời</span>
+              <span class="text-[10px] text-slate-400 mt-1 line-clamp-2">Giới hạn dưới 1MB • Cho phép sửa, viết thêm hoặc xóa trực tiếp sau khi nhận diện</span>
             </label>
 
-            <div id="assignmentExamPreviewBox" class="hidden p-2 bg-white rounded-xl border border-slate-200 text-[11px] max-h-28 overflow-y-auto space-y-1"></div>
+            <div id="assignmentExamPreviewWrapper" class="hidden space-y-1">
+              <div class="flex items-center justify-between text-[10px] font-bold text-indigo-700 px-0.5">
+                <span>Nội dung đề bài (Có thể sửa, viết, xóa trực tiếp):</span>
+                <button type="button" onclick="handleExamPreviewTextChange('')" class="text-rose-600 hover:underline">Xóa hết chữ</button>
+              </div>
+              <textarea
+                id="assignmentExamPreviewBox"
+                rows="6"
+                oninput="handleExamPreviewTextChange(this.value)"
+                placeholder="Nội dung đề bài..."
+                class="w-full p-2.5 bg-white rounded-xl border border-indigo-200 text-[11px] text-slate-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-y"
+              ></textarea>
+            </div>
           </div>
 
           <!-- CỘT PHẢI: ĐIỀN ĐÁP ÁN & TẢI ĐÁP ÁN LÊN -->
@@ -1087,7 +1099,7 @@
                 </div>
                 <div class="min-w-0">
                   <h4 class="font-extrabold text-[11px] sm:text-xs text-amber-950 truncate">Điền đáp án & tải đáp án lên</h4>
-                  <p id="answerFileStatusText" class="text-[10px] text-amber-800/80 truncate">Tải file đáp án (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi</p>
+                  <p id="answerFileStatusText" class="text-[10px] text-amber-800/80 truncate">File dưới 1MB (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi</p>
                 </div>
               </div>
 
@@ -2472,7 +2484,7 @@
           ...hw,
           examPaper: hw.examPaper ? {
             name: hw.examPaper.name,
-            text: (hw.examPaper.text || '').slice(0, 14000)
+            text: (hw.examPaper.text || '').slice(0, 60000)
           } : null
         }));
 
@@ -3696,24 +3708,74 @@
       renderBuilderAnswerSheet();
     }
 
+    const MAX_ASSIGNMENT_FILE_BYTES = 1 * 1024 * 1024; // Giới hạn tối đa 1MB
+
+    async function extractFullDocumentText(file) {
+      const lower = file.name.toLowerCase();
+      if (lower.endsWith('.docx') && typeof mammoth !== 'undefined') {
+        const buf = await file.arrayBuffer();
+        try {
+          const htmlRes = await mammoth.convertToHtml({ arrayBuffer: buf });
+          if (htmlRes && htmlRes.value) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlRes.value
+              .replace(/<\/(p|div|h[1-6]|li|tr|br\s*\/?)>/gi, '</$1>\n')
+              .replace(/<\/(td|th)>/gi, '</$1>\t');
+            const extracted = (tempDiv.textContent || tempDiv.innerText || '')
+              .replace(/\t+\n/g, '\n')
+              .replace(/\n{3,}/g, '\n\n')
+              .trim();
+            if (extracted) return extracted;
+          }
+        } catch (err) {
+          console.warn('Fallback extractRawText:', err);
+        }
+        const rawRes = await mammoth.extractRawText({ arrayBuffer: buf });
+        return (rawRes.value || '').trim();
+      }
+      const txt = await file.text();
+      return (txt || '').trim();
+    }
+
     async function handleExamPaperUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
-      let text = '';
-      if (file.name.toLowerCase().endsWith('.docx') && typeof mammoth !== 'undefined') {
-        const buf = await file.arrayBuffer();
-        const res = await mammoth.extractRawText({ arrayBuffer: buf });
-        text = res.value || '';
-      } else {
-        text = await file.text();
+      if (file.size > MAX_ASSIGNMENT_FILE_BYTES) {
+        e.target.value = '';
+        showUndoToast('File đề bài vượt quá 1MB! Vui lòng chọn file dưới 1MB.');
+        return;
       }
+
+      const text = await extractFullDocumentText(file);
+      if (!text) {
+        e.target.value = '';
+        showUndoToast('Không đọc được nội dung văn bản từ file này.');
+        return;
+      }
+
       currentExamPaperData = { name: file.name, text };
       const badge = document.getElementById('assignmentAttachedFileName');
       const clearBtn = document.getElementById('btnClearExamFile');
+      const wrapper = document.getElementById('assignmentExamPreviewWrapper');
       const preview = document.getElementById('assignmentExamPreviewBox');
-      if (badge) { badge.innerText = file.name; badge.classList.remove('hidden'); }
+      if (badge) {
+        badge.innerText = `${file.name} (${Math.max(1, Math.round(file.size / 1024))}KB)`;
+        badge.classList.remove('hidden');
+      }
       clearBtn?.classList.remove('hidden');
-      if (preview) { preview.innerText = text.slice(0, 600); preview.classList.remove('hidden'); }
+      wrapper?.classList.remove('hidden');
+      if (preview) {
+        preview.value = text;
+      }
+      showUndoToast(`Đã nhận diện đầy đủ nội dung đề bài (${text.split(/\r?\n/).length} dòng)!`);
+    }
+
+    function handleExamPreviewTextChange(val) {
+      if (!currentExamPaperData) {
+        currentExamPaperData = { name: 'De_bai_soan_thao.txt', text: val };
+      } else {
+        currentExamPaperData.text = val;
+      }
     }
 
     function clearExamPaperUpload() {
@@ -3722,25 +3784,35 @@
       if (inp) inp.value = '';
       document.getElementById('assignmentAttachedFileName')?.classList.add('hidden');
       document.getElementById('btnClearExamFile')?.classList.add('hidden');
-      document.getElementById('assignmentExamPreviewBox')?.classList.add('hidden');
+      document.getElementById('assignmentExamPreviewWrapper')?.classList.add('hidden');
+      const preview = document.getElementById('assignmentExamPreviewBox');
+      if (preview) {
+        preview.value = '';
+      }
     }
 
     async function handleAnswerFileUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
+      if (file.size > MAX_ASSIGNMENT_FILE_BYTES) {
+        e.target.value = '';
+        showUndoToast('File đáp án vượt quá 1MB! Vui lòng chọn file dưới 1MB.');
+        return;
+      }
+
       const lower = file.name.toLowerCase();
       let extracted = '';
       if (lower.endsWith('.xlsx') || lower.endsWith('.xls') || lower.endsWith('.csv')) {
         const buf = await file.arrayBuffer();
         const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
         const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
-        extracted = rows.map(r => r.filter(c => c !== undefined && c !== '').join(' ')).join('\n');
-      } else if (lower.endsWith('.docx') && typeof mammoth !== 'undefined') {
-        const buf = await file.arrayBuffer();
-        const res = await mammoth.extractRawText({ arrayBuffer: buf });
-        extracted = res.value || '';
+        extracted = rows
+          .map(r => r.map(c => String(c ?? '').trim()).filter(Boolean))
+          .filter(r => r.length > 0)
+          .map(r => (r.length >= 2 && /^(?:câu\s*)?\d+[\.\:\)]?$/i.test(r[0])) ? `${r[0].replace(/[\.\:\)]$/, '')}. ${r.slice(1).join(' ')}` : r.join(' '))
+          .join('\n');
       } else {
-        extracted = await file.text();
+        extracted = await extractFullDocumentText(file);
       }
       document.getElementById('quickAnswerPasteInput').value = extracted;
       document.getElementById('btnClearAnswerFile')?.classList.remove('hidden');
@@ -3754,7 +3826,7 @@
       if (inp) inp.value = '';
       document.getElementById('btnClearAnswerFile')?.classList.add('hidden');
       const statusEl = document.getElementById('answerFileStatusText');
-      if (statusEl) statusEl.innerText = 'Tải file đáp án (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi';
+      if (statusEl) statusEl.innerText = 'File dưới 1MB (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi';
     }
 
     function handleQuickAnswerInputApply() {
@@ -3762,29 +3834,72 @@
       const mode = document.getElementById('quickAnswerTargetMode')?.value || 'auto';
       if (!raw.trim()) return;
 
+      // Chuẩn hóa bảng từ Word/Excel (VD: "1\tA" hoặc dòng "1" đứng ngay trước dòng đáp án)
+      const rawLines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const normalizedLines = [];
+      for (let i = 0; i < rawLines.length; i++) {
+        const line = rawLines[i];
+        // Bỏ qua dòng tiêu đề bảng như "Câu | Đáp án" hoặc "STT | Đáp án"
+        if (/^(?:stt|câu|question)\b[\s\t\|]*(?:đáp án|answer|key)?$/i.test(line)) continue;
+
+        // Dạng cột bảng cách nhau bởi Tab: "1\tA" hoặc "Câu 1\tlook"
+        const tabMatch = line.match(/^(?:câu\s*)?(\d+)\s*[\.\:\)\-]?\t+(.+)$/i);
+        if (tabMatch) {
+          normalizedLines.push(`${tabMatch[1]}. ${tabMatch[2].trim()}`);
+          continue;
+        }
+
+        // Dạng số thứ tự nằm riêng 1 dòng (do ô bảng Word tách dòng) và dòng kế tiếp là đáp án
+        if (/^(?:câu\s*)?\d+[\.\:\)]?$/i.test(line) && i + 1 < rawLines.length) {
+          const nextLine = rawLines[i + 1];
+          if (!/^(?:câu\s*)?\d+[\.\:\)\-\t]/i.test(nextLine)) {
+            normalizedLines.push(`${line.replace(/[\.\:\)]$/, '')}. ${nextLine}`);
+            i++;
+            continue;
+          }
+        }
+        normalizedLines.push(line);
+      }
+
+      const cleanedText = normalizedLines.join('\n');
       let tokens = [];
-      const numberedMatches = Array.from(raw.matchAll(/(?:câu\s*)?(\d+)\s*[\.\:\)\-]\s*([^\n\r,;]+)/gi));
+
+      // Tách các mục có đánh số thứ tự rõ ràng: "1. a 2. look 3. 23"
+      const numberedRegex = /(?:^|[\s,;])(?:câu\s*)?(\d+)\s*[\.\:\)\-]\s*(.+?)(?=(?:\s+(?:câu\s*)?\d+\s*[\.\:\)\-])|[\n\r,;]|$)/gi;
+      const numberedMatches = Array.from(cleanedText.matchAll(numberedRegex));
+
       if (numberedMatches.length >= 2) {
-        tokens = numberedMatches.map(m => m[2].trim());
-      } else if (/^[a-dA-D\s]+$/.test(raw.trim()) && raw.replace(/\s+/g, '').length >= 2) {
-        tokens = raw.replace(/\s+/g, '').toUpperCase().split('');
+        tokens = numberedMatches.map(m => m[2].trim()).filter(Boolean);
+      } else if (mode === 'mcq' && /^[a-dA-D\s,;]+$/.test(cleanedText.trim())) {
+        // Chỉ tách chuỗi liền (VD: ABCD) khi giáo viên chủ động chọn chế độ "Trắc nghiệm"
+        tokens = cleanedText.replace(/[\s,;]+/g, '').toUpperCase().split('');
       } else {
-        tokens = raw.split(/[\n\r,;]+/).map(t => t.replace(/^(?:câu\s*)?\d+[\.\:\)\-\s]+/i, '').trim()).filter(Boolean);
+        // Tách theo từng dòng hoặc dấu phẩy / chấm phẩy
+        tokens = cleanedText
+          .split(/[\n\r,;]+/)
+          .map(t => t.replace(/^(?:câu\s*)?\d+\s*[\.\:\)\-]\s*/i, '').trim())
+          .filter(Boolean);
       }
 
       if (tokens.length === 0) return;
 
       builderAnswerSheet = tokens.map((ans, idx) => {
-        const isSingleLetter = /^[a-dA-D]$/.test(ans);
-        let qType = 'mcq';
-        if (mode === 'mcq') qType = 'mcq';
-        else if (mode === 'short') qType = 'fill';
-        else qType = isSingleLetter ? 'mcq' : 'fill';
+        const trimmedAns = ans.trim();
+        // Chỉ đúng 1 ký tự a, b, c, d (không phân biệt hoa thường) mới là trắc nghiệm; dài hơn hoặc khác đều là điền từ
+        const isSingleMcqLetter = /^[a-dA-D]$/.test(trimmedAns);
+        let qType = 'fill';
+        if (mode === 'mcq') {
+          qType = 'mcq';
+        } else if (mode === 'short') {
+          qType = 'fill';
+        } else {
+          qType = isSingleMcqLetter ? 'mcq' : 'fill';
+        }
 
         return {
           index: idx + 1,
           type: qType,
-          answer: qType === 'mcq' ? ans.toUpperCase().slice(0, 1) : ans,
+          answer: qType === 'mcq' ? (isSingleMcqLetter ? trimmedAns.toUpperCase() : '') : trimmedAns,
           points: +(10 / tokens.length).toFixed(2)
         };
       });
