@@ -4214,32 +4214,34 @@
         normalizedLines.push(line);
       }
 
-      const cleanedText = normalizedLines.join('\n');
+      const cleanedText = normalizedLines.join('\n').trim();
       let tokens = [];
 
-      // Tách các mục có đánh số thứ tự rõ ràng: "1. a 2. look 3. 23"
-      const numberedRegex = /(?:^|[\s,;])(?:câu\s*)?(\d+)\s*[\.\:\)\-]\s*(.+?)(?=(?:\s+(?:câu\s*)?\d+\s*[\.\:\)\-])|[\n\r,;]|$)/gi;
-      const numberedMatches = Array.from(cleanedText.matchAll(numberedRegex));
+      // 1. Tách các mục có đánh số thứ tự (hỗ trợ cả "1.A", "1. were sleeping", "1) A", "Câu 1: A" VÀ viết liền "1b", "14b", "21c")
+      const numberedItemPattern = /(?:^|[\s,;])(?:câu\s*)?(\d+)(?:\s*[\.\:\)\-]\s*|\s*(?=[a-dA-D](?:$|[\s,;.\)\]]))\s*)(.+?)(?=(?:[\s,;]+(?:câu\s*)?\d+(?:\s*[\.\:\)\-]|\s*[a-dA-D](?:$|[\s,;.\)\]])))|[\n\r,;]|$)/gi;
+      const numberedMatches = Array.from(cleanedText.matchAll(numberedItemPattern));
 
       if (numberedMatches.length >= 2) {
         tokens = numberedMatches.map(m => m[2].trim()).filter(Boolean);
-      } else if (mode === 'mcq' && /^[a-dA-D\s,;]+$/.test(cleanedText.trim())) {
-        // Chỉ tách chuỗi liền (VD: ABCD) khi giáo viên chủ động chọn chế độ "Trắc nghiệm"
+      } else if ((mode === 'mcq' || mode === 'auto') && /^[a-dA-D\s,;]+$/.test(cleanedText)) {
+        // Chuỗi trắc nghiệm liền nhau không đánh số (VD: "ABCD" hoặc "A B C D" hoặc "A, B, C, D")
         tokens = cleanedText.replace(/[\s,;]+/g, '').toUpperCase().split('');
       } else {
-        // Tách theo từng dòng hoặc dấu phẩy / chấm phẩy
+        // Tách theo từng dòng hoặc dấu phẩy / chấm phẩy (hỗ trợ cả "1b" lẫn "3. were sleeping")
         tokens = cleanedText
           .split(/[\n\r,;]+/)
-          .map(t => t.replace(/^(?:câu\s*)?\d+\s*[\.\:\)\-]\s*/i, '').trim())
+          .map(t => t.trim().replace(/^(?:câu\s*)?\d+(?:\s*[\.\:\)\-]\s*|\s+|(?=[a-dA-D]$))/i, '').trim())
           .filter(Boolean);
       }
 
       if (tokens.length === 0) return;
 
+      const perPoint = +(10 / tokens.length).toFixed(2);
       builderAnswerSheet = tokens.map((ans, idx) => {
-        const trimmedAns = ans.trim();
-        // Chỉ đúng 1 ký tự a, b, c, d (không phân biệt hoa thường) mới là trắc nghiệm; dài hơn hoặc khác đều là điền từ
-        const isSingleMcqLetter = /^[a-dA-D]$/.test(trimmedAns);
+        // Làm sạch dấu ngoặc/chấm quanh đáp án đơn như "(A)", "A.", "B)"
+        const normalizedSingle = ans.trim().replace(/^[\(\[\{]+|[\)\]\}\.]+$/g, '').trim();
+        const isSingleMcqLetter = /^[a-dA-D]$/.test(normalizedSingle);
+
         let qType = 'fill';
         if (mode === 'mcq') {
           qType = 'mcq';
@@ -4252,8 +4254,8 @@
         return {
           index: idx + 1,
           type: qType,
-          answer: qType === 'mcq' ? (isSingleMcqLetter ? trimmedAns.toUpperCase() : '') : trimmedAns,
-          points: +(10 / tokens.length).toFixed(2)
+          answer: qType === 'mcq' ? (isSingleMcqLetter ? normalizedSingle.toUpperCase() : '') : ans.trim(),
+          points: perPoint
         };
       });
 
