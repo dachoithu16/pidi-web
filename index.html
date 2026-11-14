@@ -1942,6 +1942,7 @@
     let supabaseClient = null;
     let currentUser = null;
     let authMode = 'signin';
+    let hasCompletedInitialAuthCheck = false;
 
     function initSupabaseClient() {
       if (typeof supabase === 'undefined' || !supabase.createClient) {
@@ -2006,7 +2007,11 @@
       ];
     }
 
-    async function applyUserSession(session) {
+    async function applyUserSession(session, forceResetHome = false) {
+      const prevUserId = currentUser?.id || null;
+      const nextUserId = session?.user?.id || null;
+      const isNewSignIn = forceResetHome || (hasCompletedInitialAuthCheck && prevUserId !== nextUserId && nextUserId !== null);
+
       if (session && session.user) {
         const meta = session.user.user_metadata || {};
         currentUser = {
@@ -2018,8 +2023,19 @@
       } else {
         currentUser = null;
       }
+
+      if (isNewSignIn) {
+        resetUiNavigationToHome();
+      }
+
       updateAuthUI();
       loadScopedUserData();
+
+      if (isNewSignIn) {
+        switchTab('attendance');
+        switchRole('teacher');
+      }
+
       renderAll();
 
       if (session && session.user) {
@@ -2089,18 +2105,28 @@
 
     async function listenToAuthChanges() {
       if (!supabaseClient) return;
+      const isOAuthCallback = /access_token=|refresh_token=|error_description=/i.test(window.location.hash || '');
       try {
         const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) await applyUserSession(session);
+        if (session) {
+          await applyUserSession(session, isOAuthCallback);
+        }
       } catch (err) {
         console.warn('Lỗi getSession:', err);
+      } finally {
+        hasCompletedInitialAuthCheck = true;
       }
 
       supabaseClient.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
-          await applyUserSession(session);
+        if (event === 'SIGNED_IN') {
+          await applyUserSession(session, true);
+        } else if (event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') {
+          await applyUserSession(session, false);
         } else if (event === 'SIGNED_OUT') {
-          await applyUserSession(null);
+          resetUiNavigationToHome();
+          await applyUserSession(null, true);
+          switchTab('attendance');
+          switchRole('teacher');
         }
       });
     }
@@ -2177,9 +2203,10 @@
         return;
       }
       try {
+        resetUiNavigationToHome();
         const { error } = await supabaseClient.auth.signInWithOAuth({
           provider: 'google',
-          options: { redirectTo: window.location.origin }
+          options: { redirectTo: window.location.origin + window.location.pathname }
         });
         if (error) setAuthError(`Lỗi Google OAuth: ${error.message}`);
       } catch (err) {
@@ -2208,6 +2235,9 @@
           if (error) {
             setAuthError(error.message.includes('Invalid login') ? 'Email hoặc mật khẩu không chính xác.' : error.message);
           } else {
+            resetUiNavigationToHome();
+            switchTab('attendance');
+            switchRole('teacher');
             closeModal('modalAuth');
           }
         } else {
@@ -2215,6 +2245,9 @@
           if (error) {
             setAuthError(`Đăng ký thất bại: ${error.message}`);
           } else if (data?.session) {
+            resetUiNavigationToHome();
+            switchTab('attendance');
+            switchRole('teacher');
             closeModal('modalAuth');
           } else {
             setAuthError('Đăng ký thành công! Vui lòng kiểm tra hộp thư đến để kích hoạt tài khoản.');
@@ -2231,16 +2264,20 @@
     }
 
     async function handleSignOut() {
-      if (!supabaseClient) return;
+      resetUiNavigationToHome();
       try {
-        await supabaseClient.auth.signOut();
-        currentUser = null;
-        updateAuthUI();
-        loadScopedUserData();
-        renderAll();
+        if (supabaseClient) {
+          await supabaseClient.auth.signOut();
+        }
       } catch (err) {
         console.error('Lỗi signOut:', err);
       }
+      currentUser = null;
+      updateAuthUI();
+      loadScopedUserData();
+      switchTab('attendance');
+      switchRole('teacher');
+      renderAll();
     }
 
     // ==================== DỮ LIỆU MẶC ĐỊNH & LƯU TRỮ ====================
@@ -2342,26 +2379,139 @@
       ]
     };
 
+    const SESSION_NAV_KEY = 'dipi_session_nav_state';
+    const VALID_ROLES = ['teacher', 'parent'];
+    const VALID_TABS = ['attendance', 'finance', 'homework', 'classes'];
+
+    // Xóa các key điều hướng cũ trong localStorage nếu có để đảm bảo đóng hẳn website và mở lại luôn về trang chủ
+    try {
+      ['dipi_ui_role', 'dipi_ui_tab', 'dipi_ui_class_selected', 'dipi_ui_class_id', 'dipi_parent_verified_student_id'].forEach(k => localStorage.removeItem(k));
+    } catch (e) {}
+
+    function parseNavFromUrlHash() {
+      try {
+        const rawHash = (window.location.hash || '').replace(/^#/, '');
+        if (!rawHash || !rawHash.startsWith('nav=')) return null;
+        const params = new URLSearchParams(rawHash);
+        const navToken = params.get('nav');
+        if (!navToken) return null;
+        const parsed = {};
+        navToken.split('|').forEach(pair => {
+          const idx = pair.indexOf(':');
+          if (idx > 0) {
+            parsed[pair.slice(0, idx)] = decodeURIComponent(pair.slice(idx + 1));
+          }
+        });
+        return {
+          role: VALID_ROLES.includes(parsed.role) ? parsed.role : 'teacher',
+          tab: VALID_TABS.includes(parsed.tab) ? parsed.tab : 'attendance',
+          isClassSelected: parsed.sel === '1',
+          classId: parsed.cls || null
+        };
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function readSessionNavState() {
+      let sessionAvailable = false;
+      try {
+        sessionAvailable = typeof window.sessionStorage !== 'undefined';
+        if (sessionAvailable) {
+          const rawSession = sessionStorage.getItem(SESSION_NAV_KEY);
+          if (rawSession) {
+            const parsed = JSON.parse(rawSession);
+            if (parsed && typeof parsed === 'object') {
+              return {
+                role: VALID_ROLES.includes(parsed.role) ? parsed.role : 'teacher',
+                tab: VALID_TABS.includes(parsed.tab) ? parsed.tab : 'attendance',
+                isClassSelected: Boolean(parsed.isClassSelected),
+                classId: parsed.classId || null
+              };
+            }
+          } else {
+            // Phiên trình duyệt mới mở (đã đóng hẳn website và mở lại) -> dọn sạch hash cũ nếu trình duyệt tự khôi phục URL
+            const hashState = parseNavFromUrlHash();
+            if (hashState) {
+              try {
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+              } catch (e) {}
+            }
+            return { role: 'teacher', tab: 'attendance', isClassSelected: false, classId: null };
+          }
+        }
+      } catch (e) {
+        sessionAvailable = false;
+      }
+
+      // Fallback sang URL Hash nếu sessionStorage bị hạn chế
+      const hashFallback = parseNavFromUrlHash();
+      if (hashFallback) return hashFallback;
+      return { role: 'teacher', tab: 'attendance', isClassSelected: false, classId: null };
+    }
+
+    const _initialNavState = readSessionNavState();
+
     let classesList = [];
     let classStudentsMap = {};
     const ALL_CLASSES_ID = 'ALL_CLASSES';
-    let currentClassId = null;
-    let isClassSelected = false;
+    let currentClassId = _initialNavState.classId;
+    let isClassSelected = _initialNavState.isClassSelected;
     let students = [];
-    let currentRole = localStorage.getItem('dipi_ui_role') || 'teacher';
-    let currentTab = localStorage.getItem('dipi_ui_tab') || 'attendance';
+    let currentRole = _initialNavState.role;
+    let currentTab = _initialNavState.tab;
     let selectedStudentIds = [];
     let selectedAttendanceStudentIds = [];
     let currentScheduleViewMode = 'today';
 
     function saveUiNavigationState() {
+      const stateObj = {
+        role: VALID_ROLES.includes(currentRole) ? currentRole : 'teacher',
+        tab: VALID_TABS.includes(currentTab) ? currentTab : 'attendance',
+        isClassSelected: Boolean(isClassSelected),
+        classId: currentClassId || ''
+      };
+
       try {
-        localStorage.setItem('dipi_ui_role', currentRole);
-        localStorage.setItem('dipi_ui_tab', currentTab);
-        localStorage.setItem('dipi_ui_class_selected', isClassSelected ? '1' : '0');
-        if (currentClassId) {
-          localStorage.setItem('dipi_ui_class_id', currentClassId);
+        sessionStorage.setItem(SESSION_NAV_KEY, JSON.stringify(stateObj));
+      } catch (e) {}
+
+      try {
+        const isAtDefaultHome = (
+          stateObj.role === 'teacher' &&
+          stateObj.tab === 'attendance' &&
+          !stateObj.isClassSelected
+        );
+        if (isAtDefaultHome) {
+          if (window.location.hash && window.location.hash.startsWith('#nav=')) {
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
+        } else {
+          const encodedNav = [
+            `role:${encodeURIComponent(stateObj.role)}`,
+            `tab:${encodeURIComponent(stateObj.tab)}`,
+            `sel:${stateObj.isClassSelected ? '1' : '0'}`,
+            `cls:${encodeURIComponent(stateObj.classId)}`
+          ].join('|');
+          window.history.replaceState(null, '', `#nav=${encodedNav}`);
         }
+      } catch (e) {}
+    }
+
+    function resetUiNavigationToHome() {
+      currentRole = 'teacher';
+      currentTab = 'attendance';
+      isClassSelected = false;
+      selectedParentStudentId = null;
+      if (classesList.length > 0 && (!currentClassId || currentClassId === ALL_CLASSES_ID || !classesList.some(c => c.id === currentClassId))) {
+        currentClassId = classesList[0].id;
+      }
+      try {
+        sessionStorage.removeItem(SESSION_NAV_KEY);
+        sessionStorage.removeItem('dipi_parent_verified_student_id');
+      } catch (e) {}
+      try {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
       } catch (e) {}
     }
 
@@ -2499,18 +2649,19 @@
 
       const codesBackfilled = ensureAllStudentsHaveUniqueCodes();
 
-      const savedSelectedClassId = localStorage.getItem('dipi_ui_class_id');
-      const savedWasSelected = localStorage.getItem('dipi_ui_class_selected') === '1';
+      const navState = readSessionNavState();
+      const candidateClassId = currentClassId || navState.classId;
+      const candidateWasSelected = Boolean(isClassSelected);
 
-      if (savedSelectedClassId === ALL_CLASSES_ID) {
+      if (candidateClassId === ALL_CLASSES_ID) {
         currentClassId = ALL_CLASSES_ID;
-      } else if (savedSelectedClassId && classesList.some(c => c.id === savedSelectedClassId)) {
-        currentClassId = savedSelectedClassId;
+      } else if (candidateClassId && classesList.some(c => c.id === candidateClassId)) {
+        currentClassId = candidateClassId;
       } else {
         currentClassId = classesList.length > 0 ? classesList[0].id : null;
       }
 
-      isClassSelected = savedWasSelected && Boolean(currentClassId);
+      isClassSelected = candidateWasSelected && Boolean(currentClassId);
       students = getStudentsForClass(currentClassId);
 
       if (codesBackfilled) {
@@ -2629,9 +2780,16 @@
 
         if (hasUpdated) {
           ensureAllStudentsHaveUniqueCodes();
-          if (currentClassId !== ALL_CLASSES_ID && (!currentClassId || !classesList.some(c => c.id === currentClassId))) {
+          const navState = readSessionNavState();
+          const desiredClassId = currentClassId || navState.classId;
+          if (desiredClassId === ALL_CLASSES_ID) {
+            currentClassId = ALL_CLASSES_ID;
+          } else if (desiredClassId && classesList.some(c => c.id === desiredClassId)) {
+            currentClassId = desiredClassId;
+          } else {
             currentClassId = classesList.length > 0 ? classesList[0].id : null;
           }
+          isClassSelected = Boolean(navState.isClassSelected) && Boolean(currentClassId);
           students = getStudentsForClass(currentClassId);
           saveAllToLocalStorage(false);
           syncActiveAttendanceDateForCurrentClass();
@@ -5356,7 +5514,13 @@
       }).join('');
     }
 
-    let selectedParentStudentId = localStorage.getItem('dipi_parent_verified_student_id') || null;
+    let selectedParentStudentId = (() => {
+      try {
+        return sessionStorage.getItem('dipi_parent_verified_student_id') || null;
+      } catch (e) {
+        return null;
+      }
+    })();
 
     function findStudentByCodeAcrossClasses(codeInput) {
       const normalized = String(codeInput || '').trim().toUpperCase();
@@ -5416,14 +5580,18 @@
 
       errBox?.classList.add('hidden');
       selectedParentStudentId = match.student.id;
-      localStorage.setItem('dipi_parent_verified_student_id', selectedParentStudentId);
+      try {
+        sessionStorage.setItem('dipi_parent_verified_student_id', selectedParentStudentId);
+      } catch (e) {}
       renderParentView();
       showUndoToast(`Đã mở hồ sơ học sinh ${match.student.name}!`);
     }
 
     function logoutParentStudentCode() {
       selectedParentStudentId = null;
-      localStorage.removeItem('dipi_parent_verified_student_id');
+      try {
+        sessionStorage.removeItem('dipi_parent_verified_student_id');
+      } catch (e) {}
       const codeInp = document.getElementById('parentCodeInput');
       const pwdInp = document.getElementById('parentClassPasswordInput');
       if (codeInp) codeInp.value = '';
