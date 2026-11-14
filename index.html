@@ -229,15 +229,16 @@
         </div>
 
         <!-- Khối bên phải (chế độ Phụ huynh / HS) -->
-        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 px-2 py-1 rounded-lg flex items-center gap-1.5 shrink-0">
-          <div class="text-[10px] sm:text-[11px] text-slate-400">Học sinh:</div>
-          <select
-            id="parentStudentSelect"
-            onchange="onParentStudentChange(this.value)"
-            class="bg-slate-800 text-white font-bold text-[11px] sm:text-sm focus:outline-none cursor-pointer max-w-[140px]"
+        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 px-2.5 py-1 rounded-lg flex items-center gap-2 shrink-0">
+          <span id="parentActiveStudentBannerBadge" class="text-[11px] sm:text-xs font-bold text-emerald-300 truncate max-w-[160px]">Chưa nhập mã HS</span>
+          <button
+            type="button"
+            id="btnParentLogoutCode"
+            onclick="logoutParentStudentCode()"
+            class="hidden text-[10px] px-1.5 py-0.5 rounded bg-white/10 hover:bg-white/20 text-slate-200 font-bold transition"
           >
-            <!-- Render động -->
-          </select>
+            Đổi mã
+          </button>
         </div>
 
       </div>
@@ -649,24 +650,84 @@
 
     <!-- ==================== GIAO DIỆN PHỤ HUYNH & HỌC SINH ==================== -->
     <div id="parentViewSection" class="hidden space-y-3.5">
-      <div id="parentOverviewCard" class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3"></div>
-
-      <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
-          <h4 class="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
-            <i data-lucide="book-open-check" class="w-4 h-4 text-amber-500"></i>
-            <span>Bài tập & Phiếu trả lời Online</span>
-          </h4>
+      <!-- Cổng nhập Mã học sinh & Mật khẩu lớp -->
+      <div id="parentCodeGateCard" class="bg-white rounded-2xl border border-indigo-200/90 p-4 sm:p-6 shadow-sm max-w-md mx-auto space-y-3.5">
+        <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <i data-lucide="key-round" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Cổng Phụ Huynh & Học Sinh</h3>
+            <p class="text-[11px] text-slate-500 font-medium">Nhập mã học sinh do giáo viên cấp để xem lịch học, học phí và làm bài tập</p>
+          </div>
         </div>
-        <div id="studentHomeworkCardsList" class="space-y-2"></div>
+
+        <form onsubmit="handleVerifyParentStudentCode(event)" class="space-y-3">
+          <div class="space-y-1">
+            <label for="parentCodeInput" class="block text-xs font-bold text-slate-700 flex items-center gap-1">
+              <i data-lucide="hash" class="w-3.5 h-3.5 text-indigo-600"></i>
+              <span>Mã học sinh *</span>
+            </label>
+            <input
+              type="text"
+              id="parentCodeInput"
+              required
+              maxlength="8"
+              oninput="this.value = this.value.toUpperCase(); onParentCodeInputTyping(this.value);"
+              placeholder="VD: AA012345"
+              class="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-indigo-200 bg-indigo-50/30 font-mono font-extrabold uppercase tracking-wider text-slate-900 placeholder:font-sans placeholder:font-normal placeholder:tracking-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+            >
+          </div>
+
+          <div id="parentClassPasswordFieldWrapper" class="space-y-1">
+            <label for="parentClassPasswordInput" class="block text-xs font-bold text-slate-700 flex items-center justify-between gap-1">
+              <span class="flex items-center gap-1">
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>
+                <span>Mật khẩu</span>
+              </span>
+              <span class="text-[11px] font-normal italic text-slate-400">có thể không cần nhập</span>
+            </label>
+            <input
+              type="password"
+              id="parentClassPasswordInput"
+              placeholder="có thể không cần nhập"
+              class="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50/50 font-bold text-slate-900 placeholder:font-normal placeholder:italic placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+            >
+          </div>
+
+          <div id="parentCodeErrorBox" class="hidden p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold"></div>
+
+          <button
+            type="submit"
+            class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs sm:text-sm font-extrabold shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5"
+          >
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+            <span>Truy cập hồ sơ học sinh</span>
+          </button>
+        </form>
       </div>
 
-      <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3">
-        <h4 class="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="calendar" class="w-4 h-4 text-indigo-600"></i>
-          <span>Lịch sử các ngày học của con</span>
-        </h4>
-        <div id="parentAttendanceGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+      <!-- Nội dung sau khi xác thực Mã học sinh thành công -->
+      <div id="parentAuthenticatedContent" class="hidden space-y-3.5">
+        <div id="parentOverviewCard" class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3"></div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="book-open-check" class="w-4 h-4 text-amber-500"></i>
+              <span>Bài tập & Phiếu trả lời Online</span>
+            </h4>
+          </div>
+          <div id="studentHomeworkCardsList" class="space-y-2"></div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3">
+          <h4 class="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
+            <i data-lucide="calendar" class="w-4 h-4 text-indigo-600"></i>
+            <span>Lịch sử các ngày học của con</span>
+          </h4>
+          <div id="parentAttendanceGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+        </div>
       </div>
     </div>
 
@@ -1323,61 +1384,12 @@
           </div>
         </div>
 
-        <div class="space-y-2 bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80">
-          <label class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-            <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600"></i>
-            <span>Lịch & Giờ học *</span>
-          </label>
-
-          <div class="flex flex-wrap gap-1.5" id="newClassDayPills"></div>
-          <div id="newClassDayScheduleSlots" class="space-y-2 pt-1"></div>
-        </div>
-
-        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modalCreateClass')" class="px-3.5 py-1.5 text-xs text-slate-500 font-semibold hover:text-slate-800">Hủy</button>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm transition active:scale-95">Tạo lớp</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ==================== MODAL CÀI ĐẶT LỚP HỌC ==================== -->
-  <div id="modalEditClass" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-4 sm:p-5 border border-slate-200/90 shadow-2xl space-y-3.5 max-h-[92vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-        <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
-          <i data-lucide="settings" class="w-4 h-4 text-indigo-600"></i>
-          <span>Cài đặt lớp học</span>
-        </h3>
-        <button type="button" onclick="closeModal('modalEditClass')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <form onsubmit="handleSaveClassSettings(event)" class="space-y-3">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Tên lớp *</label>
-          <input type="text" id="editClassNameInput" required class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-bold">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Học phí mỗi buổi (VNĐ) *</label>
-          <input type="number" id="editClassFeeInput" step="5000" required class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-bold text-indigo-700">
-          <label class="flex items-center space-x-1.5 text-[11px] text-slate-500 font-medium mt-1 cursor-pointer">
-            <input type="checkbox" id="syncStudentFeesCheckbox" checked class="rounded text-indigo-600">
-            <span>Cập nhật học phí này cho toàn bộ học sinh trong lớp</span>
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
+            <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-600"></i>
+            <span>Mật khẩu lớp (Tùy chọn - Không bắt buộc)</span>
           </label>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2.5">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Phòng học *</label>
-            <input type="text" id="editClassRoomInput" required class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-bold">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Mã lớp</label>
-            <input type="text" id="editClassCodeInput" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-mono text-xs uppercase font-bold">
-          </div>
+          <input type="text" id="newClassPasswordInput" placeholder="Để trống nếu không cần mật khẩu khi PH nhập mã HS" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-medium bg-slate-50/60">
         </div>
 
         <div class="space-y-2 bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80">
@@ -1503,24 +1515,24 @@
         </div>
         <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">SĐT Phụ Huynh</label>
-            <input type="text" id="editStudentParentPhone" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-mono font-medium bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Phòng học *</label>
+            <input type="text" id="editClassRoomInput" required class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-bold">
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">Tên phụ huynh</label>
-            <input type="text" id="editStudentParentName" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-medium bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Mã lớp</label>
+            <input type="text" id="editClassCodeInput" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-mono text-xs uppercase font-bold">
           </div>
         </div>
-        <div class="flex justify-end pt-1">
-          <button type="submit" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5 active:scale-95">
-            <i data-lucide="check" class="w-3.5 h-3.5"></i>
-            <span>Lưu thay đổi</span>
-          </button>
-        </div>
-      </form>
 
-      <div class="space-y-1.5">
-        <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
+            <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-600"></i>
+            <span>Mật khẩu lớp (Tùy chọn - Không bắt buộc)</span>
+          </label>
+          <input type="text" id="editClassPasswordInput" placeholder="Để trống nếu không yêu cầu mật khẩu" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-medium bg-slate-50/60">
+        </div>
+
+        <div class="space-y-2 bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80">
           <i data-lucide="calendar-days" class="w-3.5 h-3.5 text-indigo-600"></i>
           <span>Lịch chi tiết (Bấm ô để đổi trạng thái)</span>
         </h4>
@@ -1728,20 +1740,20 @@
       </div>
 
     </div>
-  </div>
-
-  <!-- ==================== MENU TẠO MỚI (+) ==================== -->
-  <div id="quickCreateActionMenu" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" onclick="if(event.target === this) closeQuickActionMenu()">
-    <div class="bg-white rounded-3xl max-w-[320px] sm:max-w-xs w-full p-4 sm:p-5 border border-slate-200/90 shadow-2xl space-y-3 mx-auto">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-        <div class="flex items-center gap-1.5">
-          <div class="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-            <i data-lucide="plus" class="w-4 h-4"></i>
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 id="detailStudentHeaderTitle" class="font-extrabold text-slate-900 text-sm sm:text-base">Hồ sơ học sinh</h3>
+          <div class="flex items-center gap-1.5 mt-1">
+            <span class="text-[11px] text-slate-500 font-semibold">Mã học sinh:</span>
+            <span id="detailStudentCodeBadge" class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-extrabold text-xs tracking-wider">AA012345</span>
+            <button type="button" onclick="copyDetailStudentCode()" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10.5px] font-bold transition flex items-center gap-1" title="Sao chép mã gửi cho phụ huynh">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>Sao chép</span>
+            </button>
           </div>
-          <h4 class="font-bold text-slate-900 text-xs sm:text-sm">Tạo mới</h4>
         </div>
-        <button onclick="closeQuickActionMenu()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        <button onclick="closeModal('modalStudentDetail')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
@@ -2282,18 +2294,90 @@
     let tempSelectedFinanceDates = [];
     let activePriceEditTarget = null;
 
-    let formSchedulesState = {
-      edit: [],
-      new: [
-        { day: 'Thứ 2', startTime: '18:00', endTime: '19:30' },
-        { day: 'Thứ 5', startTime: '18:00', endTime: '19:30' }
-      ]
-    };
-
-    let activeYtDropdownTarget = null;
-
     function getStorageKeyPrefix() {
       return (currentUser && currentUser.id) ? `dipi_user_${currentUser.id}` : 'dipi_guest';
+    }
+
+    function getTeacherNamespaceLetters() {
+      const raw = (currentUser && (currentUser.id || currentUser.email))
+        ? `${currentUser.id}_${currentUser.email || ''}`
+        : (localStorage.getItem('dipi_guest_device_ns') || (() => {
+            const rnd = Math.random().toString(36).substring(2, 8).toUpperCase();
+            localStorage.setItem('dipi_guest_device_ns', rnd);
+            return rnd;
+          })());
+      let hash = 2166136261;
+      for (let i = 0; i < raw.length; i++) {
+        hash ^= raw.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      const val = (hash >>> 0) % 676; // 26 * 26 = 676 tổ hợp 2 chữ cái (AA -> ZZ)
+      const firstChar = String.fromCharCode(65 + Math.floor(val / 26));
+      const secondChar = String.fromCharCode(65 + (val % 26));
+      return `${firstChar}${secondChar}`;
+    }
+
+    function isValidStudentCodeFormat(code) {
+      return /^[A-Z]{2}\d{6}$/.test(code) && !/(\d)\1\1/.test(code);
+    }
+
+    function getAllExistingStudentCodesSet() {
+      const codes = new Set();
+      Object.values(classStudentsMap).forEach(list => {
+        (list || []).forEach(st => {
+          if (st && st.studentCode) codes.add(String(st.studentCode).toUpperCase());
+        });
+      });
+      return codes;
+    }
+
+    function generateUniqueStudentCode(extraUsedSet = null) {
+      const prefixLetters = getTeacherNamespaceLetters();
+      const used = getAllExistingStudentCodesSet();
+      if (extraUsedSet) extraUsedSet.forEach(c => used.add(c));
+
+      let code = '';
+      let attempts = 0;
+      do {
+        let digits = '';
+        for (let i = 0; i < 6; i++) {
+          let d;
+          do {
+            if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+              const arr = new Uint32Array(1);
+              crypto.getRandomValues(arr);
+              d = String(arr[0] % 10);
+            } else {
+              d = String(Math.floor(Math.random() * 10));
+            }
+          } while (i >= 2 && digits[i - 1] === d && digits[i - 2] === d);
+          digits += d;
+        }
+        code = `${prefixLetters}${digits}`;
+        attempts++;
+      } while ((used.has(code) || !isValidStudentCodeFormat(code)) && attempts < 500);
+
+      if (extraUsedSet) extraUsedSet.add(code);
+      return code;
+    }
+
+    function ensureAllStudentsHaveUniqueCodes() {
+      const used = new Set();
+      let changed = false;
+      Object.keys(classStudentsMap).forEach(clsId => {
+        const list = classStudentsMap[clsId] || [];
+        list.forEach(st => {
+          const existing = st.studentCode ? String(st.studentCode).trim().toUpperCase() : '';
+          if (!existing || !isValidStudentCodeFormat(existing) || used.has(existing)) {
+            st.studentCode = generateUniqueStudentCode(used);
+            changed = true;
+          } else {
+            st.studentCode = existing;
+            used.add(existing);
+          }
+        });
+      });
+      return changed;
     }
 
     function loadScopedUserData() {
@@ -2330,6 +2414,8 @@
         try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
       }
 
+      const codesBackfilled = ensureAllStudentsHaveUniqueCodes();
+
       const savedSelectedClassId = localStorage.getItem('dipi_ui_class_id');
       const savedWasSelected = localStorage.getItem('dipi_ui_class_selected') === '1';
 
@@ -2343,6 +2429,10 @@
 
       isClassSelected = savedWasSelected && Boolean(currentClassId);
       students = getStudentsForClass(currentClassId);
+
+      if (codesBackfilled) {
+        saveAllToLocalStorage(false);
+      }
 
       syncActiveAttendanceDateForCurrentClass();
       syncFinanceDatesForCurrentClass();
@@ -2455,6 +2545,7 @@
         }
 
         if (hasUpdated) {
+          ensureAllStudentsHaveUniqueCodes();
           if (currentClassId !== ALL_CLASSES_ID && (!currentClassId || !classesList.some(c => c.id === currentClassId))) {
             currentClassId = classesList.length > 0 ? classesList[0].id : null;
           }
@@ -2934,8 +3025,9 @@
               >
               <span class="text-xs font-extrabold text-slate-400 w-6 text-center shrink-0">${idx + 1}</span>
               <div onclick="openStudentDetailModal('${s.id}')" class="cursor-pointer min-w-0 flex-1 group" title="${s.name}">
-                <div class="flex items-center gap-1.5 min-w-0">
+                <div class="flex items-center gap-1.5 min-w-0 flex-wrap">
                   <span class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-indigo-600 transition truncate">${displayName}</span>
+                  <span class="text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200/80">${s.studentCode || ''}</span>
                   ${classTag}
                 </div>
                 <div class="text-[10.5px] text-slate-500 font-semibold mt-0.5 flex items-center gap-1.5">
@@ -3159,6 +3251,8 @@
       document.getElementById('editClassRoomInput').value = cls.room || 'P.101';
       document.getElementById('editClassCodeInput').value = cls.code || 'TA';
       document.getElementById('editClassFeeInput').value = cls.fee_per_session || 40000;
+      const pwdInp = document.getElementById('editClassPasswordInput');
+      if (pwdInp) pwdInp.value = cls.classPassword || '';
       formSchedulesState.edit = Array.isArray(cls.schedules) && cls.schedules.length > 0
         ? JSON.parse(JSON.stringify(cls.schedules))
         : [{ day: 'Thứ 3', startTime: '19:30', endTime: '21:00' }];
@@ -3174,6 +3268,7 @@
       const room = document.getElementById('editClassRoomInput')?.value.trim() || 'P.101';
       const code = document.getElementById('editClassCodeInput')?.value.trim() || 'TA';
       const fee = Number(document.getElementById('editClassFeeInput')?.value) || 40000;
+      const classPassword = document.getElementById('editClassPasswordInput')?.value.trim() || '';
       const syncStudentFees = document.getElementById('syncStudentFeesCheckbox')?.checked;
 
       if (formSchedulesState.edit.length === 0) {
@@ -3185,6 +3280,7 @@
       cls.room = room;
       cls.code = code;
       cls.fee_per_session = fee;
+      cls.classPassword = classPassword;
       cls.schedules = JSON.parse(JSON.stringify(formSchedulesState.edit));
       cls.days = cls.schedules.map(s => s.day);
       cls.timeSlot = `${cls.schedules[0].startTime.replace(':', 'h')} - ${cls.schedules[0].endTime.replace(':', 'h')}`;
@@ -3207,6 +3303,8 @@
       document.getElementById('newClassRoomInput').value = 'P.101';
       document.getElementById('newClassCodeInput').value = '';
       document.getElementById('newClassFeeInput').value = 40000;
+      const pwdInp = document.getElementById('newClassPasswordInput');
+      if (pwdInp) pwdInp.value = '';
       formSchedulesState.new = [
         { day: 'Thứ 2', startTime: '18:00', endTime: '19:30' },
         { day: 'Thứ 5', startTime: '18:00', endTime: '19:30' }
@@ -3221,6 +3319,7 @@
       const room = document.getElementById('newClassRoomInput').value.trim() || 'P.101';
       const code = document.getElementById('newClassCodeInput').value.trim() || 'TA';
       const fee = Number(document.getElementById('newClassFeeInput').value) || 40000;
+      const classPassword = document.getElementById('newClassPasswordInput')?.value.trim() || '';
 
       if (formSchedulesState.new.length === 0) {
         showUndoToast('Vui lòng chọn ít nhất 1 ngày học trong tuần...');
@@ -3246,6 +3345,7 @@
         class_name: name,
         code,
         room,
+        classPassword,
         timeSlot,
         days,
         schedules,
@@ -3453,6 +3553,7 @@
       if (!classStudentsMap[targetClassId]) classStudentsMap[targetClassId] = [];
       classStudentsMap[targetClassId].push({
         id: `HS_${Date.now()}`,
+        studentCode: generateUniqueStudentCode(),
         name,
         pricePerSession: fee,
         parentPhone,
@@ -3567,6 +3668,7 @@
         dates.forEach(d => { hist[d] = 'unrecorded'; });
         classStudentsMap[targetClassId].push({
           id: `HS_${Date.now()}_${i}`,
+          studentCode: generateUniqueStudentCode(),
           name: item.name,
           pricePerSession: fee,
           parentPhone: item.phone || '',
@@ -5032,9 +5134,15 @@
       const found = findStudentAndClassById(studentId);
       const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
+      if (!s.studentCode) {
+        s.studentCode = generateUniqueStudentCode();
+        saveAllToLocalStorage(true);
+      }
       activeDetailStudent = s;
 
       document.getElementById('detailStudentHeaderTitle').innerText = s.name;
+      const codeBadge = document.getElementById('detailStudentCodeBadge');
+      if (codeBadge) codeBadge.innerText = s.studentCode;
       document.getElementById('editStudentName').value = s.name || '';
       document.getElementById('editStudentFeePerSession').value = s.pricePerSession || 40000;
       document.getElementById('editStudentParentPhone').value = s.parentPhone || '';
@@ -5069,6 +5177,18 @@
         }).join('');
       }
       openModal('modalStudentDetail');
+    }
+
+    function copyDetailStudentCode() {
+      if (!activeDetailStudent || !activeDetailStudent.studentCode) return;
+      const code = activeDetailStudent.studentCode;
+      const tempInp = document.createElement('input');
+      tempInp.value = code;
+      document.body.appendChild(tempInp);
+      tempInp.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(tempInp);
+      showUndoToast(`Đã sao chép mã học sinh: ${code}`);
     }
 
     function toggleDetailStudentHistory(dateStr) {
@@ -5126,10 +5246,14 @@
       if (!tbody) return;
       tbody.innerHTML = classesList.map(cls => {
         const count = (classStudentsMap[cls.id] || []).length;
+        const hasPwd = Boolean(cls.classPassword && cls.classPassword.trim());
         return `
           <tr onclick="onClassChange('${cls.id}'); switchTab('attendance');" class="bg-white text-slate-800 hover:bg-slate-50 cursor-pointer transition">
             <td class="py-2.5 px-3 sm:px-4 font-bold text-slate-900">
-              <div class="break-words whitespace-normal leading-tight line-clamp-2">${cls.class_name}</div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="break-words whitespace-normal leading-tight line-clamp-2">${cls.class_name}</span>
+                ${hasPwd ? `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-amber-50 text-amber-700 border border-amber-200 text-[9.5px] font-bold" title="Lớp có đặt mật khẩu bảo vệ"><i data-lucide="lock" class="w-2.5 h-2.5"></i> Có MK</span>` : ''}
+              </div>
             </td>
             <td class="py-2.5 px-2 sm:px-3 text-center font-mono text-indigo-700 font-semibold">${cls.timeSlot || '18h00 - 19h30'}</td>
             <td class="py-2.5 px-1 sm:px-2 text-center font-bold text-slate-800">${count} HS</td>
@@ -5139,7 +5263,85 @@
       }).join('');
     }
 
-    let selectedParentStudentId = null;
+    let selectedParentStudentId = localStorage.getItem('dipi_parent_verified_student_id') || null;
+
+    function findStudentByCodeAcrossClasses(codeInput) {
+      const normalized = String(codeInput || '').trim().toUpperCase();
+      if (!normalized) return null;
+      for (const cls of classesList) {
+        const list = classStudentsMap[cls.id] || [];
+        const st = list.find(s => String(s.studentCode || '').trim().toUpperCase() === normalized);
+        if (st) {
+          return {
+            student: Object.assign({}, st, { _classId: cls.id, _className: cls.class_name }),
+            classObj: cls
+          };
+        }
+      }
+      return null;
+    }
+
+    function onParentCodeInputTyping(val) {
+      const match = findStudentByCodeAcrossClasses(val);
+      const pwdInp = document.getElementById('parentClassPasswordInput');
+      const errBox = document.getElementById('parentCodeErrorBox');
+      errBox?.classList.add('hidden');
+      if (pwdInp) {
+        if (match && match.classObj && match.classObj.classPassword && match.classObj.classPassword.trim() !== '') {
+          pwdInp.classList.add('border-amber-300', 'bg-amber-50/30');
+          pwdInp.classList.remove('border-slate-200', 'bg-slate-50/50');
+        } else {
+          pwdInp.classList.remove('border-amber-300', 'bg-amber-50/30');
+          pwdInp.classList.add('border-slate-200', 'bg-slate-50/50');
+        }
+      }
+    }
+
+    function handleVerifyParentStudentCode(e) {
+      e.preventDefault();
+      const codeVal = document.getElementById('parentCodeInput')?.value || '';
+      const pwdVal = document.getElementById('parentClassPasswordInput')?.value || '';
+      const errBox = document.getElementById('parentCodeErrorBox');
+      const match = findStudentByCodeAcrossClasses(codeVal);
+
+      if (!match) {
+        if (errBox) {
+          errBox.innerText = 'Không tìm thấy mã học sinh này. Vui lòng kiểm tra lại với giáo viên.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
+      const requiredPwd = (match.classObj?.classPassword || '').trim();
+      if (requiredPwd && pwdVal.trim() !== requiredPwd) {
+        if (errBox) {
+          errBox.innerText = 'Mật khẩu lớp không chính xác. Vui lòng nhập đúng mật khẩu do giáo viên cung cấp.';
+          errBox.classList.remove('hidden');
+        }
+        return;
+      }
+
+      errBox?.classList.add('hidden');
+      selectedParentStudentId = match.student.id;
+      localStorage.setItem('dipi_parent_verified_student_id', selectedParentStudentId);
+      renderParentView();
+      showUndoToast(`Đã mở hồ sơ học sinh ${match.student.name}!`);
+    }
+
+    function logoutParentStudentCode() {
+      selectedParentStudentId = null;
+      localStorage.removeItem('dipi_parent_verified_student_id');
+      const codeInp = document.getElementById('parentCodeInput');
+      const pwdInp = document.getElementById('parentClassPasswordInput');
+      if (codeInp) codeInp.value = '';
+      if (pwdInp) {
+        pwdInp.value = '';
+        pwdInp.classList.remove('border-amber-300', 'bg-amber-50/30');
+        pwdInp.classList.add('border-slate-200', 'bg-slate-50/50');
+      }
+      document.getElementById('parentCodeErrorBox')?.classList.add('hidden');
+      renderParentView();
+    }
 
     function switchRole(role) {
       currentRole = role;
@@ -5167,47 +5369,63 @@
       safeCreateIcons();
     }
 
-    function onParentStudentChange(val) {
-      selectedParentStudentId = val;
-      renderParentView();
-    }
-
     function renderParentView() {
       const allStudents = getStudentsForClass(ALL_CLASSES_ID);
-      const sel = document.getElementById('parentStudentSelect');
-      if (sel) {
-        if (!selectedParentStudentId && allStudents.length > 0) selectedParentStudentId = allStudents[0].id;
-        sel.innerHTML = allStudents.map(s => `<option value="${s.id}" class="bg-white text-slate-900 font-bold" ${s.id === selectedParentStudentId ? 'selected' : ''}>${s.name}</option>`).join('');
+      const student = selectedParentStudentId
+        ? allStudents.find(s => s.id === selectedParentStudentId)
+        : null;
+
+      const gateCard = document.getElementById('parentCodeGateCard');
+      const authContent = document.getElementById('parentAuthenticatedContent');
+      const bannerBadge = document.getElementById('parentActiveStudentBannerBadge');
+      const logoutBtn = document.getElementById('btnParentLogoutCode');
+
+      if (!student) {
+        gateCard?.classList.remove('hidden');
+        authContent?.classList.add('hidden');
+        if (bannerBadge) bannerBadge.innerText = 'Chưa nhập mã HS';
+        logoutBtn?.classList.add('hidden');
+        safeCreateIcons();
+        return;
       }
 
-      const student = allStudents.find(s => s.id === selectedParentStudentId) || allStudents[0];
+      gateCard?.classList.add('hidden');
+      authContent?.classList.remove('hidden');
+      if (bannerBadge) bannerBadge.innerText = `${student.name} (${student.studentCode || ''})`;
+      logoutBtn?.classList.remove('hidden');
+
       const card = document.getElementById('parentOverviewCard');
       const hwListEl = document.getElementById('studentHomeworkCardsList');
       const grid = document.getElementById('parentAttendanceGrid');
-      if (!student) return;
 
       if (card) {
         card.innerHTML = `
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h3 class="font-extrabold text-base text-slate-900">${student.name}</h3>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-extrabold text-base text-slate-900">${student.name}</h3>
+                <span class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-extrabold text-xs">${student.studentCode || ''}</span>
+              </div>
               <div class="text-xs text-slate-500 mt-0.5">Lớp: <strong class="text-indigo-700">${student._className || ''}</strong></div>
             </div>
             <div class="flex items-center gap-1.5">
-              <button type="button" onclick="openTuitionNoticeModal('${student.id}')" class="px-3 py-1 rounded-xl text-xs font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-2xs transition">
+              <button type="button" onclick="openTuitionNoticeModal('${student.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-2xs transition">
                 Phiếu học phí
               </button>
-              <span class="px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800">Đang theo học</span>
+              <button type="button" onclick="logoutParentStudentCode()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+                Đổi mã HS
+              </button>
             </div>
           </div>
         `;
       }
 
       if (hwListEl) {
-        if (homeworks.length === 0) {
-          hwListEl.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">Hiện chưa có bài tập nào được giao.</div>`;
+        const classHomeworks = homeworks.filter(hw => !hw.classId || hw.classId === student._classId);
+        if (classHomeworks.length === 0) {
+          hwListEl.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">Hiện chưa có bài tập nào được giao cho lớp này.</div>`;
         } else {
-          hwListEl.innerHTML = homeworks.map(hw => {
+          hwListEl.innerHTML = classHomeworks.map(hw => {
             const sub = homeworkSubmissions.find(x => x.homeworkId === hw.id && x.studentId === student.id);
             return `
               <div class="p-3 rounded-2xl border border-slate-200 bg-slate-50/60 flex items-center justify-between gap-2">
@@ -5238,6 +5456,7 @@
           `;
         }).join('');
       }
+      safeCreateIcons();
     }
 
     function handleQuickActionPlus() {
