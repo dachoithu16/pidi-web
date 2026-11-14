@@ -1616,16 +1616,6 @@
               <span>Tải ảnh QR lên</span>
             </label>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[11px] text-slate-500 font-semibold shrink-0">Tên ngân hàng:</span>
-            <input
-              type="text"
-              id="teacherBankNameInput"
-              placeholder="VD: BIDV, Vietcombank, MB..."
-              oninput="handleTeacherBankNameChange(this.value)"
-              class="flex-1 px-2.5 py-1 text-xs rounded-lg border border-slate-300 bg-white font-bold uppercase text-slate-800"
-            >
-          </div>
         </div>
       </div>
 
@@ -1714,14 +1704,11 @@
           </div>
 
           <div class="pt-1 flex justify-center">
-            <div id="tuitionQrOuterBox" class="border-2 border-dashed border-[#69c2c9] bg-white rounded-2xl px-4 py-3 text-center space-y-1.5 min-w-[168px]">
-              <div id="tuitionQrTitle" class="text-[10px] font-extrabold uppercase tracking-wider text-[#2d8a91]">
+            <div id="tuitionQrOuterBox" class="border-2 border-dashed border-[#69c2c9] bg-white rounded-2xl px-2.5 py-2 text-center space-y-1">
+              <div id="tuitionQrTitle" class="text-[8.5px] font-bold uppercase tracking-wider text-[#2d8a91] leading-none">
                 MÃ THANH TOÁN
               </div>
               <div id="tuitionQrImageWrapper" class="flex items-center justify-center"></div>
-              <div id="tuitionBankNameDisplay" class="text-[11px] font-bold text-slate-600 tracking-wide uppercase">
-                BIDV
-              </div>
             </div>
           </div>
 
@@ -4232,6 +4219,8 @@
       const price = Number(student.pricePerSession) || 40000;
       const history = student.attendanceHistory || {};
       const paidList = Array.isArray(student.paidSessions) ? student.paidSessions : [];
+      const paidPeriods = Array.isArray(student.paidPeriods) ? student.paidPeriods : [];
+      const periodKey = getActiveFinancePeriodKey();
 
       let presentSessionsCount = 0;
       let attendedDateLabels = [];
@@ -4250,7 +4239,9 @@
       const finalAmount = presentSessionsCount * price;
       const remaining = unpaidPresentSessions.length * price;
       const paid = Math.max(0, finalAmount - remaining);
-      const isFullyPaid = presentSessionsCount > 0 && unpaidPresentSessions.length === 0;
+      const isFullyPaid = presentSessionsCount > 0
+        ? (unpaidPresentSessions.length === 0)
+        : (paidPeriods.includes(periodKey) || (selectedFinanceDates.length > 0 && selectedFinanceDates.every(d => paidList.includes(d))));
 
       return {
         presentCount: presentSessionsCount,
@@ -4381,7 +4372,8 @@
       if (!s.paidPeriods) s.paidPeriods = [];
       const periodKey = getActiveFinancePeriodKey();
       if (!s.paidPeriods.includes(periodKey)) s.paidPeriods.push(periodKey);
-      selectedFinanceDates.forEach(d => { if (!s.paidSessions.includes(d)) s.paidSessions.push(d); });
+      const datesToMark = selectedFinanceDates.length > 0 ? selectedFinanceDates : getAllKnownDatesForCurrentScope();
+      datesToMark.forEach(d => { if (!s.paidSessions.includes(d)) s.paidSessions.push(d); });
       students = getStudentsForClass(currentClassId);
       saveAllToLocalStorage(true);
       renderFinanceTab();
@@ -4394,7 +4386,8 @@
       if (!s) return;
       const periodKey = getActiveFinancePeriodKey();
       s.paidPeriods = (s.paidPeriods || []).filter(p => p !== periodKey);
-      s.paidSessions = (s.paidSessions || []).filter(d => !selectedFinanceDates.includes(d));
+      const datesToClear = selectedFinanceDates.length > 0 ? selectedFinanceDates : getAllKnownDatesForCurrentScope();
+      s.paidSessions = (s.paidSessions || []).filter(d => !datesToClear.includes(d));
       students = getStudentsForClass(currentClassId);
       saveAllToLocalStorage(true);
       renderFinanceTab();
@@ -4438,7 +4431,7 @@
 
     const TUITION_THEMES = {
       sakura: {
-        name: 'Anh Đào',
+        name: 'Đào',
         dotColor: 'bg-[#f29cb5]',
         cardBg: '#fffafb',
         cardBorder: '#fbcfe8',
@@ -4466,7 +4459,7 @@
         qrTitle: '#2d8a91'
       },
       sunset: {
-        name: 'Nắng Mai',
+        name: 'Nắng',
         dotColor: 'bg-[#f59e0b]',
         cardBg: '#fffdf7',
         cardBorder: '#fde68a',
@@ -4492,35 +4485,8 @@
         qrBorder: '#f59e0b',
         qrTitle: '#b45309'
       },
-      blue: {
-        name: 'Xanh Biển',
-        dotColor: 'bg-[#2563eb]',
-        cardBg: '#f6faff',
-        cardBorder: '#bfdbfe',
-        bannerGrad: 'linear-gradient(90deg, #1d4ed8 0%, #2563eb 50%, #38bdf8 100%)',
-        decorSvg: `
-          <path d="M0 44 Q 80 28, 160 44 T 320 44 T 400 40 L 400 60 L 0 60 Z" fill="#ffffff" opacity="0.22"/>
-          <circle cx="42" cy="18" r="12" fill="#ffffff" opacity="0.16"/>
-          <circle cx="358" cy="22" r="16" fill="#ffffff" opacity="0.18"/>
-        `,
-        dividerColor: '#dbeafe',
-        iconBg: '#dbeafe',
-        iconText: '#2563eb',
-        totalBg: '#eff6ff',
-        totalBorder: '#93c5fd',
-        totalTitle: '#1d4ed8',
-        totalAmount: '#1e3a8a',
-        pillBg: '#eff6ff',
-        pillBorder: '#93c5fd',
-        pillText: '#1e40af',
-        remarkHeading: '#1d4ed8',
-        remarkBg: '#eff6ff',
-        remarkBorder: '#bfdbfe',
-        qrBorder: '#2563eb',
-        qrTitle: '#1d4ed8'
-      },
       green: {
-        name: 'Xanh Lá',
+        name: 'Mầm',
         dotColor: 'bg-[#16a34a]',
         cardBg: '#f6fdf8',
         cardBorder: '#bbf7d0',
@@ -4546,8 +4512,35 @@
         qrBorder: '#16a34a',
         qrTitle: '#15803d'
       },
+      blue: {
+        name: 'Sóng',
+        dotColor: 'bg-[#2563eb]',
+        cardBg: '#f6faff',
+        cardBorder: '#bfdbfe',
+        bannerGrad: 'linear-gradient(90deg, #1d4ed8 0%, #2563eb 50%, #38bdf8 100%)',
+        decorSvg: `
+          <path d="M0 44 Q 80 28, 160 44 T 320 44 T 400 40 L 400 60 L 0 60 Z" fill="#ffffff" opacity="0.22"/>
+          <circle cx="42" cy="18" r="12" fill="#ffffff" opacity="0.16"/>
+          <circle cx="358" cy="22" r="16" fill="#ffffff" opacity="0.18"/>
+        `,
+        dividerColor: '#dbeafe',
+        iconBg: '#dbeafe',
+        iconText: '#2563eb',
+        totalBg: '#eff6ff',
+        totalBorder: '#93c5fd',
+        totalTitle: '#1d4ed8',
+        totalAmount: '#1e3a8a',
+        pillBg: '#eff6ff',
+        pillBorder: '#93c5fd',
+        pillText: '#1e40af',
+        remarkHeading: '#1d4ed8',
+        remarkBg: '#eff6ff',
+        remarkBorder: '#bfdbfe',
+        qrBorder: '#2563eb',
+        qrTitle: '#1d4ed8'
+      },
       purple: {
-        name: 'Tím Mộng',
+        name: 'Mơ',
         dotColor: 'bg-[#7c3aed]',
         cardBg: '#faf8ff',
         cardBorder: '#ddd6fe',
@@ -4720,9 +4713,6 @@
       const remarkInput = document.getElementById('tuitionRemarkInput');
       if (remarkInput) remarkInput.value = currentRemark;
 
-      const bankInput = document.getElementById('teacherBankNameInput');
-      if (bankInput) bankInput.value = teacherPaymentQr.bankName || 'BIDV';
-
       renderTuitionThemeSelector();
       applyTuitionThemeStyles();
       renderTuitionQrBox();
@@ -4732,21 +4722,21 @@
 
     function renderTuitionQrBox() {
       const qrWrapper = document.getElementById('tuitionQrImageWrapper');
-      const bankDisplay = document.getElementById('tuitionBankNameDisplay');
-      if (bankDisplay) {
-        bankDisplay.innerText = teacherPaymentQr.bankName || 'BIDV';
-      }
       if (!qrWrapper) return;
 
       if (teacherPaymentQr.imageData) {
-        qrWrapper.innerHTML = `<img src="${teacherPaymentQr.imageData}" alt="Mã QR thanh toán" class="w-32 h-32 sm:w-36 sm:h-36 object-contain rounded-xl border border-slate-100 bg-white">`;
+        qrWrapper.innerHTML = `
+          <div class="w-52 h-52 sm:w-56 sm:h-56 rounded-xl overflow-hidden bg-white flex items-center justify-center">
+            <img src="${teacherPaymentQr.imageData}" alt="Mã QR thanh toán" class="w-full h-full object-contain">
+          </div>
+        `;
       } else {
         qrWrapper.innerHTML = `
-          <div onclick="setTuitionEditPanelState(true)" class="w-32 h-32 sm:w-36 sm:h-36 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center justify-center p-2 cursor-pointer hover:bg-slate-100 transition" title="Bấm Sửa để tải ảnh mã QR của bạn lên">
-            <svg viewBox="0 0 100 100" class="w-20 h-20 text-slate-800" fill="currentColor">
+          <div onclick="setTuitionEditPanelState(true)" class="w-48 h-48 sm:w-52 sm:h-52 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center justify-center p-2 cursor-pointer hover:bg-slate-100 transition" title="Bấm Sửa để tải ảnh mã QR của bạn lên">
+            <svg viewBox="0 0 100 100" class="w-28 h-28 text-slate-800" fill="currentColor">
               <path d="M10 10h30v30H10V10zm6 6v18h18V16H16zm6 6h6v6h-6v-6zm38-12h30v30H60V10zm6 6v18h18V16H66zm6 6h6v6h-6v-6zM10 60h30v30H10V60zm6 6v18h18V66H16zm6 6h6v6h-6v-6zm38-12h10v10H60V60zm15 0h15v10H75V60zm-15 15h15v15H60V75zm20 5h10v10H80V80z"/>
             </svg>
-            <span class="text-[9.5px] font-bold text-slate-400 mt-1">Bấm Sửa để thêm QR</span>
+            <span class="text-[10px] font-bold text-slate-400 mt-1.5">Bấm Sửa để thêm QR</span>
           </div>
         `;
       }
@@ -4815,10 +4805,29 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(evt) {
-        teacherPaymentQr.imageData = evt.target?.result || '';
-        saveAllToLocalStorage(true);
-        renderTuitionQrBox();
-        showUndoToast('Đã lưu mã QR thanh toán vĩnh viễn!');
+        const img = new Image();
+        img.onload = function() {
+          const targetSize = 420;
+          const canvas = document.createElement('canvas');
+          canvas.width = targetSize;
+          canvas.height = targetSize;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, targetSize, targetSize);
+
+          const scale = Math.min(targetSize / img.width, targetSize / img.height);
+          const drawW = img.width * scale;
+          const drawH = img.height * scale;
+          const offsetX = (targetSize - drawW) / 2;
+          const offsetY = (targetSize - drawH) / 2;
+          ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+
+          teacherPaymentQr.imageData = canvas.toDataURL('image/png');
+          saveAllToLocalStorage(true);
+          renderTuitionQrBox();
+          showUndoToast('Đã căn chỉnh & lưu mã QR thanh toán vĩnh viễn!');
+        };
+        img.src = evt.target?.result || '';
       };
       reader.readAsDataURL(file);
     }
