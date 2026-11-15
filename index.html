@@ -1213,14 +1213,25 @@
                   <option value="mcq">Trắc nghiệm</option>
                   <option value="short">Điền từ</option>
                 </select>
-                <button
-                  type="button"
-                  onclick="handleQuickAnswerInputApply()"
-                  class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[10.5px] font-bold transition active:scale-95 flex items-center justify-center gap-1"
-                >
-                  <i data-lucide="wand-2" class="w-3 h-3 text-amber-400"></i>
-                  <span>Điền</span>
-                </button>
+                <div class="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onclick="handleQuickAnswerInputApply()"
+                    class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[10.5px] font-bold transition active:scale-95 flex items-center justify-center gap-1"
+                  >
+                    <i data-lucide="wand-2" class="w-3 h-3 text-amber-400"></i>
+                    <span>Điền</span>
+                  </button>
+                  <button
+                    type="button"
+                    onclick="clearAllQuickAnswers()"
+                    class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[10.5px] font-bold transition active:scale-95 flex items-center justify-center gap-1"
+                    title="Xóa hết nội dung và đáp án đã điền"
+                  >
+                    <i data-lucide="trash-2" class="w-3 h-3"></i>
+                    <span>Xóa hết</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1698,7 +1709,7 @@
       <div id="tuitionTeacherEditPanel" class="hidden bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2.5 text-xs">
         <div class="space-y-1">
           <div class="flex items-center justify-between">
-            <label class="font-bold text-slate-700">Nhận xét tháng của học sinh:</label>
+            <label class="font-bold text-slate-700">Nhận xét tháng (để trống nếu không cần):</label>
             <button
               type="button"
               onclick="applyRemarkToWholeClass()"
@@ -1712,7 +1723,7 @@
             id="tuitionRemarkInput"
             rows="4"
             oninput="handleTuitionRemarkChange(this.value)"
-            placeholder="*Unit 1: Back to school&#10;+ Con nhớ, có thể đọc tên các môn học.&#10;+ Học các ngày trong tuần..."
+            placeholder="Để trống sẽ tự động ẩn dòng nhận xét trên phiếu báo thu..."
             class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-pink-400 leading-relaxed"
           ></textarea>
         </div>
@@ -1806,7 +1817,7 @@
             <div id="tuitionAttendedDatesContainer" class="flex flex-wrap items-center justify-center gap-1.5"></div>
           </div>
 
-          <div class="space-y-2 pt-0.5">
+          <div id="tuitionRemarkSection" class="space-y-2 pt-0.5">
             <div id="tuitionRemarkHeading" class="text-center text-[11px] font-extrabold tracking-widest text-[#948b48]">
               --- NHẬN XÉT ---
             </div>
@@ -2383,7 +2394,6 @@
     const VALID_ROLES = ['teacher', 'parent'];
     const VALID_TABS = ['attendance', 'finance', 'homework', 'classes'];
 
-    // Xóa các key điều hướng cũ trong localStorage nếu có để đảm bảo đóng hẳn website và mở lại luôn về trang chủ
     try {
       ['dipi_ui_role', 'dipi_ui_tab', 'dipi_ui_class_selected', 'dipi_ui_class_id', 'dipi_parent_verified_student_id'].forEach(k => localStorage.removeItem(k));
     } catch (e) {}
@@ -2430,7 +2440,6 @@
               };
             }
           } else {
-            // Phiên trình duyệt mới mở (đã đóng hẳn website và mở lại) -> dọn sạch hash cũ nếu trình duyệt tự khôi phục URL
             const hashState = parseNavFromUrlHash();
             if (hashState) {
               try {
@@ -2444,7 +2453,6 @@
         sessionAvailable = false;
       }
 
-      // Fallback sang URL Hash nếu sessionStorage bị hạn chế
       const hashFallback = parseNavFromUrlHash();
       if (hashFallback) return hashFallback;
       return { role: 'teacher', tab: 'attendance', isClassSelected: false, classId: null };
@@ -2544,7 +2552,7 @@
         hash ^= raw.charCodeAt(i);
         hash = Math.imul(hash, 16777619);
       }
-      const val = (hash >>> 0) % 676; // 26 * 26 = 676 tổ hợp 2 chữ cái (AA -> ZZ)
+      const val = (hash >>> 0) % 676;
       const firstChar = String.fromCharCode(65 + Math.floor(val / 26));
       const secondChar = String.fromCharCode(65 + (val % 26));
       return `${firstChar}${secondChar}`;
@@ -3957,6 +3965,8 @@
       document.getElementById('assignmentDeadlineInput').value = nextWeek;
       clearExamPaperUpload();
       clearAnswerFileUpload();
+      const quickInp = document.getElementById('quickAnswerPasteInput');
+      if (quickInp) quickInp.value = '';
       builderAnswerSheet = Array.from({ length: 20 }, (_, i) => ({
         index: i + 1,
         type: 'mcq',
@@ -3965,6 +3975,17 @@
       }));
       renderBuilderAnswerSheet();
       openModal('modalCreateAssignment');
+    }
+
+    function clearAllQuickAnswers() {
+      const quickInp = document.getElementById('quickAnswerPasteInput');
+      if (quickInp) quickInp.value = '';
+      clearAnswerFileUpload();
+      builderAnswerSheet.forEach(item => {
+        item.answer = '';
+      });
+      renderBuilderAnswerSheet();
+      showUndoToast('Đã xóa hết đáp án!');
     }
 
     function renderBuilderAnswerSheet() {
@@ -4061,7 +4082,7 @@
       renderBuilderAnswerSheet();
     }
 
-    const MAX_ASSIGNMENT_FILE_BYTES = 1 * 1024 * 1024; // Giới hạn tối đa 1MB
+    const MAX_ASSIGNMENT_FILE_BYTES = 1 * 1024 * 1024;
 
     async function extractFullDocumentText(file) {
       const lower = file.name.toLowerCase();
@@ -4187,22 +4208,18 @@
       const mode = document.getElementById('quickAnswerTargetMode')?.value || 'auto';
       if (!raw.trim()) return;
 
-      // Chuẩn hóa bảng từ Word/Excel (VD: "1\tA" hoặc dòng "1" đứng ngay trước dòng đáp án)
       const rawLines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
       const normalizedLines = [];
       for (let i = 0; i < rawLines.length; i++) {
         const line = rawLines[i];
-        // Bỏ qua dòng tiêu đề bảng như "Câu | Đáp án" hoặc "STT | Đáp án"
         if (/^(?:stt|câu|question)\b[\s\t\|]*(?:đáp án|answer|key)?$/i.test(line)) continue;
 
-        // Dạng cột bảng cách nhau bởi Tab: "1\tA" hoặc "Câu 1\tlook"
         const tabMatch = line.match(/^(?:câu\s*)?(\d+)\s*[\.\:\)\-]?\t+(.+)$/i);
         if (tabMatch) {
           normalizedLines.push(`${tabMatch[1]}. ${tabMatch[2].trim()}`);
           continue;
         }
 
-        // Dạng số thứ tự nằm riêng 1 dòng (do ô bảng Word tách dòng) và dòng kế tiếp là đáp án
         if (/^(?:câu\s*)?\d+[\.\:\)]?$/i.test(line) && i + 1 < rawLines.length) {
           const nextLine = rawLines[i + 1];
           if (!/^(?:câu\s*)?\d+[\.\:\)\-\t]/i.test(nextLine)) {
@@ -4217,17 +4234,14 @@
       const cleanedText = normalizedLines.join('\n').trim();
       let tokens = [];
 
-      // 1. Tách các mục có đánh số thứ tự (hỗ trợ cả "1.A", "1. were sleeping", "1) A", "Câu 1: A" VÀ viết liền "1b", "14b", "21c")
       const numberedItemPattern = /(?:^|[\s,;])(?:câu\s*)?(\d+)(?:\s*[\.\:\)\-]\s*|\s*(?=[a-dA-D](?:$|[\s,;.\)\]]))\s*)(.+?)(?=(?:[\s,;]+(?:câu\s*)?\d+(?:\s*[\.\:\)\-]|\s*[a-dA-D](?:$|[\s,;.\)\]])))|[\n\r,;]|$)/gi;
       const numberedMatches = Array.from(cleanedText.matchAll(numberedItemPattern));
 
       if (numberedMatches.length >= 2) {
         tokens = numberedMatches.map(m => m[2].trim()).filter(Boolean);
       } else if ((mode === 'mcq' || mode === 'auto') && /^[a-dA-D\s,;]+$/.test(cleanedText)) {
-        // Chuỗi trắc nghiệm liền nhau không đánh số (VD: "ABCD" hoặc "A B C D" hoặc "A, B, C, D")
         tokens = cleanedText.replace(/[\s,;]+/g, '').toUpperCase().split('');
       } else {
-        // Tách theo từng dòng hoặc dấu phẩy / chấm phẩy (hỗ trợ cả "1b" lẫn "3. were sleeping")
         tokens = cleanedText
           .split(/[\n\r,;]+/)
           .map(t => t.trim().replace(/^(?:câu\s*)?\d+(?:\s*[\.\:\)\-]\s*|\s+|(?=[a-dA-D]$))/i, '').trim())
@@ -4238,7 +4252,6 @@
 
       const perPoint = +(10 / tokens.length).toFixed(2);
       builderAnswerSheet = tokens.map((ans, idx) => {
-        // Làm sạch dấu ngoặc/chấm quanh đáp án đơn như "(A)", "A.", "B)"
         const normalizedSingle = ans.trim().replace(/^[\(\[\{]+|[\)\]\}\.]+$/g, '').trim();
         const isSingleMcqLetter = /^[a-dA-D]$/.test(normalizedSingle);
 
@@ -5140,6 +5153,20 @@
       return `${studentId}_${period}`;
     }
 
+    function updateTuitionRemarkSectionVisibility(rawText) {
+      const section = document.getElementById('tuitionRemarkSection');
+      const display = document.getElementById('tuitionRemarkDisplay');
+      const trimmed = String(rawText || '').trim();
+      if (!section || !display) return;
+      if (!trimmed) {
+        display.innerText = '';
+        section.classList.add('hidden');
+      } else {
+        display.innerText = rawText;
+        section.classList.remove('hidden');
+      }
+    }
+
     function openTuitionNoticeModal(studentId) {
       const found = findStudentAndClassById(studentId);
       const s = found ? found.student : students.find(x => x.id === studentId);
@@ -5179,7 +5206,7 @@
       const defaultRemark = `Con chăm ngoan, tích cực phát biểu và nắm vững kiến thức trọng tâm trên lớp.`;
       const currentRemark = tuitionRemarksMap[remarkKey] !== undefined ? tuitionRemarksMap[remarkKey] : defaultRemark;
 
-      document.getElementById('tuitionRemarkDisplay').innerText = currentRemark;
+      updateTuitionRemarkSectionVisibility(currentRemark);
       const remarkInput = document.getElementById('tuitionRemarkInput');
       if (remarkInput) remarkInput.value = currentRemark;
 
@@ -5249,7 +5276,7 @@
       if (!activeTuitionStudentId) return;
       const key = getTuitionRemarkStorageKey(activeTuitionStudentId);
       tuitionRemarksMap[key] = val;
-      document.getElementById('tuitionRemarkDisplay').innerText = val;
+      updateTuitionRemarkSectionVisibility(val);
       saveAllToLocalStorage();
     }
 
@@ -5259,7 +5286,7 @@
       students.forEach(st => {
         tuitionRemarksMap[`${st.id}_${period}`] = val;
       });
-      document.getElementById('tuitionRemarkDisplay').innerText = val;
+      updateTuitionRemarkSectionVisibility(val);
       saveAllToLocalStorage(true);
       showUndoToast(`Đã áp dụng nhận xét này cho toàn bộ ${students.length} học sinh!`);
     }
