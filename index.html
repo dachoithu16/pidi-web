@@ -2483,6 +2483,65 @@ CREATE POLICY "Users manage own app data"
         colorBg: 'bg-[#ffedd5]/80 hover:bg-[#fed7aa] border-[#fb923c] text-slate-900',
         badgeColor: 'bg-[#ea580c] text-white',
         fee_per_session: 40000
+      },
+      {
+        id: 'class_ta_7',
+        class_name: 'LỚP TIẾNG ANH 7',
+        code: 'TA-7',
+        room: 'P.103',
+        schedules: [
+          { day: 'Thứ 2', startTime: '18:00', endTime: '19:30' },
+          { day: 'Thứ 5', startTime: '18:00', endTime: '19:30' }
+        ],
+        days: ['Thứ 2', 'Thứ 5'],
+        timeSlot: '18h00 - 19h30',
+        colorBg: 'bg-[#f3e8ff]/80 hover:bg-[#e9d5ff] border-[#c084fc] text-slate-900',
+        badgeColor: 'bg-[#9333ea] text-white',
+        fee_per_session: 45000
+      },
+      {
+        id: 'class_ta_8',
+        class_name: 'LỚP TIẾNG ANH 8',
+        code: 'TA-8',
+        room: 'P.203',
+        schedules: [
+          { day: 'Thứ 6', startTime: '19:00', endTime: '20:30' }
+        ],
+        days: ['Thứ 6'],
+        timeSlot: '19h00 - 20h30',
+        colorBg: 'bg-[#ffe4e6]/80 hover:bg-[#fecdd3] border-[#fb7185] text-slate-900',
+        badgeColor: 'bg-[#e11d48] text-white',
+        fee_per_session: 50000
+      },
+      {
+        id: 'class_ta_9',
+        class_name: 'LỚP TIẾNG ANH 9 (ÔN THI)',
+        code: 'TA-9',
+        room: 'P.301',
+        schedules: [
+          { day: 'Thứ 2', startTime: '19:45', endTime: '21:15' },
+          { day: 'Thứ 5', startTime: '19:45', endTime: '21:15' }
+        ],
+        days: ['Thứ 2', 'Thứ 5'],
+        timeSlot: '19h45 - 21h15',
+        colorBg: 'bg-[#ccfbf1]/80 hover:bg-[#99f6e4] border-[#2dd4bf] text-slate-900',
+        badgeColor: 'bg-[#0d9488] text-white',
+        fee_per_session: 60000
+      },
+      {
+        id: 'class_ta_3',
+        class_name: 'LỚP TIẾNG ANH 3',
+        code: 'TA-3',
+        room: 'P.104',
+        schedules: [
+          { day: 'Thứ 4', startTime: '17:15', endTime: '18:45' },
+          { day: 'Thứ 6', startTime: '17:15', endTime: '18:45' }
+        ],
+        days: ['Thứ 4', 'Thứ 6'],
+        timeSlot: '17h15 - 18h45',
+        colorBg: 'bg-[#fef3c7]/80 hover:bg-[#fde68a] border-[#f59e0b] text-slate-900',
+        badgeColor: 'bg-[#d97706] text-white',
+        fee_per_session: 40000
       }
     ];
 
@@ -2508,6 +2567,27 @@ CREATE POLICY "Users manage own app data"
       'class_ta_4': [
         { id: '4_01', name: 'Lê Khánh Linh', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
         { id: '4_02', name: 'Nguyễn Thái Sơn', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} }
+      ],
+      'class_ta_7': [
+        { id: '7_01', name: 'Trần Minh Khôi', status: 'unrecorded', paidSessions: [], pricePerSession: 45000, attendanceHistory: {} },
+        { id: '7_02', name: 'Vũ Hà Anh', status: 'unrecorded', paidSessions: [], pricePerSession: 45000, attendanceHistory: {} },
+        { id: '7_03', name: 'Đỗ Gia Huy', status: 'unrecorded', paidSessions: [], pricePerSession: 45000, attendanceHistory: {} }
+      ],
+      'class_ta_8': [
+        { id: '8_01', name: 'Phạm Bảo Ngọc', status: 'unrecorded', paidSessions: [], pricePerSession: 50000, attendanceHistory: {} },
+        { id: '8_02', name: 'Lê Hoàng Nam', status: 'unrecorded', paidSessions: [], pricePerSession: 50000, attendanceHistory: {} },
+        { id: '8_03', name: 'Nguyễn Thảo Vy', status: 'unrecorded', paidSessions: [], pricePerSession: 50000, attendanceHistory: {} }
+      ],
+      'class_ta_9': [
+        { id: '9_01', name: 'Trịnh Quốc Anh', status: 'unrecorded', paidSessions: [], pricePerSession: 60000, attendanceHistory: {} },
+        { id: '9_02', name: 'Hoàng Minh Châu', status: 'unrecorded', paidSessions: [], pricePerSession: 60000, attendanceHistory: {} },
+        { id: '9_03', name: 'Bùi Đức Mạnh', status: 'unrecorded', paidSessions: [], pricePerSession: 60000, attendanceHistory: {} },
+        { id: '9_04', name: 'Đặng Khánh Ngân', status: 'unrecorded', paidSessions: [], pricePerSession: 60000, attendanceHistory: {} }
+      ],
+      'class_ta_3': [
+        { id: '3_01', name: 'Nguyễn Gia Bảo', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
+        { id: '3_02', name: 'Lê Tuệ Nhi', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
+        { id: '3_03', name: 'Phạm Minh Quân', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} }
       ]
     };
 
@@ -2660,6 +2740,33 @@ CREATE POLICY "Users manage own app data"
       return (currentUser && currentUser.id) ? `dipi_user_${currentUser.id}` : 'dipi_guest';
     }
 
+    const DEMO_CLASS_IDS = new Set([
+      'class_ta_6_1', 'class_ta_6_2', 'class_ta_5', 'class_ta_4',
+      'class_ta_7', 'class_ta_8', 'class_ta_9', 'class_ta_3', 'class_ielts'
+    ]);
+
+    function clearAllDemoDataCompletely() {
+      try {
+        [
+          'dipi_guest_classes',
+          'dipi_guest_students',
+          'dipi_guest_homeworks',
+          'dipi_guest_submissions',
+          'dipi_guest_teacher_qr',
+          'dipi_guest_tuition_remarks'
+        ].forEach(k => localStorage.removeItem(k));
+      } catch (e) {}
+
+      classesList = (classesList || []).filter(c => c && !DEMO_CLASS_IDS.has(c.id));
+      Object.keys(classStudentsMap || {}).forEach(clsId => {
+        if (DEMO_CLASS_IDS.has(clsId)) {
+          delete classStudentsMap[clsId];
+        }
+      });
+      homeworks = (homeworks || []).filter(hw => hw && hw.id !== 'HW_DEFAULT_01' && !DEMO_CLASS_IDS.has(hw.classId));
+      homeworkSubmissions = (homeworkSubmissions || []).filter(sub => sub && sub.homeworkId !== 'HW_DEFAULT_01');
+    }
+
     function getTeacherNamespaceLetters() {
       const raw = (currentUser && (currentUser.id || currentUser.email))
         ? `${currentUser.id}_${currentUser.email || ''}`
@@ -2754,20 +2861,31 @@ CREATE POLICY "Users manage own app data"
       try { teacherPaymentQr = savedQr ? JSON.parse(savedQr) : { imageData: '', bankName: 'BIDV' }; } catch (e) { teacherPaymentQr = { imageData: '', bankName: 'BIDV' }; }
       try { tuitionRemarksMap = savedRemarks ? JSON.parse(savedRemarks) : {}; } catch (e) { tuitionRemarksMap = {}; }
 
-      if (savedClasses && savedStudents) {
-        try {
-          classesList = JSON.parse(savedClasses);
-          classStudentsMap = JSON.parse(savedStudents);
-        } catch (e) {
+      if (currentUser && currentUser.id) {
+        // Khi đã đăng nhập tài khoản: xóa hẳn dữ liệu demo khỏi bộ nhớ & localStorage, chỉ giữ dữ liệu thực của tài khoản
+        try { classesList = savedClasses ? JSON.parse(savedClasses) : []; } catch (e) { classesList = []; }
+        try { classStudentsMap = savedStudents ? JSON.parse(savedStudents) : {}; } catch (e) { classStudentsMap = {}; }
+        try { homeworks = savedHomeworks ? JSON.parse(savedHomeworks) : []; } catch (e) { homeworks = []; }
+        try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
+        clearAllDemoDataCompletely();
+      } else {
+        // Chế độ khách dùng thử: nạp các lớp demo mặc định
+        if (savedClasses && savedStudents) {
+          try {
+            classesList = JSON.parse(savedClasses).filter(c => c && c.id !== 'class_ielts');
+            classStudentsMap = JSON.parse(savedStudents);
+            delete classStudentsMap['class_ielts'];
+          } catch (e) {
+            classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
+            classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
+          }
+        } else {
           classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
           classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
         }
-      } else {
-        classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
-        classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
+        try { homeworks = savedHomeworks ? JSON.parse(savedHomeworks) : getDefaultHomeworks(); } catch (e) { homeworks = getDefaultHomeworks(); }
+        try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
       }
-      try { homeworks = savedHomeworks ? JSON.parse(savedHomeworks) : getDefaultHomeworks(); } catch (e) { homeworks = getDefaultHomeworks(); }
-      try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
 
       const codesBackfilled = ensureAllStudentsHaveUniqueCodes();
 
@@ -2863,6 +2981,7 @@ CREATE POLICY "Users manage own app data"
           if (appData.teacherPaymentQr && typeof appData.teacherPaymentQr === 'object') teacherPaymentQr = appData.teacherPaymentQr;
           if (appData.tuitionRemarksMap && typeof appData.tuitionRemarksMap === 'object') tuitionRemarksMap = appData.tuitionRemarksMap;
 
+          clearAllDemoDataCompletely();
           ensureAllStudentsHaveUniqueCodes();
           const navState = readSessionNavState();
           const desiredClassId = currentClassId || navState.classId;
@@ -2886,9 +3005,23 @@ CREATE POLICY "Users manage own app data"
           setCloudSyncBadge('synced', 'Đã đồng bộ user_app_data');
           if (showToastFeedback) showUndoToast('Đã tải dữ liệu từ bảng user_app_data!');
         } else {
-          // Chưa có bản ghi trên user_app_data -> giữ nguyên dữ liệu mặc định
-          setCloudSyncBadge('synced', 'Đang dùng dữ liệu mặc định');
-          if (showToastFeedback) showUndoToast('Tài khoản mới: đang giữ nguyên dữ liệu mặc định.');
+          // Tài khoản mới chưa có dữ liệu trên user_app_data -> xóa hẳn toàn bộ lớp & học sinh demo khỏi bộ nhớ và localStorage
+          classesList = [];
+          classStudentsMap = {};
+          homeworks = [];
+          homeworkSubmissions = [];
+          currentClassId = null;
+          isClassSelected = false;
+          students = [];
+          clearAllDemoDataCompletely();
+
+          saveAllToLocalStorage(false);
+          syncActiveAttendanceDateForCurrentClass();
+          syncFinanceDatesForCurrentClass();
+          renderAll();
+
+          setCloudSyncBadge('synced', 'Tài khoản mới (chưa có lớp)');
+          if (showToastFeedback) showUndoToast('Tài khoản mới: hãy bấm "+ Tạo lớp học đầu tiên" để bắt đầu!');
         }
       } catch (err) {
         console.warn('Lỗi tải dữ liệu từ user_app_data:', err);
