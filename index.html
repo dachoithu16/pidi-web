@@ -778,15 +778,15 @@
 
   <!-- ==================== MODAL TRẠNG THÁI ĐỒNG BỘ ĐÁM MÂY ==================== -->
   <div id="modalCloudSyncInfo" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-md w-full p-5 border border-slate-200/90 shadow-2xl space-y-3.5">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 border border-slate-200/90 shadow-2xl space-y-3.5 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <i data-lucide="cloud-check" class="w-4 h-4"></i>
+            <i data-lucide="database" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-slate-900 text-sm">Đồng bộ Đám mây Đa thiết bị</h3>
-            <p class="text-[11px] text-slate-500">Tự động lưu Thời khóa biểu & Bài tập theo tài khoản Google</p>
+            <h3 class="font-extrabold text-slate-900 text-sm">Cơ sở dữ liệu Đám mây Supabase</h3>
+            <p class="text-[11px] text-slate-500">Lưu trữ chuẩn hóa trên 6 bảng PostgreSQL (Database Tables)</p>
           </div>
         </div>
         <button type="button" onclick="closeModal('modalCloudSyncInfo')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
@@ -801,7 +801,7 @@
         </div>
         <div class="flex justify-between">
           <span class="text-slate-500">Trạng thái:</span>
-          <strong id="syncModalStatusText" class="text-emerald-700">Đã đồng bộ đám mây</strong>
+          <strong id="syncModalStatusText" class="text-emerald-700">Đã đồng bộ Database</strong>
         </div>
         <div class="flex justify-between">
           <span class="text-slate-500">Lần đồng bộ cuối:</span>
@@ -809,14 +809,46 @@
         </div>
       </div>
 
+      <!-- Trạng thái 6 bảng dữ liệu chuẩn -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-[11px] font-bold text-slate-700">
+          <span>Trạng thái 6 bảng Supabase Database:</span>
+          <button
+            type="button"
+            onclick="toggleSqlSchemaBox()"
+            class="text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1"
+          >
+            <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
+            <span>Xem mã SQL tạo bảng</span>
+          </button>
+        </div>
+        <div id="dbTablesStatusGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-[11px]"></div>
+      </div>
+
+      <!-- Khung hiển thị mã SQL khởi tạo 6 bảng + RLS -->
+      <div id="sqlSchemaBoxWrapper" class="hidden space-y-2 bg-slate-900 text-slate-100 p-3 rounded-2xl border border-slate-700">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-[10.5px] font-bold text-amber-300">Chạy mã này trong Supabase → SQL Editor:</span>
+          <button
+            type="button"
+            onclick="copySupabaseSchemaSql()"
+            class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10.5px] font-bold flex items-center gap-1 transition active:scale-95"
+          >
+            <i data-lucide="copy" class="w-3 h-3"></i>
+            <span>Sao chép SQL</span>
+          </button>
+        </div>
+        <pre id="supabaseSchemaSqlCode" class="text-[10px] font-mono leading-relaxed text-emerald-300 max-h-48 overflow-y-auto whitespace-pre-wrap select-all"></pre>
+      </div>
+
       <div class="flex items-center justify-between gap-2 pt-1">
         <button type="button" onclick="forceSyncNow()" class="flex-1 py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-          <span>Đồng bộ ngay</span>
+          <span>Đồng bộ lên DB</span>
         </button>
         <button type="button" onclick="pullFromCloudNow()" class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
           <i data-lucide="cloud-download" class="w-3.5 h-3.5"></i>
-          <span>Tải từ đám mây</span>
+          <span>Tải từ DB</span>
         </button>
       </div>
     </div>
@@ -1955,6 +1987,92 @@
     let authMode = 'signin';
     let hasCompletedInitialAuthCheck = false;
 
+    const SUPABASE_SCHEMA_SQL = `-- CHẠY LỆNH NÀY TRONG SUPABASE SQL EDITOR ĐỂ TẠO BẢNG user_app_data
+CREATE TABLE IF NOT EXISTS public.user_app_data (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  data JSONB NOT NULL DEFAULT '{}'::jsonb,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.user_app_data ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users manage own app data"
+  ON public.user_app_data
+  FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);`;
+
+    let dbTablesHealth = {
+      user_app_data: { label: 'user_app_data', ok: null, count: 0 }
+    };
+    let isMissingDatabaseTables = false;
+
+    function isTableMissingError(error) {
+      if (!error) return false;
+      const code = String(error.code || '');
+      const msg = String(error.message || '').toLowerCase();
+      return code === '42P01' || code === 'PGRST205' || msg.includes('does not exist') || msg.includes('could not find the table');
+    }
+
+    function renderDbTablesStatusGrid() {
+      const grid = document.getElementById('dbTablesStatusGrid');
+      const sqlPre = document.getElementById('supabaseSchemaSqlCode');
+      if (sqlPre && !sqlPre.textContent) {
+        sqlPre.textContent = SUPABASE_SCHEMA_SQL;
+      }
+      if (!grid) return;
+
+      grid.innerHTML = Object.entries(dbTablesHealth).map(([tbl, info]) => {
+        let badgeCls = 'bg-slate-100 text-slate-600 border-slate-200';
+        let statusIcon = '•';
+        let subText = 'Chưa kiểm tra';
+        if (info.ok === true) {
+          badgeCls = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+          statusIcon = '✓';
+          subText = `${info.count} bản ghi`;
+        } else if (info.ok === false) {
+          badgeCls = 'bg-rose-50 text-rose-700 border-rose-200';
+          statusIcon = '!';
+          subText = 'Chưa tạo bảng';
+        }
+        return `
+          <div class="p-2 rounded-xl border ${badgeCls} flex flex-col justify-between">
+            <div class="font-extrabold flex items-center justify-between gap-1">
+              <span class="truncate">${info.label}</span>
+              <span>${statusIcon}</span>
+            </div>
+            <div class="text-[10px] opacity-80 font-mono mt-0.5">${subText}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleSqlSchemaBox(forceOpen = null) {
+      const box = document.getElementById('sqlSchemaBoxWrapper');
+      const sqlPre = document.getElementById('supabaseSchemaSqlCode');
+      if (sqlPre && !sqlPre.textContent) {
+        sqlPre.textContent = SUPABASE_SCHEMA_SQL;
+      }
+      if (!box) return;
+      if (forceOpen === true) box.classList.remove('hidden');
+      else if (forceOpen === false) box.classList.add('hidden');
+      else box.classList.toggle('hidden');
+    }
+
+    function copySupabaseSchemaSql() {
+      const temp = document.createElement('textarea');
+      temp.value = SUPABASE_SCHEMA_SQL;
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+        showUndoToast('Đã sao chép mã SQL tạo 6 bảng! Hãy dán vào Supabase SQL Editor.');
+      } catch (e) {
+        showUndoToast('Vui lòng bôi đen và sao chép đoạn mã SQL ở khung đen.');
+      }
+      document.body.removeChild(temp);
+    }
+
     function initSupabaseClient() {
       if (typeof supabase === 'undefined' || !supabase.createClient) {
         console.warn('Thư viện Supabase SDK chưa sẵn sàng.');
@@ -2050,7 +2168,7 @@
       renderAll();
 
       if (session && session.user) {
-        await loadUserDataFromCloud(session);
+        await loadUserDataFromCloud(session.user);
       }
     }
 
@@ -2087,18 +2205,21 @@
       const prefix = getStorageKeyPrefix();
       const lastSync = localStorage.getItem(`${prefix}_last_synced_at`);
       if (timeEl) timeEl.innerText = lastSync ? new Date(lastSync).toLocaleString('vi-VN') : 'Chưa đồng bộ';
+      renderDbTablesStatusGrid();
+      if (isMissingDatabaseTables) toggleSqlSchemaBox(true);
       openModal('modalCloudSyncInfo');
     }
 
     async function forceSyncNow() {
+      clearTimeout(cloudSyncDebounceTimer);
       await syncUserDataToCloud(true);
     }
 
     async function pullFromCloudNow() {
       if (!supabaseClient || !currentUser) return;
       const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) {
-        await loadUserDataFromCloud(session, true);
+      if (session && session.user) {
+        await loadUserDataFromCloud(session.user, true);
       }
     }
 
@@ -2633,27 +2754,20 @@
       try { teacherPaymentQr = savedQr ? JSON.parse(savedQr) : { imageData: '', bankName: 'BIDV' }; } catch (e) { teacherPaymentQr = { imageData: '', bankName: 'BIDV' }; }
       try { tuitionRemarksMap = savedRemarks ? JSON.parse(savedRemarks) : {}; } catch (e) { tuitionRemarksMap = {}; }
 
-      if (currentUser && currentUser.id) {
-        try { classesList = savedClasses ? JSON.parse(savedClasses) : []; } catch (e) { classesList = []; }
-        try { classStudentsMap = savedStudents ? JSON.parse(savedStudents) : {}; } catch (e) { classStudentsMap = {}; }
-        try { homeworks = savedHomeworks ? JSON.parse(savedHomeworks) : []; } catch (e) { homeworks = []; }
-        try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
-      } else {
-        if (savedClasses && savedStudents) {
-          try {
-            classesList = JSON.parse(savedClasses);
-            classStudentsMap = JSON.parse(savedStudents);
-          } catch (e) {
-            classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
-            classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
-          }
-        } else {
+      if (savedClasses && savedStudents) {
+        try {
+          classesList = JSON.parse(savedClasses);
+          classStudentsMap = JSON.parse(savedStudents);
+        } catch (e) {
           classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
           classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
         }
-        try { homeworks = savedHomeworks ? JSON.parse(savedHomeworks) : getDefaultHomeworks(); } catch (e) { homeworks = getDefaultHomeworks(); }
-        try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
+      } else {
+        classesList = JSON.parse(JSON.stringify(DEFAULT_CLASSES_LIST));
+        classStudentsMap = JSON.parse(JSON.stringify(DEFAULT_CLASS_STUDENTS_MAP));
       }
+      try { homeworks = savedHomeworks ? JSON.parse(savedHomeworks) : getDefaultHomeworks(); } catch (e) { homeworks = getDefaultHomeworks(); }
+      try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
 
       const codesBackfilled = ensureAllStudentsHaveUniqueCodes();
 
@@ -2680,6 +2794,155 @@
       syncFinanceDatesForCurrentClass();
     }
 
+    // ==================== ĐỒNG BỘ BẢNG user_app_data TRÊN SUPABASE ====================
+    let isSyncingCloud = false;
+    let cloudSyncDebounceTimer = null;
+
+    function buildAppDataPayload() {
+      const compactHomeworks = homeworks.map(hw => ({
+        ...hw,
+        examPaper: hw.examPaper ? {
+          name: hw.examPaper.name,
+          text: (hw.examPaper.text || '').slice(0, 60000)
+        } : null
+      }));
+
+      return {
+        classesList,
+        classStudentsMap,
+        homeworks: compactHomeworks,
+        homeworkSubmissions: homeworkSubmissions.slice(-100),
+        teacherPaymentQr,
+        tuitionRemarksMap
+      };
+    }
+
+    function scheduleAutoCloudSync() {
+      if (!currentUser || !currentUser.id) return;
+      clearTimeout(cloudSyncDebounceTimer);
+      cloudSyncDebounceTimer = setTimeout(() => {
+        syncUserDataToCloud(false);
+      }, 1500);
+    }
+
+    async function loadUserDataFromCloud(userOrSession, showToastFeedback = false) {
+      const user = userOrSession?.user || userOrSession;
+      if (!supabaseClient || !user?.id) return;
+
+      try {
+        setCloudSyncBadge('syncing');
+
+        const { data, error } = await supabaseClient
+          .from('user_app_data')
+          .select('data')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (error) {
+          if (isTableMissingError(error)) {
+            isMissingDatabaseTables = true;
+            dbTablesHealth.user_app_data = { label: 'user_app_data', ok: false, count: 0 };
+            renderDbTablesStatusGrid();
+            setCloudSyncBadge('local', 'Chưa tạo bảng user_app_data');
+            if (showToastFeedback) openCloudSyncModal();
+            return;
+          }
+          throw error;
+        }
+
+        isMissingDatabaseTables = false;
+        const appData = data?.data || null;
+        dbTablesHealth.user_app_data = { label: 'user_app_data', ok: true, count: appData ? 1 : 0 };
+        renderDbTablesStatusGrid();
+
+        if (appData && typeof appData === 'object') {
+          if (Array.isArray(appData.classesList)) classesList = appData.classesList;
+          if (appData.classStudentsMap && typeof appData.classStudentsMap === 'object') classStudentsMap = appData.classStudentsMap;
+          if (Array.isArray(appData.homeworks)) homeworks = appData.homeworks;
+          if (Array.isArray(appData.homeworkSubmissions)) homeworkSubmissions = appData.homeworkSubmissions;
+          if (appData.teacherPaymentQr && typeof appData.teacherPaymentQr === 'object') teacherPaymentQr = appData.teacherPaymentQr;
+          if (appData.tuitionRemarksMap && typeof appData.tuitionRemarksMap === 'object') tuitionRemarksMap = appData.tuitionRemarksMap;
+
+          ensureAllStudentsHaveUniqueCodes();
+          const navState = readSessionNavState();
+          const desiredClassId = currentClassId || navState.classId;
+          if (desiredClassId === ALL_CLASSES_ID) {
+            currentClassId = ALL_CLASSES_ID;
+          } else if (desiredClassId && classesList.some(c => c.id === desiredClassId)) {
+            currentClassId = desiredClassId;
+          } else {
+            currentClassId = classesList.length > 0 ? classesList[0].id : null;
+          }
+          isClassSelected = Boolean(navState.isClassSelected) && Boolean(currentClassId);
+          students = getStudentsForClass(currentClassId);
+
+          saveAllToLocalStorage(false);
+          syncActiveAttendanceDateForCurrentClass();
+          syncFinanceDatesForCurrentClass();
+          renderAll();
+
+          const prefix = getStorageKeyPrefix();
+          localStorage.setItem(`${prefix}_last_synced_at`, new Date().toISOString());
+          setCloudSyncBadge('synced', 'Đã đồng bộ user_app_data');
+          if (showToastFeedback) showUndoToast('Đã tải dữ liệu từ bảng user_app_data!');
+        } else {
+          // Chưa có bản ghi trên user_app_data -> giữ nguyên dữ liệu mặc định
+          setCloudSyncBadge('synced', 'Đang dùng dữ liệu mặc định');
+          if (showToastFeedback) showUndoToast('Tài khoản mới: đang giữ nguyên dữ liệu mặc định.');
+        }
+      } catch (err) {
+        console.warn('Lỗi tải dữ liệu từ user_app_data:', err);
+        setCloudSyncBadge('local', 'Lưu cục bộ');
+      }
+    }
+
+    async function syncUserDataToCloud(showToastFeedback = false) {
+      if (!supabaseClient || !currentUser?.id || isSyncingCloud) return;
+      isSyncingCloud = true;
+      setCloudSyncBadge('syncing');
+      const nowIso = new Date().toISOString();
+
+      try {
+        const appData = buildAppDataPayload();
+        const { error } = await supabaseClient
+          .from('user_app_data')
+          .upsert(
+            {
+              user_id: currentUser.id,
+              data: appData,
+              updated_at: nowIso
+            },
+            { onConflict: 'user_id' }
+          );
+
+        if (error) {
+          if (isTableMissingError(error)) {
+            isMissingDatabaseTables = true;
+            dbTablesHealth.user_app_data = { label: 'user_app_data', ok: false, count: 0 };
+            renderDbTablesStatusGrid();
+            setCloudSyncBadge('local', 'Chưa tạo bảng user_app_data');
+            if (showToastFeedback) openCloudSyncModal();
+            return;
+          }
+          throw error;
+        }
+
+        isMissingDatabaseTables = false;
+        dbTablesHealth.user_app_data = { label: 'user_app_data', ok: true, count: 1 };
+        renderDbTablesStatusGrid();
+        const prefix = getStorageKeyPrefix();
+        localStorage.setItem(`${prefix}_last_synced_at`, nowIso);
+        setCloudSyncBadge('synced', 'Đã đồng bộ user_app_data');
+        if (showToastFeedback) showUndoToast('Đã lưu dữ liệu vào bảng user_app_data!');
+      } catch (err) {
+        console.warn('Lỗi lưu vào user_app_data:', err);
+        setCloudSyncBadge('local', 'Lưu cục bộ');
+        if (showToastFeedback) showUndoToast('Chưa thể đồng bộ DB, dữ liệu đã lưu cục bộ.');
+      } finally {
+        isSyncingCloud = false;
+      }
+    }
+
     function saveAllToLocalStorage(syncCloudNow = false) {
       try {
         const prefix = getStorageKeyPrefix();
@@ -2690,7 +2953,7 @@
         localStorage.setItem(`${prefix}_teacher_qr`, JSON.stringify(teacherPaymentQr));
         localStorage.setItem(`${prefix}_tuition_remarks`, JSON.stringify(tuitionRemarksMap));
         if (syncCloudNow && currentUser && currentUser.id) {
-          syncUserDataToCloud(false);
+          scheduleAutoCloudSync();
         }
       } catch (e) {
         console.warn('Lỗi lưu localStorage:', e);
@@ -2739,121 +3002,6 @@
         }
       }
       return null;
-    }
-
-    // ==================== ĐỒNG BỘ ĐÁM MÂY SUPABASE ====================
-    let isSyncingCloud = false;
-
-    async function loadUserDataFromCloud(session, showToastFeedback = false) {
-      if (!supabaseClient || !session?.user) return;
-      try {
-        setCloudSyncBadge('syncing');
-        const { data: userData, error } = await supabaseClient.auth.getUser();
-        const meta = (!error && userData?.user?.user_metadata)
-          ? userData.user.user_metadata
-          : (session.user.user_metadata || {});
-
-        const cloudClasses = meta.dipi_classes_v1;
-        const cloudStudents = meta.dipi_students_v1;
-        const cloudHomeworks = meta.dipi_homeworks_v1;
-        const cloudSubmissions = meta.dipi_submissions_v1;
-        const cloudQr = meta.dipi_teacher_qr_v1;
-        const cloudRemarks = meta.dipi_tuition_remarks_v1;
-
-        let hasUpdated = false;
-        if (Array.isArray(cloudClasses) && cloudClasses.length > 0) {
-          classesList = cloudClasses;
-          hasUpdated = true;
-        }
-        if (cloudStudents && typeof cloudStudents === 'object') {
-          classStudentsMap = cloudStudents;
-          hasUpdated = true;
-        }
-        if (Array.isArray(cloudHomeworks)) {
-          homeworks = cloudHomeworks;
-          hasUpdated = true;
-        }
-        if (Array.isArray(cloudSubmissions)) {
-          homeworkSubmissions = cloudSubmissions;
-          hasUpdated = true;
-        }
-        if (cloudQr && typeof cloudQr === 'object') {
-          teacherPaymentQr = cloudQr;
-          hasUpdated = true;
-        }
-        if (cloudRemarks && typeof cloudRemarks === 'object') {
-          tuitionRemarksMap = cloudRemarks;
-          hasUpdated = true;
-        }
-
-        if (hasUpdated) {
-          ensureAllStudentsHaveUniqueCodes();
-          const navState = readSessionNavState();
-          const desiredClassId = currentClassId || navState.classId;
-          if (desiredClassId === ALL_CLASSES_ID) {
-            currentClassId = ALL_CLASSES_ID;
-          } else if (desiredClassId && classesList.some(c => c.id === desiredClassId)) {
-            currentClassId = desiredClassId;
-          } else {
-            currentClassId = classesList.length > 0 ? classesList[0].id : null;
-          }
-          isClassSelected = Boolean(navState.isClassSelected) && Boolean(currentClassId);
-          students = getStudentsForClass(currentClassId);
-          saveAllToLocalStorage(false);
-          syncActiveAttendanceDateForCurrentClass();
-          syncFinanceDatesForCurrentClass();
-          renderAll();
-        }
-
-        const prefix = getStorageKeyPrefix();
-        localStorage.setItem(`${prefix}_last_synced_at`, new Date().toISOString());
-        setCloudSyncBadge('synced', 'Đã đồng bộ đám mây');
-        if (showToastFeedback) showUndoToast('Đã tải dữ liệu mới nhất từ đám mây!');
-      } catch (err) {
-        console.warn('Lỗi tải dữ liệu đám mây:', err);
-        setCloudSyncBadge('local', 'Lưu cục bộ');
-      }
-    }
-
-    async function syncUserDataToCloud(showToastFeedback = false) {
-      if (!supabaseClient || !currentUser?.id || isSyncingCloud) return;
-      isSyncingCloud = true;
-      setCloudSyncBadge('syncing');
-      try {
-        const compactHomeworks = homeworks.map(hw => ({
-          ...hw,
-          examPaper: hw.examPaper ? {
-            name: hw.examPaper.name,
-            text: (hw.examPaper.text || '').slice(0, 60000)
-          } : null
-        }));
-
-        const { error } = await supabaseClient.auth.updateUser({
-          data: {
-            dipi_classes_v1: classesList,
-            dipi_students_v1: classStudentsMap,
-            dipi_homeworks_v1: compactHomeworks,
-            dipi_submissions_v1: homeworkSubmissions.slice(-50),
-            dipi_teacher_qr_v1: teacherPaymentQr,
-            dipi_tuition_remarks_v1: tuitionRemarksMap
-          }
-        });
-
-        if (error) {
-          console.warn('Sync cloud error:', error.message);
-          setCloudSyncBadge('local', 'Lưu cục bộ');
-        } else {
-          const prefix = getStorageKeyPrefix();
-          localStorage.setItem(`${prefix}_last_synced_at`, new Date().toISOString());
-          setCloudSyncBadge('synced', 'Đã đồng bộ đám mây');
-          if (showToastFeedback) showUndoToast('Đã đồng bộ dữ liệu lên đám mây!');
-        }
-      } catch (err) {
-        console.warn('Lỗi sync đám mây:', err);
-        setCloudSyncBadge('local', 'Lưu cục bộ');
-      } finally {
-        isSyncingCloud = false;
-      }
     }
 
     function setupAutoCloudSyncListeners() {
@@ -4433,7 +4581,7 @@
       }
     }
 
-    function handleSubmitStudentHomework() {
+    async function handleSubmitStudentHomework() {
       const hw = homeworks.find(h => h.id === activeTakingHomeworkId);
       if (!hw) return;
       const allSt = getStudentsForClass(ALL_CLASSES_ID);
@@ -4450,7 +4598,7 @@
       const score = totalQ > 0 ? +((correctCount / totalQ) * 10).toFixed(1) : 10;
       const existingIdx = homeworkSubmissions.findIndex(s => s.homeworkId === hw.id && s.studentId === st.id);
       const subObj = {
-        id: `SUB_${Date.now()}`,
+        id: existingIdx >= 0 ? homeworkSubmissions[existingIdx].id : `SUB_${st.id}_${hw.id}`,
         homeworkId: hw.id,
         studentId: st.id,
         studentName: st.name,
@@ -4462,6 +4610,27 @@
 
       if (existingIdx >= 0) homeworkSubmissions[existingIdx] = subObj;
       else homeworkSubmissions.push(subObj);
+
+      // Nếu phụ huynh/HS nộp bài từ thiết bị khác chưa đăng nhập giáo viên, đẩy trực tiếp lên bảng dipi_submissions
+      const ownerUserId = st._teacherUserId || currentUser?.id;
+      if (supabaseClient && ownerUserId && st.id !== 'PREVIEW_ST') {
+        try {
+          await supabaseClient.from('dipi_submissions').upsert({
+            id: subObj.id,
+            user_id: ownerUserId,
+            homework_id: subObj.homeworkId,
+            student_id: subObj.studentId,
+            student_name: subObj.studentName,
+            answers: subObj.answers,
+            score: subObj.score,
+            submitted_at: subObj.submittedAt,
+            teacher_comment: subObj.teacherComment || '',
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' });
+        } catch (err) {
+          console.warn('Lỗi lưu bài nộp trực tiếp lên Supabase:', err);
+        }
+      }
 
       saveAllToLocalStorage(true);
       closeModal('modalTakeHomework');
@@ -5583,12 +5752,134 @@
       }
     }
 
-    function handleVerifyParentStudentCode(e) {
+    async function lookupStudentFromSupabaseByCode(codeInput) {
+      const normalized = String(codeInput || '').trim().toUpperCase();
+      if (!normalized || !supabaseClient) return null;
+
+      try {
+        const { data: stRow, error: stErr } = await supabaseClient
+          .from('dipi_students')
+          .select('*')
+          .eq('student_code', normalized)
+          .maybeSingle();
+
+        if (stErr || !stRow) return null;
+
+        const [resCls, resAtt, resHws, resSubs, resSettings] = await Promise.all([
+          supabaseClient.from('dipi_classes').select('*').eq('id', stRow.class_id).maybeSingle(),
+          supabaseClient.from('dipi_attendance').select('*').eq('student_id', stRow.id),
+          supabaseClient.from('dipi_homeworks').select('*').eq('class_id', stRow.class_id),
+          supabaseClient.from('dipi_submissions').select('*').eq('student_id', stRow.id),
+          supabaseClient.from('dipi_teacher_settings').select('*').eq('user_id', stRow.user_id).maybeSingle()
+        ]);
+
+        const clsRow = resCls.data;
+        const attHistory = {};
+        (resAtt.data || []).forEach(a => {
+          attHistory[a.session_date] = a.status || 'unrecorded';
+        });
+
+        const mappedClass = clsRow ? {
+          id: clsRow.id,
+          class_name: clsRow.class_name,
+          code: clsRow.code || 'TA',
+          room: clsRow.room || 'P.101',
+          classPassword: clsRow.class_password || '',
+          schedules: Array.isArray(clsRow.schedules) ? clsRow.schedules : [],
+          days: Array.isArray(clsRow.days) ? clsRow.days : [],
+          timeSlot: clsRow.time_slot || '',
+          colorBg: clsRow.color_bg || 'bg-[#e8fbf0] border-[#6ee7b7] text-slate-900',
+          badgeColor: clsRow.badge_color || 'bg-[#10b981] text-white',
+          fee_per_session: Number(clsRow.fee_per_session) || 40000
+        } : {
+          id: stRow.class_id,
+          class_name: 'Lớp học',
+          classPassword: '',
+          schedules: []
+        };
+
+        const mappedStudent = {
+          id: stRow.id,
+          studentCode: stRow.student_code,
+          name: stRow.name,
+          pricePerSession: Number(stRow.price_per_session) || 40000,
+          parentPhone: stRow.parent_phone || '',
+          parentName: stRow.parent_name || '',
+          dob: stRow.dob || '',
+          school: stRow.school || '',
+          paidSessions: Array.isArray(stRow.paid_sessions) ? stRow.paid_sessions : [],
+          paidPeriods: Array.isArray(stRow.paid_periods) ? stRow.paid_periods : [],
+          attendanceHistory: attHistory,
+          _classId: mappedClass.id,
+          _className: mappedClass.class_name,
+          _teacherUserId: stRow.user_id
+        };
+
+        // Đồng bộ tạm vào bộ nhớ phiên để hiển thị phiếu học phí, QR và làm bài tập
+        if (!classesList.some(c => c.id === mappedClass.id)) {
+          classesList.push(mappedClass);
+        }
+        if (!classStudentsMap[mappedClass.id]) classStudentsMap[mappedClass.id] = [];
+        const existingStIdx = classStudentsMap[mappedClass.id].findIndex(s => s.id === mappedStudent.id);
+        if (existingStIdx >= 0) classStudentsMap[mappedClass.id][existingStIdx] = mappedStudent;
+        else classStudentsMap[mappedClass.id].push(mappedStudent);
+
+        (resHws.data || []).forEach(hw => {
+          const mappedHw = {
+            id: hw.id,
+            classId: hw.class_id,
+            title: hw.title,
+            deadline: hw.deadline || '',
+            description: hw.description || '',
+            totalPoints: Number(hw.total_points) || 10,
+            examPaper: hw.exam_paper || null,
+            questions: Array.isArray(hw.questions) ? hw.questions : []
+          };
+          const idx = homeworks.findIndex(h => h.id === mappedHw.id);
+          if (idx >= 0) homeworks[idx] = mappedHw;
+          else homeworks.push(mappedHw);
+        });
+
+        (resSubs.data || []).forEach(sub => {
+          const mappedSub = {
+            id: sub.id,
+            homeworkId: sub.homework_id,
+            studentId: sub.student_id,
+            studentName: sub.student_name || mappedStudent.name,
+            answers: sub.answers || {},
+            score: Number(sub.score) || 0,
+            submittedAt: sub.submitted_at || '',
+            teacherComment: sub.teacher_comment || ''
+          };
+          const idx = homeworkSubmissions.findIndex(s => s.id === mappedSub.id);
+          if (idx >= 0) homeworkSubmissions[idx] = mappedSub;
+          else homeworkSubmissions.push(mappedSub);
+        });
+
+        if (resSettings.data) {
+          if (resSettings.data.payment_qr) teacherPaymentQr = resSettings.data.payment_qr;
+          if (resSettings.data.tuition_remarks) {
+            tuitionRemarksMap = Object.assign({}, tuitionRemarksMap, resSettings.data.tuition_remarks);
+          }
+        }
+
+        return { student: mappedStudent, classObj: mappedClass };
+      } catch (e) {
+        console.warn('Lỗi truy vấn mã HS trên Supabase:', e);
+        return null;
+      }
+    }
+
+    async function handleVerifyParentStudentCode(e) {
       e.preventDefault();
       const codeVal = document.getElementById('parentCodeInput')?.value || '';
       const pwdVal = document.getElementById('parentClassPasswordInput')?.value || '';
       const errBox = document.getElementById('parentCodeErrorBox');
-      const match = findStudentByCodeAcrossClasses(codeVal);
+
+      let match = findStudentByCodeAcrossClasses(codeVal);
+      if (!match) {
+        match = await lookupStudentFromSupabaseByCode(codeVal);
+      }
 
       if (!match) {
         if (errBox) {
