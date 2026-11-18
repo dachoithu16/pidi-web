@@ -123,6 +123,18 @@
 
         <!-- Khối bên phải Header -->
         <div class="flex items-center space-x-2 sm:space-x-3">
+          <!-- Nút Gói VIP Giáo Viên -->
+          <button
+            type="button"
+            id="btnHeaderVipPlan"
+            onclick="openVipSubscriptionModal()"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0"
+            title="Nâng cấp gói VIP & Quản lý giới hạn học sinh"
+          >
+            <i data-lucide="crown" class="w-3.5 h-3.5 fill-amber-200"></i>
+            <span id="headerVipPlanLabel">Gói Free</span>
+          </button>
+
           <div id="authContainer" class="flex items-center">
             <button
               id="btnOpenAuthModal"
@@ -161,6 +173,7 @@
           </div>
 
           <button
+            id="headerQuickCreateBtn"
             type="button"
             onclick="handleQuickActionPlus()"
             class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition active:scale-95"
@@ -205,7 +218,7 @@
             <span id="currentDateDisplayBanner" class="font-semibold text-slate-200 whitespace-nowrap">Thứ 5, 12/11/26</span>
           </div>
 
-          <div class="inline-flex items-center gap-1 bg-slate-800/90 py-1 px-1.5 sm:px-2 rounded-lg border border-slate-700 shadow-inner min-w-0 shrink">
+          <div id="teacherClassBannerBox" class="inline-flex items-center gap-1 bg-slate-800/90 py-1 px-1.5 sm:px-2 rounded-lg border border-slate-700 shadow-inner min-w-0 shrink">
             <span class="text-indigo-300 text-[10px] sm:text-[11px] font-bold shrink-0">LỚP:</span>
             <select
               id="classListSelect"
@@ -786,7 +799,7 @@
           </div>
           <div>
             <h3 class="font-extrabold text-slate-900 text-sm">Cơ sở dữ liệu Đám mây Supabase</h3>
-            <p class="text-[11px] text-slate-500">Lưu trữ chuẩn hóa trên 6 bảng PostgreSQL (Database Tables)</p>
+            <p class="text-[11px] text-slate-500">Lưu trữ chuẩn hóa trên bảng user_app_data (Database Tables)</p>
           </div>
         </div>
         <button type="button" onclick="closeModal('modalCloudSyncInfo')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
@@ -1113,7 +1126,7 @@
             <i data-lucide="book-plus" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Tạo Bài Tập & Phiếu Trả Lời Online</h3>
+            <h3 id="assignmentModalTitle" class="font-extrabold text-slate-900 text-sm sm:text-base">Tạo Bài Tập & Phiếu Trả Lời Online</h3>
             <p class="text-[11px] text-slate-500 font-medium">Tải file đề bài lên để học sinh đọc và làm trực tiếp trên phiếu trả lời</p>
           </div>
         </div>
@@ -1341,7 +1354,7 @@
           <button type="button" onclick="closeModal('modalCreateAssignment')" class="px-4 py-2 text-xs text-slate-500 font-semibold hover:text-slate-800">Hủy</button>
           <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm transition active:scale-95 flex items-center gap-1.5">
             <i data-lucide="send" class="w-3.5 h-3.5"></i>
-            <span>Lưu & Giao bài tập</span>
+            <span id="assignmentSubmitBtnLabel">Lưu & Giao bài tập</span>
           </button>
         </div>
       </form>
@@ -1933,12 +1946,145 @@
             <p class="text-[10px] text-slate-500 font-medium">Tạo đề & phiếu trả lời online</p>
           </div>
         </button>
+
+        <button
+          type="button"
+          onclick="closeQuickActionMenu(); openVipSubscriptionModal();"
+          class="w-full p-2.5 sm:p-3 rounded-2xl border border-orange-200/80 bg-gradient-to-r from-amber-50/80 to-orange-50/80 hover:from-amber-100/80 hover:to-orange-100/80 transition flex items-center gap-3 text-left group active:scale-[0.98]"
+        >
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+            <i data-lucide="crown" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-slate-900 text-xs sm:text-sm flex items-center justify-between">
+              <span>Gói đăng ký Giáo viên VIP</span>
+              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-orange-600"></i>
+            </div>
+            <p class="text-[10px] text-slate-500 font-medium">Nâng cấp giới hạn học sinh & giáo viên</p>
+          </div>
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- ==================== MODAL HỆ THỐNG 5 GÓI ĐĂNG KÝ GIÁO VIÊN VIP ==================== -->
+  <div id="modalVipSubscription" class="hidden fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/65 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-5xl w-full p-4 sm:p-6 border border-slate-200/90 shadow-2xl space-y-4 max-h-[94vh] overflow-y-auto">
+      
+      <!-- Header Modal VIP -->
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
+            <i data-lucide="crown" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm sm:text-lg flex items-center gap-2">
+              <span>Gói Đăng Ký Giáo Viên VIP</span>
+              <span id="vipCurrentActiveBadge" class="px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300">
+                Đang dùng: Free
+              </span>
+            </h3>
+            <p class="text-[11px] sm:text-xs text-slate-500 font-medium">
+              Mở rộng giới hạn số lượng học sinh & tài khoản giáo viên đồng hành
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button
+            type="button"
+            id="btnToggleVipAdminMode"
+            onclick="toggleVipAdminEditMode()"
+            class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition flex items-center gap-1.5"
+            title="Bật/tắt chế độ Quản trị viên chỉnh sửa giá và giới hạn các gói"
+          >
+            <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-indigo-600"></i>
+            <span id="vipAdminModeLabel">Quản trị gói</span>
+          </button>
+
+          <button type="button" onclick="closeModal('modalVipSubscription')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Thanh thống kê mức sử dụng hiện tại -->
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+        <div class="space-y-1 flex-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-indigo-200 font-semibold">Sĩ số học sinh toàn hệ thống hiện tại:</span>
+            <span id="vipUsageStudentText" class="font-extrabold text-amber-300 font-mono">0 / 15 học sinh</span>
+          </div>
+          <div class="w-full h-2.5 bg-white/15 rounded-full overflow-hidden">
+            <div id="vipUsageStudentBar" class="h-full bg-gradient-to-r from-emerald-400 to-amber-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 sm:border-l sm:border-white/15 sm:pl-4 text-xs shrink-0">
+          <div>
+            <div class="text-indigo-300 text-[10.5px]">Giới hạn giáo viên</div>
+            <div id="vipUsageTeacherText" class="font-extrabold text-white text-sm">1 giáo viên</div>
+          </div>
+          <div class="h-7 w-px bg-white/15"></div>
+          <div>
+            <div class="text-indigo-300 text-[10.5px]">Còn trống</div>
+            <div id="vipRemainingSlotsText" class="font-extrabold text-emerald-400 text-sm">15 chỗ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bảng điều khiển Quản trị viên chỉnh sửa giá & giới hạn từng gói -->
+      <div id="vipAdminEditorSection" class="hidden bg-indigo-50/70 border border-indigo-200 rounded-2xl p-3.5 sm:p-4 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-200/70 pb-2">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse"></span>
+            <h4 class="font-extrabold text-xs sm:text-sm text-indigo-950 uppercase tracking-wide">
+              Bảng Cấu Hình Quản Trị Viên (Chỉnh sửa Giá & Giới hạn)
+            </h4>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button
+              type="button"
+              onclick="resetVipPlansToDefault()"
+              class="px-2.5 py-1 rounded-lg bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-[11px] font-bold transition"
+            >
+              Khôi phục mặc định
+            </button>
+            <button
+              type="button"
+              onclick="saveVipPlansFromAdminForm()"
+              class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold transition shadow-2xs flex items-center gap-1"
+            >
+              <i data-lucide="check" class="w-3.5 h-3.5"></i>
+              <span>Lưu cấu hình gói</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="text-[10.5px] uppercase font-extrabold text-indigo-900 border-b border-indigo-200">
+                <th class="py-1.5 px-2">Tên gói</th>
+                <th class="py-1.5 px-2">Giá / tháng (VNĐ)</th>
+                <th class="py-1.5 px-2">Tối đa Học sinh</th>
+                <th class="py-1.5 px-2">Tối đa Giáo viên</th>
+                <th class="py-1.5 px-2">Mô tả quyền lợi nổi bật</th>
+              </tr>
+            </thead>
+            <tbody id="vipAdminEditorRows" class="divide-y divide-indigo-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Lưới 5 gói đăng ký dành cho Giáo viên -->
+      <div id="vipPlansCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3"></div>
+
+    </div>
+  </div>
+
   <!-- ==================== BOTTOM TAB BAR NỔI TRÊN ĐIỆN THOẠI ==================== -->
-  <div class="block sm:hidden fixed bottom-3 inset-x-3 z-40">
+  <div id="mobileBottomNavWrapper" class="block sm:hidden fixed bottom-3 inset-x-3 z-40">
     <nav class="bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-[0_10px_35px_-4px_rgba(0,0,0,0.18)] rounded-full px-2 py-1.5 flex items-center justify-between">
       <button onclick="switchTab('attendance')" id="mobileBottomTabAttendance" class="flex-1 flex flex-col items-center justify-center py-1 transition-all group">
         <div id="mobileIconBgAttendance" class="w-10 h-8 rounded-full flex items-center justify-center bg-indigo-50 text-indigo-600 transition-all">
@@ -2729,6 +2875,403 @@ CREATE POLICY "Users manage own app data"
     let teacherPaymentQr = { imageData: '', bankName: 'BIDV' };
     let tuitionRemarksMap = {};
 
+    // ==================== HỆ THỐNG 5 GÓI ĐĂNG KÝ GIÁO VIÊN VIP ====================
+    const DEFAULT_VIP_PLANS = [
+      {
+        id: 'free',
+        name: 'Free',
+        price: 0,
+        maxStudents: 15,
+        maxTeachers: 1,
+        badge: 'Mặc định',
+        accent: 'slate',
+        icon: 'sprout',
+        tagline: 'Khởi đầu gọn nhẹ cho lớp nhỏ',
+        perks: [
+          'Tối đa 15 học sinh',
+          '1 tài khoản giáo viên',
+          'Điểm danh & Thời khóa biểu',
+          'Phiếu báo học phí kèm QR'
+        ]
+      },
+      {
+        id: 'tra_chanh',
+        name: 'Trà chanh',
+        price: 19000,
+        maxStudents: 35,
+        maxTeachers: 1,
+        badge: 'Tiết kiệm',
+        accent: 'lime',
+        icon: 'citrus',
+        tagline: 'Phù hợp lớp dạy thêm cá nhân',
+        perks: [
+          'Tối đa 35 học sinh',
+          '1 tài khoản giáo viên',
+          'Xuất báo cáo Excel không giới hạn',
+          'Giao bài tập & chấm tự động'
+        ]
+      },
+      {
+        id: 'tra_sua',
+        name: 'Trà Sữa',
+        price: 39000,
+        maxStudents: 80,
+        maxTeachers: 1,
+        badge: 'Phổ biến',
+        accent: 'amber',
+        icon: 'cup-soda',
+        tagline: 'Lựa chọn tối ưu cho giáo viên dạy nhiều ca',
+        perks: [
+          'Tối đa 80 học sinh',
+          '1 tài khoản giáo viên',
+          'Đồng bộ đám mây đa thiết bị',
+          '5 giao diện phiếu báo thu VIP'
+        ]
+      },
+      {
+        id: 'trum_tra',
+        name: 'Trùm Trà',
+        price: 89000,
+        maxStudents: 200,
+        maxTeachers: 2,
+        badge: 'Nhóm dạy',
+        accent: 'indigo',
+        icon: 'award',
+        tagline: 'Dành cho nhóm giáo viên & trợ giảng',
+        perks: [
+          'Tối đa 200 học sinh',
+          '2 tài khoản giáo viên',
+          'Quản lý đa lớp chuyên sâu',
+          'Ưu tiên hỗ trợ kỹ thuật 24/7'
+        ]
+      },
+      {
+        id: 'trung_tam',
+        name: 'Trung tâm',
+        price: 399000,
+        maxStudents: 1000,
+        maxTeachers: 12,
+        badge: 'Doanh nghiệp',
+        accent: 'rose',
+        icon: 'building-2',
+        tagline: 'Giải pháp toàn diện cho trung tâm ngoại ngữ',
+        perks: [
+          'Tối đa 1.000 học sinh',
+          '12 tài khoản giáo viên',
+          'Quản trị tập trung toàn trung tâm',
+          'Sao lưu & bảo mật dữ liệu cao cấp'
+        ]
+      }
+    ];
+
+    let vipPlansConfig = JSON.parse(JSON.stringify(DEFAULT_VIP_PLANS));
+    let currentTeacherPlanId = 'free';
+    let isVipAdminEditMode = false;
+
+    function loadVipSubscriptionState() {
+      try {
+        const savedPlans = localStorage.getItem('dipi_vip_plans_config_v1');
+        if (savedPlans) {
+          const parsed = JSON.parse(savedPlans);
+          if (Array.isArray(parsed) && parsed.length === 5) {
+            vipPlansConfig = parsed.map((p, idx) => ({
+              ...DEFAULT_VIP_PLANS[idx],
+              ...p,
+              price: Math.max(0, Number(p.price) || 0),
+              maxStudents: Math.max(1, Number(p.maxStudents) || DEFAULT_VIP_PLANS[idx].maxStudents),
+              maxTeachers: Math.max(1, Number(p.maxTeachers) || 1)
+            }));
+          }
+        }
+        const prefix = getStorageKeyPrefix();
+        const savedActivePlan = localStorage.getItem(`${prefix}_active_vip_plan`);
+        if (savedActivePlan && vipPlansConfig.some(p => p.id === savedActivePlan)) {
+          currentTeacherPlanId = savedActivePlan;
+        } else {
+          currentTeacherPlanId = 'free';
+        }
+      } catch (e) {
+        vipPlansConfig = JSON.parse(JSON.stringify(DEFAULT_VIP_PLANS));
+        currentTeacherPlanId = 'free';
+      }
+      updateHeaderVipBadge();
+    }
+
+    function saveVipSubscriptionState(syncCloudNow = true) {
+      try {
+        localStorage.setItem('dipi_vip_plans_config_v1', JSON.stringify(vipPlansConfig));
+        const prefix = getStorageKeyPrefix();
+        localStorage.setItem(`${prefix}_active_vip_plan`, currentTeacherPlanId);
+        if (syncCloudNow && currentUser && currentUser.id) {
+          scheduleAutoCloudSync();
+        }
+      } catch (e) {}
+      updateHeaderVipBadge();
+    }
+
+    function getActiveVipPlan() {
+      return vipPlansConfig.find(p => p.id === currentTeacherPlanId) || vipPlansConfig[0] || DEFAULT_VIP_PLANS[0];
+    }
+
+    function getTotalStudentsCountAllClasses() {
+      let total = 0;
+      Object.values(classStudentsMap || {}).forEach(list => {
+        if (Array.isArray(list)) total += list.length;
+      });
+      return total;
+    }
+
+    function updateHeaderVipBadge() {
+      const plan = getActiveVipPlan();
+      const label = document.getElementById('headerVipPlanLabel');
+      const btn = document.getElementById('btnHeaderVipPlan');
+      if (label) {
+        label.innerText = plan.id === 'free' ? 'Gói Free' : `VIP • ${plan.name}`;
+      }
+      if (btn) {
+        if (plan.id === 'free') {
+          btn.className = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-400/40 text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0';
+        } else {
+          btn.className = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0';
+        }
+      }
+    }
+
+    function checkCanAddStudents(addingCount = 1) {
+      const plan = getActiveVipPlan();
+      const currentTotal = getTotalStudentsCountAllClasses();
+      if (currentTotal + addingCount > plan.maxStudents) {
+        showUndoToast(`Gói ${plan.name} tối đa ${plan.maxStudents} học sinh (hiện có ${currentTotal}). Hãy nâng cấp gói VIP!`);
+        openVipSubscriptionModal();
+        return false;
+      }
+      return true;
+    }
+
+    function openVipSubscriptionModal() {
+      renderVipSubscriptionModal();
+      openModal('modalVipSubscription');
+    }
+
+    function toggleVipAdminEditMode() {
+      isVipAdminEditMode = !isVipAdminEditMode;
+      renderVipSubscriptionModal();
+    }
+
+    function selectTeacherVipPlan(planId) {
+      const target = vipPlansConfig.find(p => p.id === planId);
+      if (!target) return;
+      const currentTotal = getTotalStudentsCountAllClasses();
+      if (currentTotal > target.maxStudents) {
+        showUndoToast(`Bạn đang có ${currentTotal} học sinh, vượt giới hạn ${target.maxStudents} HS của gói ${target.name}!`);
+        return;
+      }
+      currentTeacherPlanId = target.id;
+      saveVipSubscriptionState(true);
+      renderVipSubscriptionModal();
+      const priceStr = target.price === 0 ? 'Miễn phí' : `${target.price.toLocaleString('vi-VN')}đ/tháng`;
+      showUndoToast(`Đã kích hoạt gói ${target.name} (${priceStr} • Tối đa ${target.maxStudents} HS, ${target.maxTeachers || 1} GV)!`);
+    }
+
+    function saveVipPlansFromAdminForm() {
+      vipPlansConfig.forEach((plan, idx) => {
+        const priceEl = document.getElementById(`adminVipPrice_${idx}`);
+        const stEl = document.getElementById(`adminVipMaxSt_${idx}`);
+        const tcEl = document.getElementById(`adminVipMaxTc_${idx}`);
+        const tagEl = document.getElementById(`adminVipTagline_${idx}`);
+
+        if (priceEl) plan.price = Math.max(0, Number(priceEl.value) || 0);
+        if (stEl) plan.maxStudents = Math.max(1, Number(stEl.value) || plan.maxStudents);
+        if (tcEl) {
+          plan.maxTeachers = plan.id === 'free' ? 1 : Math.max(1, Number(tcEl.value) || 1);
+        }
+        if (tagEl && tagEl.value.trim()) {
+          plan.tagline = tagEl.value.trim();
+        }
+        if (Array.isArray(plan.perks) && plan.perks.length >= 2) {
+          plan.perks[0] = `Tối đa ${plan.maxStudents.toLocaleString('vi-VN')} học sinh`;
+          plan.perks[1] = `${plan.maxTeachers || 1} tài khoản giáo viên`;
+        }
+      });
+
+      saveVipSubscriptionState(true);
+      renderVipSubscriptionModal();
+      showUndoToast('Đã cập nhật bảng giá và giới hạn các gói VIP!');
+    }
+
+    function resetVipPlansToDefault() {
+      vipPlansConfig = JSON.parse(JSON.stringify(DEFAULT_VIP_PLANS));
+      saveVipSubscriptionState(true);
+      renderVipSubscriptionModal();
+      showUndoToast('Đã khôi phục cấu hình 5 gói VIP về mặc định!');
+    }
+
+    function renderVipSubscriptionModal() {
+      const activePlan = getActiveVipPlan();
+      const totalStudents = getTotalStudentsCountAllClasses();
+      const maxStudents = activePlan.maxStudents || 15;
+      const maxTeachers = activePlan.maxTeachers || 1;
+      const percent = Math.min(100, Math.round((totalStudents / maxStudents) * 100));
+      const remaining = Math.max(0, maxStudents - totalStudents);
+
+      const activeBadge = document.getElementById('vipCurrentActiveBadge');
+      const usageStText = document.getElementById('vipUsageStudentText');
+      const usageStBar = document.getElementById('vipUsageStudentBar');
+      const usageTcText = document.getElementById('vipUsageTeacherText');
+      const remText = document.getElementById('vipRemainingSlotsText');
+
+      if (activeBadge) activeBadge.innerText = `Đang dùng: ${activePlan.name}`;
+      if (usageStText) usageStText.innerText = `${totalStudents.toLocaleString('vi-VN')} / ${maxStudents.toLocaleString('vi-VN')} học sinh (${percent}%)`;
+      if (usageStBar) {
+        usageStBar.style.width = `${percent}%`;
+        usageStBar.className = `h-full rounded-full transition-all duration-300 ${
+          percent >= 90 ? 'bg-rose-500' : (percent >= 70 ? 'bg-amber-400' : 'bg-gradient-to-r from-emerald-400 to-amber-400')
+        }`;
+      }
+      if (usageTcText) usageTcText.innerText = `${maxTeachers} giáo viên`;
+      if (remText) remText.innerText = `${remaining.toLocaleString('vi-VN')} chỗ`;
+
+      // Trạng thái nút Quản trị viên
+      const adminSec = document.getElementById('vipAdminEditorSection');
+      const adminBtn = document.getElementById('btnToggleVipAdminMode');
+      const adminLbl = document.getElementById('vipAdminModeLabel');
+      if (adminSec) adminSec.classList.toggle('hidden', !isVipAdminEditMode);
+      if (adminBtn) {
+        adminBtn.className = isVipAdminEditMode
+          ? 'px-3 py-1.5 rounded-xl bg-indigo-600 text-white border border-indigo-600 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs'
+          : 'px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition flex items-center gap-1.5';
+      }
+      if (adminLbl) adminLbl.innerText = isVipAdminEditMode ? 'Đóng quản trị' : 'Quản trị gói';
+
+      const adminRows = document.getElementById('vipAdminEditorRows');
+      if (adminRows) {
+        adminRows.innerHTML = vipPlansConfig.map((p, idx) => `
+          <tr class="bg-white/80">
+            <td class="py-1.5 px-2 font-extrabold text-slate-900 whitespace-nowrap">${p.name}</td>
+            <td class="py-1.5 px-2">
+              <input type="number" id="adminVipPrice_${idx}" step="1000" min="0" value="${p.price}" class="w-28 px-2 py-1 rounded-lg border border-slate-300 font-mono font-bold text-slate-900 bg-white">
+            </td>
+            <td class="py-1.5 px-2">
+              <input type="number" id="adminVipMaxSt_${idx}" step="5" min="1" value="${p.maxStudents}" class="w-24 px-2 py-1 rounded-lg border border-slate-300 font-mono font-bold text-indigo-700 bg-white">
+            </td>
+            <td class="py-1.5 px-2">
+              <input type="number" id="adminVipMaxTc_${idx}" step="1" min="1" value="${p.maxTeachers || 1}" ${p.id === 'free' ? 'disabled title="Gói Free cố định 1 giáo viên"' : ''} class="w-20 px-2 py-1 rounded-lg border border-slate-300 font-mono font-bold text-emerald-700 bg-white disabled:bg-slate-100 disabled:text-slate-400">
+            </td>
+            <td class="py-1.5 px-2">
+              <input type="text" id="adminVipTagline_${idx}" value="${String(p.tagline || '').replace(/"/g, '&quot;')}" class="w-full min-w-[160px] px-2 py-1 rounded-lg border border-slate-300 text-slate-700 bg-white">
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      const accentStyles = {
+        slate: {
+          card: 'border-slate-200 bg-white',
+          badge: 'bg-slate-100 text-slate-700',
+          iconBg: 'bg-slate-100 text-slate-700',
+          priceText: 'text-slate-900',
+          btn: 'bg-slate-800 hover:bg-slate-900 text-white'
+        },
+        lime: {
+          card: 'border-lime-300 bg-lime-50/30',
+          badge: 'bg-lime-100 text-lime-800',
+          iconBg: 'bg-lime-100 text-lime-700',
+          priceText: 'text-lime-700',
+          btn: 'bg-lime-600 hover:bg-lime-700 text-white'
+        },
+        amber: {
+          card: 'border-amber-400 bg-amber-50/40 ring-2 ring-amber-400/30',
+          badge: 'bg-amber-500 text-white',
+          iconBg: 'bg-amber-100 text-amber-700',
+          priceText: 'text-amber-700',
+          btn: 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white'
+        },
+        indigo: {
+          card: 'border-indigo-300 bg-indigo-50/35',
+          badge: 'bg-indigo-600 text-white',
+          iconBg: 'bg-indigo-100 text-indigo-700',
+          priceText: 'text-indigo-700',
+          btn: 'bg-indigo-600 hover:bg-indigo-700 text-white'
+        },
+        rose: {
+          card: 'border-rose-300 bg-gradient-to-b from-rose-50/50 to-orange-50/40',
+          badge: 'bg-rose-600 text-white',
+          iconBg: 'bg-rose-100 text-rose-700',
+          priceText: 'text-rose-700',
+          btn: 'bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-700 hover:to-orange-700 text-white'
+        }
+      };
+
+      const cardsGrid = document.getElementById('vipPlansCardsGrid');
+      if (cardsGrid) {
+        cardsGrid.innerHTML = vipPlansConfig.map(plan => {
+          const st = accentStyles[plan.accent] || accentStyles.slate;
+          const isCurrent = plan.id === currentTeacherPlanId;
+          const priceFormatted = plan.price === 0 ? 'Miễn phí' : `${plan.price.toLocaleString('vi-VN')}đ`;
+          const teacherCount = plan.maxTeachers || 1;
+
+          return `
+            <div class="rounded-2xl border p-3.5 flex flex-col justify-between space-y-3 transition shadow-2xs hover:shadow-md ${st.card} ${isCurrent ? 'ring-2 ring-emerald-500 border-emerald-400' : ''}">
+              <div class="space-y-2.5">
+                <div class="flex items-center justify-between gap-1">
+                  <div class="w-8 h-8 rounded-xl ${st.iconBg} flex items-center justify-center shrink-0">
+                    <i data-lucide="${plan.icon || 'crown'}" class="w-4 h-4"></i>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${isCurrent ? 'bg-emerald-600 text-white' : st.badge}">
+                    ${isCurrent ? 'Đang sử dụng' : (plan.badge || 'VIP')}
+                  </span>
+                </div>
+
+                <div>
+                  <h4 class="font-extrabold text-sm sm:text-base text-slate-900">${plan.name}</h4>
+                  <p class="text-[10.5px] text-slate-500 leading-snug mt-0.5 min-h-[28px]">${plan.tagline || ''}</p>
+                </div>
+
+                <div class="pt-1 border-t border-slate-200/70">
+                  <div class="flex items-baseline gap-1">
+                    <span class="text-lg sm:text-xl font-black ${st.priceText} tracking-tight">${priceFormatted}</span>
+                    ${plan.price > 0 ? `<span class="text-[10.5px] text-slate-500 font-semibold">/tháng</span>` : ''}
+                  </div>
+                  <div class="mt-1.5 flex flex-wrap gap-1">
+                    <span class="px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-[10px] font-extrabold text-slate-800">
+                      Tối đa ${plan.maxStudents.toLocaleString('vi-VN')} HS
+                    </span>
+                    <span class="px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-[10px] font-extrabold text-indigo-700">
+                      ${teacherCount} Giáo viên
+                    </span>
+                  </div>
+                </div>
+
+                <ul class="space-y-1.5 pt-1 text-[11px] text-slate-700">
+                  ${(plan.perks || []).map(perk => `
+                    <li class="flex items-start gap-1.5">
+                      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5"></i>
+                      <span class="leading-tight">${perk}</span>
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+
+              <button
+                type="button"
+                onclick="selectTeacherVipPlan('${plan.id}')"
+                ${isCurrent ? 'disabled' : ''}
+                class="w-full py-2 px-3 rounded-xl text-xs font-extrabold transition shadow-2xs active:scale-95 ${
+                  isCurrent
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
+                    : st.btn
+                }"
+              >
+                ${isCurrent ? '✓ Gói hiện tại' : (plan.price === 0 ? 'Chọn gói Free' : 'Chọn gói này')}
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      safeCreateIcons();
+    }
+
     const _initNow = new Date();
     let financeFilterMode = 'month';
     let currentFinanceMonth = `${String(_initNow.getMonth() + 1).padStart(2, '0')}/${_initNow.getFullYear()}`;
@@ -2929,9 +3472,11 @@ CREATE POLICY "Users manage own app data"
         classesList,
         classStudentsMap,
         homeworks: compactHomeworks,
-        homeworkSubmissions: homeworkSubmissions.slice(-100),
+        homeworkSubmissions: homeworkSubmissions.slice(-1000),
         teacherPaymentQr,
-        tuitionRemarksMap
+        tuitionRemarksMap,
+        vipPlansConfig,
+        currentTeacherPlanId
       };
     }
 
@@ -2980,6 +3525,15 @@ CREATE POLICY "Users manage own app data"
           if (Array.isArray(appData.homeworkSubmissions)) homeworkSubmissions = appData.homeworkSubmissions;
           if (appData.teacherPaymentQr && typeof appData.teacherPaymentQr === 'object') teacherPaymentQr = appData.teacherPaymentQr;
           if (appData.tuitionRemarksMap && typeof appData.tuitionRemarksMap === 'object') tuitionRemarksMap = appData.tuitionRemarksMap;
+          if (Array.isArray(appData.vipPlansConfig) && appData.vipPlansConfig.length === 5) {
+            vipPlansConfig = appData.vipPlansConfig;
+            localStorage.setItem('dipi_vip_plans_config_v1', JSON.stringify(vipPlansConfig));
+          }
+          if (appData.currentTeacherPlanId && vipPlansConfig.some(p => p.id === appData.currentTeacherPlanId)) {
+            currentTeacherPlanId = appData.currentTeacherPlanId;
+            localStorage.setItem(`${getStorageKeyPrefix()}_active_vip_plan`, currentTeacherPlanId);
+          }
+          updateHeaderVipBadge();
 
           clearAllDemoDataCompletely();
           ensureAllStudentsHaveUniqueCodes();
@@ -3036,6 +3590,28 @@ CREATE POLICY "Users manage own app data"
       const nowIso = new Date().toISOString();
 
       try {
+        // Lấy mảng homeworkSubmissions hiện có trên Supabase để gộp (merge theo id), tránh ghi đè mất bài HS vừa nộp từ xa
+        const { data: remoteRow, error: fetchErr } = await supabaseClient
+          .from('user_app_data')
+          .select('data')
+          .eq('user_id', currentUser.id)
+          .maybeSingle();
+
+        if (!fetchErr && remoteRow?.data && Array.isArray(remoteRow.data.homeworkSubmissions)) {
+          const mergedMap = new Map();
+          remoteRow.data.homeworkSubmissions.forEach(sub => {
+            if (sub && sub.id) mergedMap.set(sub.id, sub);
+          });
+          homeworkSubmissions.forEach(sub => {
+            if (sub && sub.id) {
+              const existingRemote = mergedMap.get(sub.id);
+              mergedMap.set(sub.id, existingRemote ? { ...existingRemote, ...sub } : sub);
+            }
+          });
+          homeworkSubmissions = Array.from(mergedMap.values());
+          saveAllToLocalStorage(false);
+        }
+
         const appData = buildAppDataPayload();
         const { error } = await supabaseClient
           .from('user_app_data')
@@ -4079,6 +4655,7 @@ CREATE POLICY "Users manage own app data"
 
     function handleCreateStudent(e) {
       e.preventDefault();
+      if (!checkCanAddStudents(1)) return;
       const targetClassId = document.getElementById('newStudentClassSelect')?.value || classesList[0]?.id;
       const name = document.getElementById('newStudentName')?.value.trim();
       const fee = Number(document.getElementById('newStudentFeePerSession')?.value) || 40000;
@@ -4199,6 +4776,7 @@ CREATE POLICY "Users manage own app data"
       const fee = Number(document.getElementById('batchStudentFeeInput')?.value) || 40000;
       const selected = parsedBatchStudents.filter(s => s.selected && s.name);
       if (selected.length === 0) return;
+      if (!checkCanAddStudents(selected.length)) return;
 
       if (!classStudentsMap[targetClassId]) classStudentsMap[targetClassId] = [];
       const dates = getCurrentClassSessionDates(targetClassId);
@@ -4234,8 +4812,15 @@ CREATE POLICY "Users manage own app data"
     // ==================== BÀI TẬP & PHIẾU TRẢ LỜI ONLINE ====================
     let builderAnswerSheet = [];
     let currentExamPaperData = null;
+    let editingHomeworkId = null;
 
     function openCreateAssignmentModal() {
+      editingHomeworkId = null;
+      const modalTitle = document.getElementById('assignmentModalTitle');
+      const submitLabel = document.getElementById('assignmentSubmitBtnLabel');
+      if (modalTitle) modalTitle.innerText = 'Tạo Bài Tập & Phiếu Trả Lời Online';
+      if (submitLabel) submitLabel.innerText = 'Lưu & Giao bài tập';
+
       const sel = document.getElementById('assignmentClassSelect');
       if (sel) {
         sel.innerHTML = classesList.map(c => `<option value="${c.id}" ${c.id === currentClassId ? 'selected' : ''}>${c.class_name}</option>`).join('');
@@ -4254,6 +4839,70 @@ CREATE POLICY "Users manage own app data"
         answer: '',
         points: 0.5
       }));
+      renderBuilderAnswerSheet();
+      openModal('modalCreateAssignment');
+    }
+
+    function openEditAssignmentModal(hwId) {
+      const hw = homeworks.find(h => h.id === hwId);
+      if (!hw) return;
+
+      editingHomeworkId = hw.id;
+      const modalTitle = document.getElementById('assignmentModalTitle');
+      const submitLabel = document.getElementById('assignmentSubmitBtnLabel');
+      if (modalTitle) modalTitle.innerText = 'Chỉnh Sửa Bài Tập & Phiếu Trả Lời';
+      if (submitLabel) submitLabel.innerText = 'Lưu cập nhật bài tập';
+
+      const sel = document.getElementById('assignmentClassSelect');
+      if (sel) {
+        sel.innerHTML = classesList.map(c => `<option value="${c.id}" ${c.id === hw.classId ? 'selected' : ''}>${c.class_name}</option>`).join('');
+      }
+      document.getElementById('assignmentTitleInput').value = hw.title || '';
+      document.getElementById('assignmentDeadlineInput').value = hw.deadline || '';
+      document.getElementById('assignmentDescInput').value = hw.description || '';
+
+      clearExamPaperUpload();
+      clearAnswerFileUpload();
+      const quickInp = document.getElementById('quickAnswerPasteInput');
+      if (quickInp) quickInp.value = '';
+
+      if (hw.examPaper && hw.examPaper.text) {
+        currentExamPaperData = {
+          name: hw.examPaper.name || 'De_bai.txt',
+          text: hw.examPaper.text
+        };
+        const badge = document.getElementById('assignmentAttachedFileName');
+        const clearBtn = document.getElementById('btnClearExamFile');
+        const wrapper = document.getElementById('assignmentExamPreviewWrapper');
+        const preview = document.getElementById('assignmentExamPreviewBox');
+        if (badge) {
+          badge.innerText = currentExamPaperData.name;
+          badge.classList.remove('hidden');
+        }
+        clearBtn?.classList.remove('hidden');
+        wrapper?.classList.remove('hidden');
+        if (preview) preview.value = currentExamPaperData.text;
+      }
+
+      const existingQuestions = Array.isArray(hw.questions) ? hw.questions : [];
+      if (existingQuestions.length > 0) {
+        const perPoint = +(10 / existingQuestions.length).toFixed(2);
+        builderAnswerSheet = existingQuestions.map((q, idx) => ({
+          id: q.id,
+          index: idx + 1,
+          type: q.type === 'single_choice' ? 'mcq' : 'fill',
+          answer: q.correctAnswer || '',
+          points: perPoint
+        }));
+      } else {
+        builderAnswerSheet = Array.from({ length: 20 }, (_, i) => ({
+          index: i + 1,
+          type: 'mcq',
+          answer: '',
+          points: 0.5
+        }));
+      }
+
       renderBuilderAnswerSheet();
       openModal('modalCreateAssignment');
     }
@@ -4565,20 +5214,42 @@ CREATE POLICY "Users manage own app data"
       const description = document.getElementById('assignmentDescInput')?.value.trim();
       const perPoint = builderAnswerSheet.length > 0 ? +(10 / builderAnswerSheet.length).toFixed(2) : 0.5;
 
-      const questions = builderAnswerSheet.map((item, idx) => ({
-        id: `q_${Date.now()}_${idx}`,
-        type: item.type === 'mcq' ? 'single_choice' : 'fill_blank',
-        title: `Câu ${idx + 1}`,
-        prompt: `Câu ${idx + 1}`,
-        options: item.type === 'mcq' ? [
-          { letter: 'A', label: 'A' },
-          { letter: 'B', label: 'B' },
-          { letter: 'C', label: 'C' },
-          { letter: 'D', label: 'D' }
-        ] : [],
-        correctAnswer: item.answer || '',
-        points: perPoint
-      }));
+      const existingHw = editingHomeworkId ? homeworks.find(h => h.id === editingHomeworkId) : null;
+      const oldQuestions = existingHw?.questions || [];
+
+      const questions = builderAnswerSheet.map((item, idx) => {
+        const preservedId = item.id || oldQuestions[idx]?.id || `q_${Date.now()}_${idx}`;
+        return {
+          id: preservedId,
+          type: item.type === 'mcq' ? 'single_choice' : 'fill_blank',
+          title: `Câu ${idx + 1}`,
+          prompt: `Câu ${idx + 1}`,
+          options: item.type === 'mcq' ? [
+            { letter: 'A', label: 'A' },
+            { letter: 'B', label: 'B' },
+            { letter: 'C', label: 'C' },
+            { letter: 'D', label: 'D' }
+          ] : [],
+          correctAnswer: item.answer || '',
+          points: perPoint
+        };
+      });
+
+      if (existingHw) {
+        existingHw.classId = classId;
+        existingHw.title = title;
+        existingHw.deadline = deadline;
+        existingHw.description = description;
+        existingHw.totalPoints = 10;
+        existingHw.examPaper = currentExamPaperData;
+        existingHw.questions = questions;
+        editingHomeworkId = null;
+        saveAllToLocalStorage(true);
+        closeModal('modalCreateAssignment');
+        renderHomeworkTab();
+        showUndoToast(`Đã cập nhật bài tập "${title}"!`);
+        return;
+      }
 
       homeworks.unshift({
         id: `HW_${Date.now()}`,
@@ -4624,8 +5295,12 @@ CREATE POLICY "Users manage own app data"
               </div>
             </div>
 
-            <div class="flex items-center gap-1.5 shrink-0">
+            <div class="flex items-center gap-1.5 shrink-0 flex-wrap">
               <button type="button" onclick="openTakeHomeworkModal('${hw.id}', true)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition">Xem thử</button>
+              <button type="button" onclick="openEditAssignmentModal('${hw.id}')" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition inline-flex items-center gap-1" title="Chỉnh sửa bài tập">
+                <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                <span>Sửa</span>
+              </button>
               <button type="button" onclick="openGradeHomeworkModal('${hw.id}')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-2xs">Chấm bài (${subCount})</button>
               <button type="button" onclick="deleteHomeworkItem('${hw.id}')" class="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition" title="Xóa bài tập">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -4652,7 +5327,10 @@ CREATE POLICY "Users manage own app data"
     function openTakeHomeworkModal(hwId, isPreview = false) {
       const hw = homeworks.find(h => h.id === hwId);
       if (!hw) return;
+
+      const isOpeningNewSession = (activeTakingHomeworkId !== hwId) || document.getElementById('modalTakeHomework')?.classList.contains('hidden');
       activeTakingHomeworkId = hwId;
+
       const allSt = getStudentsForClass(ALL_CLASSES_ID);
       const st = allSt.find(s => s.id === selectedParentStudentId) || allSt[0] || { id: 'PREVIEW_ST', name: 'Học sinh xem thử' };
 
@@ -4668,8 +5346,10 @@ CREATE POLICY "Users manage own app data"
         paperCol?.classList.add('hidden');
       }
 
-      const existingSub = homeworkSubmissions.find(s => s.homeworkId === hwId && s.studentId === st.id);
-      activeStudentAnswersMap = existingSub ? { ...existingSub.answers } : {};
+      if (isOpeningNewSession) {
+        const existingSub = homeworkSubmissions.find(s => s.homeworkId === hwId && s.studentId === st.id);
+        activeStudentAnswersMap = existingSub ? { ...existingSub.answers } : {};
+      }
 
       const qCol = document.getElementById('takeHomeworkQuestionsColumn');
       if (qCol) {
@@ -4677,13 +5357,14 @@ CREATE POLICY "Users manage own app data"
           const curAns = activeStudentAnswersMap[q.id] || '';
           const isMcq = q.type === 'single_choice';
           return `
-            <div class="p-3 rounded-2xl border border-slate-200 bg-white space-y-2">
+            <div class="p-3 rounded-2xl border border-slate-200 bg-white space-y-2" data-take-question-id="${q.id}">
               <div class="font-extrabold text-xs text-slate-900">Câu ${idx + 1}</div>
               ${isMcq ? `
                 <div class="grid grid-cols-4 gap-2">
                   ${['A', 'B', 'C', 'D'].map(opt => `
                     <button
                       type="button"
+                      data-take-opt="${opt}"
                       onclick="recordStudentAnswer('${q.id}', '${opt}')"
                       class="py-2 rounded-xl text-xs font-extrabold border transition ${
                         curAns === opt ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
@@ -4694,7 +5375,7 @@ CREATE POLICY "Users manage own app data"
               ` : `
                 <input
                   type="text"
-                  value="${curAns}"
+                  value="${String(curAns).replace(/"/g, '&quot;')}"
                   oninput="recordStudentAnswer('${q.id}', this.value)"
                   placeholder="Nhập câu trả lời của em..."
                   class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold text-slate-900"
@@ -4709,8 +5390,20 @@ CREATE POLICY "Users manage own app data"
 
     function recordStudentAnswer(qId, val) {
       activeStudentAnswersMap[qId] = val;
-      if (activeTakingHomeworkId) {
-        openTakeHomeworkModal(activeTakingHomeworkId, currentRole === 'teacher');
+
+      const qWrapper = document.querySelector(`[data-take-question-id="${qId}"]`);
+      if (!qWrapper) return;
+
+      const optionBtns = qWrapper.querySelectorAll('button[data-take-opt]');
+      if (optionBtns.length > 0) {
+        optionBtns.forEach(btn => {
+          const opt = btn.getAttribute('data-take-opt');
+          if (opt === val) {
+            btn.className = 'py-2 rounded-xl text-xs font-extrabold border transition bg-indigo-600 text-white border-indigo-600 shadow-xs';
+          } else {
+            btn.className = 'py-2 rounded-xl text-xs font-extrabold border transition bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200';
+          }
+        });
       }
     }
 
@@ -4744,22 +5437,13 @@ CREATE POLICY "Users manage own app data"
       if (existingIdx >= 0) homeworkSubmissions[existingIdx] = subObj;
       else homeworkSubmissions.push(subObj);
 
-      // Nếu phụ huynh/HS nộp bài từ thiết bị khác chưa đăng nhập giáo viên, đẩy trực tiếp lên bảng dipi_submissions
       const ownerUserId = st._teacherUserId || currentUser?.id;
       if (supabaseClient && ownerUserId && st.id !== 'PREVIEW_ST') {
         try {
-          await supabaseClient.from('dipi_submissions').upsert({
-            id: subObj.id,
-            user_id: ownerUserId,
-            homework_id: subObj.homeworkId,
-            student_id: subObj.studentId,
-            student_name: subObj.studentName,
-            answers: subObj.answers,
-            score: subObj.score,
-            submitted_at: subObj.submittedAt,
-            teacher_comment: subObj.teacherComment || '',
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'id' });
+          await supabaseClient.rpc('submit_student_homework_by_code', {
+            p_teacher_id: ownerUserId,
+            p_submission: subObj
+          });
         } catch (err) {
           console.warn('Lỗi lưu bài nộp trực tiếp lên Supabase:', err);
         }
@@ -4772,7 +5456,11 @@ CREATE POLICY "Users manage own app data"
       showUndoToast(`Đã nộp bài! Điểm tự chấm: ${score}/10 (${correctCount}/${totalQ} câu đúng)`);
     }
 
-    function openGradeHomeworkModal(hwId) {
+    async function openGradeHomeworkModal(hwId) {
+      if (supabaseClient && currentUser?.id) {
+        await loadUserDataFromCloud(currentUser, false);
+      }
+
       const hw = homeworks.find(h => h.id === hwId);
       const container = document.getElementById('gradeSubmissionsContainer');
       if (!hw || !container) return;
@@ -5475,9 +6163,15 @@ CREATE POLICY "Users manage own app data"
       if (!s) return;
 
       activeTuitionStudentId = s.id;
-      const targetDates = selectedFinanceDates.length > 0
-        ? selectedFinanceDates
-        : getCurrentClassSessionDates(found ? found.classId : currentClassId);
+      let targetDates = selectedFinanceDates;
+      if (!targetDates || targetDates.length === 0) {
+        const allClassDates = getCurrentClassSessionDates(found ? found.classId : currentClassId);
+        const now = new Date();
+        const fallbackMonth = (currentFinanceMonth && currentFinanceMonth !== 'all')
+          ? currentFinanceMonth
+          : `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        targetDates = allClassDates.filter(d => d.includes(`/${fallbackMonth}`));
+      }
 
       const history = s.attendanceHistory || {};
       const attendedDates = targetDates.filter(d => history[d] === 'present');
@@ -5516,6 +6210,16 @@ CREATE POLICY "Users manage own app data"
       applyTuitionThemeStyles();
       renderTuitionQrBox();
       setTuitionEditPanelState(false);
+
+      const editToggleBtn = document.getElementById('btnToggleTuitionEdit');
+      if (editToggleBtn) {
+        if (currentRole === 'parent') {
+          editToggleBtn.classList.add('hidden');
+        } else {
+          editToggleBtn.classList.remove('hidden');
+        }
+      }
+
       openModal('modalTuitionNotice');
     }
 
@@ -5890,113 +6594,66 @@ CREATE POLICY "Users manage own app data"
       if (!normalized || !supabaseClient) return null;
 
       try {
-        const { data: stRow, error: stErr } = await supabaseClient
-          .from('dipi_students')
-          .select('*')
-          .eq('student_code', normalized)
-          .maybeSingle();
-
-        if (stErr || !stRow) return null;
-
-        const [resCls, resAtt, resHws, resSubs, resSettings] = await Promise.all([
-          supabaseClient.from('dipi_classes').select('*').eq('id', stRow.class_id).maybeSingle(),
-          supabaseClient.from('dipi_attendance').select('*').eq('student_id', stRow.id),
-          supabaseClient.from('dipi_homeworks').select('*').eq('class_id', stRow.class_id),
-          supabaseClient.from('dipi_submissions').select('*').eq('student_id', stRow.id),
-          supabaseClient.from('dipi_teacher_settings').select('*').eq('user_id', stRow.user_id).maybeSingle()
-        ]);
-
-        const clsRow = resCls.data;
-        const attHistory = {};
-        (resAtt.data || []).forEach(a => {
-          attHistory[a.session_date] = a.status || 'unrecorded';
+        const { data, error } = await supabaseClient.rpc('get_student_portal_by_code', {
+          p_code: normalized
         });
 
-        const mappedClass = clsRow ? {
-          id: clsRow.id,
-          class_name: clsRow.class_name,
-          code: clsRow.code || 'TA',
-          room: clsRow.room || 'P.101',
-          classPassword: clsRow.class_password || '',
-          schedules: Array.isArray(clsRow.schedules) ? clsRow.schedules : [],
-          days: Array.isArray(clsRow.days) ? clsRow.days : [],
-          timeSlot: clsRow.time_slot || '',
-          colorBg: clsRow.color_bg || 'bg-[#e8fbf0] border-[#6ee7b7] text-slate-900',
-          badgeColor: clsRow.badge_color || 'bg-[#10b981] text-white',
-          fee_per_session: Number(clsRow.fee_per_session) || 40000
-        } : {
-          id: stRow.class_id,
-          class_name: 'Lớp học',
-          classPassword: '',
-          schedules: []
+        if (error || !data || !data.student || !data.classObj) return null;
+
+        const classObj = {
+          ...data.classObj,
+          schedules: Array.isArray(data.classObj.schedules) ? data.classObj.schedules : [],
+          days: Array.isArray(data.classObj.days) ? data.classObj.days : [],
+          fee_per_session: Number(data.classObj.fee_per_session) || 40000
         };
 
-        const mappedStudent = {
-          id: stRow.id,
-          studentCode: stRow.student_code,
-          name: stRow.name,
-          pricePerSession: Number(stRow.price_per_session) || 40000,
-          parentPhone: stRow.parent_phone || '',
-          parentName: stRow.parent_name || '',
-          dob: stRow.dob || '',
-          school: stRow.school || '',
-          paidSessions: Array.isArray(stRow.paid_sessions) ? stRow.paid_sessions : [],
-          paidPeriods: Array.isArray(stRow.paid_periods) ? stRow.paid_periods : [],
-          attendanceHistory: attHistory,
-          _classId: mappedClass.id,
-          _className: mappedClass.class_name,
-          _teacherUserId: stRow.user_id
+        const student = {
+          ...data.student,
+          pricePerSession: Number(data.student.pricePerSession) || Number(classObj.fee_per_session) || 40000,
+          paidSessions: Array.isArray(data.student.paidSessions) ? data.student.paidSessions : [],
+          paidPeriods: Array.isArray(data.student.paidPeriods) ? data.student.paidPeriods : [],
+          attendanceHistory: (data.student.attendanceHistory && typeof data.student.attendanceHistory === 'object')
+            ? data.student.attendanceHistory
+            : {},
+          _classId: classObj.id,
+          _className: classObj.class_name,
+          _teacherUserId: data.teacherUserId || null
         };
 
-        // Đồng bộ tạm vào bộ nhớ phiên để hiển thị phiếu học phí, QR và làm bài tập
-        if (!classesList.some(c => c.id === mappedClass.id)) {
-          classesList.push(mappedClass);
-        }
-        if (!classStudentsMap[mappedClass.id]) classStudentsMap[mappedClass.id] = [];
-        const existingStIdx = classStudentsMap[mappedClass.id].findIndex(s => s.id === mappedStudent.id);
-        if (existingStIdx >= 0) classStudentsMap[mappedClass.id][existingStIdx] = mappedStudent;
-        else classStudentsMap[mappedClass.id].push(mappedStudent);
+        const existingClsIdx = classesList.findIndex(c => c.id === classObj.id);
+        if (existingClsIdx >= 0) classesList[existingClsIdx] = classObj;
+        else classesList.push(classObj);
 
-        (resHws.data || []).forEach(hw => {
-          const mappedHw = {
-            id: hw.id,
-            classId: hw.class_id,
-            title: hw.title,
-            deadline: hw.deadline || '',
-            description: hw.description || '',
-            totalPoints: Number(hw.total_points) || 10,
-            examPaper: hw.exam_paper || null,
-            questions: Array.isArray(hw.questions) ? hw.questions : []
-          };
-          const idx = homeworks.findIndex(h => h.id === mappedHw.id);
-          if (idx >= 0) homeworks[idx] = mappedHw;
-          else homeworks.push(mappedHw);
-        });
+        if (!classStudentsMap[classObj.id]) classStudentsMap[classObj.id] = [];
+        const existingStIdx = classStudentsMap[classObj.id].findIndex(s => s.id === student.id);
+        if (existingStIdx >= 0) classStudentsMap[classObj.id][existingStIdx] = student;
+        else classStudentsMap[classObj.id].push(student);
 
-        (resSubs.data || []).forEach(sub => {
-          const mappedSub = {
-            id: sub.id,
-            homeworkId: sub.homework_id,
-            studentId: sub.student_id,
-            studentName: sub.student_name || mappedStudent.name,
-            answers: sub.answers || {},
-            score: Number(sub.score) || 0,
-            submittedAt: sub.submitted_at || '',
-            teacherComment: sub.teacher_comment || ''
-          };
-          const idx = homeworkSubmissions.findIndex(s => s.id === mappedSub.id);
-          if (idx >= 0) homeworkSubmissions[idx] = mappedSub;
-          else homeworkSubmissions.push(mappedSub);
-        });
-
-        if (resSettings.data) {
-          if (resSettings.data.payment_qr) teacherPaymentQr = resSettings.data.payment_qr;
-          if (resSettings.data.tuition_remarks) {
-            tuitionRemarksMap = Object.assign({}, tuitionRemarksMap, resSettings.data.tuition_remarks);
-          }
+        if (Array.isArray(data.homeworks)) {
+          data.homeworks.forEach(hw => {
+            const idx = homeworks.findIndex(h => h.id === hw.id);
+            if (idx >= 0) homeworks[idx] = hw;
+            else homeworks.push(hw);
+          });
         }
 
-        return { student: mappedStudent, classObj: mappedClass };
+        if (Array.isArray(data.submissions)) {
+          data.submissions.forEach(sub => {
+            const idx = homeworkSubmissions.findIndex(s => s.id === sub.id);
+            if (idx >= 0) homeworkSubmissions[idx] = sub;
+            else homeworkSubmissions.push(sub);
+          });
+        }
+
+        if (data.teacherPaymentQr && typeof data.teacherPaymentQr === 'object') {
+          teacherPaymentQr = data.teacherPaymentQr;
+        }
+
+        if (data.tuitionRemarksMap && typeof data.tuitionRemarksMap === 'object') {
+          tuitionRemarksMap = Object.assign({}, tuitionRemarksMap, data.tuitionRemarksMap);
+        }
+
+        return { student, classObj };
       } catch (e) {
         console.warn('Lỗi truy vấn mã HS trên Supabase:', e);
         return null;
@@ -6065,17 +6722,30 @@ CREATE POLICY "Users manage own app data"
       const tBtn = document.getElementById('roleTeacherBtn');
       const pBtn = document.getElementById('roleParentBtn');
       const pSelectBox = document.getElementById('parentStudentSelectBox');
+      const mobileNav = document.getElementById('mobileBottomNavWrapper');
+      const headerCreateBtn = document.getElementById('headerQuickCreateBtn');
+      const teacherClassBox = document.getElementById('teacherClassBannerBox');
 
       if (role === 'teacher') {
         tView?.classList.remove('hidden');
         pView?.classList.add('hidden');
         pSelectBox?.classList.add('hidden');
+        mobileNav?.classList.remove('hidden');
+        headerCreateBtn?.classList.remove('hidden');
+        headerCreateBtn?.classList.add('md:inline-flex');
+        teacherClassBox?.classList.remove('hidden');
+        teacherClassBox?.classList.add('inline-flex');
         tBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
         pBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
       } else {
         tView?.classList.add('hidden');
         pView?.classList.remove('hidden');
         pSelectBox?.classList.remove('hidden');
+        mobileNav?.classList.add('hidden');
+        headerCreateBtn?.classList.add('hidden');
+        headerCreateBtn?.classList.remove('md:inline-flex');
+        teacherClassBox?.classList.add('hidden');
+        teacherClassBox?.classList.remove('inline-flex');
         pBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
         tBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
         renderParentView();
@@ -6161,11 +6831,23 @@ CREATE POLICY "Users manage own app data"
         const classDates = getCurrentClassSessionDates(student._classId || currentClassId);
         grid.innerHTML = classDates.slice(0, 12).map((d, idx) => {
           const st = student.attendanceHistory?.[d] || 'unrecorded';
+          const isPresent = st === 'present';
+          const isAbsent = st === 'absent';
+          const cardCls = isPresent
+            ? 'bg-emerald-50 border-emerald-300'
+            : (isAbsent ? 'bg-rose-50 border-rose-300' : 'bg-slate-50 border-slate-200');
+          const statusCls = isPresent
+            ? 'text-emerald-700'
+            : (isAbsent ? 'text-rose-600' : 'text-slate-400');
+          const statusLabel = isPresent
+            ? '✓ Đi học'
+            : (isAbsent ? '✗ Vắng' : '--');
+
           return `
-            <div class="p-2 rounded-xl border text-center ${st === 'present' ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200'}">
+            <div class="p-2 rounded-xl border text-center ${cardCls}">
               <div class="text-[9.5px] font-bold">Buổi ${idx + 1}</div>
               <div class="text-[10.5px] font-mono mt-0.5">${d}</div>
-              <div class="text-[11px] font-bold mt-1 ${st === 'present' ? 'text-emerald-700' : 'text-slate-400'}">${st === 'present' ? '✓ Đi học' : '--'}</div>
+              <div class="text-[11px] font-bold mt-1 ${statusCls}">${statusLabel}</div>
             </div>
           `;
         }).join('');
@@ -6203,6 +6885,7 @@ CREATE POLICY "Users manage own app data"
       try {
         initSupabaseClient();
         loadScopedUserData();
+        loadVipSubscriptionState();
         setupAutoCloudSyncListeners();
         const today = getCurrentDayOfWeekInfo();
         const bannerDate = document.getElementById('currentDateDisplayBanner');
