@@ -2080,13 +2080,13 @@
       </div>
 
       <!-- Khung hiển thị mã QR VietinBank -->
-      <div class="flex flex-col items-center justify-center bg-gradient-to-b from-sky-50/70 to-white rounded-2xl border-2 border-dashed border-sky-300 p-3 space-y-2.5">
-        <div class="p-1.5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+      <div class="flex flex-col items-center justify-center bg-gradient-to-b from-sky-50/70 to-white rounded-2xl border-2 border-dashed border-sky-300 p-2.5 sm:p-3 space-y-2.5">
+        <div class="w-full p-2 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
           <img
             id="vipVietQrImage"
             src=""
             alt="Mã QR VietinBank thanh toán gói VIP"
-            class="w-48 h-48 sm:w-52 sm:h-52 object-contain rounded-xl bg-white"
+            class="w-64 h-64 sm:w-72 sm:h-72 max-w-full aspect-square object-contain rounded-xl bg-white"
           >
         </div>
 
@@ -2689,7 +2689,7 @@
         id: 'tra_chanh',
         name: 'Trà chanh',
         price: 19000,
-        yearlyPrice: 199000,
+        yearlyPrice: 190000,
         salePercent: 20,
         maxStudents: 35,
         maxTeachers: 1,
@@ -2701,7 +2701,7 @@
         id: 'tra_sua',
         name: 'Trà Sữa',
         price: 39000,
-        yearlyPrice: 399000,
+        yearlyPrice: 390000,
         salePercent: 25,
         maxStudents: 80,
         maxTeachers: 1,
@@ -2713,7 +2713,7 @@
         id: 'trum_tra',
         name: 'Trùm Trà',
         price: 89000,
-        yearlyPrice: 899000,
+        yearlyPrice: 890000,
         salePercent: 35,
         maxStudents: 200,
         maxTeachers: 2,
@@ -2725,7 +2725,7 @@
         id: 'trung_tam',
         name: 'Trung tâm',
         price: 399000,
-        yearlyPrice: 3999000,
+        yearlyPrice: 3900000,
         salePercent: 30,
         maxStudents: 1000,
         maxTeachers: 12,
@@ -3155,14 +3155,17 @@
       const yearlyPrice = Math.max(0, Number(plan.yearlyPrice) || (monthlyPrice * 10));
 
       if (currentVipBillingCycle === 'yearly') {
-        const yearlyOriginal = monthlyOriginal * 12;
-        const effectiveMonthly = Math.round((yearlyPrice / 12) / 1000) * 1000;
-        const yearlySaved = Math.max(0, yearlyOriginal - yearlyPrice);
+        const twelveMonthsFull = monthlyPrice * 12;
+        const effectiveMonthly = Math.round(yearlyPrice / 12);
+        const yearlySaved = Math.max(0, twelveMonthsFull - yearlyPrice);
+        const extraYearlyDiscountPercent = twelveMonthsFull > 0
+          ? Math.max(0, Math.round(((twelveMonthsFull - yearlyPrice) / twelveMonthsFull) * 100))
+          : 0;
         return {
           isFree: false,
           finalPrice: yearlyPrice,
-          originalPrice: yearlyOriginal,
-          salePercent,
+          originalPrice: twelveMonthsFull,
+          salePercent: extraYearlyDiscountPercent,
           effectiveMonthly,
           yearlySaved
         };
@@ -3231,29 +3234,9 @@
         }
       }
 
-      const trialTopBanner = document.getElementById('vipModalTrialTopBanner');
-      if (trialTopBanner) {
-        if (!currentUser || !currentUser.id) {
-          trialTopBanner.classList.remove('hidden');
-          trialTopBanner.innerHTML = `
-            <div class="text-xs font-extrabold text-emerald-900">Vui lòng đăng nhập để dùng thử</div>
-            <button type="button" onclick="closeModal('modalVipSubscription'); openAuthModal('signin');" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
-              Đăng nhập
-            </button>
-          `;
-        } else if (canActivateFreeTrial()) {
-          trialTopBanner.classList.remove('hidden');
-          trialTopBanner.innerHTML = `
-            <div class="text-xs font-bold text-emerald-900">
-              Tài khoản mới chưa dùng thử: Trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (80 học sinh)</strong> miễn phí trong ${TRIAL_DURATION_MINUTES} phút!
-            </div>
-            <button type="button" onclick="activateFreeTrialNow()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
-              Dùng thử ngay
-            </button>
-          `;
-        } else {
-          trialTopBanner.classList.add('hidden');
-        }
+      const yearlySaveBadge = btnYearly?.querySelector('span:last-child');
+      if (yearlySaveBadge) {
+        yearlySaveBadge.innerText = 'Giảm thêm 17% - 19%';
       }
 
       const planGrid = document.getElementById('vipPlansGridContainer');
@@ -3287,11 +3270,16 @@
                   ` : `
                     <div class="flex items-center gap-1.5 flex-wrap">
                       ${pricing.salePercent > 0 ? `<span class="text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
-                      ${pricing.salePercent > 0 ? `<span class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold">-${pricing.salePercent}%</span>` : ''}
+                      ${pricing.salePercent > 0 ? `<span class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold">${currentVipBillingCycle === 'yearly' ? `Giảm thêm ${pricing.salePercent}%` : `-${pricing.salePercent}%`}</span>` : ''}
                     </div>
                     <div class="text-lg font-black text-slate-900">
                       ${pricing.finalPrice.toLocaleString('vi-VN')}đ<span class="text-[11px] font-semibold text-slate-500">/${currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng'}</span>
                     </div>
+                    ${currentVipBillingCycle === 'yearly' ? `
+                      <div class="mt-1 px-2 py-0.5 rounded-lg bg-white/85 border border-black/10 text-[11px] font-extrabold text-emerald-700 inline-flex items-center gap-1">
+                        <span>Chỉ ~${pricing.effectiveMonthly.toLocaleString('vi-VN')}đ/tháng</span>
+                      </div>
+                    ` : ''}
                   `}
                 </div>
 
@@ -3738,7 +3726,7 @@
         `Xác nhận đã nhận ${(Number(amount) || 0).toLocaleString('vi-VN')}đ và kích hoạt gói VIP cho người dùng này?`,
         async () => {
           try {
-            const { error } = await supabaseClient.rpc('activate_vip_order', {
+            const { data, error } = await supabaseClient.rpc('activate_vip_order', {
               p_order_code: orderCode,
               p_paid_amount: Number(amount) || 0,
               p_gateway_tx_id: 'MANUAL_' + Date.now()
@@ -3746,6 +3734,12 @@
 
             if (error) {
               showUndoToast('Lỗi duyệt đơn: ' + error.message);
+              return;
+            }
+
+            if (data && data.ok === false) {
+              showUndoToast(data.message || 'Không thể duyệt đơn (đơn đã được xử lý hoặc không hợp lệ).');
+              await loadAdminVipOrders(false);
               return;
             }
 
