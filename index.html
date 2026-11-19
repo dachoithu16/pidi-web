@@ -73,12 +73,12 @@
 
   <!-- ==================== HEADER ==================== -->
   <header class="bg-white/95 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200/80 shadow-xs">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-14 sm:h-16">
+    <div class="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between gap-1.5 h-14 sm:h-16 min-w-0">
         
         <!-- Logo & Tên thương hiệu DiPi - Sổ Lớp Nhỏ -->
-        <div class="flex items-center space-x-2.5 sm:space-x-3.5">
-          <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl overflow-hidden shadow-md shadow-orange-500/20 shrink-0 ring-1 ring-orange-200/60 hover:scale-105 transition-transform flex items-center justify-center bg-[#f7ebe4]">
+        <div class="flex items-center space-x-2 sm:space-x-3.5 min-w-0 shrink-0">
+          <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl overflow-hidden shadow-md shadow-orange-500/20 shrink-0 ring-1 ring-orange-200/60 hover:scale-105 transition-transform flex items-center justify-center bg-[#f7ebe4]">
             <svg viewBox="0 0 120 120" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <linearGradient id="dipiBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -110,9 +110,9 @@
             </svg>
           </div>
 
-          <div>
-            <h1 class="text-sm sm:text-lg font-extrabold text-slate-900 tracking-tight leading-tight flex items-center gap-1.5">
-              <span>DiPi - Sổ Lớp Nhỏ</span>
+          <div class="min-w-0">
+            <h1 class="text-sm sm:text-lg font-extrabold text-slate-900 tracking-tight leading-tight flex items-center gap-1 whitespace-nowrap">
+              <span>DiPi</span><span class="hidden sm:inline"> - Sổ Lớp Nhỏ</span>
               <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse hidden sm:inline-block"></span>
             </h1>
             <p class="text-[10px] sm:text-[11px] text-slate-500 font-semibold tracking-tight hidden sm:block">
@@ -122,49 +122,49 @@
         </div>
 
         <!-- Khối bên phải Header -->
-        <div class="flex items-center space-x-1.5 sm:space-x-2.5">
+        <div class="flex items-center space-x-1 sm:space-x-2.5 min-w-0">
           <!-- Nút Gói VIP Giáo viên -->
           <button
             id="btnHeaderVipPlan"
             type="button"
             onclick="openVipSubscriptionModal()"
-            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0"
+            class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0"
             title="Xem và nâng cấp gói đăng ký Giáo viên VIP"
           >
             <i data-lucide="crown" class="w-3.5 h-3.5 shrink-0"></i>
             <span id="headerVipPlanLabel">Gói Free</span>
           </button>
 
-          <div id="authContainer" class="flex items-center">
+          <div id="authContainer" class="flex items-center min-w-0">
             <button
               id="btnOpenAuthModal"
               type="button"
               onclick="openAuthModal('signin')"
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition active:scale-95"
+              class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] sm:text-xs font-bold shadow-sm transition active:scale-95 whitespace-nowrap shrink-0"
               title="Đăng nhập hoặc đăng ký tài khoản"
             >
-              <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+              <i data-lucide="log-in" class="w-3.5 h-3.5 shrink-0"></i>
               <span>Đăng nhập</span>
             </button>
 
-            <div id="userProfileBadge" class="hidden items-center gap-1.5 bg-slate-100/90 border border-slate-200/80 pl-1 pr-2 py-0.5 rounded-full">
-              <img id="userAvatarImg" src="" alt="Avatar" class="w-6 h-6 rounded-full object-cover border border-slate-300 hidden">
-              <div id="userAvatarFallback" class="w-6 h-6 rounded-full bg-indigo-600 text-white font-extrabold text-[11px] flex items-center justify-center shrink-0">U</div>
-              <span id="userDisplayName" class="text-xs font-bold text-slate-800 max-w-[80px] sm:max-w-[120px] truncate">User</span>
+            <div id="userProfileBadge" class="hidden items-center gap-1 sm:gap-1.5 bg-slate-100/90 border border-slate-200/80 pl-1 pr-1.5 sm:pr-2 py-0.5 rounded-full min-w-0">
+              <img id="userAvatarImg" src="" alt="Avatar" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-slate-300 hidden shrink-0">
+              <div id="userAvatarFallback" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-indigo-600 text-white font-extrabold text-[10px] sm:text-[11px] flex items-center justify-center shrink-0">U</div>
+              <span id="userDisplayName" class="text-[11px] sm:text-xs font-bold text-slate-800 max-w-[56px] sm:max-w-[120px] truncate">User</span>
               <button
                 type="button"
                 id="cloudSyncStatusBtn"
                 onclick="openCloudSyncModal()"
-                class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 text-[10px] font-bold transition"
+                class="inline-flex items-center gap-1 px-1 sm:px-1.5 py-0.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/80 text-[10px] font-bold transition shrink-0"
                 title="Trạng thái đồng bộ đám mây đa thiết bị"
               >
-                <i id="cloudSyncIcon" data-lucide="cloud-check" class="w-3 h-3"></i>
+                <i id="cloudSyncIcon" data-lucide="cloud-check" class="w-3 h-3 shrink-0"></i>
                 <span id="cloudSyncLabel" class="hidden sm:inline">Đã đồng bộ</span>
               </button>
               <button
                 type="button"
                 onclick="handleSignOut()"
-                class="w-5 h-5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-rose-600 flex items-center justify-center transition ml-0.5"
+                class="w-5 h-5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-rose-600 flex items-center justify-center transition shrink-0"
                 title="Đăng xuất"
               >
                 <i data-lucide="log-out" class="w-3 h-3"></i>
@@ -183,22 +183,22 @@
           </button>
 
           <!-- Chuyển đổi Giáo viên / Phụ huynh -->
-          <div class="flex items-center p-0.5 sm:p-1 bg-slate-100/90 rounded-xl border border-slate-200/70 shadow-inner">
+          <div class="flex items-center p-0.5 sm:p-1 bg-slate-100/90 rounded-xl border border-slate-200/70 shadow-inner shrink-0">
             <button
               id="roleTeacherBtn"
               onclick="switchRole('teacher')"
-              class="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-sm font-semibold transition-all flex items-center space-x-1 sm:space-x-1.5 bg-white text-indigo-700 shadow-sm"
+              class="px-1.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-sm font-semibold transition-all flex items-center space-x-1 sm:space-x-1.5 bg-white text-indigo-700 shadow-sm whitespace-nowrap"
             >
-              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-600"></i>
-              <span>Giáo viên</span>
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-600 shrink-0"></i>
+              <span class="sm:hidden">GV</span><span class="hidden sm:inline">Giáo viên</span>
             </button>
             <button
               id="roleParentBtn"
               onclick="switchRole('parent')"
-              class="px-2 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-sm font-semibold transition-all flex items-center space-x-1 sm:space-x-1.5 text-slate-500 hover:text-slate-800"
+              class="px-1.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[11px] sm:text-sm font-semibold transition-all flex items-center space-x-1 sm:space-x-1.5 text-slate-500 hover:text-slate-800 whitespace-nowrap"
             >
-              <i data-lucide="users" class="w-3.5 h-3.5 text-slate-400"></i>
-              <span>Phụ huynh / HS</span>
+              <i data-lucide="users" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+              <span class="sm:hidden">PH/HS</span><span class="hidden sm:inline">Phụ huynh / HS</span>
             </button>
           </div>
         </div>
@@ -561,7 +561,7 @@
               </div>
             </div>
 
-            <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-nowrap">
+            <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-wrap">
               <div id="filterMonthBox" class="inline-flex items-center bg-slate-50 px-2 py-1 rounded-xl border border-slate-200 text-xs shrink-0">
                 <select
                   id="financeMonthFilterSelect"
@@ -797,8 +797,8 @@
   </main>
 
   <!-- ==================== TOAST THÔNG BÁO ==================== -->
-  <div id="undoToast" class="hidden fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 backdrop-blur-md text-white px-4 py-2 sm:px-6 sm:py-2.5 rounded-full shadow-2xl border border-white/10 animate-slide-down-toast text-xs sm:text-sm font-medium pointer-events-none whitespace-nowrap text-center transition-all flex items-center gap-2">
-    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+  <div id="undoToast" class="hidden fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 backdrop-blur-md text-white px-4 py-2 sm:px-6 sm:py-2.5 rounded-2xl sm:rounded-full shadow-2xl border border-white/10 animate-slide-down-toast text-xs sm:text-sm font-medium pointer-events-none max-w-[92vw] sm:max-w-lg whitespace-normal leading-snug text-center transition-all flex items-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
     <span id="undoToastMessage">Đã cập nhật...</span>
   </div>
 
@@ -1163,7 +1163,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5 sm:gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
           <div class="bg-indigo-50/40 rounded-2xl border border-indigo-200/80 p-2.5 sm:p-3 flex flex-col justify-between space-y-2.5 min-w-0">
             <div class="flex items-center justify-between gap-1.5">
               <div class="flex items-center gap-1.5 min-w-0">
@@ -1964,23 +1964,25 @@
       </div>
 
       <!-- Thanh tiến độ sử dụng giới hạn hiện tại -->
-      <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-        <div class="space-y-1.5">
-          <div class="flex items-center justify-between font-bold text-slate-700">
+      <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-2.5 sm:p-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-xs">
+        <div class="space-y-1 sm:space-y-1.5">
+          <div class="flex items-center justify-between font-bold text-slate-700 text-[11.5px] sm:text-xs">
             <span>Học sinh đang quản lý</span>
             <span id="vipUsageStudentText" class="text-indigo-700 font-extrabold">0 / 15 học sinh</span>
           </div>
-          <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+          <div class="w-full h-1.5 sm:h-2 rounded-full bg-slate-200 overflow-hidden">
             <div id="vipUsageStudentBar" class="h-full rounded-full bg-indigo-600 transition-all" style="width: 0%;"></div>
           </div>
         </div>
-        <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-3 py-2">
-          <span class="text-slate-500 font-medium">Số giáo viên tối đa</span>
-          <strong id="vipUsageTeacherText" class="text-slate-900 font-extrabold text-sm">1 giáo viên</strong>
-        </div>
-        <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-3 py-2">
-          <span class="text-slate-500 font-medium">Số suất còn lại</span>
-          <strong id="vipRemainingSlotsText" class="text-emerald-700 font-extrabold text-sm">15 học sinh</strong>
+        <div class="grid grid-cols-2 sm:contents gap-2">
+          <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
+            <span class="text-slate-500 font-medium text-[11px] sm:text-xs">GV tối đa</span>
+            <strong id="vipUsageTeacherText" class="text-slate-900 font-extrabold text-xs sm:text-sm">1 giáo viên</strong>
+          </div>
+          <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
+            <span class="text-slate-500 font-medium text-[11px] sm:text-xs">Suất còn lại</span>
+            <strong id="vipRemainingSlotsText" class="text-emerald-700 font-extrabold text-xs sm:text-sm">15 học sinh</strong>
+          </div>
         </div>
       </div>
 
@@ -2050,41 +2052,41 @@
   </div>
 
   <!-- ==================== MODAL THANH TOÁN VIETQR VIETINBANK (SEPAY) ==================== -->
-  <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-md w-full p-4 border border-slate-200/90 shadow-2xl space-y-3 max-h-[95vh] overflow-y-auto scrollbar-none">
+  <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-md w-full p-3 sm:p-4 border border-slate-200/90 shadow-2xl space-y-2 sm:space-y-2.5 max-h-[96vh] overflow-y-auto scrollbar-none">
       <!-- Header -->
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#0284c7] to-[#1d4ed8] text-white flex items-center justify-center shadow-sm shrink-0">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0284c7] to-[#1d4ed8] text-white flex items-center justify-center shadow-sm shrink-0">
             <i data-lucide="qr-code" class="w-4 h-4"></i>
           </div>
-          <h3 class="font-extrabold text-slate-900 text-[15px] sm:text-base tracking-tight">Quét mã QR thanh toán</h3>
+          <h3 class="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight">Quét mã QR thanh toán</h3>
         </div>
-        <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
+        <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
       <!-- Thanh trạng thái -->
-      <div id="vipVietQrStatusBanner" class="rounded-2xl bg-[#fffbeb] border border-[#fde68a] px-3 py-2 flex items-center justify-between gap-2 text-xs">
-        <div class="flex items-center gap-2 text-[#78350f] font-bold min-w-0">
+      <div id="vipVietQrStatusBanner" class="rounded-xl bg-[#fffbeb] border border-[#fde68a] px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-1.5 text-[#78350f] font-bold min-w-0">
           <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
           <span id="vipVietQrStatusText" class="truncate">Đang chờ chuyển khoản...</span>
         </div>
         <button
           type="button"
           onclick="checkActiveVietQrOrderStatus(true)"
-          class="px-2.5 py-1 rounded-xl bg-white hover:bg-amber-50 text-[#92400e] border border-[#fcd34d] text-[11px] font-extrabold transition shrink-0 shadow-2xs"
+          class="px-2 py-0.5 rounded-lg bg-white hover:bg-amber-50 text-[#92400e] border border-[#fcd34d] text-[10.5px] font-extrabold transition shrink-0 shadow-2xs"
         >
           Kiểm tra ngay
         </button>
       </div>
 
       <!-- Khung mã QR phóng to -->
-      <div class="flex flex-col items-center justify-center bg-slate-50/80 rounded-2xl border border-slate-200/80 p-3 pt-4 space-y-3">
-        <div class="relative w-64 h-64 sm:w-72 sm:h-72 max-w-[280px] aspect-square bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
-          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-white border border-sky-200 shadow-sm flex items-center gap-1.5 z-10 whitespace-nowrap">
-            <svg viewBox="0 0 100 100" class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg">
+      <div class="flex flex-col items-center justify-center bg-slate-50/80 rounded-2xl border border-slate-200/80 p-2.5 pt-3.5 space-y-2">
+        <div class="relative w-52 h-52 sm:w-64 sm:h-64 aspect-square bg-white p-2.5 sm:p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-white border border-sky-200 shadow-sm flex items-center gap-1.5 z-10 whitespace-nowrap">
+            <svg viewBox="0 0 100 100" class="w-3.5 h-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <clipPath id="vietinCircleClip">
                   <circle cx="50" cy="50" r="46" />
@@ -2096,7 +2098,7 @@
                 <path d="M4 77 Q50 61 96 77 L100 100 H0 Z" fill="#d71940" />
               </g>
             </svg>
-            <span class="text-xs font-extrabold tracking-tight">
+            <span class="text-[11px] font-extrabold tracking-tight">
               <span class="text-[#005288]">Vietin</span><span class="text-[#d71940]">Bank</span>
             </span>
           </div>
@@ -2108,67 +2110,67 @@
           >
         </div>
 
-        <p class="text-[11px] text-sky-700 font-bold text-center leading-tight">
+        <p class="text-[10.5px] text-sky-700 font-bold text-center leading-tight">
           Quét mã QR để tự động điền thông tin
         </p>
 
         <!-- Bảng thông tin 5 dòng tách riêng bên dưới QR -->
         <div class="w-full bg-white rounded-2xl border border-slate-200/90 divide-y divide-slate-100 text-xs overflow-hidden shadow-2xs">
-          <div class="px-3 py-2 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold">Gói đăng ký</span>
-            <span id="vipVietQrPlanBadge" class="px-2.5 py-0.5 rounded-full font-extrabold text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold text-[11px]">Gói đăng ký</span>
+            <span id="vipVietQrPlanBadge" class="px-2 py-0.5 rounded-full font-extrabold text-[10.5px] bg-emerald-50 text-emerald-700 border border-emerald-200">
               --
             </span>
           </div>
-          <div class="px-3 py-2 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold">Chủ tài khoản</span>
+          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold text-[11px]">Chủ tài khoản</span>
             <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrAccountName" class="font-extrabold text-slate-900 text-[12.5px] tracking-wide">BUI HONG PHUC</strong>
+              <strong id="vipVietQrAccountName" class="font-extrabold text-slate-900 text-xs tracking-wide">BUI HONG PHUC</strong>
               <button
                 type="button"
                 onclick="copyTextToClipboardFallback('BUI HONG PHUC', 'Đã sao chép tên chủ tài khoản!')"
-                class="px-2.5 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10.5px] font-bold transition"
+                class="px-2 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10px] font-bold transition"
               >
                 Copy
               </button>
             </div>
           </div>
-          <div class="px-3 py-2 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold">Số tài khoản</span>
+          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold text-[11px]">Số tài khoản</span>
             <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrBankAccount" class="font-mono font-extrabold text-slate-900 text-[12.5px]">104869424470</strong>
+              <strong id="vipVietQrBankAccount" class="font-mono font-extrabold text-slate-900 text-xs">104869424470</strong>
               <button
                 type="button"
                 onclick="copyTextToClipboardFallback('104869424470', 'Đã sao chép số tài khoản VietinBank!')"
-                class="px-2.5 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10.5px] font-bold transition"
+                class="px-2 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10px] font-bold transition"
               >
                 Copy
               </button>
             </div>
           </div>
-          <div class="px-3 py-2 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold">Số tiền</span>
+          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold text-[11px]">Số tiền</span>
             <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrAmountValue" class="font-mono font-black text-rose-600 text-[13px]">0đ</strong>
+              <strong id="vipVietQrAmountValue" class="font-mono font-black text-rose-600 text-xs">0đ</strong>
               <button
                 type="button"
                 onclick="copyTextToClipboardFallback(String(activeVietQrOrderAmount || 0), 'Đã sao chép số tiền thanh toán!')"
-                class="px-2.5 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10.5px] font-bold transition"
+                class="px-2 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10px] font-bold transition"
               >
                 Copy
               </button>
             </div>
           </div>
-          <div class="px-3 py-2 bg-[#f5f3ff]/90 flex items-center justify-between gap-2">
-            <span class="text-indigo-700 font-extrabold shrink-0">Nội dung CK</span>
+          <div class="py-1.5 px-2.5 bg-[#f5f3ff]/90 flex items-center justify-between gap-2">
+            <span class="text-indigo-700 font-extrabold text-[11px] shrink-0">Nội dung CK</span>
             <div class="flex items-center gap-1.5 min-w-0">
-              <strong id="vipVietQrContentNote" class="font-mono font-black text-slate-900 text-[12px] truncate">
+              <strong id="vipVietQrContentNote" class="font-mono font-black text-slate-900 text-[11.5px] truncate">
                 SEVQR DIPIVIP00000
               </strong>
               <button
                 type="button"
                 onclick="copyVipVietQrTransferNote()"
-                class="px-2.5 py-1 rounded-lg bg-[#5b46e8] hover:bg-[#4c38d6] text-white text-[10.5px] font-extrabold transition active:scale-95 shrink-0"
+                class="px-2 py-0.5 rounded-lg bg-[#5b46e8] hover:bg-[#4c38d6] text-white text-[10px] font-extrabold transition active:scale-95 shrink-0"
               >
                 Copy
               </button>
@@ -2177,7 +2179,7 @@
         </div>
 
         <!-- Ghi chú dưới cùng -->
-        <p class="text-[11px] text-slate-400 font-medium text-center leading-tight pt-0.5">
+        <p class="text-[10.5px] text-slate-400 font-medium text-center leading-tight">
           Giữ nguyên nội dung chuyển khoản để tự động kích hoạt.
         </p>
       </div>
@@ -2900,7 +2902,7 @@
 
     function loadVipSubscriptionState() {
       try {
-        const savedPlans = localStorage.getItem('dipi_vip_plans_config_v1');
+        const savedPlans = localStorage.getItem('dipi_vip_plans_config_v2');
         if (savedPlans) {
           const parsed = JSON.parse(savedPlans);
           if (Array.isArray(parsed) && parsed.length === 5) {
@@ -2939,7 +2941,7 @@
 
     function saveVipSubscriptionState(syncCloudNow = false) {
       try {
-        localStorage.setItem('dipi_vip_plans_config_v1', JSON.stringify(vipPlansConfig));
+        localStorage.setItem('dipi_vip_plans_config_v2', JSON.stringify(vipPlansConfig));
         const prefix = getStorageKeyPrefix();
         localStorage.setItem(`${prefix}_active_vip_plan`, currentTeacherPlanId);
         if (vipExpiresAtIso) {
@@ -3192,7 +3194,7 @@
 
       if (currentVipBillingCycle === 'yearly') {
         const twelveMonthsFull = monthlyPrice * 12;
-        const effectiveMonthly = Math.round(yearlyPrice / 12);
+        const effectiveMonthly = Math.round((yearlyPrice / 12) / 100) * 100;
         const yearlySaved = Math.max(0, twelveMonthsFull - yearlyPrice);
         const extraYearlyDiscountPercent = twelveMonthsFull > 0
           ? Math.max(0, Math.round(((twelveMonthsFull - yearlyPrice) / twelveMonthsFull) * 100))
@@ -3273,6 +3275,31 @@
       const yearlySaveBadge = btnYearly?.querySelector('span:last-child');
       if (yearlySaveBadge) {
         yearlySaveBadge.innerText = 'Giảm đến 19%';
+      }
+
+      const trialTopBanner = document.getElementById('vipModalTrialTopBanner');
+      if (trialTopBanner) {
+        if (!currentUser || !currentUser.id) {
+          trialTopBanner.classList.remove('hidden');
+          trialTopBanner.innerHTML = `
+            <div class="text-xs font-extrabold text-emerald-900">Vui lòng đăng nhập để dùng thử</div>
+            <button type="button" onclick="closeModal('modalVipSubscription'); openAuthModal('signin');" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
+              Đăng nhập
+            </button>
+          `;
+        } else if (canActivateFreeTrial()) {
+          trialTopBanner.classList.remove('hidden');
+          trialTopBanner.innerHTML = `
+            <div class="text-xs font-bold text-emerald-900">
+              Tài khoản mới chưa dùng thử: Trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (80 học sinh)</strong> miễn phí trong ${TRIAL_DURATION_MINUTES} phút!
+            </div>
+            <button type="button" onclick="activateFreeTrialNow()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
+              Dùng thử ngay
+            </button>
+          `;
+        } else {
+          trialTopBanner.classList.add('hidden');
+        }
       }
 
       const planGrid = document.getElementById('vipPlansGridContainer');
@@ -3404,7 +3431,7 @@
       const encodedInfo = encodeURIComponent(transferContent);
       const encodedName = encodeURIComponent(VIETINBANK_QR_CONFIG.accountName);
       const primaryVietQrUrl = `https://img.vietqr.io/image/${VIETINBANK_QR_CONFIG.bin}-${VIETINBANK_QR_CONFIG.accountNumber}-qr_only.png?amount=${safeAmount}&addInfo=${encodedInfo}&accountName=${encodedName}`;
-      const fallbackSePayUrl = `https://qr.sepay.vn/img?acc=${VIETINBANK_QR_CONFIG.accountNumber}&bank=${VIETINBANK_QR_CONFIG.bankCode}&amount=${safeAmount}&des=${encodedInfo}&template=compact`;
+      const fallbackSePayUrl = `https://qr.sepay.vn/img?acc=${VIETINBANK_QR_CONFIG.accountNumber}&bank=${VIETINBANK_QR_CONFIG.bankCode}&amount=${safeAmount}&des=${encodedInfo}&template=qronly`;
       return { primaryVietQrUrl, fallbackSePayUrl };
     }
 
@@ -3520,7 +3547,6 @@
       stopVipVietQrStatusPolling();
 
       const pricing = calculateVipPlanPricing(plan);
-      const cycleLabel = currentVipBillingCycle === 'yearly' ? 'Gói Năm (12 tháng)' : 'Gói Tháng (1 tháng)';
       const shortCycleLabel = currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng';
       const orderCode = generateSePayOrderCode();
       const transferContent = `${VIETINBANK_QR_CONFIG.prefix} ${orderCode}`;
@@ -3542,28 +3568,6 @@
         const badgeCls = accentColors[plan.accent] || accentColors.indigo;
         planBadgeEl.className = `px-2 py-0.5 rounded-lg font-extrabold text-[11px] border ${badgeCls}`;
         planBadgeEl.innerText = `${plan.name} - ${formatMoneyK(pricing.finalPrice)}/${shortCycleLabel}`;
-      }
-
-      const summaryBox = document.getElementById('vipVietQrSummaryBox');
-      if (summaryBox) {
-        summaryBox.innerHTML = `
-          <div class="flex justify-between gap-2">
-            <span class="text-slate-500">Mã đơn hàng:</span>
-            <strong class="font-mono text-indigo-700">${orderCode}</strong>
-          </div>
-          <div class="flex justify-between gap-2">
-            <span class="text-slate-500">Gói nâng cấp:</span>
-            <strong class="text-slate-900">${plan.name} (Tối đa ${plan.maxStudents.toLocaleString('vi-VN')} HS)</strong>
-          </div>
-          <div class="flex justify-between gap-2">
-            <span class="text-slate-500">Chu kỳ thanh toán:</span>
-            <strong class="text-indigo-700">${cycleLabel}</strong>
-          </div>
-          <div class="flex justify-between gap-2 pt-1.5 border-t border-slate-200">
-            <span class="text-slate-600 font-bold">Tổng thanh toán:</span>
-            <strong class="text-rose-600 text-sm font-black">${pricing.finalPrice.toLocaleString('vi-VN')}đ</strong>
-          </div>
-        `;
       }
 
       const amountEl = document.getElementById('vipVietQrAmountValue');
@@ -4417,9 +4421,9 @@
           if (Array.isArray(appData.homeworkSubmissions)) homeworkSubmissions = appData.homeworkSubmissions;
           if (appData.teacherPaymentQr && typeof appData.teacherPaymentQr === 'object') teacherPaymentQr = appData.teacherPaymentQr;
           if (appData.tuitionRemarksMap && typeof appData.tuitionRemarksMap === 'object') tuitionRemarksMap = appData.tuitionRemarksMap;
-          if (Array.isArray(appData.vipPlansConfig) && appData.vipPlansConfig.length === 5) {
+          if (isCurrentUserVipAdmin() && Array.isArray(appData.vipPlansConfig) && appData.vipPlansConfig.length === 5) {
             vipPlansConfig = appData.vipPlansConfig;
-            localStorage.setItem('dipi_vip_plans_config_v1', JSON.stringify(vipPlansConfig));
+            localStorage.setItem('dipi_vip_plans_config_v2', JSON.stringify(vipPlansConfig));
           }
           if (appData.currentTeacherPlanId && vipPlansConfig.some(p => p.id === appData.currentTeacherPlanId)) {
             currentTeacherPlanId = appData.currentTeacherPlanId;
@@ -5029,13 +5033,13 @@
               ${hwBadgeHtml}
             </div>
 
-            <div class="flex items-center justify-center gap-1 w-32 sm:w-36 shrink-0">
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'present')" class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 ${isPresent ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
-                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <div class="flex items-center justify-center gap-1 sm:w-36 shrink-0">
+              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'present')" class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${isPresent ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                <i data-lucide="check" class="w-3.5 h-3.5 shrink-0"></i>
                 <span>Đi học</span>
               </button>
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'absent')" class="px-2 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 ${isAbsent ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
-                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'absent')" class="px-2 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${isAbsent ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+                <i data-lucide="x" class="w-3.5 h-3.5 shrink-0"></i>
                 <span>Vắng</span>
               </button>
             </div>
@@ -6208,158 +6212,93 @@
           const curAns = activeStudentAnswersMap[q.id] || '';
           const isMcq = q.type === 'single_choice';
           return `
-            <div class="p-3 rounded-2xl border border-slate-200 bg-white space-y-2" data-question-card="${q.id}">
-              <div class="font-extrabold text-xs text-slate-900">Câu ${idx + 1}</div>
-              ${isMcq ? `
-                <div class="grid grid-cols-4 gap-2">
-                  ${['A', 'B', 'C', 'D'].map(opt => `
-                    <button
-                      type="button"
-                      data-mcq-qid="${q.id}"
-                      data-mcq-opt="${opt}"
-                      onclick="recordStudentAnswer('${q.id}', '${opt}')"
-                      class="py-2 rounded-xl text-xs font-extrabold border transition ${
-                        curAns === opt ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
-                      }"
-                    >${opt}</button>
-                  `).join('')}
+            <div class="rounded-2xl border p-2.5 sm:p-3.5 flex flex-col justify-between gap-2 sm:gap-3 transition ${style.card} ${isCurrent ? 'ring-2 ring-indigo-500 shadow-md' : 'shadow-2xs'}">
+              <div class="flex items-start justify-between gap-2 sm:block sm:space-y-2">
+                <div class="min-w-0 flex-1 space-y-1 sm:space-y-2">
+                  <div class="flex items-center justify-between gap-1.5 flex-wrap">
+                    <h4 class="font-extrabold text-[13.5px] sm:text-sm text-slate-900">${p.name}</h4>
+                    <span class="px-1.5 sm:px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-extrabold ${style.badge}">${p.badge || ''}</span>
+                  </div>
+                  <div class="sm:hidden text-[11px] font-semibold text-slate-600">
+                    Tối đa <strong class="text-slate-900">${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> HS • <strong class="text-slate-900">${p.maxTeachers || 1}</strong> GV
+                  </div>
                 </div>
-              ` : `
-                <input
-                  type="text"
-                  value="${String(curAns).replace(/"/g, '&quot;')}"
-                  oninput="recordStudentAnswer('${q.id}', this.value)"
-                  placeholder="Nhập câu trả lời của em..."
-                  class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold text-slate-900"
+
+                <div class="text-right sm:text-left shrink-0">
+                  ${pricing.isFree ? `
+                    <div class="text-base sm:text-xl font-black text-slate-900">Miễn phí</div>
+                  ` : `
+                    <div class="flex items-center justify-end sm:justify-start gap-1 sm:gap-1.5 flex-wrap">
+                      ${pricing.salePercent > 0 ? `<span class="text-[10px] sm:text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+                      ${pricing.salePercent > 0 ? `<span class="px-1 sm:px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[9.5px] sm:text-[10px] font-extrabold">${currentVipBillingCycle === 'yearly' ? `Giảm thêm ${pricing.salePercent}%` : `-${pricing.salePercent}%`}</span>` : ''}
+                    </div>
+                    <div class="text-base sm:text-lg font-black text-slate-900 leading-tight">
+                      ${pricing.finalPrice.toLocaleString('vi-VN')}đ<span class="text-[10.5px] sm:text-[11px] font-semibold text-slate-500">/${currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng'}</span>
+                    </div>
+                    ${currentVipBillingCycle === 'yearly' ? `
+                      <div class="mt-0.5 sm:mt-1 px-1.5 sm:px-2 py-0.5 rounded-lg bg-white/85 border border-black/10 text-[10px] sm:text-[11px] font-extrabold text-emerald-700 inline-flex items-center gap-1">
+                        <span>Chỉ ~${pricing.effectiveMonthly.toLocaleString('vi-VN')}đ/tháng</span>
+                      </div>
+                    ` : ''}
+                  `}
+                </div>
+
+                <p class="hidden sm:block text-[11px] text-slate-600 leading-relaxed">${p.description || ''}</p>
+
+                <ul class="hidden sm:block space-y-1 text-[11px] font-semibold text-slate-700 pt-1 border-t border-black/5">
+                  <li>• Tối đa <strong>${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> học sinh</li>
+                  <li>• <strong>${p.maxTeachers || 1}</strong> giáo viên quản lý</li>
+                </ul>
+              </div>
+
+              <div class="${isTrialTarget ? 'grid grid-cols-2 gap-1.5 sm:grid-cols-1' : 'space-y-1.5'} pt-0.5 sm:pt-1">
+                ${isTrialTarget ? `
+                  <button type="button" onclick="activateFreeTrialNow()" class="w-full py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-extrabold transition shadow-2xs truncate px-1.5">
+                    Dùng thử miễn phí
+                  </button>
+                ` : ''}
+                <button
+                  type="button"
+                  ${isFreeLockedByPaidVip ? 'disabled' : ''}
+                  onclick="selectTeacherVipPlan('${p.id}')"
+                  class="w-full py-1.5 sm:py-2 rounded-xl text-[11.5px] sm:text-xs font-extrabold transition shadow-2xs truncate px-2 ${
+                    isFreeLockedByPaidVip
+                      ? 'bg-slate-200 text-slate-500 cursor-not-allowed opacity-80'
+                      : ((isCurrent && !trialInfo.isActive) ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn)
+                  }"
                 >
-              `}
+                  ${isFreeLockedByPaidVip ? 'Đang dùng VIP' : (isCurrent ? (trialInfo.isActive ? 'Mua gói chính thức' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR'))}
+                </button>
+              </div>
             </div>
           `;
         }).join('');
       }
-      openModal('modalTakeHomework');
-    }
 
-    function recordStudentAnswer(qId, val) {
-      activeStudentAnswersMap[qId] = val;
-      const mcqButtons = document.querySelectorAll(`button[data-mcq-qid="${qId}"]`);
-      if (mcqButtons.length > 0) {
-        mcqButtons.forEach(btn => {
-          const opt = btn.getAttribute('data-mcq-opt');
-          if (opt === val) {
-            btn.className = 'py-2 rounded-xl text-xs font-extrabold border transition bg-indigo-600 text-white border-indigo-600 shadow-xs';
-          } else {
-            btn.className = 'py-2 rounded-xl text-xs font-extrabold border transition bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200';
-          }
-        });
-      }
-    }
-
-    async function handleSubmitStudentHomework() {
-      const hw = homeworks.find(h => h.id === activeTakingHomeworkId);
-      if (!hw) return;
-
-      if (isPreviewingHomework || currentRole === 'teacher') {
-        let previewCorrect = 0;
-        const totalPreviewQ = (hw.questions || []).length;
-        (hw.questions || []).forEach(q => {
-          const userAns = String(activeStudentAnswersMap[q.id] || '').trim().toLowerCase();
-          const rightAns = String(q.correctAnswer || '').trim().toLowerCase();
-          if (rightAns && userAns === rightAns) previewCorrect++;
-        });
-        const previewScore = totalPreviewQ > 0 ? +((previewCorrect / totalPreviewQ) * 10).toFixed(1) : 10;
-        showUndoToast(`Xem thử: Điểm đạt ${previewScore}/10 (${previewCorrect}/${totalPreviewQ} câu đúng) - Không lưu dữ liệu.`);
-        return;
-      }
-
-      const allSt = getStudentsForClass(ALL_CLASSES_ID);
-      const st = allSt.find(s => s.id === selectedParentStudentId);
-      if (!st) {
-        showUndoToast('Không xác định được hồ sơ học sinh đang làm bài.');
-        return;
-      }
-
-      let correctCount = 0;
-      const totalQ = (hw.questions || []).length;
-      (hw.questions || []).forEach(q => {
-        const userAns = String(activeStudentAnswersMap[q.id] || '').trim().toLowerCase();
-        const rightAns = String(q.correctAnswer || '').trim().toLowerCase();
-        if (rightAns && userAns === rightAns) correctCount++;
-      });
-
-      const score = totalQ > 0 ? +((correctCount / totalQ) * 10).toFixed(1) : 10;
-      const existingIdx = homeworkSubmissions.findIndex(s => s.homeworkId === hw.id && s.studentId === st.id);
-      const subObj = {
-        id: existingIdx >= 0 ? homeworkSubmissions[existingIdx].id : `SUB_${Date.now()}_${st.id}`,
-        homeworkId: hw.id,
-        studentId: st.id,
-        studentName: st.name,
-        answers: { ...activeStudentAnswersMap },
-        score,
-        submittedAt: new Date().toLocaleString('vi-VN'),
-        teacherComment: existingIdx >= 0 ? homeworkSubmissions[existingIdx].teacherComment : ''
-      };
-
-      const ownerUserId = st._teacherUserId || currentUser?.id;
-      if (supabaseClient && ownerUserId) {
-        try {
-          const { data, error } = await supabaseClient.rpc('submit_student_homework_by_code', {
-            p_teacher_id: ownerUserId,
-            p_submission: subObj
-          });
-          if (error || data === false) {
-            console.warn('Lỗi RPC submit_student_homework_by_code:', error?.message || data);
-            showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
-            return;
-          }
-        } catch (rpcErr) {
-          console.warn('Lỗi ngoại lệ khi gọi RPC nộp bài:', rpcErr);
-          showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
-          return;
-        }
-      }
-
-      if (existingIdx >= 0) homeworkSubmissions[existingIdx] = subObj;
-      else homeworkSubmissions.push(subObj);
-
-      saveAllToLocalStorage(true);
-      activeTakingHomeworkId = null;
-      activeTakingSessionKey = null;
-      closeModal('modalTakeHomework');
-      renderHomeworkTab();
-      renderParentView();
-      showUndoToast(`Đã nộp bài! Điểm tự chấm: ${score}/10 (${correctCount}/${totalQ} câu đúng)`);
-    }
-
-    async function openGradeHomeworkModal(hwId) {
-      const hw = homeworks.find(h => h.id === hwId);
-      const container = document.getElementById('gradeSubmissionsContainer');
-      if (!hw || !container) return;
-
-      document.getElementById('gradeHomeworkModalTitle').innerText = `Chấm bài: ${hw.title}`;
-      container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Đang tải danh sách bài nộp mới nhất...</div>`;
-      openModal('modalGradeHomework');
-
-      if (currentUser && currentUser.id) {
-        await loadUserDataFromCloud(currentUser, false);
-      }
-
-      const subs = homeworkSubmissions.filter(s => s.homeworkId === hwId);
-
-      if (subs.length === 0) {
-        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Chưa có học sinh nào nộp bài tập này.</div>`;
-      } else {
-        container.innerHTML = subs.map((sub, idx) => `
-          <div class="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/70 space-y-2.5 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="font-extrabold text-slate-900">${sub.studentName}</span>
-              <span class="text-slate-500">Nộp lúc: ${sub.submittedAt}</span>
+      const adminList = document.getElementById('vipAdminPlansList');
+      if (adminList && isAdmin && isVipAdminEditMode) {
+        adminList.innerHTML = vipPlansConfig.map((p, idx) => `
+          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-white p-2.5 rounded-xl border border-slate-200 items-center">
+            <strong class="col-span-2 sm:col-span-1 text-slate-900 border-b sm:border-b-0 border-slate-100 pb-1 sm:pb-0">${p.name}</strong>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá tháng</label>
+              <input id="adminPlanPrice_${idx}" type="number" value="${p.price}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá tháng">
             </div>
-            <div class="flex items-center gap-2">
-              <label class="font-bold text-slate-700">Điểm số:</label>
-              <input type="number" step="0.5" min="0" max="10" value="${sub.score}" id="gradeScoreInput_${idx}" class="w-20 px-2 py-1 rounded-lg border border-slate-300 font-extrabold text-emerald-700 bg-white">
-              <input type="text" value="${sub.teacherComment || ''}" id="gradeCommentInput_${idx}" placeholder="Nhập lời phê của giáo viên..." class="flex-1 px-2.5 py-1 rounded-lg border border-slate-300 bg-white">
-              <button type="button" onclick="saveTeacherGrade('${sub.id}', ${idx})" class="px-3 py-1 rounded-lg bg-indigo-600 text-white font-bold">Lưu</button>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá năm</label>
+              <input id="adminPlanYearlyPrice_${idx}" type="number" value="${p.yearlyPrice || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá năm">
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">% Sale</label>
+              <input id="adminPlanSale_${idx}" type="number" value="${p.salePercent || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="% Sale">
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa HS</label>
+              <input id="adminPlanStudents_${idx}" type="number" value="${p.maxStudents}" class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa HS">
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa GV</label>
+              <input id="adminPlanTeachers_${idx}" type="number" value="${p.maxTeachers || 1}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa GV">
             </div>
           </div>
         `).join('');
