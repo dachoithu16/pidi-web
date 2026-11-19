@@ -3438,6 +3438,13 @@
     }
 
     async function openVipVietQrCheckoutModal(plan) {
+      if (!currentUser || !currentUser.id) {
+        closeModal('modalVipSubscription');
+        openAuthModal('signin');
+        showUndoToast('Vui lòng đăng nhập để thanh toán nâng cấp gói!');
+        return;
+      }
+
       stopVipVietQrStatusPolling();
 
       const pricing = calculateVipPlanPricing(plan);
@@ -3553,6 +3560,12 @@
       }
 
       if (targetPlan.price > 0) {
+        if (!currentUser || !currentUser.id) {
+          closeModal('modalVipSubscription');
+          openAuthModal('signin');
+          showUndoToast('Vui lòng đăng nhập để thanh toán nâng cấp gói!');
+          return;
+        }
         openVipVietQrCheckoutModal(targetPlan);
         return;
       }
