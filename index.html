@@ -1964,129 +1964,184 @@
       </div>
 
       <!-- Thanh tiến độ sử dụng giới hạn hiện tại -->
-      <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-3 sm:p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div class="space-y-1.5 flex-1">
-          <div class="flex items-center justify-between font-bold">
-            <span class="text-slate-700 flex items-center gap-1.5">
-              <i data-lucide="users" class="w-3.5 h-3.5 text-indigo-600"></i>
-              <span>Sĩ số học sinh toàn hệ thống:</span>
-            </span>
+      <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between font-bold text-slate-700">
+            <span>Học sinh đang quản lý</span>
             <span id="vipUsageStudentText" class="text-indigo-700 font-extrabold">0 / 15 học sinh</span>
           </div>
-          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-            <div id="vipUsageStudentBar" class="h-full bg-indigo-600 rounded-full transition-all" style="width: 0%"></div>
+          <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div id="vipUsageStudentBar" class="h-full rounded-full bg-indigo-600 transition-all" style="width: 0%;"></div>
           </div>
         </div>
-
-        <div class="flex items-center gap-3 shrink-0 sm:border-l sm:border-slate-200 sm:pl-4">
-          <div>
-            <div class="text-[10.5px] text-slate-500 font-semibold">Số giáo viên tối đa</div>
-            <div id="vipUsageTeacherText" class="font-extrabold text-slate-900 text-xs sm:text-sm">1 giáo viên</div>
-          </div>
-          <div>
-            <div class="text-[10.5px] text-slate-500 font-semibold">Còn thêm được</div>
-            <div id="vipRemainingSlotsText" class="font-extrabold text-emerald-700 text-xs sm:text-sm">15 học sinh</div>
-          </div>
+        <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-3 py-2">
+          <span class="text-slate-500 font-medium">Số giáo viên tối đa</span>
+          <strong id="vipUsageTeacherText" class="text-slate-900 font-extrabold text-sm">1 giáo viên</strong>
+        </div>
+        <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-3 py-2">
+          <span class="text-slate-500 font-medium">Số suất còn lại</span>
+          <strong id="vipRemainingSlotsText" class="text-emerald-700 font-extrabold text-sm">15 học sinh</strong>
         </div>
       </div>
 
-      <!-- Banner dùng thử 1 ngày miễn phí nổi bật -->
-      <div id="vipModalTrialTopBanner" class="hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white p-3.5 sm:p-4 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3"></div>
+      <!-- Banner dùng thử 10 phút -->
+      <div id="vipModalTrialTopBanner" class="hidden rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5"></div>
 
-      <!-- Thanh chuyển đổi chu kỳ thanh toán: Theo Tháng / Theo Năm (Ưu đãi) -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-2 bg-gradient-to-r from-amber-50/80 via-orange-50/70 to-rose-50/70 px-3.5 py-2.5 rounded-2xl border border-amber-200/80">
-        <div class="flex items-center gap-2 text-xs">
-          <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white font-black text-[10px] uppercase tracking-wider animate-pulse">
-            HOT SALE 20% - 35%
-          </span>
-          <span class="font-bold text-slate-800">Chọn chu kỳ thanh toán:</span>
-        </div>
-
-        <div class="inline-flex items-center p-1 bg-white rounded-xl border border-amber-200 shadow-2xs text-xs">
-          <button
-            type="button"
-            id="btnBillingMonthly"
-            onclick="switchVipBillingCycle('monthly')"
-            class="px-3 py-1 rounded-lg font-extrabold bg-slate-900 text-white shadow-2xs transition"
-          >
+      <!-- Bộ chuyển đổi chu kỳ thanh toán Tháng / Năm -->
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="text-xs font-bold text-slate-600">Chọn chu kỳ thanh toán:</div>
+        <div class="inline-flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs">
+          <button type="button" id="btnBillingMonthly" onclick="switchVipBillingCycle('monthly')" class="px-3 py-1 rounded-lg font-extrabold bg-slate-900 text-white shadow-2xs transition">
             Theo Tháng
           </button>
-          <button
-            type="button"
-            id="btnBillingYearly"
-            onclick="switchVipBillingCycle('yearly')"
-            class="px-3 py-1 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5"
-          >
+          <button type="button" id="btnBillingYearly" onclick="switchVipBillingCycle('yearly')" class="px-3 py-1 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
             <span>Theo Năm</span>
-            <span class="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-extrabold">
-              Ưu đãi cả năm
-            </span>
+            <span class="px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold">Tiết kiệm</span>
           </button>
         </div>
       </div>
 
-      <!-- Khung Quản trị viên chỉnh sửa giá, % Sale & giới hạn từng gói -->
-      <div id="vipAdminEditorSection" class="hidden bg-indigo-50/60 rounded-2xl border border-indigo-200 p-3.5 space-y-3 text-xs">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-200/70 pb-2">
-          <div class="flex items-center gap-1.5 font-extrabold text-indigo-950">
-            <i data-lucide="shield-alert" class="w-4 h-4 text-indigo-600"></i>
-            <span>Bảng cấu hình Quản trị viên (Giá thực tế, % Sale & Giới hạn)</span>
-          </div>
+      <!-- Bảng 5 thẻ gói đăng ký -->
+      <div id="vipPlansGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"></div>
+
+      <!-- Khung quản trị bảng giá dành riêng cho Admin -->
+      <div id="vipAdminEditorSection" class="hidden bg-slate-50 rounded-2xl border border-indigo-200 p-3.5 space-y-3 text-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-2">
+          <h4 class="font-extrabold text-indigo-900">Quản trị cấu hình 5 gói VIP</h4>
           <div class="flex items-center gap-1.5">
-            <button type="button" onclick="resetVipPlansToDefault()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-[11px] transition">
-              Khôi phục mặc định
-            </button>
-            <button type="button" onclick="saveVipPlansFromAdminForm()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] transition shadow-2xs">
-              Lưu cấu hình gói
-            </button>
+            <button type="button" onclick="resetVipPlansToDefault()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold">Mặc định</button>
+            <button type="button" onclick="saveVipPlansFromAdminForm()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Lưu cấu hình</button>
           </div>
         </div>
-        <div id="vipAdminEditorRows" class="space-y-2"></div>
+        <div id="vipAdminPlansList" class="space-y-2"></div>
       </div>
-
-      <!-- Lưới 5 gói đăng ký dành cho Giáo viên -->
-      <div id="vipPlansCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3"></div>
 
     </div>
   </div>
 
-  <!-- ==================== MODAL THANH TOÁN VIETQR GÓI VIP ==================== -->
-  <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 border border-slate-200/90 shadow-2xl space-y-4">
+  <!-- ==================== MODAL THANH TOÁN VIETQR VIETINBANK (SEPAY) ==================== -->
+  <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-md w-full p-4 sm:p-6 border border-slate-200/90 shadow-2xl space-y-3.5 max-h-[94vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-sky-600 to-blue-800 text-white flex items-center justify-center shadow-sm shrink-0">
             <i data-lucide="qr-code" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Thanh Toán Chuyển Khoản VietQR</h3>
-            <p class="text-[11px] text-slate-500 font-medium">Quét mã bằng ứng dụng ngân hàng để thanh toán</p>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Thanh Toán QR VietinBank</h3>
+              <span class="px-1.5 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[10px] font-extrabold border border-sky-200">
+                SePay Tự Động
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium">Quét mã QR để kích hoạt gói VIP tự động 24/7</p>
           </div>
         </div>
-        <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
+        <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <div id="vipVietQrSummaryBox" class="bg-slate-50 rounded-2xl border border-slate-200 p-3.5 space-y-1.5 text-xs"></div>
+      <!-- Tóm tắt đơn hàng -->
+      <div id="vipVietQrSummaryBox" class="bg-slate-50 rounded-2xl border border-slate-200 p-3 space-y-1.5 text-xs"></div>
 
-      <div class="flex flex-col items-center justify-center bg-white rounded-2xl border-2 border-dashed border-indigo-200 p-4 space-y-2.5">
-        <img id="vipVietQrImage" src="" alt="Mã thanh toán VietQR" class="w-56 h-56 sm:w-60 sm:h-60 object-contain rounded-xl border border-slate-100 bg-white shadow-2xs">
-        <div class="text-center space-y-0.5">
-          <div id="vipVietQrBankInfo" class="text-xs font-extrabold text-slate-800">Ngân hàng BIDV • STK: 1234567890</div>
-          <div id="vipVietQrContentNote" class="text-[11px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200 inline-block">
-            DIPI VIP
+      <!-- Trạng thái xác nhận thanh toán tự động -->
+      <div id="vipVietQrStatusBanner" class="rounded-2xl bg-amber-50 border border-amber-200 px-3 py-2 flex items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-2 text-amber-900 font-bold">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+          <span id="vipVietQrStatusText">Đang chờ chuyển khoản...</span>
+        </div>
+        <button
+          type="button"
+          onclick="checkActiveVietQrOrderStatus(true)"
+          class="px-2.5 py-1 rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-300 text-[11px] font-extrabold transition shrink-0"
+        >
+          Kiểm tra ngay
+        </button>
+      </div>
+
+      <!-- Khung hiển thị mã QR VietinBank (BIN 970415) -->
+      <div class="flex flex-col items-center justify-center bg-gradient-to-b from-sky-50/70 to-white rounded-2xl border-2 border-dashed border-sky-300 p-3.5 space-y-3">
+        <div class="flex items-center gap-2 text-xs font-extrabold text-sky-900">
+          <span class="px-2 py-0.5 rounded-lg bg-sky-600 text-white text-[10.5px] font-black tracking-wide">VietinBank</span>
+          <span class="text-slate-500 font-mono text-[11px]">BIN: 970415</span>
+        </div>
+
+        <div class="relative p-2 bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <img
+            id="vipVietQrImage"
+            src=""
+            alt="Mã QR VietinBank thanh toán gói VIP"
+            class="w-56 h-56 sm:w-60 sm:h-60 object-contain rounded-xl bg-white"
+          >
+        </div>
+
+        <!-- Thông tin chuyển khoản thủ công có nút sao chép nhanh -->
+        <div class="w-full bg-white rounded-2xl border border-slate-200/90 divide-y divide-slate-100 text-xs overflow-hidden">
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Ngân hàng</span>
+            <strong class="text-slate-900 font-extrabold text-right">VietinBank (970415)</strong>
+          </div>
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Số tài khoản</span>
+            <div class="flex items-center gap-1.5">
+              <strong id="vipVietQrBankAccount" class="font-mono font-extrabold text-slate-900">104869424470</strong>
+              <button
+                type="button"
+                onclick="copyTextToClipboardFallback('104869424470', 'Đã sao chép số tài khoản VietinBank!')"
+                class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10.5px] font-bold transition"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Chủ tài khoản</span>
+            <strong class="text-slate-900 font-extrabold tracking-wide text-right">BUI HONG PHUC</strong>
+          </div>
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Số tiền</span>
+            <div class="flex items-center gap-1.5">
+              <strong id="vipVietQrAmountValue" class="font-mono font-black text-rose-600">0đ</strong>
+              <button
+                type="button"
+                onclick="copyTextToClipboardFallback(String(activeVietQrOrderAmount || 0), 'Đã sao chép số tiền thanh toán!')"
+                class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10.5px] font-bold transition"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="px-3 py-2.5 bg-indigo-50/70 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <div class="text-[10.5px] text-indigo-700 font-bold">Nội dung chuyển khoản (Bắt buộc)</div>
+              <div id="vipVietQrContentNote" class="text-xs sm:text-sm font-mono font-black text-indigo-900 tracking-wide truncate mt-0.5">
+                SEVQR DIPI000000
+              </div>
+            </div>
+            <button
+              type="button"
+              onclick="copyVipVietQrTransferNote()"
+              class="px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-extrabold shadow-2xs transition active:scale-95 shrink-0 inline-flex items-center gap-1"
+            >
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>Copy</span>
+            </button>
           </div>
         </div>
+
+        <p class="text-[10.5px] text-slate-500 text-center leading-relaxed px-1">
+          Vui lòng giữ nguyên nội dung bắt đầu bằng <strong class="text-indigo-700">SEVQR</strong> để hệ thống SePay tự động xác nhận và kích hoạt gói VIP trong 5–30 giây.
+        </p>
       </div>
 
       <div class="flex items-center justify-between gap-2 pt-1">
         <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
           Đóng
         </button>
-        <button type="button" onclick="copyVipVietQrTransferNote()" class="flex-1 py-2 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
+        <button type="button" onclick="copyVipVietQrTransferNote()" class="flex-1 py-2 px-4 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
           <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-          <span>Sao chép nội dung CK</span>
+          <span>Sao chép nội dung SEVQR</span>
         </button>
       </div>
     </div>
@@ -3126,261 +3181,366 @@
         if (!currentUser || !currentUser.id) {
           trialTopBanner.classList.remove('hidden');
           trialTopBanner.innerHTML = `
-            <div class="flex items-center gap-2 font-extrabold text-xs sm:text-sm">
-              <i data-lucide="gift" class="w-4 h-4 text-amber-300 shrink-0"></i>
-              <span>Vui lòng đăng nhập để dùng thử</span>
-            </div>
-            <button
-              type="button"
-              onclick="activateFreeTrialNow()"
-              class="px-4 py-2 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0 inline-flex items-center gap-1.5"
-            >
-              <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
-              <span>Đăng nhập</span>
+            <div class="text-xs font-extrabold text-emerald-900">Vui lòng đăng nhập để dùng thử</div>
+            <button type="button" onclick="closeModal('modalVipSubscription'); openAuthModal('signin');" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
+              Đăng nhập
             </button>
           `;
         } else if (canActivateFreeTrial()) {
           trialTopBanner.classList.remove('hidden');
           trialTopBanner.innerHTML = `
-            <div class="space-y-0.5">
-              <div class="flex items-center gap-2 font-extrabold text-xs sm:text-sm">
-                <i data-lucide="gift" class="w-4 h-4 text-amber-300 shrink-0"></i>
-                <span>Ưu đãi tài khoản mới: Dùng thử miễn phí gói Trà Sữa (39k)!</span>
-              </div>
-              <p class="text-[11px] text-emerald-100 font-medium">Mở khóa tối đa 80 học sinh trong ${TRIAL_DURATION_MINUTES} phút, hết hạn tự động quay về gói Free.</p>
+            <div class="text-xs font-bold text-emerald-900">
+              Tài khoản mới chưa dùng thử: Trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (80 học sinh)</strong> miễn phí trong ${TRIAL_DURATION_MINUTES} phút!
             </div>
-            <button
-              type="button"
-              onclick="activateFreeTrialNow()"
-              class="px-4 py-2 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0 inline-flex items-center gap-1.5"
-            >
-              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-              <span>Dùng thử ngay</span>
+            <button type="button" onclick="activateFreeTrialNow()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
+              Dùng thử ngay
             </button>
-          `;
-        } else if (trialInfo.isActive) {
-          trialTopBanner.classList.remove('hidden');
-          trialTopBanner.innerHTML = `
-            <div class="flex items-center gap-2 font-extrabold text-xs sm:text-sm">
-              <i data-lucide="clock" class="w-4 h-4 text-amber-300 shrink-0"></i>
-              <span>Bạn đang dùng thử gói Trà Sữa (80 HS) • Còn khoảng ${trialInfo.remainingMinutes} phút</span>
-            </div>
-            <span class="px-3 py-1 rounded-xl bg-white/15 border border-white/25 text-white text-[11px] font-bold shrink-0">Đang trải nghiệm</span>
           `;
         } else {
           trialTopBanner.classList.add('hidden');
         }
       }
 
-      const adminRows = document.getElementById('vipAdminEditorRows');
-      if (adminRows && isAdmin && isVipAdminEditMode) {
-        adminRows.innerHTML = vipPlansConfig.map((p, idx) => {
-          const isFree = p.id === 'free';
-          return `
-            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 items-center bg-white p-2.5 rounded-xl border border-indigo-100">
-              <div class="font-extrabold text-slate-900 col-span-2 sm:col-span-1">${p.name}</div>
-              <div>
-                <label class="block text-[10px] text-slate-500 font-bold">Giá tháng (đ)</label>
-                <input type="number" id="adminPlanPrice_${idx}" value="${p.price}" ${isFree ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-bold text-xs disabled:bg-slate-100">
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 font-bold">Giá năm (đ)</label>
-                <input type="number" id="adminPlanYearlyPrice_${idx}" value="${p.yearlyPrice || 0}" ${isFree ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-bold text-xs disabled:bg-slate-100">
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 font-bold">% Sale</label>
-                <input type="number" id="adminPlanSale_${idx}" value="${p.salePercent || 0}" ${isFree ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-bold text-xs disabled:bg-slate-100">
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 font-bold">Tối đa HS</label>
-                <input type="number" id="adminPlanStudents_${idx}" value="${p.maxStudents}" class="w-full px-2 py-1 rounded-lg border border-slate-300 font-bold text-xs">
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 font-bold">Số GV</label>
-                <input type="number" id="adminPlanTeachers_${idx}" value="${isFree ? 1 : (p.maxTeachers || 1)}" ${isFree ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-bold text-xs disabled:bg-slate-100">
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
+      const planGrid = document.getElementById('vipPlansGridContainer');
+      if (planGrid) {
+        const themeStyles = {
+          slate: { card: 'border-slate-200 bg-slate-50/70', badge: 'bg-slate-200 text-slate-700', btn: 'bg-slate-800 hover:bg-slate-900 text-white' },
+          emerald: { card: 'border-green-200 bg-[#f4fbf5]', badge: 'bg-green-100 text-green-800', btn: 'bg-green-600 hover:bg-green-700 text-white' },
+          amber: { card: 'border-amber-300 bg-amber-50/70', badge: 'bg-amber-200 text-amber-900', btn: 'bg-amber-600 hover:bg-amber-700 text-white' },
+          indigo: { card: 'border-indigo-300 bg-indigo-50/70', badge: 'bg-indigo-200 text-indigo-900', btn: 'bg-indigo-600 hover:bg-indigo-700 text-white' },
+          rose: { card: 'border-rose-300 bg-rose-50/70', badge: 'bg-rose-200 text-rose-900', btn: 'bg-rose-600 hover:bg-rose-700 text-white' }
+        };
 
-      const ACCENT_STYLES = {
-        slate: {
-          card: 'bg-slate-50/90 border-slate-200',
-          badge: 'bg-slate-200 text-slate-700',
-          price: 'text-slate-900',
-          btn: 'bg-slate-800 hover:bg-slate-900 text-white'
-        },
-        emerald: {
-          card: 'bg-[#f4fbf5] border-green-300',
-          badge: 'bg-green-100 text-green-800 border border-green-200',
-          price: 'text-green-700',
-          btn: 'bg-green-600 hover:bg-green-700 text-white'
-        },
-        amber: {
-          card: 'bg-amber-50/80 border-amber-300',
-          badge: 'bg-amber-200/90 text-amber-900',
-          price: 'text-amber-700',
-          btn: 'bg-amber-500 hover:bg-amber-600 text-white'
-        },
-        indigo: {
-          card: 'bg-indigo-50/80 border-indigo-300',
-          badge: 'bg-indigo-200/80 text-indigo-900',
-          price: 'text-indigo-700',
-          btn: 'bg-indigo-600 hover:bg-indigo-700 text-white'
-        },
-        rose: {
-          card: 'bg-rose-50/80 border-rose-300',
-          badge: 'bg-rose-200/80 text-rose-900',
-          price: 'text-rose-700',
-          btn: 'bg-rose-600 hover:bg-rose-700 text-white'
-        }
-      };
-
-      const grid = document.getElementById('vipPlansCardsGrid');
-      if (grid) {
-        grid.innerHTML = vipPlansConfig.map(p => {
-          const pricing = calculateVipPlanPricing(p);
+        planGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
-          const isCurrentTrial = isCurrent && trialInfo.isActive;
-          const styleSet = ACCENT_STYLES[p.accent] || ACCENT_STYLES.slate;
-          const teachersCount = p.id === 'free' ? 1 : (Number(p.maxTeachers) || 1);
+          const pricing = calculateVipPlanPricing(p);
+          const style = themeStyles[p.accent] || themeStyles.slate;
+          const isTrialTarget = p.id === TRIAL_PLAN_ID && (!currentUser?.id || canActivateFreeTrial());
 
           return `
-            <div class="rounded-2xl border-2 p-3.5 flex flex-col justify-between transition shadow-2xs hover:shadow-md ${
-              isCurrent ? 'ring-2 ring-amber-400 border-amber-400 bg-white' : styleSet.card
-            }">
-              <div class="space-y-2.5">
-                <div class="flex items-center justify-between gap-1 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
-                    isCurrent ? 'bg-amber-100 text-amber-900 border border-amber-300' : styleSet.badge
-                  }">
-                    ${isCurrentTrial ? 'Gói hiện tại (Dùng thử)' : (isCurrent ? 'Gói hiện tại' : (p.badge || p.name))}
-                  </span>
-                  ${!pricing.isFree && pricing.salePercent > 0 ? `
-                    <span class="px-1.5 py-0.5 rounded-md bg-rose-600 text-white text-[10px] font-black">
-                      -${pricing.salePercent}%
-                    </span>
-                  ` : ''}
+            <div class="rounded-2xl border p-3.5 flex flex-col justify-between gap-3 transition ${style.card} ${isCurrent ? 'ring-2 ring-indigo-500 shadow-md' : 'shadow-2xs'}">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between gap-1">
+                  <h4 class="font-extrabold text-sm text-slate-900">${p.name}</h4>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${style.badge}">${p.badge || ''}</span>
                 </div>
 
                 <div>
-                  <h4 class="font-extrabold text-base text-slate-900">${p.name}</h4>
                   ${pricing.isFree ? `
-                    <div class="text-lg sm:text-xl font-black text-slate-900 mt-1">Miễn phí</div>
-                    <div class="text-[10.5px] text-slate-500 font-semibold mt-0.5">
-                      Tối đa ${p.maxStudents.toLocaleString('vi-VN')} học sinh miễn phí
-                    </div>
+                    <div class="text-xl font-black text-slate-900">Miễn phí</div>
                   ` : `
-                    <div class="text-[11px] text-slate-400 line-through font-semibold mt-0.5">
-                      ${pricing.originalPrice.toLocaleString('vi-VN')}đ${currentVipBillingCycle === 'yearly' ? '/năm' : '/tháng'}
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      ${pricing.salePercent > 0 ? `<span class="text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+                      ${pricing.salePercent > 0 ? `<span class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold">-${pricing.salePercent}%</span>` : ''}
                     </div>
-                    <div class="flex items-baseline gap-1 flex-wrap">
-                      <span class="text-lg sm:text-xl font-black ${styleSet.price}">${pricing.finalPrice.toLocaleString('vi-VN')}đ</span>
-                      <span class="text-[11px] font-bold text-slate-500">${currentVipBillingCycle === 'yearly' ? '/năm' : '/tháng'}</span>
-                    </div>
-                    <div class="text-[10.5px] text-slate-500 font-semibold mt-0.5">
-                      ${currentVipBillingCycle === 'yearly'
-                        ? `~${pricing.effectiveMonthly.toLocaleString('vi-VN')}đ/tháng (Tiết kiệm ${pricing.yearlySaved.toLocaleString('vi-VN')}đ)`
-                        : `Gói năm chỉ ${(p.yearlyPrice || 0).toLocaleString('vi-VN')}đ/năm`}
+                    <div class="text-lg font-black text-slate-900">
+                      ${pricing.finalPrice.toLocaleString('vi-VN')}đ<span class="text-[11px] font-semibold text-slate-500">/${currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng'}</span>
                     </div>
                   `}
                 </div>
 
-                <p class="text-[11px] text-slate-600 leading-relaxed min-h-[34px]">${p.description}</p>
+                <p class="text-[11px] text-slate-600 leading-relaxed">${p.description || ''}</p>
 
-                <ul class="space-y-1.5 pt-2 border-t border-black/5 text-xs font-semibold text-slate-700">
-                  <li class="flex items-center gap-1.5">
-                    <i data-lucide="users" class="w-3.5 h-3.5 text-indigo-600 shrink-0"></i>
-                    <span>Tối đa <strong>${p.maxStudents.toLocaleString('vi-VN')}</strong> học sinh</span>
-                  </li>
-                  <li class="flex items-center gap-1.5">
-                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
-                    <span><strong>${teachersCount}</strong> giáo viên quản lý</span>
-                  </li>
-                  <li class="flex items-center gap-1.5">
-                    <i data-lucide="cloud-check" class="w-3.5 h-3.5 text-sky-600 shrink-0"></i>
-                    <span>Đồng bộ đám mây & bài tập online</span>
-                  </li>
+                <ul class="space-y-1 text-[11px] font-semibold text-slate-700 pt-1 border-t border-black/5">
+                  <li>• Tối đa <strong>${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> học sinh</li>
+                  <li>• <strong>${p.maxTeachers || 1}</strong> giáo viên quản lý</li>
                 </ul>
               </div>
 
-              <div class="pt-3 mt-3 border-t border-black/5 space-y-1.5">
-                ${p.id === TRIAL_PLAN_ID && (!currentUser || canActivateFreeTrial()) && !isCurrent ? `
-                  <button
-                    type="button"
-                    onclick="activateFreeTrialNow()"
-                    class="w-full py-2 px-3 rounded-xl text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm active:scale-95 inline-flex items-center justify-center gap-1.5"
-                  >
-                    <i data-lucide="gift" class="w-3.5 h-3.5"></i>
-                    <span>Dùng thử</span>
+              <div class="space-y-1.5 pt-1">
+                ${isTrialTarget ? `
+                  <button type="button" onclick="activateFreeTrialNow()" class="w-full py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition shadow-2xs">
+                    Dùng thử miễn phí
                   </button>
                 ` : ''}
                 <button
                   type="button"
                   onclick="selectTeacherVipPlan('${p.id}')"
-                  class="w-full py-2 px-3 rounded-xl text-xs font-extrabold transition shadow-2xs active:scale-95 ${
-                    isCurrent
-                      ? 'bg-amber-500/20 text-amber-900 border border-amber-400 cursor-default'
-                      : styleSet.btn
+                  class="w-full py-2 rounded-xl text-xs font-extrabold transition shadow-2xs ${
+                    isCurrent ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn
                   }"
                 >
-                  ${isCurrent ? 'Đang sử dụng' : (pricing.isFree ? 'Chuyển về Free' : 'Chọn gói này')}
+                  ${isCurrent ? (trialInfo.isActive ? 'Gói hiện tại (Dùng thử)' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR')}
                 </button>
               </div>
             </div>
           `;
         }).join('');
       }
+
+      const adminList = document.getElementById('vipAdminPlansList');
+      if (adminList && isAdmin && isVipAdminEditMode) {
+        adminList.innerHTML = vipPlansConfig.map((p, idx) => `
+          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-white p-2 rounded-xl border border-slate-200 items-center">
+            <strong class="text-slate-900">${p.name}</strong>
+            <input id="adminPlanPrice_${idx}" type="number" value="${p.price}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá tháng">
+            <input id="adminPlanYearlyPrice_${idx}" type="number" value="${p.yearlyPrice || 0}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá năm">
+            <input id="adminPlanSale_${idx}" type="number" value="${p.salePercent || 0}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="% Sale">
+            <input id="adminPlanStudents_${idx}" type="number" value="${p.maxStudents}" class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa HS">
+            <input id="adminPlanTeachers_${idx}" type="number" value="${p.maxTeachers || 1}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa GV">
+          </div>
+        `).join('');
+      }
+
       safeCreateIcons();
     }
 
-    let activeVietQrNoteText = 'DIPI VIP';
+    // ==================== COMPONENT THANH TOÁN QR VIETINBANK (SEPAY) ====================
+    const VIETINBANK_QR_CONFIG = {
+      bin: '970415',
+      bankCode: 'VietinBank',
+      accountNumber: '104869424470',
+      accountName: 'BUI HONG PHUC',
+      prefix: 'SEVQR'
+    };
 
-    function openVipVietQrCheckoutModal(plan) {
+    let activeVietQrNoteText = 'SEVQR DIPI000000';
+    let activeVietQrOrderCode = null;
+    let activeVietQrOrderAmount = 0;
+    let activeVietQrPlanId = null;
+    let vipVietQrPollTimer = null;
+
+    function copyTextToClipboardFallback(textVal, toastMsg = 'Đã sao chép!') {
+      const tempInp = document.createElement('input');
+      tempInp.value = String(textVal || '');
+      document.body.appendChild(tempInp);
+      tempInp.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {}
+      document.body.removeChild(tempInp);
+      showUndoToast(toastMsg);
+    }
+
+    function generateSePayOrderCode() {
+      const now = new Date();
+      const yy = String(now.getFullYear()).slice(-2);
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let rand = '';
+      for (let i = 0; i < 6; i++) {
+        rand += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `DIPI${yy}${mm}${dd}${rand}`;
+    }
+
+    function buildVietinBankQrUrls(amount, transferContent) {
+      const safeAmount = Math.max(0, Math.round(Number(amount) || 0));
+      const encodedInfo = encodeURIComponent(transferContent);
+      const encodedName = encodeURIComponent(VIETINBANK_QR_CONFIG.accountName);
+      // URL VietQR chuẩn theo mã BIN VietinBank (970415)
+      const primaryVietQrUrl = `https://img.vietqr.io/image/${VIETINBANK_QR_CONFIG.bin}-${VIETINBANK_QR_CONFIG.accountNumber}-compact2.png?amount=${safeAmount}&addInfo=${encodedInfo}&accountName=${encodedName}`;
+      // URL dự phòng từ SePay QR
+      const fallbackSePayUrl = `https://qr.sepay.vn/img?acc=${VIETINBANK_QR_CONFIG.accountNumber}&bank=${VIETINBANK_QR_CONFIG.bankCode}&amount=${safeAmount}&des=${encodedInfo}&template=compact`;
+      return { primaryVietQrUrl, fallbackSePayUrl };
+    }
+
+    function stopVipVietQrStatusPolling() {
+      if (vipVietQrPollTimer) {
+        clearInterval(vipVietQrPollTimer);
+        vipVietQrPollTimer = null;
+      }
+    }
+
+    function setVipVietQrStatusUI(state, message) {
+      const banner = document.getElementById('vipVietQrStatusBanner');
+      const textEl = document.getElementById('vipVietQrStatusText');
+      if (!banner || !textEl) return;
+
+      if (state === 'paid') {
+        banner.className = 'rounded-2xl bg-emerald-50 border border-emerald-300 px-3 py-2.5 flex items-center justify-between gap-2 text-xs';
+        banner.innerHTML = `
+          <div class="flex items-center gap-2 text-emerald-800 font-extrabold">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+            <span id="vipVietQrStatusText">${message || 'Thanh toán thành công! Đã kích hoạt gói VIP.'}</span>
+          </div>
+        `;
+      } else if (state === 'underpaid') {
+        banner.className = 'rounded-2xl bg-rose-50 border border-rose-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
+        textEl.innerText = message || 'Số tiền chuyển chưa đủ, vui lòng kiểm tra lại.';
+      } else {
+        banner.className = 'rounded-2xl bg-amber-50 border border-amber-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
+        textEl.innerText = message || 'Đang chờ chuyển khoản... (Tự động kiểm tra mỗi 4 giây)';
+      }
+      safeCreateIcons();
+    }
+
+    async function createPendingPaymentOrderOnSupabase(orderPayload) {
+      if (!supabaseClient || !currentUser?.id) return false;
+      try {
+        const { error } = await supabaseClient
+          .from('payment_orders')
+          .insert({
+            order_code: orderPayload.orderCode,
+            user_id: currentUser.id,
+            user_email: currentUser.email || null,
+            plan_id: orderPayload.planId,
+            plan_name: orderPayload.planName,
+            billing_cycle: orderPayload.billingCycle,
+            amount: orderPayload.amount,
+            status: 'pending',
+            transfer_content: orderPayload.transferContent
+          });
+        if (error) {
+          console.warn('Chưa thể ghi đơn hàng vào bảng payment_orders:', error.message);
+          return false;
+        }
+        return true;
+      } catch (err) {
+        console.warn('Lỗi tạo đơn hàng Supabase:', err);
+        return false;
+      }
+    }
+
+    async function checkActiveVietQrOrderStatus(showFeedback = false) {
+      if (!supabaseClient || !activeVietQrOrderCode) {
+        if (showFeedback) showUndoToast('Vui lòng đăng nhập để tự động kiểm tra trạng thái đơn hàng.');
+        return;
+      }
+      try {
+        const { data, error } = await supabaseClient
+          .from('payment_orders')
+          .select('order_code, status, plan_id, paid_amount, amount')
+          .eq('order_code', activeVietQrOrderCode)
+          .maybeSingle();
+
+        if (error || !data) {
+          if (showFeedback) showUndoToast('Chưa ghi nhận giao dịch chuyển khoản. Vui lòng đợi vài giây rồi thử lại.');
+          return;
+        }
+
+        if (data.status === 'paid') {
+          stopVipVietQrStatusPolling();
+          const targetPlanId = data.plan_id || activeVietQrPlanId;
+          if (targetPlanId && vipPlansConfig.some(p => p.id === targetPlanId)) {
+            currentTeacherPlanId = targetPlanId;
+            hasUsedFreeTrial = true;
+            saveVipSubscriptionState(false);
+          }
+          setVipVietQrStatusUI('paid', 'Thanh toán thành công! Gói VIP của bạn đã được kích hoạt.');
+          renderVipSubscriptionModal();
+          showUndoToast('Thanh toán thành công! Gói VIP đã được kích hoạt tự động.');
+          if (currentUser?.id) {
+            await loadUserDataFromCloud(currentUser, false);
+          }
+        } else if (data.status === 'underpaid') {
+          const paidAmt = Number(data.paid_amount) || 0;
+          const totalAmt = Number(data.amount) || 0;
+          setVipVietQrStatusUI('underpaid', `Đã nhận ${paidAmt.toLocaleString('vi-VN')}đ / ${totalAmt.toLocaleString('vi-VN')}đ. Vui lòng chuyển thêm phần còn thiếu.`);
+          if (showFeedback) showUndoToast('Hệ thống đã nhận một phần tiền, vui lòng chuyển đủ số tiền đơn hàng.');
+        } else if (showFeedback) {
+          showUndoToast('Hệ thống vẫn đang chờ ngân hàng xác nhận giao dịch...');
+        }
+      } catch (err) {
+        console.warn('Lỗi kiểm tra trạng thái đơn hàng:', err);
+      }
+    }
+
+    async function openVipVietQrCheckoutModal(plan) {
+      stopVipVietQrStatusPolling();
+
       const pricing = calculateVipPlanPricing(plan);
       const cycleLabel = currentVipBillingCycle === 'yearly' ? 'Gói Năm (12 tháng)' : 'Gói Tháng (1 tháng)';
-      const accountTag = currentUser?.email ? currentUser.email.split('@')[0].toUpperCase().replace(/[^A-Z0-9]/g, '') : 'GIAOVIEN';
-      const transferNote = `DIPI ${plan.id.toUpperCase()} ${currentVipBillingCycle === 'yearly' ? '1Y' : '1M'} ${accountTag}`.slice(0, 40);
-      activeVietQrNoteText = transferNote;
+      const orderCode = generateSePayOrderCode();
+      const transferContent = `${VIETINBANK_QR_CONFIG.prefix} ${orderCode}`;
+
+      activeVietQrOrderCode = orderCode;
+      activeVietQrOrderAmount = pricing.finalPrice;
+      activeVietQrPlanId = plan.id;
+      activeVietQrNoteText = transferContent;
 
       const summaryBox = document.getElementById('vipVietQrSummaryBox');
       if (summaryBox) {
         summaryBox.innerHTML = `
-          <div class="flex justify-between">
+          <div class="flex justify-between gap-2">
+            <span class="text-slate-500">Mã đơn hàng:</span>
+            <strong class="font-mono text-indigo-700">${orderCode}</strong>
+          </div>
+          <div class="flex justify-between gap-2">
             <span class="text-slate-500">Gói nâng cấp:</span>
             <strong class="text-slate-900">${plan.name} (Tối đa ${plan.maxStudents.toLocaleString('vi-VN')} HS)</strong>
           </div>
-          <div class="flex justify-between">
+          <div class="flex justify-between gap-2">
             <span class="text-slate-500">Chu kỳ thanh toán:</span>
             <strong class="text-indigo-700">${cycleLabel}</strong>
           </div>
-          <div class="flex justify-between pt-1 border-t border-slate-200">
-            <span class="text-slate-600 font-bold">Số tiền thanh toán:</span>
+          <div class="flex justify-between gap-2 pt-1.5 border-t border-slate-200">
+            <span class="text-slate-600 font-bold">Tổng thanh toán:</span>
             <strong class="text-rose-600 text-sm font-black">${pricing.finalPrice.toLocaleString('vi-VN')}đ</strong>
           </div>
         `;
       }
 
-      const qrImg = document.getElementById('vipVietQrImage');
+      const amountEl = document.getElementById('vipVietQrAmountValue');
       const noteEl = document.getElementById('vipVietQrContentNote');
-      if (noteEl) noteEl.innerText = transferNote;
+      const qrImg = document.getElementById('vipVietQrImage');
+      if (amountEl) amountEl.innerText = `${pricing.finalPrice.toLocaleString('vi-VN')}đ`;
+      if (noteEl) noteEl.innerText = transferContent;
+
+      const { primaryVietQrUrl, fallbackSePayUrl } = buildVietinBankQrUrls(pricing.finalPrice, transferContent);
       if (qrImg) {
-        const encodedInfo = encodeURIComponent(transferNote);
-        const encodedAccName = encodeURIComponent('DIPI SO LOP NHO');
-        qrImg.src = `https://img.vietqr.io/image/BIDV-1234567890-compact2.png?amount=${pricing.finalPrice}&addInfo=${encodedInfo}&accountName=${encodedAccName}`;
+        qrImg.onerror = function () {
+          if (this.dataset.fallbackApplied !== '1') {
+            this.dataset.fallbackApplied = '1';
+            this.src = fallbackSePayUrl;
+          } else {
+            this.onerror = null;
+            this.src = 'https://placehold.co/240x240/e0f2fe/0369a1?text=VietinBank+QR';
+          }
+        };
+        qrImg.dataset.fallbackApplied = '0';
+        qrImg.src = primaryVietQrUrl;
       }
+
+      // Khôi phục giao diện trạng thái chờ
+      const statusBanner = document.getElementById('vipVietQrStatusBanner');
+      if (statusBanner) {
+        statusBanner.className = 'rounded-2xl bg-amber-50 border border-amber-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
+        statusBanner.innerHTML = `
+          <div class="flex items-center gap-2 text-amber-900 font-bold">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+            <span id="vipVietQrStatusText">${
+              currentUser?.id
+                ? 'Đang chờ chuyển khoản... (Tự động kiểm tra)'
+                : 'Đăng nhập để tự động kích hoạt sau khi chuyển khoản'
+            }</span>
+          </div>
+          <button
+            type="button"
+            onclick="checkActiveVietQrOrderStatus(true)"
+            class="px-2.5 py-1 rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-300 text-[11px] font-extrabold transition shrink-0"
+          >
+            Kiểm tra ngay
+          </button>
+        `;
+      }
+
       openModal('modalVipVietQrCheckout');
+
+      // Tạo đơn hàng trạng thái pending trên Supabase và bắt đầu kiểm tra trạng thái tự động
+      if (currentUser?.id) {
+        const created = await createPendingPaymentOrderOnSupabase({
+          orderCode,
+          planId: plan.id,
+          planName: plan.name,
+          billingCycle: currentVipBillingCycle,
+          amount: pricing.finalPrice,
+          transferContent
+        });
+        if (created) {
+          vipVietQrPollTimer = setInterval(() => {
+            checkActiveVietQrOrderStatus(false);
+          }, 4000);
+        }
+      }
     }
 
     function copyVipVietQrTransferNote() {
-      const tempInp = document.createElement('input');
-      tempInp.value = activeVietQrNoteText;
-      document.body.appendChild(tempInp);
-      tempInp.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(tempInp);
-      showUndoToast(`Đã sao chép nội dung chuyển khoản: ${activeVietQrNoteText}`);
+      copyTextToClipboardFallback(
+        activeVietQrNoteText,
+        `Đã sao chép nội dung chuyển khoản: ${activeVietQrNoteText}`
+      );
     }
 
     function selectTeacherVipPlan(planId) {
@@ -7230,23 +7390,33 @@
 
     function closeQuickActionMenu() { document.getElementById('quickCreateActionMenu')?.classList.add('hidden'); }
     function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); safeCreateIcons(); }
-    function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); closeYtDropdown(); }
+    function closeModal(id) {
+      document.getElementById(id)?.classList.add('hidden');
+      if (id === 'modalVipVietQrCheckout') stopVipVietQrStatusPolling();
+      closeYtDropdown();
+    }
 
     function renderAll() {
-      updateHeaderVipBadge();
       renderClassSelectOptions();
       renderWeeklyScheduleGrid();
-      if (isClassSelected) {
-        document.getElementById('weeklyScheduleSection')?.classList.add('hidden');
-        document.getElementById('studentAttendanceSection')?.classList.remove('hidden');
-        renderAttendanceTab();
+      const scheduleSec = document.getElementById('weeklyScheduleSection');
+      const attendanceSec = document.getElementById('studentAttendanceSection');
+      if (isClassSelected && currentClassId) {
+        scheduleSec?.classList.add('hidden');
+        attendanceSec?.classList.remove('hidden');
       } else {
-        document.getElementById('weeklyScheduleSection')?.classList.remove('hidden');
-        document.getElementById('studentAttendanceSection')?.classList.add('hidden');
+        scheduleSec?.classList.remove('hidden');
+        attendanceSec?.classList.add('hidden');
+        toggleScheduleViewMode(currentScheduleViewMode);
       }
+      renderAttendanceTab();
       renderFinanceTab();
       renderHomeworkTab();
       renderClassesManagementTab();
+      if (currentRole === 'parent') {
+        renderParentView();
+      }
+      updateHeaderVipBadge();
       safeCreateIcons();
     }
 
