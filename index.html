@@ -274,7 +274,7 @@
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="homeVipPlanTitle">Gói hiện tại: Free</span>
               <span id="homeVipTrialBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                Dùng thử 1 ngày
+                Dùng thử 10 phút
               </span>
               <span id="homeVipQuotaAlertBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700 border border-rose-200 animate-pulse">
                 Sắp đạt giới hạn!
@@ -289,21 +289,12 @@
         <div class="flex items-center gap-2 shrink-0">
           <button
             type="button"
-            id="btnHomeActivateTrial"
-            onclick="activateFreeTrialNow()"
-            class="hidden px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1"
-          >
-            <i data-lucide="gift" class="w-3.5 h-3.5"></i>
-            <span>Dùng thử 1 ngày (Trà Sữa)</span>
-          </button>
-          <button
-            type="button"
             id="btnHomeUpgradeVip"
-            onclick="openVipSubscriptionModal()"
-            class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1.5"
+            onclick="handleHomeVipActionClick()"
+            class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1.5"
           >
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span id="btnHomeUpgradeVipLabel">Nâng cấp</span>
+            <i id="btnHomeUpgradeVipIcon" data-lucide="gift" class="w-3.5 h-3.5"></i>
+            <span id="btnHomeUpgradeVipLabel">Dùng thử</span>
           </button>
         </div>
       </div>
@@ -2125,7 +2116,7 @@
 
       <div class="bg-gradient-to-br from-amber-50/90 to-orange-50/70 rounded-2xl p-3.5 border border-amber-200/80 space-y-2 text-xs text-slate-700">
         <p class="font-semibold text-slate-800 leading-relaxed">
-          Chào mừng bạn vừa đăng nhập tài khoản! Bấm nút <strong class="text-emerald-700">Dùng thử</strong> để trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (39.000đ/tháng)</strong> trong <strong>1 ngày</strong> (tối đa <strong>80 học sinh</strong>), hết hạn sẽ tự động quay về gói Free.
+          Chào mừng bạn vừa đăng nhập tài khoản! Bấm nút <strong class="text-emerald-700">Dùng thử</strong> để trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (39.000đ/tháng)</strong> trong <strong>10 phút</strong> (tối đa <strong>80 học sinh</strong>), hết hạn sẽ tự động quay về gói Free.
         </p>
         <ul class="space-y-1.5 pt-1 text-[11.5px]">
           <li class="flex items-center gap-1.5">
@@ -2695,8 +2686,9 @@
     let trialStartedAtIso = null;
     let hasUsedFreeTrial = false;
     let lastThresholdWarnedPercent = 0;
-    const TRIAL_DURATION_DAYS = 1;
+    const TRIAL_DURATION_MINUTES = 10;
     const TRIAL_PLAN_ID = 'tra_sua';
+    let trialCountdownTimer = null;
 
     function isCurrentUserVipAdmin() {
       return Boolean(currentUser?.email && currentUser.email.toLowerCase() === VIP_ADMIN_EMAIL.toLowerCase());
@@ -2707,6 +2699,14 @@
       if (currentTeacherPlanId !== 'free') return false;
       if (hasUsedFreeTrial || trialStartedAtIso) return false;
       return true;
+    }
+
+    function handleHomeVipActionClick() {
+      if (canActivateFreeTrial()) {
+        activateFreeTrialNow();
+      } else {
+        openVipSubscriptionModal();
+      }
     }
 
     async function activateFreeTrialNow() {
@@ -2728,8 +2728,55 @@
       if (!document.getElementById('modalVipSubscription')?.classList.contains('hidden')) {
         renderVipSubscriptionModal();
       }
-      showUndoToast('Đã kích hoạt dùng thử gói Trà Sữa (39k) trong 1 ngày!');
+      showUndoToast('Đã kích hoạt dùng thử gói Trà Sữa (39k) trong 10 phút!');
       await syncUserDataToCloud(false);
+    }
+
+    function getTrialStatusInfo() {
+      if (!trialStartedAtIso) {
+        return { isTrialActive: false, minutesLeft: 0, secondsLeft: 0, isExpired: false };
+      }
+      const startMs = new Date(trialStartedAtIso).getTime();
+      if (Number.isNaN(startMs)) {
+        return { isTrialActive: false, minutesLeft: 0, secondsLeft: 0, isExpired: false };
+      }
+      const totalTrialMs = TRIAL_DURATION_MINUTES * 60 * 1000;
+      const elapsedMs = Date.now() - startMs;
+      const remainingMs = totalTrialMs - elapsedMs;
+      if (remainingMs > 0) {
+        const minutesLeft = Math.max(1, Math.ceil(remainingMs / (60 * 1000)));
+        const secondsLeft = Math.max(1, Math.ceil(remainingMs / 1000));
+        return { isTrialActive: currentTeacherPlanId === TRIAL_PLAN_ID, minutesLeft, secondsLeft, isExpired: false };
+      }
+      return { isTrialActive: false, minutesLeft: 0, secondsLeft: 0, isExpired: true };
+    }
+
+    function enforceTrialExpirationIfNeeded() {
+      if (!trialStartedAtIso) return false;
+      const info = getTrialStatusInfo();
+      if (info.isExpired && currentTeacherPlanId === TRIAL_PLAN_ID) {
+        currentTeacherPlanId = 'free';
+        saveVipSubscriptionState(true);
+        showUndoToast('Đã hết 10 phút dùng thử gói Trà Sữa, tài khoản đã quay về gói Free.');
+        return true;
+      }
+      return false;
+    }
+
+    function startTrialExpirationWatcher() {
+      if (trialCountdownTimer) clearInterval(trialCountdownTimer);
+      trialCountdownTimer = setInterval(() => {
+        if (!trialStartedAtIso || currentTeacherPlanId !== TRIAL_PLAN_ID) return;
+        const expiredNow = enforceTrialExpirationIfNeeded();
+        if (expiredNow) {
+          renderAll();
+          if (!document.getElementById('modalVipSubscription')?.classList.contains('hidden')) {
+            renderVipSubscriptionModal();
+          }
+        } else {
+          updateHeaderVipBadge();
+        }
+      }, 5000);
     }
 
     function getTrialStatusInfo() {
@@ -2970,25 +3017,19 @@
       const homeSubtitle = document.getElementById('homeVipPlanSubtitle');
       const homeTrialBadge = document.getElementById('homeVipTrialBadge');
       const homeQuotaBadge = document.getElementById('homeVipQuotaAlertBadge');
-      const homeTrialBtn = document.getElementById('btnHomeActivateTrial');
       const homeUpgradeBtn = document.getElementById('btnHomeUpgradeVip');
+      const homeUpgradeBtnIcon = document.getElementById('btnHomeUpgradeVipIcon');
       const homeUpgradeBtnLabel = document.getElementById('btnHomeUpgradeVipLabel');
       const effectiveTeachers = getEffectiveMaxTeachers();
 
-      const showTrialInsteadOfUpgrade = canActivateFreeTrial();
-      if (homeTrialBtn) {
-        homeTrialBtn.classList.toggle('hidden', !showTrialInsteadOfUpgrade);
-      }
-      if (homeUpgradeBtn) {
-        homeUpgradeBtn.classList.remove('hidden');
-      }
+      const canTrial = canActivateFreeTrial();
 
       if (homeTitle) {
         homeTitle.innerText = `Gói hiện tại: ${plan.name}`;
       }
       if (homeTrialBadge) {
         if (trialInfo.isTrialActive) {
-          homeTrialBadge.innerText = `Dùng thử 1 ngày (còn ${trialInfo.hoursLeft} giờ)`;
+          homeTrialBadge.innerText = `Dùng thử 10 phút (còn ${trialInfo.minutesLeft} phút)`;
           homeTrialBadge.classList.remove('hidden');
         } else {
           homeTrialBadge.classList.add('hidden');
@@ -3006,8 +3047,16 @@
       if (homeSubtitle) {
         homeSubtitle.innerText = `Đang sử dụng ${totalStudents.toLocaleString('vi-VN')} / ${effectiveMax.toLocaleString('vi-VN')} học sinh • ${effectiveTeachers} giáo viên`;
       }
-      if (homeUpgradeBtnLabel) {
-        homeUpgradeBtnLabel.innerText = plan.id === 'trung_tam' ? 'Chi tiết gói' : 'Nâng cấp';
+      if (homeUpgradeBtn && homeUpgradeBtnLabel) {
+        if (canTrial) {
+          homeUpgradeBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1.5';
+          if (homeUpgradeBtnIcon) homeUpgradeBtnIcon.setAttribute('data-lucide', 'gift');
+          homeUpgradeBtnLabel.innerText = 'Dùng thử';
+        } else {
+          homeUpgradeBtn.className = 'px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1.5';
+          if (homeUpgradeBtnIcon) homeUpgradeBtnIcon.setAttribute('data-lucide', 'sparkles');
+          homeUpgradeBtnLabel.innerText = plan.id === 'trung_tam' ? 'Chi tiết gói' : 'Nâng cấp';
+        }
       }
     }
 
@@ -3126,7 +3175,7 @@
 
       if (activeBadge) {
         activeBadge.innerText = trialInfo.isTrialActive
-          ? `Đang dùng: ${activePlan.name} (Dùng thử còn ${trialInfo.hoursLeft} giờ)`
+          ? `Đang dùng: ${activePlan.name} (Dùng thử còn ${trialInfo.minutesLeft} phút)`
           : `Đang dùng: ${activePlan.name}`;
       }
       if (usageStText) usageStText.innerText = `${totalStudents.toLocaleString('vi-VN')} / ${maxStudents.toLocaleString('vi-VN')} học sinh (${percent}%)`;
@@ -3145,7 +3194,7 @@
             <div class="space-y-0.5">
               <div class="flex items-center gap-1.5 font-extrabold text-xs sm:text-sm">
                 <i data-lucide="gift" class="w-4 h-4 text-amber-300 shrink-0"></i>
-                <span>Trải nghiệm miễn phí gói Trà Sữa (tối đa 80 học sinh) trong 1 ngày!</span>
+                <span>Trải nghiệm miễn phí gói Trà Sữa (tối đa 80 học sinh) trong 10 phút!</span>
               </div>
               <p class="text-[11px] text-emerald-100">Đăng nhập hoặc tạo tài khoản để nhận ngay đặc quyền dùng thử miễn phí.</p>
             </div>
@@ -3154,7 +3203,7 @@
               onclick="closeModal('modalVipSubscription'); openAuthModal('signup');"
               class="px-3.5 py-2 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0"
             >
-              Đăng nhập để dùng thử 1 ngày miễn phí
+              Đăng nhập để dùng thử 10 phút miễn phí
             </button>
           `;
         } else if (canActivateFreeTrial()) {
@@ -3163,9 +3212,9 @@
             <div class="space-y-0.5">
               <div class="flex items-center gap-1.5 font-extrabold text-xs sm:text-sm">
                 <i data-lucide="sparkles" class="w-4 h-4 text-amber-300 shrink-0"></i>
-                <span>Ưu đãi tài khoản mới: Dùng thử gói Trà Sữa (39k) miễn phí 1 ngày!</span>
+                <span>Ưu đãi tài khoản mới: Dùng thử gói Trà Sữa (39k) miễn phí 10 phút!</span>
               </div>
-              <p class="text-[11px] text-emerald-100">Mở khóa ngay giới hạn 80 học sinh hoàn toàn miễn phí, hết 1 ngày tự động quay về gói Free.</p>
+              <p class="text-[11px] text-emerald-100">Mở khóa ngay giới hạn 80 học sinh hoàn toàn miễn phí, hết 10 phút tự động quay về gói Free.</p>
             </div>
             <button
               type="button"
@@ -3173,7 +3222,7 @@
               class="px-4 py-2 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0 inline-flex items-center gap-1.5"
             >
               <i data-lucide="gift" class="w-3.5 h-3.5"></i>
-              <span>Dùng thử 1 ngày (Trà Sữa)</span>
+              <span>Dùng thử 10 phút (Trà Sữa)</span>
             </button>
           `;
         } else {
@@ -7253,6 +7302,7 @@
         initSupabaseClient();
         loadScopedUserData();
         loadVipSubscriptionState();
+        startTrialExpirationWatcher();
         setupAutoCloudSyncListeners();
         const today = getCurrentDayOfWeekInfo();
         const bannerDate = document.getElementById('currentDateDisplayBanner');
