@@ -2082,7 +2082,11 @@
 
       <!-- Khung mã QR phóng to -->
       <div class="flex flex-col items-center justify-center bg-slate-50/80 rounded-2xl border border-slate-200/80 p-3 space-y-3">
-        <div class="w-full max-w-[320px] sm:max-w-[340px] aspect-square bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
+        <div class="relative w-64 h-64 sm:w-72 sm:h-72 max-w-[280px] aspect-square bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
+          <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center gap-1.5 z-10">
+            <span class="w-2 h-2 rounded-full bg-[#0284c7]"></span>
+            <span class="text-[10px] font-extrabold text-slate-700 tracking-wide">VietinBank</span>
+          </div>
           <img
             id="vipVietQrImage"
             src=""
@@ -2091,13 +2095,26 @@
           >
         </div>
 
-        <!-- Bảng thông tin 4 dòng có nút Copy -->
+        <!-- Bảng thông tin 5 dòng tách riêng bên dưới QR -->
         <div class="w-full bg-white rounded-2xl border border-slate-200/90 divide-y divide-slate-100 text-xs overflow-hidden shadow-2xs">
           <div class="px-3 py-2 flex items-center justify-between gap-2">
             <span class="text-slate-500 font-semibold">Gói đăng ký</span>
             <span id="vipVietQrPlanBadge" class="px-2.5 py-0.5 rounded-full font-extrabold text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200">
               --
             </span>
+          </div>
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold">Chủ tài khoản</span>
+            <div class="flex items-center gap-1.5">
+              <strong id="vipVietQrAccountName" class="font-extrabold text-slate-900 text-[12.5px] tracking-wide">BUI HONG PHUC</strong>
+              <button
+                type="button"
+                onclick="copyTextToClipboardFallback('BUI HONG PHUC', 'Đã sao chép tên chủ tài khoản!')"
+                class="px-2.5 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10.5px] font-bold transition"
+              >
+                Copy
+              </button>
+            </div>
           </div>
           <div class="px-3 py-2 flex items-center justify-between gap-2">
             <span class="text-slate-500 font-semibold">Số tài khoản</span>
@@ -3369,7 +3386,7 @@
       const safeAmount = Math.max(0, Math.round(Number(amount) || 0));
       const encodedInfo = encodeURIComponent(transferContent);
       const encodedName = encodeURIComponent(VIETINBANK_QR_CONFIG.accountName);
-      const primaryVietQrUrl = `https://img.vietqr.io/image/${VIETINBANK_QR_CONFIG.bin}-${VIETINBANK_QR_CONFIG.accountNumber}-compact2.png?amount=${safeAmount}&addInfo=${encodedInfo}&accountName=${encodedName}`;
+      const primaryVietQrUrl = `https://img.vietqr.io/image/${VIETINBANK_QR_CONFIG.bin}-${VIETINBANK_QR_CONFIG.accountNumber}-qr_only.png?amount=${safeAmount}&addInfo=${encodedInfo}&accountName=${encodedName}`;
       const fallbackSePayUrl = `https://qr.sepay.vn/img?acc=${VIETINBANK_QR_CONFIG.accountNumber}&bank=${VIETINBANK_QR_CONFIG.bankCode}&amount=${safeAmount}&des=${encodedInfo}&template=compact`;
       return { primaryVietQrUrl, fallbackSePayUrl };
     }
