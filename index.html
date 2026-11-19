@@ -2005,15 +2005,45 @@
       <div id="vipPlansGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"></div>
 
       <!-- Khung quản trị bảng giá dành riêng cho Admin -->
-      <div id="vipAdminEditorSection" class="hidden bg-slate-50 rounded-2xl border border-indigo-200 p-3.5 space-y-3 text-xs">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-2">
-          <h4 class="font-extrabold text-indigo-900">Quản trị cấu hình 5 gói VIP</h4>
-          <div class="flex items-center gap-1.5">
-            <button type="button" onclick="resetVipPlansToDefault()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold">Mặc định</button>
-            <button type="button" onclick="saveVipPlansFromAdminForm()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Lưu cấu hình</button>
+      <div id="vipAdminEditorSection" class="hidden bg-slate-50 rounded-2xl border border-indigo-200 p-3.5 space-y-4 text-xs">
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-2">
+            <h4 class="font-extrabold text-indigo-900">Quản trị cấu hình 5 gói VIP</h4>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="resetVipPlansToDefault()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold">Mặc định</button>
+              <button type="button" onclick="saveVipPlansFromAdminForm()" class="px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold">Lưu cấu hình</button>
+            </div>
+          </div>
+          <div id="vipAdminPlansList" class="space-y-2"></div>
+        </div>
+
+        <!-- Khu vực duyệt tay Đơn nâng cấp VIP cho Admin -->
+        <div class="pt-3 border-t border-indigo-200/80 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <h4 class="font-extrabold text-indigo-950 flex items-center gap-1.5">
+                <i data-lucide="receipt" class="w-4 h-4 text-indigo-600"></i>
+                <span>Đơn nâng cấp VIP</span>
+              </h4>
+              <span id="adminVipPendingCountBadge" class="px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200">
+                0 chờ duyệt
+              </span>
+            </div>
+            <button
+              type="button"
+              id="btnRefreshAdminVipOrders"
+              onclick="loadAdminVipOrders(true)"
+              class="px-2.5 py-1 rounded-lg bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-bold transition inline-flex items-center gap-1 shadow-2xs active:scale-95"
+            >
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+              <span>Làm mới</span>
+            </button>
+          </div>
+
+          <div id="adminVipOrdersContainer" class="bg-white rounded-xl border border-slate-200 overflow-x-auto">
+            <div class="p-4 text-center text-slate-400 text-xs">Bấm "Làm mới" để tải danh sách 30 đơn nâng cấp VIP mới nhất.</div>
           </div>
         </div>
-        <div id="vipAdminPlansList" class="space-y-2"></div>
       </div>
 
     </div>
@@ -2738,7 +2768,10 @@
     let currentTeacherPlanId = 'free';
     let currentVipBillingCycle = 'monthly';
     let isVipAdminEditMode = false;
+    let adminVipOrdersList = [];
+    let isLoadingAdminVipOrders = false;
     let trialStartedAtIso = null;
+    let vipExpiresAtIso = null;
     let hasUsedFreeTrial = false;
     let lastThresholdWarnedPercent = 0;
     const TRIAL_DURATION_MINUTES = 10;
@@ -2747,6 +2780,13 @@
 
     function isCurrentUserVipAdmin() {
       return Boolean(currentUser?.email && currentUser.email.toLowerCase() === VIP_ADMIN_EMAIL.toLowerCase());
+    }
+
+    function isPaidVipActive() {
+      if (!currentTeacherPlanId || currentTeacherPlanId === 'free') return false;
+      if (!vipExpiresAtIso) return false;
+      const expMs = new Date(vipExpiresAtIso).getTime();
+      return !Number.isNaN(expMs) && expMs > Date.now();
     }
 
     function canActivateFreeTrial() {
@@ -2779,6 +2819,9 @@
     }
 
     function getTrialStatusInfo() {
+      if (isPaidVipActive()) {
+        return { isActive: false, isExpired: false, remainingMs: 0, remainingMinutes: 0, expiresAt: null };
+      }
       if (!trialStartedAtIso) {
         return { isActive: false, isExpired: false, remainingMs: 0, remainingMinutes: 0, expiresAt: null };
       }
@@ -2798,7 +2841,26 @@
       };
     }
 
+    function enforcePaidVipExpirationIfNeeded() {
+      if (!vipExpiresAtIso) return false;
+      const expMs = new Date(vipExpiresAtIso).getTime();
+      if (!Number.isNaN(expMs) && expMs <= Date.now()) {
+        currentTeacherPlanId = 'free';
+        vipExpiresAtIso = null;
+        saveVipSubscriptionState(true);
+        updateHeaderVipBadge();
+        const modal = document.getElementById('modalVipSubscription');
+        if (modal && !modal.classList.contains('hidden')) {
+          renderVipSubscriptionModal();
+        }
+        showUndoToast('Gói VIP của bạn đã hết hạn. Tài khoản đã chuyển về gói Free.');
+        return true;
+      }
+      return false;
+    }
+
     function enforceTrialExpirationIfNeeded() {
+      if (isPaidVipActive()) return false;
       if (!trialStartedAtIso || currentTeacherPlanId !== TRIAL_PLAN_ID) return false;
       const info = getTrialStatusInfo();
       if (info.isExpired) {
@@ -2819,7 +2881,8 @@
     function startTrialExpirationWatcher() {
       if (trialCountdownTimer) clearInterval(trialCountdownTimer);
       trialCountdownTimer = setInterval(() => {
-        if (trialStartedAtIso && currentTeacherPlanId === TRIAL_PLAN_ID) {
+        enforcePaidVipExpirationIfNeeded();
+        if (!isPaidVipActive() && trialStartedAtIso && currentTeacherPlanId === TRIAL_PLAN_ID) {
           const expired = enforceTrialExpirationIfNeeded();
           if (!expired) {
             updateHeaderVipBadge();
@@ -2850,6 +2913,7 @@
       const prefix = getStorageKeyPrefix();
       const savedPlanId = localStorage.getItem(`${prefix}_active_vip_plan`);
       currentTeacherPlanId = (savedPlanId && vipPlansConfig.some(p => p.id === savedPlanId)) ? savedPlanId : 'free';
+      vipExpiresAtIso = localStorage.getItem(`${prefix}_vip_expires_at`) || null;
 
       if (currentUser && currentUser.id) {
         trialStartedAtIso = localStorage.getItem(`dipi_user_${currentUser.id}_trial_started_at`) || null;
@@ -2861,6 +2925,7 @@
 
       isVipAdminEditMode = false;
       lastThresholdWarnedPercent = 0;
+      enforcePaidVipExpirationIfNeeded();
       enforceTrialExpirationIfNeeded();
       updateHeaderVipBadge();
     }
@@ -2870,6 +2935,11 @@
         localStorage.setItem('dipi_vip_plans_config_v1', JSON.stringify(vipPlansConfig));
         const prefix = getStorageKeyPrefix();
         localStorage.setItem(`${prefix}_active_vip_plan`, currentTeacherPlanId);
+        if (vipExpiresAtIso) {
+          localStorage.setItem(`${prefix}_vip_expires_at`, vipExpiresAtIso);
+        } else {
+          localStorage.removeItem(`${prefix}_vip_expires_at`);
+        }
         if (currentUser && currentUser.id) {
           if (trialStartedAtIso) {
             localStorage.setItem(`dipi_user_${currentUser.id}_trial_started_at`, trialStartedAtIso);
@@ -2890,6 +2960,7 @@
     function updateHeaderVipBadge() {
       const plan = getActiveVipPlan();
       const trialInfo = getTrialStatusInfo();
+      const paidActive = isPaidVipActive();
       const totalSt = getTotalUniqueStudentsCount();
       const maxSt = Math.max(1, Number(plan.maxStudents) || 15);
       const maxTeachers = plan.id === 'free' ? 1 : (Number(plan.maxTeachers) || 1);
@@ -2916,7 +2987,10 @@
           : `Gói hiện tại: ${plan.name}`;
       }
       if (homeSubtitle) {
-        homeSubtitle.innerText = `Đang sử dụng ${totalSt.toLocaleString('vi-VN')} / ${maxSt.toLocaleString('vi-VN')} học sinh • ${maxTeachers} giáo viên`;
+        const expText = paidActive && vipExpiresAtIso
+          ? ` • HSD: ${new Date(vipExpiresAtIso).toLocaleDateString('vi-VN')}`
+          : '';
+        homeSubtitle.innerText = `Đang sử dụng ${totalSt.toLocaleString('vi-VN')} / ${maxSt.toLocaleString('vi-VN')} học sinh • ${maxTeachers} giáo viên${expText}`;
       }
 
       if (homeTrialBadge) {
@@ -3013,6 +3087,7 @@
     }
 
     function checkCanAddStudents(addingCount = 1) {
+      enforcePaidVipExpirationIfNeeded();
       enforceTrialExpirationIfNeeded();
       const plan = getActiveVipPlan();
       const currentCount = getTotalUniqueStudentsCount();
@@ -3069,6 +3144,7 @@
     }
 
     function openVipSubscriptionModal() {
+      enforcePaidVipExpirationIfNeeded();
       enforceTrialExpirationIfNeeded();
       isVipAdminEditMode = false;
       renderVipSubscriptionModal();
@@ -3079,6 +3155,9 @@
       if (!isCurrentUserVipAdmin()) return;
       isVipAdminEditMode = !isVipAdminEditMode;
       renderVipSubscriptionModal();
+      if (isVipAdminEditMode) {
+        loadAdminVipOrders(false);
+      }
     }
 
     function switchVipBillingCycle(cycle) {
@@ -3131,6 +3210,7 @@
     function renderVipSubscriptionModal() {
       const activePlan = getActiveVipPlan();
       const trialInfo = getTrialStatusInfo();
+      const paidActive = isPaidVipActive();
       const totalSt = getTotalUniqueStudentsCount();
       const maxSt = Math.max(1, Number(activePlan.maxStudents) || 15);
       const maxTeachers = activePlan.id === 'free' ? 1 : (Number(activePlan.maxTeachers) || 1);
@@ -3139,9 +3219,13 @@
 
       const activeBadge = document.getElementById('vipCurrentActiveBadge');
       if (activeBadge) {
-        activeBadge.innerText = trialInfo.isActive
-          ? `Đang dùng: ${activePlan.name} (Dùng thử - còn ${trialInfo.remainingMinutes} phút)`
-          : `Đang dùng: ${activePlan.name}`;
+        if (trialInfo.isActive) {
+          activeBadge.innerText = `Đang dùng: ${activePlan.name} (Dùng thử - còn ${trialInfo.remainingMinutes} phút)`;
+        } else if (paidActive && vipExpiresAtIso) {
+          activeBadge.innerText = `Đang dùng: ${activePlan.name} (HSD: ${new Date(vipExpiresAtIso).toLocaleDateString('vi-VN')})`;
+        } else {
+          activeBadge.innerText = `Đang dùng: ${activePlan.name}`;
+        }
       }
 
       const usageStText = document.getElementById('vipUsageStudentText');
@@ -3257,10 +3341,10 @@
                   type="button"
                   onclick="selectTeacherVipPlan('${p.id}')"
                   class="w-full py-2 rounded-xl text-xs font-extrabold transition shadow-2xs ${
-                    isCurrent ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn
+                    isCurrent && !trialInfo.isActive ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn
                   }"
                 >
-                  ${isCurrent ? (trialInfo.isActive ? 'Gói hiện tại (Dùng thử)' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR')}
+                  ${isCurrent ? (trialInfo.isActive ? 'Mua gói chính thức' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR')}
                 </button>
               </div>
             </div>
@@ -3294,7 +3378,7 @@
       prefix: 'SEVQR'
     };
 
-    let activeVietQrNoteText = 'SEVQR DIPI000000';
+    let activeVietQrNoteText = 'SEVQR DIPIVIP00000';
     let activeVietQrOrderCode = null;
     let activeVietQrOrderAmount = 0;
     let activeVietQrPlanId = null;
@@ -3313,25 +3397,14 @@
     }
 
     function generateSePayOrderCode() {
-      const now = new Date();
-      const yy = String(now.getFullYear()).slice(-2);
-      const mm = String(now.getMonth() + 1).padStart(2, '0');
-      const dd = String(now.getDate()).padStart(2, '0');
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let rand = '';
-      for (let i = 0; i < 6; i++) {
-        rand += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return `DIPI${yy}${mm}${dd}${rand}`;
+      return 'DIPIVIP' + Math.floor(10000 + Math.random() * 90000);
     }
 
     function buildVietinBankQrUrls(amount, transferContent) {
       const safeAmount = Math.max(0, Math.round(Number(amount) || 0));
       const encodedInfo = encodeURIComponent(transferContent);
       const encodedName = encodeURIComponent(VIETINBANK_QR_CONFIG.accountName);
-      // URL VietQR chuẩn theo mã BIN VietinBank (970415)
       const primaryVietQrUrl = `https://img.vietqr.io/image/${VIETINBANK_QR_CONFIG.bin}-${VIETINBANK_QR_CONFIG.accountNumber}-compact2.png?amount=${safeAmount}&addInfo=${encodedInfo}&accountName=${encodedName}`;
-      // URL dự phòng từ SePay QR
       const fallbackSePayUrl = `https://qr.sepay.vn/img?acc=${VIETINBANK_QR_CONFIG.accountNumber}&bank=${VIETINBANK_QR_CONFIG.bankCode}&amount=${safeAmount}&des=${encodedInfo}&template=compact`;
       return { primaryVietQrUrl, fallbackSePayUrl };
     }
@@ -3346,7 +3419,7 @@
     function setVipVietQrStatusUI(state, message) {
       const banner = document.getElementById('vipVietQrStatusBanner');
       const textEl = document.getElementById('vipVietQrStatusText');
-      if (!banner || !textEl) return;
+      if (!banner) return;
 
       if (state === 'paid') {
         banner.className = 'rounded-2xl bg-emerald-50 border border-emerald-300 px-3 py-2.5 flex items-center justify-between gap-2 text-xs';
@@ -3358,10 +3431,10 @@
         `;
       } else if (state === 'underpaid') {
         banner.className = 'rounded-2xl bg-rose-50 border border-rose-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
-        textEl.innerText = message || 'Số tiền chuyển chưa đủ, vui lòng kiểm tra lại.';
+        if (textEl) textEl.innerText = message || 'Số tiền chuyển chưa đủ, vui lòng kiểm tra lại.';
       } else {
         banner.className = 'rounded-2xl bg-amber-50 border border-amber-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
-        textEl.innerText = message || 'Đang chờ chuyển khoản... (Tự động kiểm tra mỗi 4 giây)';
+        if (textEl) textEl.innerText = message || 'Đang chờ chuyển khoản... (Tự động kiểm tra mỗi 4 giây)';
       }
       safeCreateIcons();
     }
@@ -3370,25 +3443,25 @@
       if (!supabaseClient || !currentUser?.id) return false;
       try {
         const { error } = await supabaseClient
-          .from('payment_orders')
+          .from('vip_orders')
           .insert({
             order_code: orderPayload.orderCode,
             user_id: currentUser.id,
             user_email: currentUser.email || null,
             plan_id: orderPayload.planId,
-            plan_name: orderPayload.planName,
             billing_cycle: orderPayload.billingCycle,
             amount: orderPayload.amount,
-            status: 'pending',
-            transfer_content: orderPayload.transferContent
+            status: 'pending'
           });
         if (error) {
-          console.warn('Chưa thể ghi đơn hàng vào bảng payment_orders:', error.message);
+          console.warn('Lỗi tạo đơn hàng trong bảng vip_orders:', error.message);
+          showUndoToast('Lỗi tạo đơn thanh toán: ' + error.message);
           return false;
         }
         return true;
       } catch (err) {
         console.warn('Lỗi tạo đơn hàng Supabase:', err);
+        showUndoToast('Lỗi tạo đơn thanh toán: ' + (err?.message || 'Không thể kết nối máy chủ'));
         return false;
       }
     }
@@ -3400,8 +3473,8 @@
       }
       try {
         const { data, error } = await supabaseClient
-          .from('payment_orders')
-          .select('order_code, status, plan_id, paid_amount, amount')
+          .from('vip_orders')
+          .select('order_code, status, plan_id, amount, expires_at')
           .eq('order_code', activeVietQrOrderCode)
           .maybeSingle();
 
@@ -3413,6 +3486,7 @@
         if (data.status === 'paid') {
           stopVipVietQrStatusPolling();
           const targetPlanId = data.plan_id || activeVietQrPlanId;
+          vipExpiresAtIso = data.expires_at || null;
           if (targetPlanId && vipPlansConfig.some(p => p.id === targetPlanId)) {
             currentTeacherPlanId = targetPlanId;
             hasUsedFreeTrial = true;
@@ -3425,10 +3499,9 @@
             await loadUserDataFromCloud(currentUser, false);
           }
         } else if (data.status === 'underpaid') {
-          const paidAmt = Number(data.paid_amount) || 0;
           const totalAmt = Number(data.amount) || 0;
-          setVipVietQrStatusUI('underpaid', `Đã nhận ${paidAmt.toLocaleString('vi-VN')}đ / ${totalAmt.toLocaleString('vi-VN')}đ. Vui lòng chuyển thêm phần còn thiếu.`);
-          if (showFeedback) showUndoToast('Hệ thống đã nhận một phần tiền, vui lòng chuyển đủ số tiền đơn hàng.');
+          setVipVietQrStatusUI('underpaid', `Số tiền chuyển chưa đủ (${totalAmt.toLocaleString('vi-VN')}đ). Vui lòng kiểm tra lại.`);
+          if (showFeedback) showUndoToast('Hệ thống ghi nhận số tiền chuyển chưa đủ, vui lòng chuyển đủ số tiền đơn hàng.');
         } else if (showFeedback) {
           showUndoToast('Hệ thống vẫn đang chờ ngân hàng xác nhận giao dịch...');
         }
@@ -3500,7 +3573,6 @@
         qrImg.src = primaryVietQrUrl;
       }
 
-      // Khôi phục giao diện trạng thái chờ
       const statusBanner = document.getElementById('vipVietQrStatusBanner');
       if (statusBanner) {
         statusBanner.className = 'rounded-2xl bg-amber-50 border border-amber-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
@@ -3525,7 +3597,6 @@
 
       openModal('modalVipVietQrCheckout');
 
-      // Tạo đơn hàng trạng thái pending trên Supabase và bắt đầu kiểm tra trạng thái tự động
       if (currentUser?.id) {
         const created = await createPendingPaymentOrderOnSupabase({
           orderCode,
@@ -3550,11 +3621,39 @@
       );
     }
 
+    async function rejectAdminVipOrder(orderId, orderCode) {
+      if (!isCurrentUserVipAdmin() || !supabaseClient || !orderId) return;
+
+      openConfirmModal(
+        `Từ chối đơn ${orderCode || ''}?`,
+        'Đơn hàng này sẽ được chuyển sang trạng thái Từ chối (rejected).',
+        async () => {
+          try {
+            const { error } = await supabaseClient
+              .from('vip_orders')
+              .update({ status: 'rejected' })
+              .eq('id', orderId);
+
+            if (error) {
+              showUndoToast('Lỗi từ chối đơn: ' + error.message);
+              return;
+            }
+
+            showUndoToast('Đã từ chối đơn ' + (orderCode || orderId));
+            await loadAdminVipOrders(false);
+          } catch (err) {
+            showUndoToast('Lỗi từ chối đơn: ' + (err?.message || 'Không thể kết nối máy chủ'));
+          }
+        }
+      );
+    }
+
     function selectTeacherVipPlan(planId) {
       const targetPlan = vipPlansConfig.find(p => p.id === planId);
       if (!targetPlan) return;
 
-      if (planId === currentTeacherPlanId) {
+      const trialInfo = getTrialStatusInfo();
+      if (planId === currentTeacherPlanId && !trialInfo.isActive) {
         showUndoToast(`Bạn đang sử dụng gói ${targetPlan.name}.`);
         return;
       }
@@ -3576,6 +3675,7 @@
           'Giới hạn học sinh sẽ chuyển về tối đa 15 học sinh và 1 giáo viên. Bạn có chắc chắn muốn chuyển về gói Free?',
           () => {
             currentTeacherPlanId = 'free';
+            vipExpiresAtIso = null;
             saveVipSubscriptionState(true);
             renderVipSubscriptionModal();
             showUndoToast('Đã chuyển tài khoản về gói Free.');
@@ -4108,6 +4208,7 @@
         tuitionRemarksMap,
         vipPlansConfig,
         currentTeacherPlanId,
+        vipExpiresAt: vipExpiresAtIso,
         trialStartedAtIso,
         hasUsedFreeTrial
       };
@@ -4154,6 +4255,15 @@
             currentTeacherPlanId = appData.currentTeacherPlanId;
             localStorage.setItem(`${getStorageKeyPrefix()}_active_vip_plan`, currentTeacherPlanId);
           }
+          if (appData.vipExpiresAt !== undefined) {
+            vipExpiresAtIso = appData.vipExpiresAt || null;
+            const prefixKey = getStorageKeyPrefix();
+            if (vipExpiresAtIso) {
+              localStorage.setItem(`${prefixKey}_vip_expires_at`, vipExpiresAtIso);
+            } else {
+              localStorage.removeItem(`${prefixKey}_vip_expires_at`);
+            }
+          }
           if (appData.trialStartedAtIso) {
             trialStartedAtIso = appData.trialStartedAtIso;
             hasUsedFreeTrial = true;
@@ -4168,6 +4278,7 @@
               localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
             }
           }
+          enforcePaidVipExpirationIfNeeded();
           enforceTrialExpirationIfNeeded();
           updateHeaderVipBadge();
 
@@ -4208,7 +4319,7 @@
       isSyncingCloud = true;
       setCloudSyncBadge('syncing');
       try {
-        // Lấy mảng homeworkSubmissions đang có trên Supabase để gộp (merge theo id), tránh ghi đè làm mất bài HS vừa nộp từ xa
+        // Lấy dữ liệu hiện có trên Supabase để gộp bài nộp và bảo vệ thời hạn gói VIP trả phí từ server
         try {
           const { data: remoteRow } = await supabaseClient
             .from('user_app_data')
@@ -4216,7 +4327,8 @@
             .eq('user_id', currentUser.id)
             .maybeSingle();
 
-          const remoteSubs = remoteRow?.data?.homeworkSubmissions;
+          const remoteData = remoteRow?.data;
+          const remoteSubs = remoteData?.homeworkSubmissions;
           if (Array.isArray(remoteSubs) && remoteSubs.length > 0) {
             const mergedMap = new Map();
             remoteSubs.forEach(s => { if (s && s.id) mergedMap.set(s.id, s); });
@@ -4224,8 +4336,29 @@
             homeworkSubmissions = Array.from(mergedMap.values());
             saveAllToLocalStorage(false);
           }
+
+          if (remoteData && typeof remoteData === 'object') {
+            const serverExpIso = remoteData.vipExpiresAt || null;
+            const serverPlanId = remoteData.currentTeacherPlanId || null;
+            const serverExpMs = serverExpIso ? new Date(serverExpIso).getTime() : 0;
+            const localExpMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : 0;
+            if (
+              serverPlanId &&
+              serverPlanId !== 'free' &&
+              !Number.isNaN(serverExpMs) &&
+              serverExpMs > Date.now() &&
+              (Number.isNaN(localExpMs) || serverExpMs >= localExpMs)
+            ) {
+              currentTeacherPlanId = serverPlanId;
+              vipExpiresAtIso = serverExpIso;
+              const syncPrefix = getStorageKeyPrefix();
+              localStorage.setItem(`${syncPrefix}_active_vip_plan`, currentTeacherPlanId);
+              localStorage.setItem(`${syncPrefix}_vip_expires_at`, vipExpiresAtIso);
+              updateHeaderVipBadge();
+            }
+          }
         } catch (mergeErr) {
-          console.warn('Bỏ qua bước gộp bài nộp từ xa:', mergeErr);
+          console.warn('Bỏ qua bước gộp dữ liệu từ xa:', mergeErr);
         }
 
         const appData = buildAppDataPayload();
@@ -5858,6 +5991,7 @@
     }
 
     let activeTakingHomeworkId = null;
+    let activeTakingSessionKey = null;
     let activeStudentAnswersMap = {};
     let isPreviewingHomework = false;
 
@@ -5866,11 +6000,13 @@
       if (!hw) return;
 
       isPreviewingHomework = Boolean(isPreview);
-      const isNewSession = activeTakingHomeworkId !== hwId;
-      activeTakingHomeworkId = hwId;
-
       const allSt = getStudentsForClass(ALL_CLASSES_ID);
       const st = allSt.find(s => s.id === selectedParentStudentId) || allSt[0] || { id: 'PREVIEW_ST', name: 'Học sinh xem thử' };
+
+      const sessionKey = `${hwId}_${st.id}_${isPreviewingHomework ? 'preview' : 'real'}`;
+      const isNewSession = activeTakingSessionKey !== sessionKey;
+      activeTakingHomeworkId = hwId;
+      activeTakingSessionKey = sessionKey;
 
       document.getElementById('takeHomeworkTitle').innerText = hw.title;
       document.getElementById('takeHomeworkStudentNameBadge').innerText = isPreviewingHomework ? 'Chế độ xem thử của Giáo viên' : st.name;
@@ -6018,6 +6154,7 @@
 
       saveAllToLocalStorage(true);
       activeTakingHomeworkId = null;
+      activeTakingSessionKey = null;
       closeModal('modalTakeHomework');
       renderHomeworkTab();
       renderParentView();
@@ -7150,7 +7287,15 @@
         if (!classesList.some(c => c.id === classObj.id)) {
           classesList.push(classObj);
         }
-        classStudentsMap[classObj.id] = [student];
+        if (!Array.isArray(classStudentsMap[classObj.id])) {
+          classStudentsMap[classObj.id] = [];
+        }
+        const existingStudentIdx = classStudentsMap[classObj.id].findIndex(s => s.id === student.id);
+        if (existingStudentIdx >= 0) {
+          classStudentsMap[classObj.id][existingStudentIdx] = student;
+        } else {
+          classStudentsMap[classObj.id].push(student);
+        }
 
         if (Array.isArray(data.homeworks)) {
           homeworks = data.homeworks;
@@ -7406,6 +7551,10 @@
     function closeModal(id) {
       document.getElementById(id)?.classList.add('hidden');
       if (id === 'modalVipVietQrCheckout') stopVipVietQrStatusPolling();
+      if (id === 'modalTakeHomework') {
+        activeTakingHomeworkId = null;
+        activeTakingSessionKey = null;
+      }
       closeYtDropdown();
     }
 
