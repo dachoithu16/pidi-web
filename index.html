@@ -2051,23 +2051,23 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL THANH TOÁN VIETQR VIETINBANK (SEPAY) ==================== -->
-  <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-md w-full p-3 sm:p-4 border border-slate-200/90 shadow-2xl space-y-2 sm:space-y-2.5 max-h-[96vh] overflow-y-auto scrollbar-none">
-      <!-- Header -->
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+  <!-- ==================== MODAL THANH TOÁN QR VIETINBANK ==================== -->
+  <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-3.5 sm:p-5 border border-slate-200/90 shadow-2xl space-y-2.5 max-h-[95vh] overflow-y-auto">
+      <!-- Header gọn -->
+      <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0284c7] to-[#1d4ed8] text-white flex items-center justify-center shadow-sm shrink-0">
+          <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
             <i data-lucide="qr-code" class="w-4 h-4"></i>
           </div>
-          <h3 class="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight">Quét mã QR thanh toán</h3>
+          <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Quét mã QR thanh toán</h3>
         </div>
         <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
-          <i data-lucide="x" class="w-4 h-4"></i>
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
         </button>
       </div>
 
-      <!-- Thanh trạng thái -->
+      <!-- Thanh trạng thái chờ -->
       <div id="vipVietQrStatusBanner" class="rounded-xl bg-[#fffbeb] border border-[#fde68a] px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs">
         <div class="flex items-center gap-1.5 text-[#78350f] font-bold min-w-0">
           <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
@@ -2082,105 +2082,78 @@
         </button>
       </div>
 
-      <!-- Khung mã QR phóng to -->
-      <div class="flex flex-col items-center justify-center bg-slate-50/80 rounded-2xl border border-slate-200/80 p-2.5 pt-3.5 space-y-2">
-        <div class="relative w-52 h-52 sm:w-64 sm:h-64 aspect-square bg-white p-2.5 sm:p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-white border border-sky-200 shadow-sm flex items-center gap-1.5 z-10 whitespace-nowrap">
-            <svg viewBox="0 0 100 100" class="w-3.5 h-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <clipPath id="vietinCircleClip">
-                  <circle cx="50" cy="50" r="46" />
-                </clipPath>
-              </defs>
-              <g clip-path="url(#vietinCircleClip)">
-                <path d="M0 0 H100 V72 Q50 56 0 72 Z" fill="#005288" />
-                <rect x="37" y="37" width="26" height="32" fill="#ffffff" />
-                <path d="M4 77 Q50 61 96 77 L100 100 H0 Z" fill="#d71940" />
-              </g>
-            </svg>
-            <span class="text-[11px] font-extrabold tracking-tight">
-              <span class="text-[#005288]">Vietin</span><span class="text-[#d71940]">Bank</span>
-            </span>
-          </div>
+      <!-- Khung QR thuần & badge VietinBank -->
+      <div class="flex flex-col items-center justify-center bg-slate-50/70 rounded-2xl border border-slate-200/90 p-2.5 sm:p-3.5 space-y-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 4 A46 46 0 0 1 93.8 64.2 L65 55.5 L65 35 L35 35 L35 55.5 L6.2 64.2 A46 46 0 0 1 50 4 Z" fill="#005288"/>
+            <path d="M11.5 73.5 Q50 58 88.5 73.5 A46 46 0 0 1 11.5 73.5 Z" fill="#d71940"/>
+          </svg>
+          <span class="font-extrabold text-xs text-[#005288] tracking-tight">VietinBank</span>
+        </div>
+
+        <div class="w-52 h-52 sm:w-64 sm:h-64 rounded-2xl bg-white p-2 border border-slate-200 shadow-xs flex items-center justify-center">
           <img
             id="vipVietQrImage"
             src=""
-            alt="Mã QR VietinBank thanh toán gói VIP"
-            class="w-full h-full object-contain rounded-xl bg-white"
+            alt="Mã QR VietinBank"
+            class="w-full h-full object-contain rounded-xl"
           >
         </div>
 
-        <p class="text-[10.5px] text-sky-700 font-bold text-center leading-tight">
+        <p class="text-[11px] font-semibold text-indigo-700 text-center">
           Quét mã QR để tự động điền thông tin
         </p>
+      </div>
 
-        <!-- Bảng thông tin 5 dòng tách riêng bên dưới QR -->
-        <div class="w-full bg-white rounded-2xl border border-slate-200/90 divide-y divide-slate-100 text-xs overflow-hidden shadow-2xs">
-          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold text-[11px]">Gói đăng ký</span>
-            <span id="vipVietQrPlanBadge" class="px-2 py-0.5 rounded-full font-extrabold text-[10.5px] bg-emerald-50 text-emerald-700 border border-emerald-200">
-              --
-            </span>
-          </div>
-          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold text-[11px]">Chủ tài khoản</span>
-            <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrAccountName" class="font-extrabold text-slate-900 text-xs tracking-wide">BUI HONG PHUC</strong>
-              <button
-                type="button"
-                onclick="copyTextToClipboardFallback('BUI HONG PHUC', 'Đã sao chép tên chủ tài khoản!')"
-                class="px-2 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10px] font-bold transition"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold text-[11px]">Số tài khoản</span>
-            <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrBankAccount" class="font-mono font-extrabold text-slate-900 text-xs">104869424470</strong>
-              <button
-                type="button"
-                onclick="copyTextToClipboardFallback('104869424470', 'Đã sao chép số tài khoản VietinBank!')"
-                class="px-2 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10px] font-bold transition"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-          <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-semibold text-[11px]">Số tiền</span>
-            <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrAmountValue" class="font-mono font-black text-rose-600 text-xs">0đ</strong>
-              <button
-                type="button"
-                onclick="copyTextToClipboardFallback(String(activeVietQrOrderAmount || 0), 'Đã sao chép số tiền thanh toán!')"
-                class="px-2 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10px] font-bold transition"
-              >
-                Copy
-              </button>
-            </div>
-          </div>
-          <div class="py-1.5 px-2.5 bg-[#f5f3ff]/90 flex items-center justify-between gap-2">
-            <span class="text-indigo-700 font-extrabold text-[11px] shrink-0">Nội dung CK</span>
-            <div class="flex items-center gap-1.5 min-w-0">
-              <strong id="vipVietQrContentNote" class="font-mono font-black text-slate-900 text-[11.5px] truncate">
-                SEVQR DIPIVIP00000
-              </strong>
-              <button
-                type="button"
-                onclick="copyVipVietQrTransferNote()"
-                class="px-2 py-0.5 rounded-lg bg-[#5b46e8] hover:bg-[#4c38d6] text-white text-[10px] font-extrabold transition active:scale-95 shrink-0"
-              >
-                Copy
-              </button>
-            </div>
+      <!-- Bảng thông tin chuyển khoản tách riêng -->
+      <div class="rounded-2xl border border-slate-200 bg-white divide-y divide-slate-100 text-xs overflow-hidden">
+        <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+          <span class="text-slate-500 font-medium">Gói đăng ký</span>
+          <span id="vipVietQrPlanBadge" class="px-2 py-0.5 rounded-full font-extrabold text-[10.5px] bg-emerald-50 text-emerald-700 border border-emerald-200">--</span>
+        </div>
+        <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+          <span class="text-slate-500 font-medium">Chủ tài khoản</span>
+          <strong class="font-extrabold text-slate-900">BUI HONG PHUC</strong>
+        </div>
+        <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+          <span class="text-slate-500 font-medium">Số tài khoản</span>
+          <div class="flex items-center gap-1.5">
+            <strong class="font-mono font-extrabold text-slate-900">104869424470</strong>
+            <button type="button" onclick="copyTextToClipboardFallback('104869424470', 'Đã sao chép số tài khoản!')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold transition">Copy</button>
           </div>
         </div>
+        <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
+          <span class="text-slate-500 font-medium">Số tiền</span>
+          <div class="flex items-center gap-1.5">
+            <strong id="vipVietQrAmountValue" class="font-mono font-black text-rose-600">0đ</strong>
+            <button type="button" onclick="copyTextToClipboardFallback(String(activeVietQrOrderAmount || 0), 'Đã sao chép số tiền!')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold transition">Copy</button>
+          </div>
+        </div>
+        <div class="py-1.5 px-2.5 bg-indigo-50/70 flex items-center justify-between gap-2">
+          <span class="text-indigo-700 font-bold shrink-0">Nội dung CK</span>
+          <div class="flex items-center gap-1.5 min-w-0">
+            <strong id="vipVietQrContentNote" class="font-mono font-black text-indigo-900 truncate">SEVQR DIPIVIP00000</strong>
+            <button type="button" onclick="copyVipVietQrTransferNote()" class="px-2 py-0.5 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-extrabold transition shrink-0">Copy</button>
+          </div>
+        </div>
+      </div>
 
-        <!-- Ghi chú dưới cùng -->
-        <p class="text-[10.5px] text-slate-400 font-medium text-center leading-tight">
+      <!-- Ghi chú & Dòng hỗ trợ Zalo -->
+      <div class="text-center space-y-0.5 pt-0.5">
+        <p class="text-[10.5px] text-slate-500 leading-tight">
           Giữ nguyên nội dung chuyển khoản để tự động kích hoạt.
+        </p>
+        <p class="text-[10.5px] text-slate-500 leading-tight">
+          Cần hỗ trợ kích hoạt?
+          <a
+            href="https://zalo.me/0911196091"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sky-600 hover:text-sky-700 font-extrabold underline"
+          >
+            Liên hệ Zalo
+          </a>
         </p>
       </div>
     </div>
@@ -3314,63 +3287,84 @@
 
         planGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
-          const isFreeLockedByPaidVip = paidActive && p.id === 'free';
+          const activeMaxStudents = Number(activePlan?.maxStudents) || 0;
+          const planMaxStudents = Number(p.maxStudents) || 0;
+          const isLowerTierLockedByPaidVip = paidActive && !isCurrent && (planMaxStudents < activeMaxStudents);
+          const isCurrentPaidVip = paidActive && isCurrent;
           const pricing = calculateVipPlanPricing(p);
           const style = themeStyles[p.accent] || themeStyles.slate;
           const isTrialTarget = p.id === TRIAL_PLAN_ID && (!currentUser?.id || canActivateFreeTrial());
 
+          let actionButtonLabel = '';
+          if (isLowerTierLockedByPaidVip) {
+            actionButtonLabel = 'Đã bao gồm';
+          } else if (isCurrentPaidVip) {
+            actionButtonLabel = 'Gia hạn thêm';
+          } else if (isCurrent) {
+            actionButtonLabel = trialInfo.isActive ? 'Mua chính thức' : 'Gói hiện tại';
+          } else if (p.price === 0) {
+            actionButtonLabel = 'Chuyển về Free';
+          } else {
+            actionButtonLabel = 'Thanh toán QR';
+          }
+
           return `
-            <div class="rounded-2xl border p-3.5 flex flex-col justify-between gap-3 transition ${style.card} ${isCurrent ? 'ring-2 ring-indigo-500 shadow-md' : 'shadow-2xs'}">
-              <div class="space-y-2">
-                <div class="flex items-center justify-between gap-1">
-                  <h4 class="font-extrabold text-sm text-slate-900">${p.name}</h4>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${style.badge}">${p.badge || ''}</span>
+            <div class="rounded-2xl border p-2.5 sm:p-3.5 flex flex-col justify-between gap-2 sm:gap-3 transition ${style.card} ${isCurrent ? 'ring-2 ring-indigo-500 shadow-md' : 'shadow-2xs'}">
+              <div class="flex sm:flex-col items-start justify-between gap-2 sm:space-y-2">
+                <div class="min-w-0 flex-1 sm:w-full space-y-1 sm:space-y-2">
+                  <div class="flex items-center sm:justify-between gap-1.5 flex-wrap">
+                    <h4 class="font-extrabold text-sm text-slate-900">${p.name}</h4>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${style.badge}">${p.badge || ''}</span>
+                  </div>
+                  <div class="sm:hidden text-[11px] font-semibold text-slate-700">
+                    Tối đa <strong>${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> HS • <strong>${p.maxTeachers || 1}</strong> GV
+                  </div>
                 </div>
 
-                <div>
+                <div class="text-right sm:text-left shrink-0 sm:w-full">
                   ${pricing.isFree ? `
-                    <div class="text-xl font-black text-slate-900">Miễn phí</div>
+                    <div class="text-base sm:text-xl font-black text-slate-900">Miễn phí</div>
                   ` : `
-                    <div class="flex items-center gap-1.5 flex-wrap">
-                      ${pricing.salePercent > 0 ? `<span class="text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
-                      ${pricing.salePercent > 0 ? `<span class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[10px] font-extrabold">${currentVipBillingCycle === 'yearly' ? `Giảm thêm ${pricing.salePercent}%` : `-${pricing.salePercent}%`}</span>` : ''}
+                    <div class="flex items-center justify-end sm:justify-start gap-1 flex-wrap">
+                      ${pricing.salePercent > 0 ? `<span class="text-[10.5px] sm:text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+                      ${pricing.salePercent > 0 ? `<span class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[9.5px] sm:text-[10px] font-extrabold">-${pricing.salePercent}%</span>` : ''}
                     </div>
-                    <div class="text-lg font-black text-slate-900">
-                      ${pricing.finalPrice.toLocaleString('vi-VN')}đ<span class="text-[11px] font-semibold text-slate-500">/${currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng'}</span>
+                    <div class="text-base sm:text-lg font-black text-slate-900 leading-tight">
+                      ${pricing.finalPrice.toLocaleString('vi-VN')}đ<span class="text-[10.5px] sm:text-[11px] font-semibold text-slate-500">/${currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng'}</span>
                     </div>
                     ${currentVipBillingCycle === 'yearly' ? `
-                      <div class="mt-1 px-2 py-0.5 rounded-lg bg-white/85 border border-black/10 text-[11px] font-extrabold text-emerald-700 inline-flex items-center gap-1">
+                      <div class="mt-0.5 sm:mt-1 px-1.5 sm:px-2 py-0.5 rounded-lg bg-white/85 border border-black/10 text-[10px] sm:text-[11px] font-extrabold text-emerald-700 inline-flex items-center gap-1">
                         <span>Chỉ ~${pricing.effectiveMonthly.toLocaleString('vi-VN')}đ/tháng</span>
                       </div>
                     ` : ''}
                   `}
                 </div>
 
-                <p class="text-[11px] text-slate-600 leading-relaxed">${p.description || ''}</p>
+                <p class="hidden sm:block text-[11px] text-slate-600 leading-relaxed">${p.description || ''}</p>
 
-                <ul class="space-y-1 text-[11px] font-semibold text-slate-700 pt-1 border-t border-black/5">
+                <ul class="hidden sm:block space-y-1 text-[11px] font-semibold text-slate-700 pt-1 border-t border-black/5 w-full">
                   <li>• Tối đa <strong>${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> học sinh</li>
                   <li>• <strong>${p.maxTeachers || 1}</strong> giáo viên quản lý</li>
                 </ul>
               </div>
 
-              <div class="space-y-1.5 pt-1">
+              <div class="${isTrialTarget ? 'grid grid-cols-2 gap-1.5 sm:grid-cols-1' : 'space-y-1.5'} pt-0.5 sm:pt-1">
                 ${isTrialTarget ? `
-                  <button type="button" onclick="activateFreeTrialNow()" class="w-full py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition shadow-2xs">
+                  <button type="button" onclick="activateFreeTrialNow()" class="w-full py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-extrabold transition shadow-2xs truncate">
                     Dùng thử miễn phí
                   </button>
                 ` : ''}
                 <button
                   type="button"
-                  ${isFreeLockedByPaidVip ? 'disabled' : ''}
+                  ${isLowerTierLockedByPaidVip ? 'disabled' : ''}
                   onclick="selectTeacherVipPlan('${p.id}')"
-                  class="w-full py-2 rounded-xl text-xs font-extrabold transition shadow-2xs ${
-                    isFreeLockedByPaidVip
+                  class="w-full py-1.5 sm:py-2 px-2 rounded-xl text-[11px] sm:text-xs font-extrabold transition shadow-2xs truncate ${
+                    isLowerTierLockedByPaidVip
                       ? 'bg-slate-200 text-slate-500 cursor-not-allowed opacity-80'
-                      : ((isCurrent && !trialInfo.isActive) ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn)
+                      : ((isCurrent && !trialInfo.isActive && !isCurrentPaidVip) ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn)
                   }"
                 >
-                  ${isFreeLockedByPaidVip ? 'Đang dùng VIP' : (isCurrent ? (trialInfo.isActive ? 'Mua gói chính thức' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR'))}
+                  ${actionButtonLabel}
                 </button>
               </div>
             </div>
@@ -3381,18 +3375,223 @@
       const adminList = document.getElementById('vipAdminPlansList');
       if (adminList && isAdmin && isVipAdminEditMode) {
         adminList.innerHTML = vipPlansConfig.map((p, idx) => `
-          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-white p-2 rounded-xl border border-slate-200 items-center">
-            <strong class="text-slate-900">${p.name}</strong>
-            <input id="adminPlanPrice_${idx}" type="number" value="${p.price}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá tháng">
-            <input id="adminPlanYearlyPrice_${idx}" type="number" value="${p.yearlyPrice || 0}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá năm">
-            <input id="adminPlanSale_${idx}" type="number" value="${p.salePercent || 0}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="% Sale">
-            <input id="adminPlanStudents_${idx}" type="number" value="${p.maxStudents}" class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa HS">
-            <input id="adminPlanTeachers_${idx}" type="number" value="${p.maxTeachers || 1}" ${p.id === 'free' ? 'disabled' : ''} class="px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa GV">
+          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-white p-2.5 rounded-xl border border-slate-200 items-center">
+            <div class="col-span-2 sm:col-span-1 border-b sm:border-b-0 border-slate-100 pb-1 sm:pb-0">
+              <strong class="text-slate-900">${p.name}</strong>
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá tháng (đ)</label>
+              <input id="adminPlanPrice_${idx}" type="number" value="${p.price}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá tháng">
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá năm (đ)</label>
+              <input id="adminPlanYearlyPrice_${idx}" type="number" value="${p.yearlyPrice || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá năm">
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">% Sale</label>
+              <input id="adminPlanSale_${idx}" type="number" value="${p.salePercent || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="% Sale">
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa HS</label>
+              <input id="adminPlanStudents_${idx}" type="number" value="${p.maxStudents}" class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa HS">
+            </div>
+            <div>
+              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa GV</label>
+              <input id="adminPlanTeachers_${idx}" type="number" value="${p.maxTeachers || 1}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa GV">
+            </div>
           </div>
         `).join('');
       }
 
       safeCreateIcons();
+    }
+
+    // ==================== QUẢN TRỊ ĐƠN NÂNG CẤP VIP (DÀNH CHO ADMIN) ====================
+    async function loadAdminVipOrders(showToast = false) {
+      if (!isCurrentUserVipAdmin() || !supabaseClient || isLoadingAdminVipOrders) return;
+      isLoadingAdminVipOrders = true;
+      const container = document.getElementById('adminVipOrdersContainer');
+      const refreshBtn = document.getElementById('btnRefreshAdminVipOrders');
+      if (refreshBtn) refreshBtn.disabled = true;
+      if (container && adminVipOrdersList.length === 0) {
+        container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">Đang tải danh sách đơn nâng cấp VIP...</div>`;
+      }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('vip_orders')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(30);
+
+        if (error) {
+          if (container) {
+            container.innerHTML = `<div class="p-4 text-center text-rose-600 text-xs font-bold">Lỗi tải danh sách đơn: ${error.message}</div>`;
+          }
+          return;
+        }
+
+        adminVipOrdersList = Array.isArray(data) ? data : [];
+        const pendingCount = adminVipOrdersList.filter(o => o.status === 'pending').length;
+        const badgeEl = document.getElementById('adminVipPendingCountBadge');
+        if (badgeEl) {
+          badgeEl.innerText = `${pendingCount} chờ duyệt`;
+          badgeEl.className = pendingCount > 0
+            ? 'px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse'
+            : 'px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-slate-100 text-slate-600 border border-slate-200';
+        }
+
+        if (!container) return;
+        if (adminVipOrdersList.length === 0) {
+          container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">Chưa có đơn nâng cấp VIP nào.</div>`;
+          return;
+        }
+
+        const planNameMap = {};
+        vipPlansConfig.forEach(p => { planNameMap[p.id] = p.name; });
+
+        container.innerHTML = `
+          <table class="w-full text-left border-collapse text-[11px] sm:text-xs min-w-[600px]">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold uppercase text-[10px]">
+                <th class="py-2 px-2.5">Mã đơn</th>
+                <th class="py-2 px-2.5">Email</th>
+                <th class="py-2 px-2.5">Gói & Chu kỳ</th>
+                <th class="py-2 px-2.5 text-right">Số tiền</th>
+                <th class="py-2 px-2.5 text-center">Trạng thái</th>
+                <th class="py-2 px-2.5 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${adminVipOrdersList.map(order => {
+                const isPending = order.status === 'pending';
+                const planLabel = planNameMap[order.plan_id] || order.plan_id || '--';
+                const cycleLabel = order.billing_cycle === 'yearly' ? 'Năm' : 'Tháng';
+                const amountVal = Number(order.amount) || 0;
+                const createdStr = order.created_at ? new Date(order.created_at).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
+
+                let statusBadge = `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px]">${order.status || '--'}</span>`;
+                if (order.status === 'pending') {
+                  statusBadge = `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 font-extrabold text-[10px]">Chờ duyệt</span>`;
+                } else if (order.status === 'paid') {
+                  statusBadge = `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 font-extrabold text-[10px]">Đã kích hoạt</span>`;
+                } else if (order.status === 'rejected') {
+                  statusBadge = `<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-[10px]">Đã từ chối</span>`;
+                }
+
+                return `
+                  <tr class="hover:bg-slate-50/80 transition">
+                    <td class="py-2 px-2.5 font-mono font-extrabold text-indigo-700 whitespace-nowrap">
+                      <div>${order.order_code || '--'}</div>
+                      ${createdStr ? `<div class="text-[9.5px] font-sans font-normal text-slate-400">${createdStr}</div>` : ''}
+                    </td>
+                    <td class="py-2 px-2.5 font-medium text-slate-700 max-w-[160px] truncate" title="${order.user_email || ''}">
+                      ${order.user_email || '--'}
+                    </td>
+                    <td class="py-2 px-2.5 font-bold text-slate-900 whitespace-nowrap">
+                      ${planLabel} <span class="text-slate-500 font-semibold">(${cycleLabel})</span>
+                    </td>
+                    <td class="py-2 px-2.5 text-right font-mono font-extrabold text-rose-600 whitespace-nowrap">
+                      ${amountVal.toLocaleString('vi-VN')}đ
+                    </td>
+                    <td class="py-2 px-2.5 text-center whitespace-nowrap">
+                      ${statusBadge}
+                    </td>
+                    <td class="py-2 px-2.5 text-right whitespace-nowrap">
+                      ${isPending ? `
+                        <div class="inline-flex items-center gap-1">
+                          <button
+                            type="button"
+                            onclick="approveAdminVipOrder('${order.order_code}', ${amountVal})"
+                            class="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10.5px] font-extrabold transition shadow-2xs"
+                          >
+                            Duyệt tay
+                          </button>
+                          <button
+                            type="button"
+                            onclick="rejectAdminVipOrder('${order.id}', '${order.order_code}')"
+                            class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[10.5px] font-bold transition"
+                          >
+                            Từ chối
+                          </button>
+                        </div>
+                      ` : `<span class="text-[10.5px] text-slate-400 font-medium">--</span>`}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+
+        if (showToast) showUndoToast(`Đã cập nhật ${adminVipOrdersList.length} đơn nâng cấp VIP!`);
+      } catch (err) {
+        console.warn('Lỗi tải đơn VIP Admin:', err);
+      } finally {
+        isLoadingAdminVipOrders = false;
+        if (refreshBtn) refreshBtn.disabled = false;
+      }
+    }
+
+    async function approveAdminVipOrder(orderCode, amount) {
+      if (!isCurrentUserVipAdmin() || !supabaseClient || !orderCode) return;
+      openConfirmModal(
+        `Duyệt tay đơn ${orderCode}?`,
+        `Xác nhận đã nhận ${Number(amount || 0).toLocaleString('vi-VN')}đ và kích hoạt gói VIP cho tài khoản này?`,
+        async () => {
+          try {
+            const { data, error } = await supabaseClient.rpc('activate_vip_order', {
+              p_order_code: orderCode,
+              p_paid_amount: Number(amount) || 0,
+              p_gateway_tx_id: 'MANUAL_' + Date.now()
+            });
+
+            if (error) {
+              showUndoToast(`Lỗi duyệt đơn: ${error.message}`);
+              return;
+            }
+
+            if (data && data.ok === false) {
+              showUndoToast(data.message || 'Không thể duyệt đơn (đơn đã được xử lý hoặc không hợp lệ).');
+              await loadAdminVipOrders(false);
+              return;
+            }
+
+            showUndoToast(`Đã duyệt tay thành công đơn ${orderCode}!`);
+            await loadAdminVipOrders(false);
+            if (currentUser?.id) {
+              await loadUserDataFromCloud(currentUser, false);
+            }
+          } catch (err) {
+            showUndoToast('Lỗi kết nối khi duyệt đơn VIP.');
+          }
+        }
+      );
+    }
+
+    async function rejectAdminVipOrder(orderId, orderCode) {
+      if (!isCurrentUserVipAdmin() || !supabaseClient || !orderId) return;
+      openConfirmModal(
+        `Từ chối đơn ${orderCode}?`,
+        'Đơn hàng này sẽ chuyển sang trạng thái Đã từ chối và không kích hoạt gói VIP.',
+        async () => {
+          try {
+            const { error } = await supabaseClient
+              .from('vip_orders')
+              .update({ status: 'rejected' })
+              .eq('id', orderId);
+
+            if (error) {
+              showUndoToast(`Lỗi từ chối đơn: ${error.message}`);
+              return;
+            }
+            showUndoToast(`Đã từ chối đơn ${orderCode}.`);
+            await loadAdminVipOrders(false);
+          } catch (err) {
+            showUndoToast('Lỗi kết nối khi từ chối đơn VIP.');
+          }
+        }
+      );
     }
 
     // ==================== COMPONENT THANH TOÁN QR VIETINBANK (SEPAY) ====================
@@ -3448,7 +3647,7 @@
       if (!banner) return;
 
       if (state === 'paid') {
-        banner.className = 'rounded-2xl bg-emerald-50 border border-emerald-300 px-3 py-2.5 flex items-center justify-between gap-2 text-xs';
+        banner.className = 'rounded-xl bg-emerald-50 border border-emerald-300 px-2.5 py-2 flex items-center justify-between gap-2 text-xs';
         banner.innerHTML = `
           <div class="flex items-center gap-2 text-emerald-800 font-extrabold">
             <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0"></i>
@@ -3456,11 +3655,11 @@
           </div>
         `;
       } else if (state === 'underpaid') {
-        banner.className = 'rounded-2xl bg-rose-50 border border-rose-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
+        banner.className = 'rounded-xl bg-rose-50 border border-rose-200 px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs';
         if (textEl) textEl.innerText = message || 'Số tiền chuyển chưa đủ, vui lòng kiểm tra lại.';
       } else {
-        banner.className = 'rounded-2xl bg-amber-50 border border-amber-200 px-3 py-2 flex items-center justify-between gap-2 text-xs';
-        if (textEl) textEl.innerText = message || 'Đang chờ chuyển khoản... (Tự động kiểm tra mỗi 4 giây)';
+        banner.className = 'rounded-xl bg-[#fffbeb] border border-[#fde68a] px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs';
+        if (textEl) textEl.innerText = message || 'Đang chờ chuyển khoản...';
       }
       safeCreateIcons();
     }
@@ -3480,14 +3679,14 @@
             status: 'pending'
           });
         if (error) {
-          console.warn('Lỗi tạo đơn hàng trong bảng vip_orders:', error.message);
-          showUndoToast('Lỗi tạo đơn thanh toán: ' + error.message);
+          console.warn('Lỗi tạo đơn vip_orders:', error.message);
+          showUndoToast(`Không thể tạo đơn thanh toán: ${error.message}`);
           return false;
         }
         return true;
       } catch (err) {
         console.warn('Lỗi tạo đơn hàng Supabase:', err);
-        showUndoToast('Lỗi tạo đơn thanh toán: ' + (err?.message || 'Không thể kết nối máy chủ'));
+        showUndoToast('Lỗi kết nối khi tạo đơn thanh toán VIP.');
         return false;
       }
     }
@@ -3512,9 +3711,9 @@
         if (data.status === 'paid') {
           stopVipVietQrStatusPolling();
           const targetPlanId = data.plan_id || activeVietQrPlanId;
-          vipExpiresAtIso = data.expires_at || null;
           if (targetPlanId && vipPlansConfig.some(p => p.id === targetPlanId)) {
             currentTeacherPlanId = targetPlanId;
+            vipExpiresAtIso = data.expires_at || null;
             hasUsedFreeTrial = true;
             saveVipSubscriptionState(false);
           }
@@ -3547,7 +3746,6 @@
       stopVipVietQrStatusPolling();
 
       const pricing = calculateVipPlanPricing(plan);
-      const shortCycleLabel = currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng';
       const orderCode = generateSePayOrderCode();
       const transferContent = `${VIETINBANK_QR_CONFIG.prefix} ${orderCode}`;
 
@@ -3558,16 +3756,19 @@
 
       const planBadgeEl = document.getElementById('vipVietQrPlanBadge');
       if (planBadgeEl) {
-        const accentColors = {
+        const shortPrice = pricing.finalPrice >= 1000
+          ? `${Math.round(pricing.finalPrice / 1000).toLocaleString('vi-VN')}k`
+          : `${pricing.finalPrice}đ`;
+        const cycleShort = currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng';
+        const badgeAccentClasses = {
+          slate: 'bg-slate-100 text-slate-800 border-slate-300',
           emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
           amber: 'bg-amber-50 text-amber-800 border-amber-300',
           indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-          rose: 'bg-rose-50 text-rose-700 border-rose-200',
-          slate: 'bg-slate-100 text-slate-800 border-slate-200'
+          rose: 'bg-rose-50 text-rose-700 border-rose-200'
         };
-        const badgeCls = accentColors[plan.accent] || accentColors.indigo;
-        planBadgeEl.className = `px-2 py-0.5 rounded-lg font-extrabold text-[11px] border ${badgeCls}`;
-        planBadgeEl.innerText = `${plan.name} - ${formatMoneyK(pricing.finalPrice)}/${shortCycleLabel}`;
+        planBadgeEl.innerText = `${plan.name} - ${shortPrice}/${cycleShort}`;
+        planBadgeEl.className = `px-2 py-0.5 rounded-full font-extrabold text-[10.5px] border ${badgeAccentClasses[plan.accent] || badgeAccentClasses.emerald}`;
       }
 
       const amountEl = document.getElementById('vipVietQrAmountValue');
@@ -3593,20 +3794,16 @@
 
       const statusBanner = document.getElementById('vipVietQrStatusBanner');
       if (statusBanner) {
-        statusBanner.className = 'rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs';
+        statusBanner.className = 'rounded-xl bg-[#fffbeb] border border-[#fde68a] px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs';
         statusBanner.innerHTML = `
-          <div class="flex items-center gap-1.5 text-amber-900 font-bold min-w-0">
+          <div class="flex items-center gap-1.5 text-[#78350f] font-bold min-w-0">
             <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
-            <span id="vipVietQrStatusText" class="truncate">${
-              currentUser?.id
-                ? 'Đang chờ chuyển khoản...'
-                : 'Đăng nhập để tự động kích hoạt'
-            }</span>
+            <span id="vipVietQrStatusText" class="truncate">Đang chờ chuyển khoản...</span>
           </div>
           <button
             type="button"
             onclick="checkActiveVietQrOrderStatus(true)"
-            class="px-2 py-0.5 rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-300 text-[10.5px] font-extrabold transition shrink-0"
+            class="px-2 py-0.5 rounded-lg bg-white hover:bg-amber-50 text-[#92400e] border border-[#fcd34d] text-[10.5px] font-extrabold transition shrink-0 shadow-2xs"
           >
             Kiểm tra ngay
           </button>
@@ -3619,10 +3816,8 @@
         const created = await createPendingPaymentOrderOnSupabase({
           orderCode,
           planId: plan.id,
-          planName: plan.name,
           billingCycle: currentVipBillingCycle,
-          amount: pricing.finalPrice,
-          transferContent
+          amount: pricing.finalPrice
         });
         if (created) {
           vipVietQrPollTimer = setInterval(() => {
@@ -3639,195 +3834,60 @@
       );
     }
 
-    async function loadAdminVipOrders(showToast = false) {
-      if (!isCurrentUserVipAdmin() || !supabaseClient) return;
-      const container = document.getElementById('adminVipOrdersContainer');
-      const badge = document.getElementById('adminVipPendingCountBadge');
-      const refreshBtn = document.getElementById('btnRefreshAdminVipOrders');
-      if (!container) return;
-
-      if (isLoadingAdminVipOrders) return;
-      isLoadingAdminVipOrders = true;
-      if (refreshBtn) refreshBtn.disabled = true;
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('vip_orders')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(30);
-
-        if (error) {
-          container.innerHTML = `<div class="p-4 text-center text-rose-600 text-xs font-bold">Lỗi tải danh sách đơn: ${error.message}</div>`;
-          if (showToast) showUndoToast('Lỗi tải danh sách đơn VIP: ' + error.message);
-          return;
-        }
-
-        adminVipOrdersList = Array.isArray(data) ? data : [];
-        const pendingCount = adminVipOrdersList.filter(o => o.status === 'pending').length;
-        if (badge) {
-          badge.innerText = `${pendingCount} chờ duyệt`;
-        }
-
-        if (adminVipOrdersList.length === 0) {
-          container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">Chưa có đơn nâng cấp VIP nào.</div>`;
-          if (showToast) showUndoToast('Đã làm mới: Chưa có đơn nào.');
-          return;
-        }
-
-        const planNameMap = {};
-        vipPlansConfig.forEach(p => { planNameMap[p.id] = p.name; });
-
-        container.innerHTML = `
-          <table class="w-full text-left border-collapse text-[11px] sm:text-xs">
-            <thead>
-              <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold uppercase text-[10px]">
-                <th class="py-2 px-2.5">Mã đơn</th>
-                <th class="py-2 px-2.5">Email</th>
-                <th class="py-2 px-2.5">Gói & Chu kỳ</th>
-                <th class="py-2 px-2.5 text-right">Số tiền</th>
-                <th class="py-2 px-2.5 text-center">Trạng thái</th>
-                <th class="py-2 px-2.5 text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              ${adminVipOrdersList.map(order => {
-                const isPending = order.status === 'pending';
-                const isPaid = order.status === 'paid';
-                const isRejected = order.status === 'rejected';
-                const planLabel = planNameMap[order.plan_id] || order.plan_id || '--';
-                const cycleLabel = order.billing_cycle === 'yearly' ? 'Năm' : 'Tháng';
-                const amountText = `${(Number(order.amount) || 0).toLocaleString('vi-VN')}đ`;
-                const createdStr = order.created_at ? new Date(order.created_at).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
-
-                let statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">${order.status || '--'}</span>`;
-                if (isPending) {
-                  statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200">Chờ duyệt</span>`;
-                } else if (isPaid) {
-                  statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">Đã duyệt</span>`;
-                } else if (isRejected) {
-                  statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-800 border border-rose-200">Từ chối</span>`;
-                }
-
-                return `
-                  <tr class="hover:bg-slate-50/80 transition">
-                    <td class="py-2 px-2.5 font-mono font-extrabold text-indigo-700 whitespace-nowrap">
-                      <div>${order.order_code || '--'}</div>
-                      ${createdStr ? `<div class="text-[9.5px] text-slate-400 font-sans font-normal">${createdStr}</div>` : ''}
-                    </td>
-                    <td class="py-2 px-2.5 text-slate-700 max-w-[140px] truncate" title="${order.user_email || ''}">${order.user_email || '--'}</td>
-                    <td class="py-2 px-2.5 font-bold text-slate-900 whitespace-nowrap">${planLabel} <span class="text-slate-500 font-medium">(${cycleLabel})</span></td>
-                    <td class="py-2 px-2.5 text-right font-mono font-extrabold text-rose-600 whitespace-nowrap">${amountText}</td>
-                    <td class="py-2 px-2.5 text-center whitespace-nowrap">${statusBadge}</td>
-                    <td class="py-2 px-2.5 text-right whitespace-nowrap">
-                      ${isPending ? `
-                        <div class="inline-flex items-center justify-end gap-1">
-                          <button
-                            type="button"
-                            onclick="approveAdminVipOrder('${order.order_code}', ${Number(order.amount) || 0})"
-                            class="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10.5px] font-extrabold shadow-2xs transition active:scale-95"
-                          >
-                            Duyệt tay
-                          </button>
-                          <button
-                            type="button"
-                            onclick="rejectAdminVipOrder('${order.id}', '${order.order_code || ''}')"
-                            class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10.5px] font-bold transition active:scale-95"
-                          >
-                            Từ chối
-                          </button>
-                        </div>
-                      ` : `<span class="text-[10.5px] text-slate-400 italic">--</span>`}
-                    </td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        `;
-
-        safeCreateIcons();
-        if (showToast) {
-          showUndoToast(`Đã tải ${adminVipOrdersList.length} đơn nâng cấp VIP.`);
-        }
-      } catch (err) {
-        container.innerHTML = `<div class="p-4 text-center text-rose-600 text-xs font-bold">Lỗi kết nối: ${err?.message || 'Không xác định'}</div>`;
-      } finally {
-        isLoadingAdminVipOrders = false;
-        if (refreshBtn) refreshBtn.disabled = false;
-      }
-    }
-
-    async function approveAdminVipOrder(orderCode, amount) {
-      if (!isCurrentUserVipAdmin() || !supabaseClient || !orderCode) return;
-
-      openConfirmModal(
-        `Duyệt tay đơn ${orderCode}?`,
-        `Xác nhận đã nhận ${(Number(amount) || 0).toLocaleString('vi-VN')}đ và kích hoạt gói VIP cho người dùng này?`,
-        async () => {
-          try {
-            const { data, error } = await supabaseClient.rpc('activate_vip_order', {
-              p_order_code: orderCode,
-              p_paid_amount: Number(amount) || 0,
-              p_gateway_tx_id: 'MANUAL_' + Date.now()
-            });
-
-            if (error) {
-              showUndoToast('Lỗi duyệt đơn: ' + error.message);
-              return;
-            }
-
-            if (data && data.ok === false) {
-              showUndoToast(data.message || 'Không thể duyệt đơn (đơn đã được xử lý hoặc không hợp lệ).');
-              await loadAdminVipOrders(false);
-              return;
-            }
-
-            showUndoToast(`Đã duyệt tay và kích hoạt đơn ${orderCode}!`);
-            await loadAdminVipOrders(false);
-            if (currentUser?.id) {
-              await loadUserDataFromCloud(currentUser, false);
-            }
-          } catch (err) {
-            showUndoToast('Lỗi duyệt đơn: ' + (err?.message || 'Không thể kết nối máy chủ'));
-          }
-        }
-      );
-    }
-
-    async function rejectAdminVipOrder(orderId, orderCode) {
-      if (!isCurrentUserVipAdmin() || !supabaseClient || !orderId) return;
-
-      openConfirmModal(
-        `Từ chối đơn ${orderCode || ''}?`,
-        'Đơn hàng này sẽ được chuyển sang trạng thái Từ chối (rejected).',
-        async () => {
-          try {
-            const { error } = await supabaseClient
-              .from('vip_orders')
-              .update({ status: 'rejected' })
-              .eq('id', orderId);
-
-            if (error) {
-              showUndoToast('Lỗi từ chối đơn: ' + error.message);
-              return;
-            }
-
-            showUndoToast('Đã từ chối đơn ' + (orderCode || orderId));
-            await loadAdminVipOrders(false);
-          } catch (err) {
-            showUndoToast('Lỗi từ chối đơn: ' + (err?.message || 'Không thể kết nối máy chủ'));
-          }
-        }
-      );
-    }
-
     function selectTeacherVipPlan(planId) {
       const targetPlan = vipPlansConfig.find(p => p.id === planId);
       if (!targetPlan) return;
 
-      const trialInfo = getTrialStatusInfo();
-      if (planId === currentTeacherPlanId && !trialInfo.isActive) {
+      const paidActive = isPaidVipActive();
+      const activePlan = getActiveVipPlan();
+
+      if (paidActive) {
+        const activeMaxStudents = Number(activePlan?.maxStudents) || 0;
+        const targetMaxStudents = Number(targetPlan.maxStudents) || 0;
+
+        // 1. Gói có bậc thấp hơn gói VIP hiện tại
+        if (targetPlan.id !== activePlan.id && targetMaxStudents < activeMaxStudents) {
+          showUndoToast(`Gói ${targetPlan.name} đã bao gồm trong gói ${activePlan.name} hiện tại.`);
+          return;
+        }
+
+        // 2. Cùng gói đang dùng -> Gia hạn thêm
+        if (targetPlan.id === activePlan.id) {
+          if (!currentUser || !currentUser.id) {
+            closeModal('modalVipSubscription');
+            openAuthModal('signin');
+            showUndoToast('Vui lòng đăng nhập để gia hạn gói VIP!');
+            return;
+          }
+          openVipVietQrCheckoutModal(targetPlan);
+          return;
+        }
+
+        // 3. Nâng cấp lên gói cao hơn -> Tính số ngày quy đổi tương đương và xác nhận trước khi mở QR
+        if (!currentUser || !currentUser.id) {
+          closeModal('modalVipSubscription');
+          openAuthModal('signin');
+          showUndoToast('Vui lòng đăng nhập để thanh toán nâng cấp gói!');
+          return;
+        }
+
+        const expMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : 0;
+        const remainingDays = Math.max(0, Math.ceil((expMs - Date.now()) / (1000 * 60 * 60 * 24)));
+        const currentPrice = Math.max(0, Number(activePlan.price) || 0);
+        const targetPrice = Math.max(1, Number(targetPlan.price) || 1);
+        const convertedDays = Math.floor((remainingDays * currentPrice) / targetPrice);
+
+        openConfirmModal(
+          `Nâng cấp lên gói ${targetPlan.name}?`,
+          `Gói ${activePlan.name} hiện tại của bạn còn ${remainingDays} ngày sử dụng. Khi nâng cấp lên gói ${targetPlan.name}, hệ thống sẽ quy đổi tương đương và cộng thêm ${convertedDays} ngày vào thời hạn gói mới.`,
+          () => {
+            openVipVietQrCheckoutModal(targetPlan);
+          }
+        );
+        return;
+      }
+
+      if (planId === currentTeacherPlanId && !getTrialStatusInfo().isActive) {
         showUndoToast(`Bạn đang sử dụng gói ${targetPlan.name}.`);
         return;
       }
@@ -4431,11 +4491,10 @@
           }
           if (appData.vipExpiresAt !== undefined) {
             vipExpiresAtIso = appData.vipExpiresAt || null;
-            const prefixKey = getStorageKeyPrefix();
             if (vipExpiresAtIso) {
-              localStorage.setItem(`${prefixKey}_vip_expires_at`, vipExpiresAtIso);
+              localStorage.setItem(`${getStorageKeyPrefix()}_vip_expires_at`, vipExpiresAtIso);
             } else {
-              localStorage.removeItem(`${prefixKey}_vip_expires_at`);
+              localStorage.removeItem(`${getStorageKeyPrefix()}_vip_expires_at`);
             }
           }
           if (appData.trialStartedAtIso) {
@@ -4493,7 +4552,6 @@
       isSyncingCloud = true;
       setCloudSyncBadge('syncing');
       try {
-        // Lấy dữ liệu hiện có trên Supabase để gộp bài nộp và bảo vệ thời hạn gói VIP trả phí từ server
         try {
           const { data: remoteRow } = await supabaseClient
             .from('user_app_data')
@@ -4502,33 +4560,26 @@
             .maybeSingle();
 
           const remoteData = remoteRow?.data;
-          const remoteSubs = remoteData?.homeworkSubmissions;
-          if (Array.isArray(remoteSubs) && remoteSubs.length > 0) {
-            const mergedMap = new Map();
-            remoteSubs.forEach(s => { if (s && s.id) mergedMap.set(s.id, s); });
-            homeworkSubmissions.forEach(s => { if (s && s.id) mergedMap.set(s.id, s); });
-            homeworkSubmissions = Array.from(mergedMap.values());
-            saveAllToLocalStorage(false);
-          }
-
           if (remoteData && typeof remoteData === 'object') {
-            const serverExpIso = remoteData.vipExpiresAt || null;
-            const serverPlanId = remoteData.currentTeacherPlanId || null;
-            const serverExpMs = serverExpIso ? new Date(serverExpIso).getTime() : 0;
-            const localExpMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : 0;
-            if (
-              serverPlanId &&
-              serverPlanId !== 'free' &&
-              !Number.isNaN(serverExpMs) &&
-              serverExpMs > Date.now() &&
-              (Number.isNaN(localExpMs) || serverExpMs >= localExpMs)
-            ) {
-              currentTeacherPlanId = serverPlanId;
-              vipExpiresAtIso = serverExpIso;
-              const syncPrefix = getStorageKeyPrefix();
-              localStorage.setItem(`${syncPrefix}_active_vip_plan`, currentTeacherPlanId);
-              localStorage.setItem(`${syncPrefix}_vip_expires_at`, vipExpiresAtIso);
-              updateHeaderVipBadge();
+            if (remoteData.vipExpiresAt && remoteData.currentTeacherPlanId && remoteData.currentTeacherPlanId !== 'free') {
+              const remoteExpMs = new Date(remoteData.vipExpiresAt).getTime();
+              const localExpMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : 0;
+              if (!Number.isNaN(remoteExpMs) && remoteExpMs > Date.now() && remoteExpMs >= (localExpMs || 0)) {
+                currentTeacherPlanId = remoteData.currentTeacherPlanId;
+                vipExpiresAtIso = remoteData.vipExpiresAt;
+                localStorage.setItem(`${getStorageKeyPrefix()}_active_vip_plan`, currentTeacherPlanId);
+                localStorage.setItem(`${getStorageKeyPrefix()}_vip_expires_at`, vipExpiresAtIso);
+                updateHeaderVipBadge();
+              }
+            }
+
+            const remoteSubs = remoteData.homeworkSubmissions;
+            if (Array.isArray(remoteSubs) && remoteSubs.length > 0) {
+              const mergedMap = new Map();
+              remoteSubs.forEach(s => { if (s && s.id) mergedMap.set(s.id, s); });
+              homeworkSubmissions.forEach(s => { if (s && s.id) mergedMap.set(s.id, s); });
+              homeworkSubmissions = Array.from(mergedMap.values());
+              saveAllToLocalStorage(false);
             }
           }
         } catch (mergeErr) {
@@ -5034,11 +5085,11 @@
             </div>
 
             <div class="flex items-center justify-center gap-1 sm:w-36 shrink-0">
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'present')" class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${isPresent ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'present')" class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap shrink-0 ${isPresent ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
                 <i data-lucide="check" class="w-3.5 h-3.5 shrink-0"></i>
                 <span>Đi học</span>
               </button>
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'absent')" class="px-2 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${isAbsent ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
+              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'absent')" class="px-2 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap shrink-0 ${isAbsent ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
                 <i data-lucide="x" class="w-3.5 h-3.5 shrink-0"></i>
                 <span>Vắng</span>
               </button>
@@ -6212,93 +6263,158 @@
           const curAns = activeStudentAnswersMap[q.id] || '';
           const isMcq = q.type === 'single_choice';
           return `
-            <div class="rounded-2xl border p-2.5 sm:p-3.5 flex flex-col justify-between gap-2 sm:gap-3 transition ${style.card} ${isCurrent ? 'ring-2 ring-indigo-500 shadow-md' : 'shadow-2xs'}">
-              <div class="flex items-start justify-between gap-2 sm:block sm:space-y-2">
-                <div class="min-w-0 flex-1 space-y-1 sm:space-y-2">
-                  <div class="flex items-center justify-between gap-1.5 flex-wrap">
-                    <h4 class="font-extrabold text-[13.5px] sm:text-sm text-slate-900">${p.name}</h4>
-                    <span class="px-1.5 sm:px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-extrabold ${style.badge}">${p.badge || ''}</span>
-                  </div>
-                  <div class="sm:hidden text-[11px] font-semibold text-slate-600">
-                    Tối đa <strong class="text-slate-900">${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> HS • <strong class="text-slate-900">${p.maxTeachers || 1}</strong> GV
-                  </div>
+            <div class="p-3 rounded-2xl border border-slate-200 bg-white space-y-2" data-question-card="${q.id}">
+              <div class="font-extrabold text-xs text-slate-900">Câu ${idx + 1}</div>
+              ${isMcq ? `
+                <div class="grid grid-cols-4 gap-2">
+                  ${['A', 'B', 'C', 'D'].map(opt => `
+                    <button
+                      type="button"
+                      data-mcq-qid="${q.id}"
+                      data-mcq-opt="${opt}"
+                      onclick="recordStudentAnswer('${q.id}', '${opt}')"
+                      class="py-2 rounded-xl text-xs font-extrabold border transition ${
+                        curAns === opt ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
+                      }"
+                    >${opt}</button>
+                  `).join('')}
                 </div>
-
-                <div class="text-right sm:text-left shrink-0">
-                  ${pricing.isFree ? `
-                    <div class="text-base sm:text-xl font-black text-slate-900">Miễn phí</div>
-                  ` : `
-                    <div class="flex items-center justify-end sm:justify-start gap-1 sm:gap-1.5 flex-wrap">
-                      ${pricing.salePercent > 0 ? `<span class="text-[10px] sm:text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
-                      ${pricing.salePercent > 0 ? `<span class="px-1 sm:px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[9.5px] sm:text-[10px] font-extrabold">${currentVipBillingCycle === 'yearly' ? `Giảm thêm ${pricing.salePercent}%` : `-${pricing.salePercent}%`}</span>` : ''}
-                    </div>
-                    <div class="text-base sm:text-lg font-black text-slate-900 leading-tight">
-                      ${pricing.finalPrice.toLocaleString('vi-VN')}đ<span class="text-[10.5px] sm:text-[11px] font-semibold text-slate-500">/${currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng'}</span>
-                    </div>
-                    ${currentVipBillingCycle === 'yearly' ? `
-                      <div class="mt-0.5 sm:mt-1 px-1.5 sm:px-2 py-0.5 rounded-lg bg-white/85 border border-black/10 text-[10px] sm:text-[11px] font-extrabold text-emerald-700 inline-flex items-center gap-1">
-                        <span>Chỉ ~${pricing.effectiveMonthly.toLocaleString('vi-VN')}đ/tháng</span>
-                      </div>
-                    ` : ''}
-                  `}
-                </div>
-
-                <p class="hidden sm:block text-[11px] text-slate-600 leading-relaxed">${p.description || ''}</p>
-
-                <ul class="hidden sm:block space-y-1 text-[11px] font-semibold text-slate-700 pt-1 border-t border-black/5">
-                  <li>• Tối đa <strong>${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> học sinh</li>
-                  <li>• <strong>${p.maxTeachers || 1}</strong> giáo viên quản lý</li>
-                </ul>
-              </div>
-
-              <div class="${isTrialTarget ? 'grid grid-cols-2 gap-1.5 sm:grid-cols-1' : 'space-y-1.5'} pt-0.5 sm:pt-1">
-                ${isTrialTarget ? `
-                  <button type="button" onclick="activateFreeTrialNow()" class="w-full py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-extrabold transition shadow-2xs truncate px-1.5">
-                    Dùng thử miễn phí
-                  </button>
-                ` : ''}
-                <button
-                  type="button"
-                  ${isFreeLockedByPaidVip ? 'disabled' : ''}
-                  onclick="selectTeacherVipPlan('${p.id}')"
-                  class="w-full py-1.5 sm:py-2 rounded-xl text-[11.5px] sm:text-xs font-extrabold transition shadow-2xs truncate px-2 ${
-                    isFreeLockedByPaidVip
-                      ? 'bg-slate-200 text-slate-500 cursor-not-allowed opacity-80'
-                      : ((isCurrent && !trialInfo.isActive) ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn)
-                  }"
+              ` : `
+                <input
+                  type="text"
+                  value="${String(curAns).replace(/"/g, '&quot;')}"
+                  oninput="recordStudentAnswer('${q.id}', this.value)"
+                  placeholder="Nhập câu trả lời của em..."
+                  class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 font-bold text-slate-900"
                 >
-                  ${isFreeLockedByPaidVip ? 'Đang dùng VIP' : (isCurrent ? (trialInfo.isActive ? 'Mua gói chính thức' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR'))}
-                </button>
-              </div>
+              `}
             </div>
           `;
         }).join('');
       }
+      openModal('modalTakeHomework');
+    }
 
-      const adminList = document.getElementById('vipAdminPlansList');
-      if (adminList && isAdmin && isVipAdminEditMode) {
-        adminList.innerHTML = vipPlansConfig.map((p, idx) => `
-          <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-white p-2.5 rounded-xl border border-slate-200 items-center">
-            <strong class="col-span-2 sm:col-span-1 text-slate-900 border-b sm:border-b-0 border-slate-100 pb-1 sm:pb-0">${p.name}</strong>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá tháng</label>
-              <input id="adminPlanPrice_${idx}" type="number" value="${p.price}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá tháng">
+    function recordStudentAnswer(qId, val) {
+      activeStudentAnswersMap[qId] = val;
+      const mcqButtons = document.querySelectorAll(`button[data-mcq-qid="${qId}"]`);
+      if (mcqButtons.length > 0) {
+        mcqButtons.forEach(btn => {
+          const opt = btn.getAttribute('data-mcq-opt');
+          if (opt === val) {
+            btn.className = 'py-2 rounded-xl text-xs font-extrabold border transition bg-indigo-600 text-white border-indigo-600 shadow-xs';
+          } else {
+            btn.className = 'py-2 rounded-xl text-xs font-extrabold border transition bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200';
+          }
+        });
+      }
+    }
+
+    async function handleSubmitStudentHomework() {
+      const hw = homeworks.find(h => h.id === activeTakingHomeworkId);
+      if (!hw) return;
+
+      if (isPreviewingHomework || currentRole === 'teacher') {
+        let previewCorrect = 0;
+        const totalPreviewQ = (hw.questions || []).length;
+        (hw.questions || []).forEach(q => {
+          const userAns = String(activeStudentAnswersMap[q.id] || '').trim().toLowerCase();
+          const rightAns = String(q.correctAnswer || '').trim().toLowerCase();
+          if (rightAns && userAns === rightAns) previewCorrect++;
+        });
+        const previewScore = totalPreviewQ > 0 ? +((previewCorrect / totalPreviewQ) * 10).toFixed(1) : 10;
+        showUndoToast(`Xem thử: Điểm đạt ${previewScore}/10 (${previewCorrect}/${totalPreviewQ} câu đúng) - Không lưu dữ liệu.`);
+        return;
+      }
+
+      const allSt = getStudentsForClass(ALL_CLASSES_ID);
+      const st = allSt.find(s => s.id === selectedParentStudentId);
+      if (!st) {
+        showUndoToast('Không xác định được hồ sơ học sinh đang làm bài.');
+        return;
+      }
+
+      let correctCount = 0;
+      const totalQ = (hw.questions || []).length;
+      (hw.questions || []).forEach(q => {
+        const userAns = String(activeStudentAnswersMap[q.id] || '').trim().toLowerCase();
+        const rightAns = String(q.correctAnswer || '').trim().toLowerCase();
+        if (rightAns && userAns === rightAns) correctCount++;
+      });
+
+      const score = totalQ > 0 ? +((correctCount / totalQ) * 10).toFixed(1) : 10;
+      const existingIdx = homeworkSubmissions.findIndex(s => s.homeworkId === hw.id && s.studentId === st.id);
+      const subObj = {
+        id: existingIdx >= 0 ? homeworkSubmissions[existingIdx].id : `SUB_${Date.now()}_${st.id}`,
+        homeworkId: hw.id,
+        studentId: st.id,
+        studentName: st.name,
+        answers: { ...activeStudentAnswersMap },
+        score,
+        submittedAt: new Date().toLocaleString('vi-VN'),
+        teacherComment: existingIdx >= 0 ? homeworkSubmissions[existingIdx].teacherComment : ''
+      };
+
+      const ownerUserId = st._teacherUserId || currentUser?.id;
+      if (supabaseClient && ownerUserId) {
+        try {
+          const { data, error } = await supabaseClient.rpc('submit_student_homework_by_code', {
+            p_teacher_id: ownerUserId,
+            p_submission: subObj
+          });
+          if (error || data === false) {
+            console.warn('Lỗi RPC submit_student_homework_by_code:', error?.message || data);
+            showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
+            return;
+          }
+        } catch (rpcErr) {
+          console.warn('Lỗi ngoại lệ khi gọi RPC nộp bài:', rpcErr);
+          showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
+          return;
+        }
+      }
+
+      if (existingIdx >= 0) homeworkSubmissions[existingIdx] = subObj;
+      else homeworkSubmissions.push(subObj);
+
+      saveAllToLocalStorage(true);
+      activeTakingHomeworkId = null;
+      activeTakingSessionKey = null;
+      closeModal('modalTakeHomework');
+      renderHomeworkTab();
+      renderParentView();
+      showUndoToast(`Đã nộp bài! Điểm tự chấm: ${score}/10 (${correctCount}/${totalQ} câu đúng)`);
+    }
+
+    async function openGradeHomeworkModal(hwId) {
+      const hw = homeworks.find(h => h.id === hwId);
+      const container = document.getElementById('gradeSubmissionsContainer');
+      if (!hw || !container) return;
+
+      document.getElementById('gradeHomeworkModalTitle').innerText = `Chấm bài: ${hw.title}`;
+      container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Đang tải danh sách bài nộp mới nhất...</div>`;
+      openModal('modalGradeHomework');
+
+      if (currentUser && currentUser.id) {
+        await loadUserDataFromCloud(currentUser, false);
+      }
+
+      const subs = homeworkSubmissions.filter(s => s.homeworkId === hwId);
+
+      if (subs.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Chưa có học sinh nào nộp bài tập này.</div>`;
+      } else {
+        container.innerHTML = subs.map((sub, idx) => `
+          <div class="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/70 space-y-2.5 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-slate-900">${sub.studentName}</span>
+              <span class="text-slate-500">Nộp lúc: ${sub.submittedAt}</span>
             </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá năm</label>
-              <input id="adminPlanYearlyPrice_${idx}" type="number" value="${p.yearlyPrice || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá năm">
-            </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">% Sale</label>
-              <input id="adminPlanSale_${idx}" type="number" value="${p.salePercent || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="% Sale">
-            </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa HS</label>
-              <input id="adminPlanStudents_${idx}" type="number" value="${p.maxStudents}" class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa HS">
-            </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa GV</label>
-              <input id="adminPlanTeachers_${idx}" type="number" value="${p.maxTeachers || 1}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa GV">
+            <div class="flex items-center gap-2">
+              <label class="font-bold text-slate-700">Điểm số:</label>
+              <input type="number" step="0.5" min="0" max="10" value="${sub.score}" id="gradeScoreInput_${idx}" class="w-20 px-2 py-1 rounded-lg border border-slate-300 font-extrabold text-emerald-700 bg-white">
+              <input type="text" value="${sub.teacherComment || ''}" id="gradeCommentInput_${idx}" placeholder="Nhập lời phê của giáo viên..." class="flex-1 px-2.5 py-1 rounded-lg border border-slate-300 bg-white">
+              <button type="button" onclick="saveTeacherGrade('${sub.id}', ${idx})" class="px-3 py-1 rounded-lg bg-indigo-600 text-white font-bold">Lưu</button>
             </div>
           </div>
         `).join('');
@@ -7524,7 +7640,7 @@
         mobileBottomNav?.classList.remove('hidden');
         headerQuickBtn?.classList.add('hidden', 'md:inline-flex');
         teacherClassBox?.classList.remove('hidden');
-        headerVipBtn?.classList.remove('hidden');
+        headerVipBtn?.classList.add('hidden', 'sm:inline-flex');
         tBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
         pBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
       } else {
@@ -7536,6 +7652,7 @@
         headerQuickBtn?.classList.remove('md:inline-flex');
         teacherClassBox?.classList.add('hidden');
         headerVipBtn?.classList.add('hidden');
+        headerVipBtn?.classList.remove('sm:inline-flex');
         pBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
         tBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
         renderParentView();
