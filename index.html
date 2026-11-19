@@ -2093,6 +2093,12 @@
         <!-- Thông tin chuyển khoản thủ công 3 dòng gọn -->
         <div class="w-full bg-white rounded-xl border border-slate-200/90 divide-y divide-slate-100 text-xs overflow-hidden">
           <div class="px-2.5 py-1.5 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-medium">Gói đăng ký</span>
+            <span id="vipVietQrPlanBadge" class="px-2 py-0.5 rounded-lg font-extrabold text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200">
+              --
+            </span>
+          </div>
+          <div class="px-2.5 py-1.5 flex items-center justify-between gap-2">
             <span class="text-slate-500 font-medium">Số tài khoản</span>
             <div class="flex items-center gap-1.5">
               <strong id="vipVietQrBankAccount" class="font-mono font-extrabold text-slate-900">104869424470</strong>
@@ -3491,6 +3497,7 @@
 
       const pricing = calculateVipPlanPricing(plan);
       const cycleLabel = currentVipBillingCycle === 'yearly' ? 'Gói Năm (12 tháng)' : 'Gói Tháng (1 tháng)';
+      const shortCycleLabel = currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng';
       const orderCode = generateSePayOrderCode();
       const transferContent = `${VIETINBANK_QR_CONFIG.prefix} ${orderCode}`;
 
@@ -3498,6 +3505,20 @@
       activeVietQrOrderAmount = pricing.finalPrice;
       activeVietQrPlanId = plan.id;
       activeVietQrNoteText = transferContent;
+
+      const planBadgeEl = document.getElementById('vipVietQrPlanBadge');
+      if (planBadgeEl) {
+        const accentColors = {
+          emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+          amber: 'bg-amber-50 text-amber-800 border-amber-300',
+          indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+          rose: 'bg-rose-50 text-rose-700 border-rose-200',
+          slate: 'bg-slate-100 text-slate-800 border-slate-200'
+        };
+        const badgeCls = accentColors[plan.accent] || accentColors.indigo;
+        planBadgeEl.className = `px-2 py-0.5 rounded-lg font-extrabold text-[11px] border ${badgeCls}`;
+        planBadgeEl.innerText = `${plan.name} - ${formatMoneyK(pricing.finalPrice)}/${shortCycleLabel}`;
+      }
 
       const summaryBox = document.getElementById('vipVietQrSummaryBox');
       if (summaryBox) {
