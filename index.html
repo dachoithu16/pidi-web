@@ -3297,6 +3297,7 @@
 
         planGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
+          const isFreeLockedByPaidVip = paidActive && p.id === 'free';
           const pricing = calculateVipPlanPricing(p);
           const style = themeStyles[p.accent] || themeStyles.slate;
           const isTrialTarget = p.id === TRIAL_PLAN_ID && (!currentUser?.id || canActivateFreeTrial());
@@ -3339,12 +3340,15 @@
                 ` : ''}
                 <button
                   type="button"
+                  ${isFreeLockedByPaidVip ? 'disabled' : ''}
                   onclick="selectTeacherVipPlan('${p.id}')"
                   class="w-full py-2 rounded-xl text-xs font-extrabold transition shadow-2xs ${
-                    isCurrent && !trialInfo.isActive ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn
+                    isFreeLockedByPaidVip
+                      ? 'bg-slate-200 text-slate-500 cursor-not-allowed opacity-80'
+                      : ((isCurrent && !trialInfo.isActive) ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn)
                   }"
                 >
-                  ${isCurrent ? (trialInfo.isActive ? 'Mua gói chính thức' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR')}
+                  ${isFreeLockedByPaidVip ? 'Đang dùng VIP' : (isCurrent ? (trialInfo.isActive ? 'Mua gói chính thức' : 'Gói hiện tại') : (p.price === 0 ? 'Chuyển về Free' : 'Thanh toán QR'))}
                 </button>
               </div>
             </div>
@@ -3618,6 +3622,156 @@
       copyTextToClipboardFallback(
         activeVietQrNoteText,
         `Đã sao chép nội dung chuyển khoản: ${activeVietQrNoteText}`
+      );
+    }
+
+    async function loadAdminVipOrders(showToast = false) {
+      if (!isCurrentUserVipAdmin() || !supabaseClient) return;
+      const container = document.getElementById('adminVipOrdersContainer');
+      const badge = document.getElementById('adminVipPendingCountBadge');
+      const refreshBtn = document.getElementById('btnRefreshAdminVipOrders');
+      if (!container) return;
+
+      if (isLoadingAdminVipOrders) return;
+      isLoadingAdminVipOrders = true;
+      if (refreshBtn) refreshBtn.disabled = true;
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('vip_orders')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(30);
+
+        if (error) {
+          container.innerHTML = `<div class="p-4 text-center text-rose-600 text-xs font-bold">Lỗi tải danh sách đơn: ${error.message}</div>`;
+          if (showToast) showUndoToast('Lỗi tải danh sách đơn VIP: ' + error.message);
+          return;
+        }
+
+        adminVipOrdersList = Array.isArray(data) ? data : [];
+        const pendingCount = adminVipOrdersList.filter(o => o.status === 'pending').length;
+        if (badge) {
+          badge.innerText = `${pendingCount} chờ duyệt`;
+        }
+
+        if (adminVipOrdersList.length === 0) {
+          container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">Chưa có đơn nâng cấp VIP nào.</div>`;
+          if (showToast) showUndoToast('Đã làm mới: Chưa có đơn nào.');
+          return;
+        }
+
+        const planNameMap = {};
+        vipPlansConfig.forEach(p => { planNameMap[p.id] = p.name; });
+
+        container.innerHTML = `
+          <table class="w-full text-left border-collapse text-[11px] sm:text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold uppercase text-[10px]">
+                <th class="py-2 px-2.5">Mã đơn</th>
+                <th class="py-2 px-2.5">Email</th>
+                <th class="py-2 px-2.5">Gói & Chu kỳ</th>
+                <th class="py-2 px-2.5 text-right">Số tiền</th>
+                <th class="py-2 px-2.5 text-center">Trạng thái</th>
+                <th class="py-2 px-2.5 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              ${adminVipOrdersList.map(order => {
+                const isPending = order.status === 'pending';
+                const isPaid = order.status === 'paid';
+                const isRejected = order.status === 'rejected';
+                const planLabel = planNameMap[order.plan_id] || order.plan_id || '--';
+                const cycleLabel = order.billing_cycle === 'yearly' ? 'Năm' : 'Tháng';
+                const amountText = `${(Number(order.amount) || 0).toLocaleString('vi-VN')}đ`;
+                const createdStr = order.created_at ? new Date(order.created_at).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
+
+                let statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">${order.status || '--'}</span>`;
+                if (isPending) {
+                  statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800 border border-amber-200">Chờ duyệt</span>`;
+                } else if (isPaid) {
+                  statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">Đã duyệt</span>`;
+                } else if (isRejected) {
+                  statusBadge = `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-800 border border-rose-200">Từ chối</span>`;
+                }
+
+                return `
+                  <tr class="hover:bg-slate-50/80 transition">
+                    <td class="py-2 px-2.5 font-mono font-extrabold text-indigo-700 whitespace-nowrap">
+                      <div>${order.order_code || '--'}</div>
+                      ${createdStr ? `<div class="text-[9.5px] text-slate-400 font-sans font-normal">${createdStr}</div>` : ''}
+                    </td>
+                    <td class="py-2 px-2.5 text-slate-700 max-w-[140px] truncate" title="${order.user_email || ''}">${order.user_email || '--'}</td>
+                    <td class="py-2 px-2.5 font-bold text-slate-900 whitespace-nowrap">${planLabel} <span class="text-slate-500 font-medium">(${cycleLabel})</span></td>
+                    <td class="py-2 px-2.5 text-right font-mono font-extrabold text-rose-600 whitespace-nowrap">${amountText}</td>
+                    <td class="py-2 px-2.5 text-center whitespace-nowrap">${statusBadge}</td>
+                    <td class="py-2 px-2.5 text-right whitespace-nowrap">
+                      ${isPending ? `
+                        <div class="inline-flex items-center justify-end gap-1">
+                          <button
+                            type="button"
+                            onclick="approveAdminVipOrder('${order.order_code}', ${Number(order.amount) || 0})"
+                            class="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[10.5px] font-extrabold shadow-2xs transition active:scale-95"
+                          >
+                            Duyệt tay
+                          </button>
+                          <button
+                            type="button"
+                            onclick="rejectAdminVipOrder('${order.id}', '${order.order_code || ''}')"
+                            class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[10.5px] font-bold transition active:scale-95"
+                          >
+                            Từ chối
+                          </button>
+                        </div>
+                      ` : `<span class="text-[10.5px] text-slate-400 italic">--</span>`}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+
+        safeCreateIcons();
+        if (showToast) {
+          showUndoToast(`Đã tải ${adminVipOrdersList.length} đơn nâng cấp VIP.`);
+        }
+      } catch (err) {
+        container.innerHTML = `<div class="p-4 text-center text-rose-600 text-xs font-bold">Lỗi kết nối: ${err?.message || 'Không xác định'}</div>`;
+      } finally {
+        isLoadingAdminVipOrders = false;
+        if (refreshBtn) refreshBtn.disabled = false;
+      }
+    }
+
+    async function approveAdminVipOrder(orderCode, amount) {
+      if (!isCurrentUserVipAdmin() || !supabaseClient || !orderCode) return;
+
+      openConfirmModal(
+        `Duyệt tay đơn ${orderCode}?`,
+        `Xác nhận đã nhận ${(Number(amount) || 0).toLocaleString('vi-VN')}đ và kích hoạt gói VIP cho người dùng này?`,
+        async () => {
+          try {
+            const { error } = await supabaseClient.rpc('activate_vip_order', {
+              p_order_code: orderCode,
+              p_paid_amount: Number(amount) || 0,
+              p_gateway_tx_id: 'MANUAL_' + Date.now()
+            });
+
+            if (error) {
+              showUndoToast('Lỗi duyệt đơn: ' + error.message);
+              return;
+            }
+
+            showUndoToast(`Đã duyệt tay và kích hoạt đơn ${orderCode}!`);
+            await loadAdminVipOrders(false);
+            if (currentUser?.id) {
+              await loadUserDataFromCloud(currentUser, false);
+            }
+          } catch (err) {
+            showUndoToast('Lỗi duyệt đơn: ' + (err?.message || 'Không thể kết nối máy chủ'));
+          }
+        }
       );
     }
 
