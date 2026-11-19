@@ -2051,89 +2051,130 @@
 
   <!-- ==================== MODAL THANH TOÁN VIETQR VIETINBANK (SEPAY) ==================== -->
   <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-4 border border-slate-200/90 shadow-2xl space-y-2.5">
+    <div class="bg-white rounded-3xl max-w-[390px] w-full p-4 border border-slate-200/90 shadow-2xl space-y-3 max-h-[95vh] overflow-y-auto scrollbar-none">
+      <!-- Header -->
       <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-600 to-blue-800 text-white flex items-center justify-center shadow-sm shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#0284c7] to-[#1d4ed8] text-white flex items-center justify-center shadow-sm shrink-0">
             <i data-lucide="qr-code" class="w-4 h-4"></i>
           </div>
-          <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Quét mã QR thanh toán</h3>
+          <h3 class="font-extrabold text-slate-900 text-[15px] sm:text-base tracking-tight">Quét mã QR thanh toán</h3>
         </div>
-        <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        <button type="button" onclick="closeModal('modalVipVietQrCheckout')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
+          <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <!-- Trạng thái xác nhận thanh toán tự động -->
-      <div id="vipVietQrStatusBanner" class="rounded-xl bg-amber-50 border border-amber-200 px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs">
-        <div class="flex items-center gap-1.5 text-amber-900 font-bold min-w-0">
+      <!-- Thanh trạng thái -->
+      <div id="vipVietQrStatusBanner" class="rounded-2xl bg-[#fffbeb] border border-[#fde68a] px-3 py-2 flex items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-2 text-[#78350f] font-bold min-w-0">
           <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
           <span id="vipVietQrStatusText" class="truncate">Đang chờ chuyển khoản...</span>
         </div>
         <button
           type="button"
           onclick="checkActiveVietQrOrderStatus(true)"
-          class="px-2 py-0.5 rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-300 text-[10.5px] font-extrabold transition shrink-0"
+          class="px-2.5 py-1 rounded-xl bg-white hover:bg-amber-50 text-[#92400e] border border-[#fcd34d] text-[11px] font-extrabold transition shrink-0 shadow-2xs"
         >
           Kiểm tra ngay
         </button>
       </div>
 
-      <!-- Khung hiển thị mã QR VietinBank -->
-      <div class="flex flex-col items-center justify-center bg-gradient-to-b from-sky-50/70 to-white rounded-2xl border-2 border-dashed border-sky-300 p-2.5 sm:p-3 space-y-2.5">
-        <div class="w-full p-2 bg-white rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
+      <!-- Khung thẻ VietQR chính -->
+      <div class="relative flex flex-col items-center justify-center bg-gradient-to-b from-[#f8fafc] via-white to-[#f8fafc] rounded-2xl border-2 border-dashed border-sky-300/90 px-3 py-3 space-y-2.5">
+        <!-- Nút X tròn góc phải trên giống mẫu -->
+        <button
+          type="button"
+          onclick="closeModal('modalVipVietQrCheckout')"
+          class="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-[#f3e8ff]/80 hover:bg-[#e9d5ff] text-slate-600 flex items-center justify-center transition z-10"
+          title="Đóng"
+        >
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+
+        <!-- Logo VIETQR -->
+        <div class="flex items-center justify-center pt-0.5 select-none">
+          <svg class="h-6 w-auto" viewBox="0 0 156 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 5L17.5 31L31 5H23.2L17.5 17.5L11.8 5H4Z" fill="#E11D48"/>
+            <path d="M11.8 5L17.5 17.5L23.2 5H11.8Z" fill="#FB7185"/>
+            <text x="34" y="27" fill="#1E3A8A" font-family="Plus Jakarta Sans, Inter, sans-serif" font-weight="900" font-size="21" letter-spacing="0.5">IETQR</text>
+          </svg>
+        </div>
+
+        <!-- Khung ảnh mã QR trắng sắc nét -->
+        <div class="bg-white p-2 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-center">
           <img
             id="vipVietQrImage"
             src=""
             alt="Mã QR VietinBank thanh toán gói VIP"
-            class="w-64 h-64 sm:w-72 sm:h-72 max-w-full aspect-square object-contain rounded-xl bg-white"
+            class="w-56 h-56 sm:w-60 sm:h-60 object-contain rounded-xl bg-white"
           >
         </div>
 
-        <!-- Thông tin chuyển khoản thủ công 3 dòng gọn -->
-        <div class="w-full bg-white rounded-xl border border-slate-200/90 divide-y divide-slate-100 text-xs overflow-hidden">
-          <div class="px-2.5 py-1.5 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-medium">Gói đăng ký</span>
-            <span id="vipVietQrPlanBadge" class="px-2 py-0.5 rounded-lg font-extrabold text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-200">
+        <!-- Tên chủ tài khoản + Logo napas 247 | VietinBank -->
+        <div class="text-center space-y-1.5 pt-0.5">
+          <div class="text-[13px] sm:text-sm text-slate-600 font-semibold">
+            Tên chủ tài khoản: <strong class="text-slate-900 font-extrabold tracking-wide">BUI HONG PHUC</strong>
+          </div>
+          <div class="flex items-center justify-center gap-2.5 text-xs select-none">
+            <span class="inline-flex items-baseline font-black italic tracking-tight text-[13px]">
+              <span class="text-[#005baa]">napas</span>
+              <span class="text-[#00a651] ml-0.5">247</span>
+            </span>
+            <span class="h-3.5 w-[1px] bg-slate-300"></span>
+            <span class="inline-flex items-center gap-1 font-extrabold text-[#005596] text-[13px]">
+              <span>VietinBank</span>
+              <span class="w-3.5 h-3.5 rounded-full bg-[#e11d48] inline-flex items-center justify-center">
+                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Bảng thông tin 4 dòng có nút Copy -->
+        <div class="w-full bg-white rounded-2xl border border-slate-200/90 divide-y divide-slate-100 text-xs overflow-hidden shadow-2xs">
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold">Gói đăng ký</span>
+            <span id="vipVietQrPlanBadge" class="px-2.5 py-0.5 rounded-full font-extrabold text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200">
               --
             </span>
           </div>
-          <div class="px-2.5 py-1.5 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-medium">Số tài khoản</span>
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold">Số tài khoản</span>
             <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrBankAccount" class="font-mono font-extrabold text-slate-900">104869424470</strong>
+              <strong id="vipVietQrBankAccount" class="font-mono font-extrabold text-slate-900 text-[12.5px]">104869424470</strong>
               <button
                 type="button"
                 onclick="copyTextToClipboardFallback('104869424470', 'Đã sao chép số tài khoản VietinBank!')"
-                class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold transition"
+                class="px-2.5 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10.5px] font-bold transition"
               >
                 Copy
               </button>
             </div>
           </div>
-          <div class="px-2.5 py-1.5 flex items-center justify-between gap-2">
-            <span class="text-slate-500 font-medium">Số tiền</span>
+          <div class="px-3 py-2 flex items-center justify-between gap-2">
+            <span class="text-slate-500 font-semibold">Số tiền</span>
             <div class="flex items-center gap-1.5">
-              <strong id="vipVietQrAmountValue" class="font-mono font-black text-rose-600">0đ</strong>
+              <strong id="vipVietQrAmountValue" class="font-mono font-black text-rose-600 text-[13px]">0đ</strong>
               <button
                 type="button"
                 onclick="copyTextToClipboardFallback(String(activeVietQrOrderAmount || 0), 'Đã sao chép số tiền thanh toán!')"
-                class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold transition"
+                class="px-2.5 py-0.5 rounded-lg bg-[#f3e8ff]/70 hover:bg-[#e9d5ff] text-slate-700 text-[10.5px] font-bold transition"
               >
                 Copy
               </button>
             </div>
           </div>
-          <div class="px-2.5 py-1.5 bg-indigo-50/70 flex items-center justify-between gap-2">
-            <span class="text-indigo-700 font-bold shrink-0">Nội dung CK</span>
+          <div class="px-3 py-2 bg-[#f5f3ff]/90 flex items-center justify-between gap-2">
+            <span class="text-indigo-700 font-extrabold shrink-0">Nội dung CK</span>
             <div class="flex items-center gap-1.5 min-w-0">
-              <strong id="vipVietQrContentNote" class="font-mono font-black text-indigo-900 truncate">
+              <strong id="vipVietQrContentNote" class="font-mono font-black text-slate-900 text-[12px] truncate">
                 SEVQR DIPIVIP00000
               </strong>
               <button
                 type="button"
                 onclick="copyVipVietQrTransferNote()"
-                class="px-2 py-0.5 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-extrabold transition active:scale-95 shrink-0"
+                class="px-2.5 py-1 rounded-lg bg-[#5b46e8] hover:bg-[#4c38d6] text-white text-[10.5px] font-extrabold transition active:scale-95 shrink-0"
               >
                 Copy
               </button>
@@ -2141,7 +2182,8 @@
           </div>
         </div>
 
-        <p class="text-[10.5px] text-slate-500 text-center leading-tight">
+        <!-- Ghi chú dưới cùng -->
+        <p class="text-[11px] text-slate-400 font-medium text-center leading-tight pt-0.5">
           Giữ nguyên nội dung chuyển khoản để tự động kích hoạt.
         </p>
       </div>
