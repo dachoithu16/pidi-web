@@ -2051,7 +2051,7 @@
 
   <!-- ==================== MODAL THANH TOÁN VIETQR VIETINBANK (SEPAY) ==================== -->
   <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-[390px] w-full p-4 border border-slate-200/90 shadow-2xl space-y-3 max-h-[95vh] overflow-y-auto scrollbar-none">
+    <div class="bg-white rounded-3xl max-w-md w-full p-4 border border-slate-200/90 shadow-2xl space-y-3 max-h-[95vh] overflow-y-auto scrollbar-none">
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <div class="flex items-center gap-2.5">
@@ -2080,55 +2080,15 @@
         </button>
       </div>
 
-      <!-- Khung thẻ VietQR chính -->
-      <div class="relative flex flex-col items-center justify-center bg-gradient-to-b from-[#f8fafc] via-white to-[#f8fafc] rounded-2xl border-2 border-dashed border-sky-300/90 px-3 py-3 space-y-2.5">
-        <!-- Nút X tròn góc phải trên giống mẫu -->
-        <button
-          type="button"
-          onclick="closeModal('modalVipVietQrCheckout')"
-          class="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-[#f3e8ff]/80 hover:bg-[#e9d5ff] text-slate-600 flex items-center justify-center transition z-10"
-          title="Đóng"
-        >
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
-        </button>
-
-        <!-- Logo VIETQR -->
-        <div class="flex items-center justify-center pt-0.5 select-none">
-          <svg class="h-6 w-auto" viewBox="0 0 156 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 5L17.5 31L31 5H23.2L17.5 17.5L11.8 5H4Z" fill="#E11D48"/>
-            <path d="M11.8 5L17.5 17.5L23.2 5H11.8Z" fill="#FB7185"/>
-            <text x="34" y="27" fill="#1E3A8A" font-family="Plus Jakarta Sans, Inter, sans-serif" font-weight="900" font-size="21" letter-spacing="0.5">IETQR</text>
-          </svg>
-        </div>
-
-        <!-- Khung ảnh mã QR trắng sắc nét -->
-        <div class="bg-white p-2 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-center">
+      <!-- Khung mã QR phóng to -->
+      <div class="flex flex-col items-center justify-center bg-slate-50/80 rounded-2xl border border-slate-200/80 p-3 space-y-3">
+        <div class="w-full max-w-[320px] sm:max-w-[340px] aspect-square bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
           <img
             id="vipVietQrImage"
             src=""
             alt="Mã QR VietinBank thanh toán gói VIP"
-            class="w-56 h-56 sm:w-60 sm:h-60 object-contain rounded-xl bg-white"
+            class="w-full h-full object-contain rounded-xl bg-white"
           >
-        </div>
-
-        <!-- Tên chủ tài khoản + Logo napas 247 | VietinBank -->
-        <div class="text-center space-y-1.5 pt-0.5">
-          <div class="text-[13px] sm:text-sm text-slate-600 font-semibold">
-            Tên chủ tài khoản: <strong class="text-slate-900 font-extrabold tracking-wide">BUI HONG PHUC</strong>
-          </div>
-          <div class="flex items-center justify-center gap-2.5 text-xs select-none">
-            <span class="inline-flex items-baseline font-black italic tracking-tight text-[13px]">
-              <span class="text-[#005baa]">napas</span>
-              <span class="text-[#00a651] ml-0.5">247</span>
-            </span>
-            <span class="h-3.5 w-[1px] bg-slate-300"></span>
-            <span class="inline-flex items-center gap-1 font-extrabold text-[#005596] text-[13px]">
-              <span>VietinBank</span>
-              <span class="w-3.5 h-3.5 rounded-full bg-[#e11d48] inline-flex items-center justify-center">
-                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-              </span>
-            </span>
-          </div>
         </div>
 
         <!-- Bảng thông tin 4 dòng có nút Copy -->
