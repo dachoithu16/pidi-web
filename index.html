@@ -2717,25 +2717,31 @@
 
     async function activateFreeTrialNow() {
       if (!currentUser || !currentUser.id) {
+        dismissFirstLoginVipPromo();
         openAuthModal('signup');
         showUndoToast('Vui lòng đăng nhập tài khoản để dùng thử gói Trà Sữa (39k)!');
         return;
       }
       if (hasUsedFreeTrial || trialStartedAtIso) {
+        dismissFirstLoginVipPromo();
         showUndoToast('Tài khoản của bạn đã sử dụng lượt dùng thử.');
         return;
       }
       trialStartedAtIso = new Date().toISOString();
       hasUsedFreeTrial = true;
       currentTeacherPlanId = TRIAL_PLAN_ID;
-      saveVipSubscriptionState(false);
       dismissFirstLoginVipPromo();
+      saveVipSubscriptionState(false);
       renderAll();
       if (!document.getElementById('modalVipSubscription')?.classList.contains('hidden')) {
         renderVipSubscriptionModal();
       }
       showUndoToast('Đã kích hoạt dùng thử gói Trà Sữa (39k) trong 10 phút!');
-      await syncUserDataToCloud(false);
+      try {
+        await syncUserDataToCloud(false);
+      } catch (e) {
+        console.warn('Lỗi đồng bộ trạng thái dùng thử:', e);
+      }
     }
 
     function getTrialStatusInfo() {
@@ -2785,36 +2791,6 @@
       }, 5000);
     }
 
-    function getTrialStatusInfo() {
-      if (!trialStartedAtIso) {
-        return { isTrialActive: false, daysLeft: 0, hoursLeft: 0, isExpired: false };
-      }
-      const startMs = new Date(trialStartedAtIso).getTime();
-      if (Number.isNaN(startMs)) {
-        return { isTrialActive: false, daysLeft: 0, hoursLeft: 0, isExpired: false };
-      }
-      const totalTrialMs = TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000;
-      const elapsedMs = Date.now() - startMs;
-      const remainingMs = totalTrialMs - elapsedMs;
-      if (remainingMs > 0) {
-        const daysLeft = Math.max(1, Math.ceil(remainingMs / (24 * 60 * 60 * 1000)));
-        const hoursLeft = Math.max(1, Math.ceil(remainingMs / (60 * 60 * 1000)));
-        return { isTrialActive: currentTeacherPlanId === TRIAL_PLAN_ID, daysLeft, hoursLeft, isExpired: false };
-      }
-      return { isTrialActive: false, daysLeft: 0, hoursLeft: 0, isExpired: true };
-    }
-
-    function enforceTrialExpirationIfNeeded() {
-      if (!trialStartedAtIso) return false;
-      const info = getTrialStatusInfo();
-      if (info.isExpired && currentTeacherPlanId === TRIAL_PLAN_ID) {
-        currentTeacherPlanId = 'free';
-        saveVipSubscriptionState(true);
-        return true;
-      }
-      return false;
-    }
-
     function getRecommendedUpgradePlan(neededStudentsCount = 1) {
       const currentTotal = getTotalStudentsCountAllClasses();
       const targetStudents = Math.max(currentTotal + neededStudentsCount, currentTotal + 1);
@@ -2829,6 +2805,7 @@
       if (!currentUser || !currentUser.id) return;
       if (currentRole !== 'teacher') return;
       if (currentTeacherPlanId !== 'free') return;
+      if (hasUsedFreeTrial || trialStartedAtIso) return;
 
       const promoSeenKey = `dipi_vip_first_login_seen_${currentUser.id}`;
       try {
@@ -3070,9 +3047,10 @@
           homeUpgradeBtnLabel.innerText = plan.id === 'trung_tam' ? 'Chi tiết gói' : 'Nâng cấp';
         }
       }
+      safeCreateIcons();
     }
 
-    function checkAndNotifyQuotaThreshold() {
+    function checkCanAddStudents(addingCount = 1) {
       const effectiveMax = getEffectiveMaxStudents();
       const currentTotal = getTotalStudentsCountAllClasses();
       if (currentTotal + addingCount > effectiveMax) {
