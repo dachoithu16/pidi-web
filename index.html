@@ -2908,11 +2908,16 @@
       const homeTrialBadge = document.getElementById('homeVipTrialBadge');
       const homeQuotaBadge = document.getElementById('homeVipQuotaAlertBadge');
       const homeTrialBtn = document.getElementById('btnHomeActivateTrial');
+      const homeUpgradeBtn = document.getElementById('btnHomeUpgradeVip');
       const homeUpgradeBtnLabel = document.getElementById('btnHomeUpgradeVipLabel');
       const effectiveTeachers = getEffectiveMaxTeachers();
 
+      const showTrialInsteadOfUpgrade = canActivateFreeTrial();
       if (homeTrialBtn) {
-        homeTrialBtn.classList.toggle('hidden', !canActivateFreeTrial());
+        homeTrialBtn.classList.toggle('hidden', !showTrialInsteadOfUpgrade);
+      }
+      if (homeUpgradeBtn) {
+        homeUpgradeBtn.classList.toggle('hidden', showTrialInsteadOfUpgrade);
       }
 
       if (homeTitle) {
@@ -3244,9 +3249,7 @@
       }
 
       if (!isCurrentUserVipAdmin() && targetPlan.price > 0) {
-        const pricing = calculateVipPlanPricing(targetPlan);
-        const cycleText = currentVipBillingCycle === 'yearly' ? '1 năm (đã giảm thêm 12%)' : '1 tháng';
-        showUndoToast(`Gói ${targetPlan.name} (${pricing.finalPrice.toLocaleString('vi-VN')}đ/${cycleText}): Vui lòng chuyển khoản & liên hệ Admin để kích hoạt!`);
+        showUndoToast('Đang cập nhật');
         return;
       }
 
