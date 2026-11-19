@@ -291,9 +291,9 @@
             type="button"
             id="btnHomeUpgradeVip"
             onclick="handleHomeVipActionClick()"
-            class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1.5"
+            class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 text-white text-xs sm:text-[13px] font-black tracking-wide shadow-lg shadow-orange-500/35 ring-2 ring-amber-300/80 transition-all hover:scale-[1.03] active:scale-95 inline-flex items-center gap-1.5"
           >
-            <i id="btnHomeUpgradeVipIcon" data-lucide="gift" class="w-3.5 h-3.5"></i>
+            <i id="btnHomeUpgradeVipIcon" data-lucide="gift" class="w-4 h-4 animate-bounce"></i>
             <span id="btnHomeUpgradeVipLabel">Dùng thử</span>
           </button>
         </div>
@@ -2701,8 +2701,14 @@
       return true;
     }
 
+    function shouldShowTrialButtonOnHome() {
+      if (currentTeacherPlanId !== 'free') return false;
+      if (hasUsedFreeTrial || trialStartedAtIso) return false;
+      return true;
+    }
+
     function handleHomeVipActionClick() {
-      if (canActivateFreeTrial()) {
+      if (shouldShowTrialButtonOnHome()) {
         activateFreeTrialNow();
       } else {
         openVipSubscriptionModal();
@@ -3022,7 +3028,7 @@
       const homeUpgradeBtnLabel = document.getElementById('btnHomeUpgradeVipLabel');
       const effectiveTeachers = getEffectiveMaxTeachers();
 
-      const canTrial = canActivateFreeTrial();
+      const showTrialBtn = shouldShowTrialButtonOnHome();
 
       if (homeTitle) {
         homeTitle.innerText = `Gói hiện tại: ${plan.name}`;
@@ -3048,19 +3054,25 @@
         homeSubtitle.innerText = `Đang sử dụng ${totalStudents.toLocaleString('vi-VN')} / ${effectiveMax.toLocaleString('vi-VN')} học sinh • ${effectiveTeachers} giáo viên`;
       }
       if (homeUpgradeBtn && homeUpgradeBtnLabel) {
-        if (canTrial) {
-          homeUpgradeBtn.className = 'px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1.5';
-          if (homeUpgradeBtnIcon) homeUpgradeBtnIcon.setAttribute('data-lucide', 'gift');
+        if (showTrialBtn) {
+          homeUpgradeBtn.className = 'px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 text-white text-xs sm:text-[13px] font-black tracking-wide shadow-lg shadow-orange-500/35 ring-2 ring-amber-300/80 transition-all hover:scale-[1.03] active:scale-95 inline-flex items-center gap-1.5';
+          if (homeUpgradeBtnIcon) {
+            homeUpgradeBtnIcon.setAttribute('data-lucide', 'gift');
+            homeUpgradeBtnIcon.setAttribute('class', 'w-4 h-4 animate-bounce');
+          }
           homeUpgradeBtnLabel.innerText = 'Dùng thử';
         } else {
           homeUpgradeBtn.className = 'px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center gap-1.5';
-          if (homeUpgradeBtnIcon) homeUpgradeBtnIcon.setAttribute('data-lucide', 'sparkles');
+          if (homeUpgradeBtnIcon) {
+            homeUpgradeBtnIcon.setAttribute('data-lucide', 'sparkles');
+            homeUpgradeBtnIcon.setAttribute('class', 'w-3.5 h-3.5');
+          }
           homeUpgradeBtnLabel.innerText = plan.id === 'trung_tam' ? 'Chi tiết gói' : 'Nâng cấp';
         }
       }
     }
 
-    function checkCanAddStudents(addingCount = 1) {
+    function checkAndNotifyQuotaThreshold() {
       const effectiveMax = getEffectiveMaxStudents();
       const currentTotal = getTotalStudentsCountAllClasses();
       if (currentTotal + addingCount > effectiveMax) {
