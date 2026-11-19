@@ -2084,13 +2084,20 @@
       <div class="flex flex-col items-center justify-center bg-slate-50/80 rounded-2xl border border-slate-200/80 p-3 pt-4 space-y-3">
         <div class="relative w-64 h-64 sm:w-72 sm:h-72 max-w-[280px] aspect-square bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-center">
           <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-white border border-sky-200 shadow-sm flex items-center gap-1.5 z-10 whitespace-nowrap">
-            <svg viewBox="0 0 24 24" class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10.5" fill="#005596" />
-              <path d="M5.5 14.5 C 8.5 11.2, 15.5 11.2, 18.5 14.5 C 16.5 17.8, 7.5 17.8, 5.5 14.5 Z" fill="#ffffff" />
-              <circle cx="12" cy="8.2" r="2.7" fill="#e11d48" />
+            <svg viewBox="0 0 100 100" class="w-4 h-4 shrink-0" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <clipPath id="vietinCircleClip">
+                  <circle cx="50" cy="50" r="46" />
+                </clipPath>
+              </defs>
+              <g clip-path="url(#vietinCircleClip)">
+                <path d="M0 0 H100 V72 Q50 56 0 72 Z" fill="#005288" />
+                <rect x="37" y="37" width="26" height="32" fill="#ffffff" />
+                <path d="M4 77 Q50 61 96 77 L100 100 H0 Z" fill="#d71940" />
+              </g>
             </svg>
             <span class="text-xs font-extrabold tracking-tight">
-              <span class="text-[#005596]">Vietin</span><span class="text-[#e11d48]">Bank</span>
+              <span class="text-[#005288]">Vietin</span><span class="text-[#d71940]">Bank</span>
             </span>
           </div>
           <img
