@@ -2057,10 +2057,10 @@
           </div>
           <div>
             <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-1">
-              Tặng 30 ngày dùng thử VIP miễn phí
+              Ưu đãi dành riêng cho tài khoản mới
             </span>
             <h3 class="font-extrabold text-slate-900 text-base sm:text-lg leading-tight">
-              Chào mừng bạn đến với DiPi VIP!
+              Kích hoạt dùng thử 30 ngày miễn phí?
             </h3>
           </div>
         </div>
@@ -2071,7 +2071,7 @@
 
       <div class="bg-gradient-to-br from-amber-50/90 to-orange-50/70 rounded-2xl p-3.5 border border-amber-200/80 space-y-2 text-xs text-slate-700">
         <p class="font-semibold text-slate-800 leading-relaxed">
-          Tài khoản mới của bạn được kích hoạt ngay <strong class="text-amber-700">30 ngày dùng thử gói Trà Sữa (39k)</strong> (quản lý tới <strong>80 học sinh</strong>, xuất Excel & phiếu báo thu không giới hạn).
+          Chào mừng bạn vừa tạo tài khoản thành công! Bạn có thể bấm chọn kích hoạt ngay <strong class="text-amber-700">1 ngày dùng thử gói Trà Sữa (39k)</strong> (tối đa <strong>80 học sinh</strong>) hoặc tiếp tục dùng gói Free (15 học sinh).
         </p>
         <ul class="space-y-1.5 pt-1 text-[11.5px]">
           <li class="flex items-center gap-1.5">
@@ -2089,21 +2089,28 @@
         </ul>
       </div>
 
-      <div class="flex items-center justify-end gap-2 pt-1">
+      <div class="flex flex-wrap items-center justify-end gap-2 pt-1">
         <button
           type="button"
           onclick="dismissFirstLoginVipPromo()"
-          class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
+          class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
         >
-          Để sau
+          Dùng gói Free
         </button>
         <button
           type="button"
           onclick="dismissFirstLoginVipPromo(); openVipSubscriptionModal();"
+          class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition"
+        >
+          Xem các gói
+        </button>
+        <button
+          type="button"
+          onclick="activateFreeTrialNow()"
           class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95 flex items-center gap-1.5"
         >
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-          <span>Xem các gói</span>
+          <span>Dùng thử 1 ngày</span>
         </button>
       </div>
     </div>
@@ -2614,11 +2621,99 @@
     let currentVipBillingCycle = 'monthly';
     let isVipAdminEditMode = false;
     let trialStartedAtIso = null;
+    let hasUsedFreeTrial = false;
     let lastThresholdWarnedPercent = 0;
-    const TRIAL_DURATION_DAYS = 30;
+    const TRIAL_DURATION_DAYS = 1;
     const TRIAL_PLAN_ID = 'tra_sua';
     function isCurrentUserVipAdmin() {
       return Boolean(currentUser?.email && currentUser.email.toLowerCase() === VIP_ADMIN_EMAIL.toLowerCase());
+    }
+
+    function canActivateFreeTrial() {
+      if (!currentUser || !currentUser.id) return false;
+      if (currentTeacherPlanId !== 'free') return false;
+      if (hasUsedFreeTrial || trialStartedAtIso) return false;
+      return true;
+    }
+
+    function activateFreeTrialNow() {
+      if (!currentUser || !currentUser.id) {
+        openAuthModal('signup');
+        showUndoToast('Vui lòng tạo tài khoản và đăng nhập để kích hoạt dùng thử!');
+        return;
+      }
+      if (hasUsedFreeTrial || trialStartedAtIso) {
+        showUndoToast('Tài khoản của bạn đã sử dụng lượt dùng thử.');
+        return;
+      }
+      trialStartedAtIso = new Date().toISOString();
+      hasUsedFreeTrial = true;
+      currentTeacherPlanId = TRIAL_PLAN_ID;
+      saveVipSubscriptionState(true);
+      dismissFirstLoginVipPromo();
+      renderAll();
+      if (!document.getElementById('modalVipSubscription')?.classList.contains('hidden')) {
+        renderVipSubscriptionModal();
+      }
+      showUndoToast('Đã kích hoạt 1 ngày dùng thử gói Trà Sữa (39k) — Gói hiện tại: Trà Sữa!');
+    }
+
+    function getTrialStatusInfo() {
+      if (!trialStartedAtIso) {
+        return { isTrialActive: false, daysLeft: 0, hoursLeft: 0, isExpired: false };
+      }
+      const startMs = new Date(trialStartedAtIso).getTime();
+      if (Number.isNaN(startMs)) {
+        return { isTrialActive: false, daysLeft: 0, hoursLeft: 0, isExpired: false };
+      }
+      const totalTrialMs = TRIAL_DURATION_DAYS * 24 * 60 * 60 * 1000;
+      const elapsedMs = Date.now() - startMs;
+      const remainingMs = totalTrialMs - elapsedMs;
+      if (remainingMs > 0) {
+        const daysLeft = Math.max(1, Math.ceil(remainingMs / (24 * 60 * 60 * 1000)));
+        const hoursLeft = Math.max(1, Math.ceil(remainingMs / (60 * 60 * 1000)));
+        return { isTrialActive: currentTeacherPlanId === TRIAL_PLAN_ID, daysLeft, hoursLeft, isExpired: false };
+      }
+      return { isTrialActive: false, daysLeft: 0, hoursLeft: 0, isExpired: true };
+    }
+
+    function enforceTrialExpirationIfNeeded() {
+      if (!trialStartedAtIso) return false;
+      const info = getTrialStatusInfo();
+      if (info.isExpired && currentTeacherPlanId === TRIAL_PLAN_ID) {
+        currentTeacherPlanId = 'free';
+        saveVipSubscriptionState(true);
+        return true;
+      }
+      return false;
+    }
+
+    function canActivateFreeTrial() {
+      if (!currentUser || !currentUser.id) return false;
+      if (currentTeacherPlanId !== 'free') return false;
+      if (hasUsedFreeTrial || trialStartedAtIso) return false;
+      return true;
+    }
+
+    function activateFreeTrialNow() {
+      if (!currentUser || !currentUser.id) {
+        openAuthModal('signup');
+        showUndoToast('Vui lòng tạo tài khoản và đăng nhập để kích hoạt dùng thử 30 ngày!');
+        return;
+      }
+      if (hasUsedFreeTrial || trialStartedAtIso) {
+        showUndoToast('Tài khoản của bạn đã sử dụng lượt dùng thử 30 ngày.');
+        return;
+      }
+      trialStartedAtIso = new Date().toISOString();
+      hasUsedFreeTrial = true;
+      saveVipSubscriptionState(true);
+      dismissFirstLoginVipPromo();
+      renderAll();
+      if (!document.getElementById('modalVipSubscription')?.classList.contains('hidden')) {
+        renderVipSubscriptionModal();
+      }
+      showUndoToast('Đã kích hoạt 30 ngày dùng thử gói Trà Sữa (tối đa 80 học sinh)!');
     }
 
     function getTrialStatusInfo() {
@@ -2758,19 +2853,20 @@
 
         if (currentUser && currentUser.id) {
           const trialKey = `dipi_user_${currentUser.id}_trial_started_at`;
-          let savedTrialStart = localStorage.getItem(trialKey);
-          if (!savedTrialStart && currentTeacherPlanId === 'free') {
-            savedTrialStart = new Date().toISOString();
-            localStorage.setItem(trialKey, savedTrialStart);
-          }
+          const trialUsedKey = `dipi_user_${currentUser.id}_trial_used`;
+          const savedTrialStart = localStorage.getItem(trialKey);
           trialStartedAtIso = savedTrialStart || null;
+          hasUsedFreeTrial = Boolean(trialStartedAtIso) || localStorage.getItem(trialUsedKey) === '1';
         } else {
           trialStartedAtIso = null;
+          hasUsedFreeTrial = false;
         }
+        enforceTrialExpirationIfNeeded();
       } catch (e) {
         vipPlansConfig = JSON.parse(JSON.stringify(DEFAULT_VIP_PLANS));
         currentTeacherPlanId = 'free';
         trialStartedAtIso = null;
+        hasUsedFreeTrial = false;
       }
       isVipAdminEditMode = false;
       lastThresholdWarnedPercent = 0;
@@ -2782,8 +2878,13 @@
         localStorage.setItem('dipi_vip_plans_config_v1', JSON.stringify(vipPlansConfig));
         const prefix = getStorageKeyPrefix();
         localStorage.setItem(`${prefix}_active_vip_plan`, currentTeacherPlanId);
-        if (currentUser && currentUser.id && trialStartedAtIso) {
-          localStorage.setItem(`dipi_user_${currentUser.id}_trial_started_at`, trialStartedAtIso);
+        if (currentUser && currentUser.id) {
+          if (trialStartedAtIso) {
+            localStorage.setItem(`dipi_user_${currentUser.id}_trial_started_at`, trialStartedAtIso);
+          }
+          if (hasUsedFreeTrial) {
+            localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
+          }
         }
         if (syncCloudNow && currentUser && currentUser.id) {
           scheduleAutoCloudSync();
@@ -2793,26 +2894,17 @@
     }
 
     function getActiveVipPlan() {
+      enforceTrialExpirationIfNeeded();
       return vipPlansConfig.find(p => p.id === currentTeacherPlanId) || vipPlansConfig[0] || DEFAULT_VIP_PLANS[0];
     }
 
     function getEffectiveMaxStudents() {
       const plan = getActiveVipPlan();
-      const trialInfo = getTrialStatusInfo();
-      if (plan.id === 'free' && trialInfo.isTrialActive) {
-        const trialRefPlan = vipPlansConfig.find(p => p.id === TRIAL_PLAN_ID) || DEFAULT_VIP_PLANS[3];
-        return Math.max(plan.maxStudents, trialRefPlan.maxStudents || 200);
-      }
       return plan.maxStudents || 15;
     }
 
     function getEffectiveMaxTeachers() {
       const plan = getActiveVipPlan();
-      const trialInfo = getTrialStatusInfo();
-      if (plan.id === 'free' && trialInfo.isTrialActive) {
-        const trialRefPlan = vipPlansConfig.find(p => p.id === TRIAL_PLAN_ID) || DEFAULT_VIP_PLANS[3];
-        return Math.max(plan.maxTeachers || 1, trialRefPlan.maxTeachers || 2);
-      }
       return plan.id === 'free' ? 1 : (plan.maxTeachers || 1);
     }
 
@@ -2833,14 +2925,14 @@
       const label = document.getElementById('headerVipPlanLabel');
       const btn = document.getElementById('btnHeaderVipPlan');
       if (label) {
-        if (plan.id === 'free' && trialInfo.isTrialActive) {
-          label.innerText = `Dùng thử (${trialInfo.daysLeft}n)`;
+        if (trialInfo.isTrialActive) {
+          label.innerText = `Dùng thử • ${plan.name}`;
         } else {
           label.innerText = plan.id === 'free' ? 'Gói Free' : `VIP • ${plan.name}`;
         }
       }
       if (btn) {
-        if (plan.id === 'free' && !trialInfo.isTrialActive) {
+        if (plan.id === 'free') {
           btn.className = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-400/40 text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0';
         } else {
           btn.className = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0';
@@ -2855,13 +2947,11 @@
       const effectiveTeachers = getEffectiveMaxTeachers();
 
       if (homeTitle) {
-        homeTitle.innerText = (plan.id === 'free' && trialInfo.isTrialActive)
-          ? `Gói hiện tại: Free (Dùng thử Trà Sữa 39k)`
-          : `Gói hiện tại: ${plan.name}`;
+        homeTitle.innerText = `Gói hiện tại: ${plan.name}`;
       }
       if (homeTrialBadge) {
-        if (plan.id === 'free' && trialInfo.isTrialActive) {
-          homeTrialBadge.innerText = `Còn ${trialInfo.daysLeft}/30 ngày dùng thử`;
+        if (trialInfo.isTrialActive) {
+          homeTrialBadge.innerText = `Dùng thử 1 ngày (còn ${trialInfo.hoursLeft} giờ)`;
           homeTrialBadge.classList.remove('hidden');
         } else {
           homeTrialBadge.classList.add('hidden');
@@ -2998,8 +3088,8 @@
       const remText = document.getElementById('vipRemainingSlotsText');
 
       if (activeBadge) {
-        activeBadge.innerText = (activePlan.id === 'free' && trialInfo.isTrialActive)
-          ? `Dùng thử Trà Sữa 39k (còn ${trialInfo.daysLeft}/30 ngày)`
+        activeBadge.innerText = trialInfo.isTrialActive
+          ? `Đang dùng: ${activePlan.name} (Dùng thử còn ${trialInfo.hoursLeft} giờ)`
           : `Đang dùng: ${activePlan.name}`;
       }
       if (usageStText) usageStText.innerText = `${totalStudents.toLocaleString('vi-VN')} / ${maxStudents.toLocaleString('vi-VN')} học sinh (${percent}%)`;
@@ -3081,7 +3171,7 @@
       if (cardsGrid) {
         cardsGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
-          const isTrialPack = activePlan.id === 'free' && trialInfo.isTrialActive && p.id === TRIAL_PLAN_ID;
+          const isCurrentTrial = isCurrent && trialInfo.isTrialActive;
           const pricing = calculateVipPlanPricing(p);
           const teachersCount = p.id === 'free' ? 1 : (p.maxTeachers || 1);
           const styleSet = PLAN_COLOR_STYLES[p.accent] || PLAN_COLOR_STYLES.slate;
@@ -3102,14 +3192,16 @@
                 <div class="flex items-center justify-between gap-1 flex-wrap">
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
                     isCurrent ? 'bg-amber-500 text-white' : styleSet.badge
-                  }">${isCurrent ? 'Gói hiện tại' : (isTrialPack ? 'Đang dùng thử 30n' : p.badge)}</span>
+                  }">${isCurrent ? (isCurrentTrial ? 'Gói hiện tại (Dùng thử)' : 'Gói hiện tại') : p.badge}</span>
                 </div>
 
                 <div>
                   <h4 class="font-extrabold text-base text-slate-900">${p.name}</h4>
                   ${pricing.isFree ? `
                     <div class="text-xl font-black text-slate-900 mt-1">Miễn phí</div>
-                    <div class="text-[10.5px] text-amber-700 font-bold mt-0.5">Tặng 30 ngày dùng thử Trà Sữa 39k</div>
+                    <div class="text-[10.5px] text-slate-500 font-semibold mt-0.5">
+                      Tối đa 15 học sinh miễn phí
+                    </div>
                   ` : `
                     <div class="text-[11px] text-slate-400 line-through font-semibold mt-0.5">
                       ${pricing.originalPrice.toLocaleString('vi-VN')}đ${currentVipBillingCycle === 'yearly' ? '/năm' : '/tháng'}
@@ -3145,6 +3237,15 @@
               </div>
 
               <div class="pt-3 mt-3 border-t border-black/5">
+                ${p.id === TRIAL_PLAN_ID && canActivateFreeTrial() ? `
+                  <button
+                    type="button"
+                    onclick="activateFreeTrialNow()"
+                    class="w-full py-2 mb-1.5 rounded-xl text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition active:scale-95"
+                  >
+                    Dùng thử 1 ngày miễn phí
+                  </button>
+                ` : ''}
                 <button
                   type="button"
                   onclick="selectTeacherVipPlan('${p.id}')"
@@ -3154,7 +3255,7 @@
                       : `${styleSet.btn} shadow-sm`
                   }"
                 >
-                  ${isCurrent ? 'Đang sử dụng' : (pricing.isFree ? 'Chuyển về Free' : 'Chọn gói này')}
+                  ${isCurrent ? (isCurrentTrial ? 'Đang dùng thử' : 'Đang sử dụng') : (pricing.isFree ? 'Chuyển về Free' : 'Chọn gói này')}
                 </button>
               </div>
             </div>
@@ -3710,7 +3811,8 @@
         tuitionRemarksMap,
         vipPlansConfig,
         currentTeacherPlanId,
-        trialStartedAtIso
+        trialStartedAtIso,
+        hasUsedFreeTrial
       };
     }
 
@@ -3757,10 +3859,19 @@
           }
           if (appData.trialStartedAtIso) {
             trialStartedAtIso = appData.trialStartedAtIso;
+            hasUsedFreeTrial = true;
             if (currentUser && currentUser.id) {
               localStorage.setItem(`dipi_user_${currentUser.id}_trial_started_at`, trialStartedAtIso);
+              localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
             }
           }
+          if (appData.hasUsedFreeTrial) {
+            hasUsedFreeTrial = true;
+            if (currentUser && currentUser.id) {
+              localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
+            }
+          }
+          enforceTrialExpirationIfNeeded();
           updateHeaderVipBadge();
 
           ensureAllStudentsHaveUniqueCodes();
