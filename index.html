@@ -1989,6 +1989,9 @@
       <!-- Banner dùng thử 10 phút -->
       <div id="vipModalTrialTopBanner" class="hidden rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5"></div>
 
+      <!-- Banner ưu đãi 500 giáo viên tiên phong -->
+      <div id="vipModalPioneerPromoBanner" class="hidden rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-orange-50 to-rose-50 px-3 py-2 flex items-center justify-between gap-2 text-[11px] sm:text-xs font-extrabold text-amber-950 shadow-2xs"></div>
+
       <!-- Bộ chuyển đổi chu kỳ thanh toán Tháng / Năm -->
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="text-xs font-bold text-slate-600">Chọn chu kỳ thanh toán:</div>
@@ -2017,6 +2020,32 @@
             </div>
           </div>
           <div id="vipAdminPlansList" class="space-y-2"></div>
+        </div>
+
+        <!-- Khối điều khiển Chương trình 500 giáo viên tiên phong -->
+        <div class="pt-3 border-t border-indigo-200/80 flex flex-wrap items-center justify-between gap-2.5 bg-white p-3 rounded-xl border border-slate-200">
+          <div class="space-y-0.5">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h4 class="font-extrabold text-indigo-950 flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+                <span>Chương trình 500 giáo viên tiên phong</span>
+              </h4>
+              <span id="adminPioneerPromoStatusBadge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                Đang bật
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-600 font-medium">
+              Số suất đã bán: <strong id="adminPioneerPromoSlotsText" class="text-indigo-700 font-extrabold">0 / 500</strong> suất
+            </p>
+          </div>
+          <button
+            type="button"
+            id="btnTogglePioneerPromo"
+            onclick="togglePioneerPromoActive()"
+            class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold transition shadow-2xs active:scale-95"
+          >
+            Tắt chương trình
+          </button>
         </div>
 
         <!-- Khu vực duyệt tay Đơn nâng cấp VIP cho Admin -->
@@ -2147,7 +2176,7 @@
         <p class="text-[10.5px] text-slate-500 leading-tight">
           Cần hỗ trợ kích hoạt?
           <a
-            href="https://zalo.me/09xxxxxxxx"
+            href="https://zalo.me/0911196091"
             target="_blank"
             rel="noopener noreferrer"
             class="text-sky-600 hover:text-sky-700 font-extrabold underline"
@@ -2169,10 +2198,10 @@
           </div>
           <div>
             <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-1">
-              Ưu đãi dành riêng cho tài khoản mới
+              Quà tặng chào mừng thành viên mới
             </span>
             <h3 class="font-extrabold text-slate-900 text-base sm:text-lg leading-tight">
-              Dùng thử miễn phí gói Trà Sữa (39k)?
+              Tặng sẵn 30 ngày dùng thử gói Trà Sữa!
             </h3>
           </div>
         </div>
@@ -2181,48 +2210,48 @@
         </button>
       </div>
 
-      <div class="bg-gradient-to-br from-amber-50/90 to-orange-50/70 rounded-2xl p-3.5 border border-amber-200/80 space-y-2 text-xs text-slate-700">
+      <div class="bg-gradient-to-br from-amber-50/90 to-orange-50/70 rounded-2xl p-3.5 border border-amber-200/80 space-y-2.5 text-xs text-slate-700">
         <p class="font-semibold text-slate-800 leading-relaxed">
-          Chào mừng bạn vừa đăng nhập tài khoản! Bấm nút <strong class="text-emerald-700">Dùng thử</strong> để trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (39.000đ/tháng)</strong> trong <strong>10 phút</strong> (tối đa <strong>80 học sinh</strong>), hết hạn sẽ tự động quay về gói Free.
+          Chào mừng bạn đến với <strong class="text-indigo-700">DiPi - Sổ Lớp Nhỏ</strong>! Tài khoản của bạn đã được kích hoạt tự động <strong class="text-emerald-700">30 ngày dùng thử miễn phí gói Trà Sữa</strong> (quản lý tối đa <strong class="text-amber-700">80 học sinh</strong>).
         </p>
-        <ul class="space-y-1.5 pt-1 text-[11.5px]">
-          <li class="flex items-center gap-1.5">
-            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
-            <span><strong>Trà chanh (19k/tháng)</strong>: Tối đa 35 học sinh</span>
-          </li>
-          <li class="flex items-center gap-1.5">
-            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
-            <span><strong>Trà Sữa (39k/tháng)</strong>: Tối đa 80 học sinh</span>
-          </li>
-          <li class="flex items-center gap-1.5">
-            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-600 shrink-0"></i>
-            <span><strong>Trùm Trà (89k) & Trung tâm (399k)</strong>: Lên tới 1.000 HS</span>
-          </li>
-        </ul>
+
+        <div class="bg-white/90 rounded-xl p-2.5 border border-amber-200/80 space-y-1.5">
+          <div class="font-extrabold text-amber-900 flex items-center gap-1.5 text-[11.5px]">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500 shrink-0"></i>
+            <span>Ưu đãi 500 Giáo viên tiên phong:</span>
+          </div>
+          <ul class="space-y-1 text-[11px] text-slate-700">
+            <li class="flex items-start gap-1.5">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-rose-600 shrink-0 mt-0.5"></i>
+              <span><strong>Giảm 35%</strong> khi nâng cấp trong <strong>15 ngày đầu</strong>; <strong>giảm 25%</strong> từ ngày <strong>16 – 30</strong>.</span>
+            </li>
+            <li class="flex items-start gap-1.5">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5"></i>
+              <span><strong>Mua sớm không mất ngày dùng thử</strong> (thời hạn gói mới được cộng nối tiếp).</span>
+            </li>
+            <li class="flex items-start gap-1.5">
+              <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5"></i>
+              <span>Mua gói <strong>Trà Chanh</strong> vẫn được <strong>giữ quyền lợi Trà Sữa thêm 10 ngày</strong>.</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div class="flex flex-wrap items-center justify-end gap-2 pt-1">
         <button
           type="button"
-          onclick="dismissFirstLoginVipPromo()"
-          class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
-        >
-          Dùng gói Free
-        </button>
-        <button
-          type="button"
           onclick="dismissFirstLoginVipPromo(); openVipSubscriptionModal();"
           class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition"
         >
-          Xem các gói
+          Xem bảng giá ưu đãi
         </button>
         <button
           type="button"
-          onclick="activateFreeTrialNow()"
+          onclick="dismissFirstLoginVipPromo()"
           class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95 flex items-center gap-1.5"
         >
-          <i data-lucide="gift" class="w-3.5 h-3.5"></i>
-          <span>Dùng thử</span>
+          <i data-lucide="check" class="w-3.5 h-3.5"></i>
+          <span>Bắt đầu sử dụng</span>
         </button>
       </div>
     </div>
@@ -2430,6 +2459,11 @@
 
       if (session && session.user) {
         await loadUserDataFromCloud(session.user);
+        const activatedNow = autoActivateThirtyDayTrialIfEligible(true);
+        if (activatedNow) {
+          updateHeaderVipBadge();
+          renderVipSubscriptionModal();
+        }
         maybeShowFirstLoginVipPromo();
       }
     }
@@ -2753,22 +2787,116 @@
     let adminVipOrdersList = [];
     let isLoadingAdminVipOrders = false;
     let trialStartedAtIso = null;
+    let trialExpiresAtIso = null;
     let vipExpiresAtIso = null;
+    let purchasedPlanId = null;
+    let purchasedStartsAtIso = null;
     let hasUsedFreeTrial = false;
+    let hasUsedPioneerDiscount = false;
     let lastThresholdWarnedPercent = 0;
-    const TRIAL_DURATION_MINUTES = 10;
+    const TRIAL_DURATION_MINUTES = 30 * 24 * 60;
     const TRIAL_PLAN_ID = 'tra_sua';
     let trialCountdownTimer = null;
+    let pioneerPromoState = { is_active: true, max_slots: 500, used_slots: 0 };
+
+    function getActivePioneerDiscountPercent() {
+      if (isPaidVipActive()) return 0;
+      if (!pioneerPromoState || !pioneerPromoState.is_active) return 0;
+      if ((Number(pioneerPromoState.used_slots) || 0) >= (Number(pioneerPromoState.max_slots) || 500)) return 0;
+      if (hasUsedPioneerDiscount === true) return 0;
+      if (!trialStartedAtIso) return 0;
+
+      const startedMs = new Date(trialStartedAtIso).getTime();
+      if (Number.isNaN(startedMs)) return 0;
+
+      const elapsedMs = Math.max(0, Date.now() - startedMs);
+      const elapsedDays = Math.ceil(elapsedMs / 86400000);
+      if (elapsedDays <= 15) return 35;
+      if (elapsedDays <= 30) return 25;
+      return 0;
+    }
+
+    async function loadPioneerPromoSettings() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient
+          .from('app_promo_settings')
+          .select('is_active, max_slots, used_slots')
+          .eq('id', 'pioneer_500')
+          .maybeSingle();
+
+        if (!error && data) {
+          pioneerPromoState = {
+            is_active: Boolean(data.is_active),
+            max_slots: Number(data.max_slots) || 500,
+            used_slots: Math.max(0, Number(data.used_slots) || 0)
+          };
+          const modal = document.getElementById('modalVipSubscription');
+          if (modal && !modal.classList.contains('hidden')) {
+            renderVipSubscriptionModal();
+          }
+        }
+      } catch (err) {
+        console.warn('Lỗi tải cấu hình app_promo_settings:', err);
+      }
+    }
+
+    async function togglePioneerPromoActive() {
+      if (!isCurrentUserVipAdmin() || !supabaseClient) return;
+      const btn = document.getElementById('btnTogglePioneerPromo');
+      const nextActive = !pioneerPromoState.is_active;
+      if (btn) btn.disabled = true;
+
+      try {
+        const { error } = await supabaseClient
+          .from('app_promo_settings')
+          .update({
+            is_active: nextActive,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', 'pioneer_500');
+
+        if (error) {
+          showUndoToast(`Lỗi cập nhật chương trình ưu đãi: ${error.message}`);
+          return;
+        }
+
+        pioneerPromoState.is_active = nextActive;
+        renderVipSubscriptionModal();
+        showUndoToast(nextActive ? 'Đã BẬT chương trình 500 giáo viên tiên phong!' : 'Đã TẮT chương trình 500 giáo viên tiên phong!');
+      } catch (err) {
+        showUndoToast('Lỗi kết nối khi cập nhật trạng thái chương trình.');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
 
     function isCurrentUserVipAdmin() {
       return Boolean(currentUser?.email && currentUser.email.toLowerCase() === VIP_ADMIN_EMAIL.toLowerCase());
     }
 
     function isPaidVipActive() {
-      if (!currentTeacherPlanId || currentTeacherPlanId === 'free') return false;
-      if (!vipExpiresAtIso) return false;
-      const expMs = new Date(vipExpiresAtIso).getTime();
-      return !Number.isNaN(expMs) && expMs > Date.now();
+      if (vipExpiresAtIso) {
+        const expMs = new Date(vipExpiresAtIso).getTime();
+        if (!Number.isNaN(expMs) && expMs > Date.now()) {
+          if (purchasedPlanId && purchasedPlanId !== 'free') return true;
+          if (currentTeacherPlanId && currentTeacherPlanId !== 'free') return true;
+        }
+      }
+      return false;
+    }
+
+    function isKeepingTraSuaAfterTraChanhPurchase() {
+      const trialExpMs = trialExpiresAtIso ? new Date(trialExpiresAtIso).getTime() : NaN;
+      const vipExpMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : NaN;
+      return (
+        currentTeacherPlanId === TRIAL_PLAN_ID &&
+        purchasedPlanId === 'tra_chanh' &&
+        !Number.isNaN(trialExpMs) &&
+        trialExpMs > Date.now() &&
+        !Number.isNaN(vipExpMs) &&
+        vipExpMs > Date.now()
+      );
     }
 
     function canActivateFreeTrial() {
@@ -2804,14 +2932,21 @@
       if (isPaidVipActive()) {
         return { isActive: false, isExpired: false, remainingMs: 0, remainingMinutes: 0, expiresAt: null };
       }
-      if (!trialStartedAtIso) {
+      if (!trialStartedAtIso && !trialExpiresAtIso) {
         return { isActive: false, isExpired: false, remainingMs: 0, remainingMinutes: 0, expiresAt: null };
       }
-      const startedMs = new Date(trialStartedAtIso).getTime();
-      if (Number.isNaN(startedMs)) {
+      let expiresAt = NaN;
+      if (trialExpiresAtIso) {
+        expiresAt = new Date(trialExpiresAtIso).getTime();
+      } else if (trialStartedAtIso) {
+        const startedMs = new Date(trialStartedAtIso).getTime();
+        if (!Number.isNaN(startedMs)) {
+          expiresAt = startedMs + TRIAL_DURATION_MINUTES * 60 * 1000;
+        }
+      }
+      if (Number.isNaN(expiresAt)) {
         return { isActive: false, isExpired: false, remainingMs: 0, remainingMinutes: 0, expiresAt: null };
       }
-      const expiresAt = startedMs + TRIAL_DURATION_MINUTES * 60 * 1000;
       const remainingMs = expiresAt - Date.now();
       const isActive = remainingMs > 0 && currentTeacherPlanId === TRIAL_PLAN_ID;
       return {
@@ -2823,11 +2958,27 @@
       };
     }
 
+    function autoActivateThirtyDayTrialIfEligible(syncCloudNow = false) {
+      if (!currentUser || !currentUser.id) return false;
+      if (isPaidVipActive()) return false;
+      if (trialStartedAtIso || trialExpiresAtIso || hasUsedFreeTrial) return false;
+
+      const nowMs = Date.now();
+      trialStartedAtIso = new Date(nowMs).toISOString();
+      trialExpiresAtIso = new Date(nowMs + 30 * 86400000).toISOString();
+      currentTeacherPlanId = TRIAL_PLAN_ID;
+      hasUsedFreeTrial = true;
+      saveVipSubscriptionState(syncCloudNow);
+      return true;
+    }
+
     function enforcePaidVipExpirationIfNeeded() {
       if (!vipExpiresAtIso) return false;
       const expMs = new Date(vipExpiresAtIso).getTime();
       if (!Number.isNaN(expMs) && expMs <= Date.now()) {
         currentTeacherPlanId = 'free';
+        purchasedPlanId = null;
+        purchasedStartsAtIso = null;
         vipExpiresAtIso = null;
         saveVipSubscriptionState(true);
         updateHeaderVipBadge();
@@ -2842,29 +2993,55 @@
     }
 
     function enforceTrialExpirationIfNeeded() {
-      if (isPaidVipActive()) return false;
-      if (!trialStartedAtIso || currentTeacherPlanId !== TRIAL_PLAN_ID) return false;
-      const info = getTrialStatusInfo();
-      if (info.isExpired) {
-        currentTeacherPlanId = 'free';
-        hasUsedFreeTrial = true;
-        saveVipSubscriptionState(true);
-        updateHeaderVipBadge();
-        const modal = document.getElementById('modalVipSubscription');
-        if (modal && !modal.classList.contains('hidden')) {
-          renderVipSubscriptionModal();
+      if (!trialStartedAtIso && !trialExpiresAtIso) return false;
+      let expiresAt = NaN;
+      if (trialExpiresAtIso) {
+        expiresAt = new Date(trialExpiresAtIso).getTime();
+      } else if (trialStartedAtIso) {
+        const startedMs = new Date(trialStartedAtIso).getTime();
+        if (!Number.isNaN(startedMs)) {
+          expiresAt = startedMs + TRIAL_DURATION_MINUTES * 60 * 1000;
         }
-        showUndoToast(`Đã hết ${TRIAL_DURATION_MINUTES} phút dùng thử. Tài khoản đã chuyển về gói Free.`);
-        return true;
       }
-      return false;
+      if (Number.isNaN(expiresAt) || expiresAt > Date.now()) return false;
+
+      const vipExpMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : NaN;
+      if (purchasedPlanId === 'tra_chanh' && !Number.isNaN(vipExpMs) && vipExpMs > Date.now()) {
+        if (currentTeacherPlanId !== 'tra_chanh') {
+          currentTeacherPlanId = 'tra_chanh';
+          hasUsedFreeTrial = true;
+          saveVipSubscriptionState(true);
+          updateHeaderVipBadge();
+          const modal = document.getElementById('modalVipSubscription');
+          if (modal && !modal.classList.contains('hidden')) {
+            renderVipSubscriptionModal();
+          }
+          showUndoToast('Đã hết thời gian giữ quyền lợi Trà Sữa. Tài khoản đã chuyển sang gói Trà Chanh đã mua!');
+          return true;
+        }
+        return false;
+      }
+
+      if (isPaidVipActive()) return false;
+      if (currentTeacherPlanId !== TRIAL_PLAN_ID) return false;
+
+      currentTeacherPlanId = 'free';
+      hasUsedFreeTrial = true;
+      saveVipSubscriptionState(true);
+      updateHeaderVipBadge();
+      const modal = document.getElementById('modalVipSubscription');
+      if (modal && !modal.classList.contains('hidden')) {
+        renderVipSubscriptionModal();
+      }
+      showUndoToast('Đã hết 30 ngày dùng thử gói Trà Sữa. Tài khoản đã chuyển về gói Free.');
+      return true;
     }
 
     function startTrialExpirationWatcher() {
       if (trialCountdownTimer) clearInterval(trialCountdownTimer);
       trialCountdownTimer = setInterval(() => {
         enforcePaidVipExpirationIfNeeded();
-        if (!isPaidVipActive() && trialStartedAtIso && currentTeacherPlanId === TRIAL_PLAN_ID) {
+        if ((trialStartedAtIso || trialExpiresAtIso) && currentTeacherPlanId === TRIAL_PLAN_ID) {
           const expired = enforceTrialExpirationIfNeeded();
           if (!expired) {
             updateHeaderVipBadge();
@@ -2896,13 +3073,26 @@
       const savedPlanId = localStorage.getItem(`${prefix}_active_vip_plan`);
       currentTeacherPlanId = (savedPlanId && vipPlansConfig.some(p => p.id === savedPlanId)) ? savedPlanId : 'free';
       vipExpiresAtIso = localStorage.getItem(`${prefix}_vip_expires_at`) || null;
+      const savedPurchasedPlanId = localStorage.getItem(`${prefix}_purchased_vip_plan`);
+      purchasedPlanId = (savedPurchasedPlanId && vipPlansConfig.some(p => p.id === savedPurchasedPlanId)) ? savedPurchasedPlanId : null;
+      purchasedStartsAtIso = localStorage.getItem(`${prefix}_purchased_starts_at`) || null;
 
       if (currentUser && currentUser.id) {
         trialStartedAtIso = localStorage.getItem(`dipi_user_${currentUser.id}_trial_started_at`) || null;
+        trialExpiresAtIso = localStorage.getItem(`dipi_user_${currentUser.id}_trial_expires_at`) || null;
+        if (!trialExpiresAtIso && trialStartedAtIso) {
+          const startedMs = new Date(trialStartedAtIso).getTime();
+          if (!Number.isNaN(startedMs)) {
+            trialExpiresAtIso = new Date(startedMs + 30 * 86400000).toISOString();
+          }
+        }
         hasUsedFreeTrial = localStorage.getItem(`dipi_user_${currentUser.id}_trial_used`) === '1' || Boolean(trialStartedAtIso);
+        hasUsedPioneerDiscount = localStorage.getItem(`dipi_user_${currentUser.id}_pioneer_used`) === '1';
       } else {
         trialStartedAtIso = null;
+        trialExpiresAtIso = null;
         hasUsedFreeTrial = false;
+        hasUsedPioneerDiscount = false;
       }
 
       isVipAdminEditMode = false;
@@ -2922,12 +3112,28 @@
         } else {
           localStorage.removeItem(`${prefix}_vip_expires_at`);
         }
+        if (purchasedPlanId) {
+          localStorage.setItem(`${prefix}_purchased_vip_plan`, purchasedPlanId);
+        } else {
+          localStorage.removeItem(`${prefix}_purchased_vip_plan`);
+        }
+        if (purchasedStartsAtIso) {
+          localStorage.setItem(`${prefix}_purchased_starts_at`, purchasedStartsAtIso);
+        } else {
+          localStorage.removeItem(`${prefix}_purchased_starts_at`);
+        }
         if (currentUser && currentUser.id) {
           if (trialStartedAtIso) {
             localStorage.setItem(`dipi_user_${currentUser.id}_trial_started_at`, trialStartedAtIso);
           }
+          if (trialExpiresAtIso) {
+            localStorage.setItem(`dipi_user_${currentUser.id}_trial_expires_at`, trialExpiresAtIso);
+          }
           if (hasUsedFreeTrial) {
             localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
+          }
+          if (hasUsedPioneerDiscount) {
+            localStorage.setItem(`dipi_user_${currentUser.id}_pioneer_used`, '1');
           }
         }
       } catch (e) {
@@ -2943,6 +3149,7 @@
       const plan = getActiveVipPlan();
       const trialInfo = getTrialStatusInfo();
       const paidActive = isPaidVipActive();
+      const keepingTraSua = isKeepingTraSuaAfterTraChanhPurchase();
       const totalSt = getTotalUniqueStudentsCount();
       const maxSt = Math.max(1, Number(plan.maxStudents) || 15);
       const maxTeachers = plan.id === 'free' ? 1 : (Number(plan.maxTeachers) || 1);
@@ -2964,9 +3171,15 @@
       const homeBtnLabel = document.getElementById('btnHomeUpgradeVipLabel');
 
       if (homeTitle) {
-        homeTitle.innerText = trialInfo.isActive
-          ? `Gói hiện tại: ${plan.name} (Dùng thử)`
-          : `Gói hiện tại: ${plan.name}`;
+        if (keepingTraSua && trialExpiresAtIso && vipExpiresAtIso) {
+          const keepUntilStr = new Date(trialExpiresAtIso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+          const traChanhExpStr = new Date(vipExpiresAtIso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+          homeTitle.innerText = `Đang hưởng: Trà Sữa (đến ${keepUntilStr}) → Sau đó chuyển Trà Chanh (HSD: ${traChanhExpStr})`;
+        } else {
+          homeTitle.innerText = trialInfo.isActive
+            ? `Gói hiện tại: ${plan.name} (Dùng thử)`
+            : `Gói hiện tại: ${plan.name}`;
+        }
       }
       if (homeSubtitle) {
         const expText = paidActive && vipExpiresAtIso
@@ -2977,7 +3190,8 @@
 
       if (homeTrialBadge) {
         if (trialInfo.isActive) {
-          homeTrialBadge.innerText = `Dùng thử • còn ${trialInfo.remainingMinutes} phút`;
+          const remainingDays = Math.max(1, Math.ceil(trialInfo.remainingMs / 86400000));
+          homeTrialBadge.innerText = `Dùng thử 30 ngày • còn ${remainingDays} ngày`;
           homeTrialBadge.classList.remove('hidden');
         } else {
           homeTrialBadge.classList.add('hidden');
@@ -3025,8 +3239,8 @@
     function maybeShowFirstLoginVipPromo() {
       if (!currentUser || !currentUser.id) return;
       if (currentRole !== 'teacher') return;
-      if (currentTeacherPlanId !== 'free') return;
-      if (hasUsedFreeTrial || trialStartedAtIso) return;
+      if (isPaidVipActive()) return;
+      if (!getTrialStatusInfo().isActive) return;
       try {
         if (localStorage.getItem(`dipi_user_${currentUser.id}_vip_promo_seen`) === '1') return;
       } catch (e) {}
@@ -3109,14 +3323,16 @@
         return;
       }
 
-      trialStartedAtIso = new Date().toISOString();
+      const nowMs = Date.now();
+      trialStartedAtIso = new Date(nowMs).toISOString();
+      trialExpiresAtIso = new Date(nowMs + 30 * 86400000).toISOString();
       hasUsedFreeTrial = true;
       currentTeacherPlanId = TRIAL_PLAN_ID;
       dismissFirstLoginVipPromo();
       saveVipSubscriptionState(false);
       updateHeaderVipBadge();
       renderVipSubscriptionModal();
-      showUndoToast(`Đã kích hoạt dùng thử ${TRIAL_DURATION_MINUTES} phút gói Trà Sữa (tối đa 80 học sinh)!`);
+      showUndoToast('Đã kích hoạt dùng thử 30 ngày gói Trà Sữa (tối đa 80 học sinh)!');
 
       try {
         await syncUserDataToCloud(false);
@@ -3131,6 +3347,7 @@
       isVipAdminEditMode = false;
       renderVipSubscriptionModal();
       openModal('modalVipSubscription');
+      loadPioneerPromoSettings();
     }
 
     function toggleVipAdminEditMode() {
@@ -3156,14 +3373,37 @@
           originalPrice: 0,
           salePercent: 0,
           effectiveMonthly: 0,
-          yearlySaved: 0
+          yearlySaved: 0,
+          isPioneerPromo: false,
+          pioneerPercent: 0
         };
       }
+
+      const yearlyPrice = Math.max(0, Number(plan.yearlyPrice) || (monthlyPrice * 10));
+      const pioneerDiscount = getActivePioneerDiscountPercent();
+
+      if (pioneerDiscount > 0) {
+        const basePrice = currentVipBillingCycle === 'yearly' ? yearlyPrice : monthlyPrice;
+        const finalPrice = Math.round((basePrice * (1 - pioneerDiscount / 100)) / 1000) * 1000;
+        const effectiveMonthly = currentVipBillingCycle === 'yearly'
+          ? Math.round((finalPrice / 12) / 100) * 100
+          : finalPrice;
+        return {
+          isFree: false,
+          finalPrice,
+          originalPrice: basePrice,
+          salePercent: pioneerDiscount,
+          effectiveMonthly,
+          yearlySaved: Math.max(0, monthlyPrice * 12 - finalPrice),
+          isPioneerPromo: true,
+          pioneerPercent: pioneerDiscount
+        };
+      }
+
       const salePercent = Math.max(0, Math.min(80, Number(plan.salePercent) || 0));
       const monthlyOriginal = salePercent > 0
         ? Math.round((monthlyPrice / (1 - salePercent / 100)) / 1000) * 1000
         : monthlyPrice;
-      const yearlyPrice = Math.max(0, Number(plan.yearlyPrice) || (monthlyPrice * 10));
 
       if (currentVipBillingCycle === 'yearly') {
         const twelveMonthsFull = monthlyPrice * 12;
@@ -3178,7 +3418,9 @@
           originalPrice: twelveMonthsFull,
           salePercent: extraYearlyDiscountPercent,
           effectiveMonthly,
-          yearlySaved
+          yearlySaved,
+          isPioneerPromo: false,
+          pioneerPercent: 0
         };
       }
 
@@ -3188,7 +3430,9 @@
         originalPrice: monthlyOriginal,
         salePercent,
         effectiveMonthly: monthlyPrice,
-        yearlySaved: Math.max(0, monthlyPrice * 12 - yearlyPrice)
+        yearlySaved: Math.max(0, monthlyPrice * 12 - yearlyPrice),
+        isPioneerPromo: false,
+        pioneerPercent: 0
       };
     }
 
@@ -3196,6 +3440,7 @@
       const activePlan = getActiveVipPlan();
       const trialInfo = getTrialStatusInfo();
       const paidActive = isPaidVipActive();
+      const keepingTraSua = isKeepingTraSuaAfterTraChanhPurchase();
       const totalSt = getTotalUniqueStudentsCount();
       const maxSt = Math.max(1, Number(activePlan.maxStudents) || 15);
       const maxTeachers = activePlan.id === 'free' ? 1 : (Number(activePlan.maxTeachers) || 1);
@@ -3204,8 +3449,13 @@
 
       const activeBadge = document.getElementById('vipCurrentActiveBadge');
       if (activeBadge) {
-        if (trialInfo.isActive) {
-          activeBadge.innerText = `Đang dùng: ${activePlan.name} (Dùng thử - còn ${trialInfo.remainingMinutes} phút)`;
+        if (keepingTraSua && trialExpiresAtIso && vipExpiresAtIso) {
+          const keepUntilStr = new Date(trialExpiresAtIso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+          const traChanhExpStr = new Date(vipExpiresAtIso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+          activeBadge.innerText = `Đang hưởng: Trà Sữa (đến ${keepUntilStr}) → Sau đó chuyển Trà Chanh (HSD: ${traChanhExpStr})`;
+        } else if (trialInfo.isActive) {
+          const remainingDays = Math.max(1, Math.ceil(trialInfo.remainingMs / 86400000));
+          activeBadge.innerText = `Đang dùng: ${activePlan.name} (Dùng thử - còn ${remainingDays} ngày)`;
         } else if (paidActive && vipExpiresAtIso) {
           activeBadge.innerText = `Đang dùng: ${activePlan.name} (HSD: ${new Date(vipExpiresAtIso).toLocaleDateString('vi-VN')})`;
         } else {
@@ -3250,6 +3500,26 @@
         yearlySaveBadge.innerText = 'Giảm đến 19%';
       }
 
+      const activePioneerDiscount = getActivePioneerDiscountPercent();
+      const pioneerBanner = document.getElementById('vipModalPioneerPromoBanner');
+      if (pioneerBanner) {
+        if (activePioneerDiscount > 0) {
+          const maxSlots = Number(pioneerPromoState.max_slots) || 500;
+          const usedSlots = Math.max(0, Number(pioneerPromoState.used_slots) || 0);
+          const remainingSlots = Math.max(0, maxSlots - usedSlots);
+          pioneerBanner.classList.remove('hidden');
+          pioneerBanner.innerHTML = `
+            <div class="flex items-center gap-1.5 min-w-0">
+              <i data-lucide="sparkles" class="w-4 h-4 text-amber-600 shrink-0"></i>
+              <span>Ưu đãi 500 giáo viên tiên phong: Còn <strong class="text-rose-600">${remainingSlots}/${maxSlots}</strong> suất • Giảm <strong>35%</strong> (ngày 1–15) / <strong>25%</strong> (ngày 16–30)</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black shrink-0">-${activePioneerDiscount}%</span>
+          `;
+        } else {
+          pioneerBanner.classList.add('hidden');
+        }
+      }
+
       const trialTopBanner = document.getElementById('vipModalTrialTopBanner');
       if (trialTopBanner) {
         if (!currentUser || !currentUser.id) {
@@ -3264,7 +3534,7 @@
           trialTopBanner.classList.remove('hidden');
           trialTopBanner.innerHTML = `
             <div class="text-xs font-bold text-emerald-900">
-              Tài khoản mới chưa dùng thử: Trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (80 học sinh)</strong> miễn phí trong ${TRIAL_DURATION_MINUTES} phút!
+              Tài khoản mới chưa dùng thử: Trải nghiệm ngay <strong class="text-amber-700">gói Trà Sữa (80 học sinh)</strong> miễn phí trong 30 ngày!
             </div>
             <button type="button" onclick="activateFreeTrialNow()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition">
               Dùng thử ngay
@@ -3278,21 +3548,47 @@
       const planGrid = document.getElementById('vipPlansGridContainer');
       if (planGrid) {
         const themeStyles = {
-          slate: { card: 'border-slate-200 bg-slate-50/70', badge: 'bg-slate-200 text-slate-700', btn: 'bg-slate-800 hover:bg-slate-900 text-white' },
-          emerald: { card: 'border-green-200 bg-[#f4fbf5]', badge: 'bg-green-100 text-green-800', btn: 'bg-green-600 hover:bg-green-700 text-white' },
-          amber: { card: 'border-amber-300 bg-amber-50/70', badge: 'bg-amber-200 text-amber-900', btn: 'bg-amber-600 hover:bg-amber-700 text-white' },
-          indigo: { card: 'border-indigo-300 bg-indigo-50/70', badge: 'bg-indigo-200 text-indigo-900', btn: 'bg-indigo-600 hover:bg-indigo-700 text-white' },
-          rose: { card: 'border-rose-300 bg-rose-50/70', badge: 'bg-rose-200 text-rose-900', btn: 'bg-rose-600 hover:bg-rose-700 text-white' }
+          slate: {
+            card: 'border-slate-200 bg-slate-50/70',
+            badge: 'bg-slate-200 text-slate-700',
+            btn: 'bg-slate-800 hover:bg-slate-900 text-white',
+            btnMuted: 'bg-slate-800/90 text-white'
+          },
+          emerald: {
+            card: 'border-[#86EFAC] bg-gradient-to-b from-[#F2FDF5] to-[#DCFCE7]',
+            badge: 'bg-[#BBF7D0] text-[#14532D]',
+            btn: 'bg-[#18B858] hover:bg-[#159E4B] text-white',
+            btnMuted: 'bg-[#18B858]/90 text-white'
+          },
+          amber: {
+            card: 'border-amber-300 bg-amber-50/70',
+            badge: 'bg-amber-200 text-amber-900',
+            btn: 'bg-amber-600 hover:bg-amber-700 text-white',
+            btnMuted: 'bg-amber-600/90 text-white'
+          },
+          indigo: {
+            card: 'border-indigo-300 bg-indigo-50/70',
+            badge: 'bg-indigo-200 text-indigo-900',
+            btn: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+            btnMuted: 'bg-indigo-600/90 text-white'
+          },
+          rose: {
+            card: 'border-rose-300 bg-rose-50/70',
+            badge: 'bg-rose-200 text-rose-900',
+            btn: 'bg-rose-600 hover:bg-rose-700 text-white',
+            btnMuted: 'bg-rose-600/90 text-white'
+          }
         };
 
         planGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
-          const activeMaxStudents = Number(activePlan?.maxStudents) || 0;
-          const planMaxStudents = Number(p.maxStudents) || 0;
-          const isLowerTierLockedByPaidVip = paidActive && !isCurrent && (planMaxStudents < activeMaxStudents);
-          const isCurrentPaidVip = paidActive && isCurrent;
+          const effectivePurchasedId = paidActive ? (purchasedPlanId || currentTeacherPlanId) : currentTeacherPlanId;
+          const effectivePurchasedPlan = vipPlansConfig.find(x => x.id === effectivePurchasedId) || activePlan;
+          const isCurrentPaidVip = paidActive && p.id === effectivePurchasedPlan.id;
+          const isLowerTierLockedByPaidVip = paidActive && p.id !== effectivePurchasedPlan.id && (Number(p.maxStudents) || 0) < (Number(effectivePurchasedPlan.maxStudents) || 0);
           const pricing = calculateVipPlanPricing(p);
-          const style = themeStyles[p.accent] || themeStyles.slate;
+          const accentKey = p.accent || DEFAULT_VIP_PLANS.find(d => d.id === p.id)?.accent || 'slate';
+          const style = themeStyles[accentKey] || themeStyles.slate;
           const isTrialTarget = p.id === TRIAL_PLAN_ID && (!currentUser?.id || canActivateFreeTrial());
 
           let actionButtonLabel = '';
@@ -3300,6 +3596,8 @@
             actionButtonLabel = 'Đã bao gồm';
           } else if (isCurrentPaidVip) {
             actionButtonLabel = 'Gia hạn thêm';
+          } else if (keepingTraSua && p.id === TRIAL_PLAN_ID) {
+            actionButtonLabel = 'Thanh toán QR';
           } else if (isCurrent) {
             actionButtonLabel = trialInfo.isActive ? 'Mua chính thức' : 'Gói hiện tại';
           } else if (p.price === 0) {
@@ -3327,7 +3625,11 @@
                   ` : `
                     <div class="flex items-center justify-end sm:justify-start gap-1 flex-wrap">
                       ${pricing.salePercent > 0 ? `<span class="text-[10.5px] sm:text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
-                      ${pricing.salePercent > 0 ? `<span class="px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[9.5px] sm:text-[10px] font-extrabold">-${pricing.salePercent}%</span>` : ''}
+                      ${pricing.salePercent > 0 ? `
+                        <span class="px-1.5 py-0.2 rounded ${pricing.isPioneerPromo ? 'bg-rose-600 text-white' : 'bg-rose-100 text-rose-700'} text-[9.5px] sm:text-[10px] font-extrabold">
+                          ${pricing.isPioneerPromo ? `Tiên phong -${pricing.pioneerPercent}%` : `-${pricing.salePercent}%`}
+                        </span>
+                      ` : ''}
                     </div>
                     <div class="text-base sm:text-lg font-black text-slate-900 leading-tight">
                       ${pricing.finalPrice.toLocaleString('vi-VN')}đ<span class="text-[10.5px] sm:text-[11px] font-semibold text-slate-500">/${currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng'}</span>
@@ -3360,8 +3662,8 @@
                   onclick="selectTeacherVipPlan('${p.id}')"
                   class="w-full py-1.5 sm:py-2 px-2 rounded-xl text-[11px] sm:text-xs font-extrabold transition shadow-2xs truncate ${
                     isLowerTierLockedByPaidVip
-                      ? 'bg-slate-200 text-slate-500 cursor-not-allowed opacity-80'
-                      : ((isCurrent && !trialInfo.isActive && !isCurrentPaidVip) ? 'bg-slate-200 text-slate-600 cursor-default' : style.btn)
+                      ? `${style.btnMuted} cursor-not-allowed`
+                      : ((isCurrent && !trialInfo.isActive && !isCurrentPaidVip && !keepingTraSua) ? `${style.btnMuted} cursor-default` : style.btn)
                   }"
                 >
                   ${actionButtonLabel}
@@ -3374,6 +3676,25 @@
 
       const adminList = document.getElementById('vipAdminPlansList');
       if (adminList && isAdmin && isVipAdminEditMode) {
+        const pioneerSlotsEl = document.getElementById('adminPioneerPromoSlotsText');
+        const pioneerBadgeEl = document.getElementById('adminPioneerPromoStatusBadge');
+        const pioneerBtnEl = document.getElementById('btnTogglePioneerPromo');
+        if (pioneerSlotsEl) {
+          pioneerSlotsEl.innerText = `${pioneerPromoState.used_slots} / ${pioneerPromoState.max_slots}`;
+        }
+        if (pioneerBadgeEl) {
+          pioneerBadgeEl.innerText = pioneerPromoState.is_active ? 'Đang bật' : 'Đã tắt';
+          pioneerBadgeEl.className = pioneerPromoState.is_active
+            ? 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200'
+            : 'px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-200 text-slate-700 border border-slate-300';
+        }
+        if (pioneerBtnEl) {
+          pioneerBtnEl.innerText = pioneerPromoState.is_active ? 'Tắt chương trình' : 'Bật chương trình';
+          pioneerBtnEl.className = pioneerPromoState.is_active
+            ? 'px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold transition shadow-2xs active:scale-95'
+            : 'px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition shadow-2xs active:scale-95';
+        }
+
         adminList.innerHTML = vipPlansConfig.map((p, idx) => `
           <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-white p-2.5 rounded-xl border border-slate-200 items-center">
             <div class="col-span-2 sm:col-span-1 border-b sm:border-b-0 border-slate-100 pb-1 sm:pb-0">
@@ -3710,19 +4031,19 @@
 
         if (data.status === 'paid') {
           stopVipVietQrStatusPolling();
-          const targetPlanId = data.plan_id || activeVietQrPlanId;
-          if (targetPlanId && vipPlansConfig.some(p => p.id === targetPlanId)) {
-            currentTeacherPlanId = targetPlanId;
-            vipExpiresAtIso = data.expires_at || null;
-            hasUsedFreeTrial = true;
-            saveVipSubscriptionState(false);
+          hasUsedPioneerDiscount = true;
+          hasUsedFreeTrial = true;
+          if (currentUser && currentUser.id) {
+            localStorage.setItem(`dipi_user_${currentUser.id}_pioneer_used`, '1');
+            localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
           }
-          setVipVietQrStatusUI('paid', 'Thanh toán thành công! Gói VIP của bạn đã được kích hoạt.');
-          renderVipSubscriptionModal();
-          showUndoToast('Thanh toán thành công! Gói VIP đã được kích hoạt tự động.');
           if (currentUser?.id) {
             await loadUserDataFromCloud(currentUser, false);
           }
+          await loadPioneerPromoSettings();
+          setVipVietQrStatusUI('paid', 'Thanh toán thành công! Gói VIP của bạn đã được kích hoạt.');
+          renderVipSubscriptionModal();
+          showUndoToast('Thanh toán thành công! Gói VIP đã được kích hoạt tự động.');
         } else if (data.status === 'underpaid') {
           const totalAmt = Number(data.amount) || 0;
           setVipVietQrStatusUI('underpaid', `Số tiền chuyển chưa đủ (${totalAmt.toLocaleString('vi-VN')}đ). Vui lòng kiểm tra lại.`);
@@ -3840,19 +4161,23 @@
 
       const paidActive = isPaidVipActive();
       const activePlan = getActiveVipPlan();
+      const trialExpMs = trialExpiresAtIso ? new Date(trialExpiresAtIso).getTime() : NaN;
+      const isInActiveTrial = !paidActive && !Number.isNaN(trialExpMs) && trialExpMs > Date.now();
 
       if (paidActive) {
-        const activeMaxStudents = Number(activePlan?.maxStudents) || 0;
+        const effectivePurchasedId = purchasedPlanId || activePlan.id;
+        const effectivePurchasedPlan = vipPlansConfig.find(p => p.id === effectivePurchasedId) || activePlan;
+        const effectiveMaxStudents = Number(effectivePurchasedPlan?.maxStudents) || 0;
         const targetMaxStudents = Number(targetPlan.maxStudents) || 0;
 
-        // 1. Gói có bậc thấp hơn gói VIP hiện tại
-        if (targetPlan.id !== activePlan.id && targetMaxStudents < activeMaxStudents) {
-          showUndoToast(`Gói ${targetPlan.name} đã bao gồm trong gói ${activePlan.name} hiện tại.`);
+        // 1. Gói có bậc thấp hơn gói VIP đã mua hiện tại
+        if (targetPlan.id !== effectivePurchasedPlan.id && targetMaxStudents < effectiveMaxStudents) {
+          showUndoToast(`Gói ${targetPlan.name} đã bao gồm trong gói ${effectivePurchasedPlan.name} hiện tại.`);
           return;
         }
 
-        // 2. Cùng gói đang dùng -> Gia hạn thêm
-        if (targetPlan.id === activePlan.id) {
+        // 2. Cùng gói đang sở hữu -> Gia hạn thêm
+        if (targetPlan.id === effectivePurchasedPlan.id) {
           if (!currentUser || !currentUser.id) {
             closeModal('modalVipSubscription');
             openAuthModal('signin');
@@ -3873,13 +4198,13 @@
 
         const expMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : 0;
         const remainingDays = Math.max(0, Math.ceil((expMs - Date.now()) / (1000 * 60 * 60 * 24)));
-        const currentPrice = Math.max(0, Number(activePlan.price) || 0);
+        const currentPrice = Math.max(0, Number(effectivePurchasedPlan.price) || 0);
         const targetPrice = Math.max(1, Number(targetPlan.price) || 1);
         const convertedDays = Math.floor((remainingDays * currentPrice) / targetPrice);
 
         openConfirmModal(
           `Nâng cấp lên gói ${targetPlan.name}?`,
-          `Gói ${activePlan.name} hiện tại của bạn còn ${remainingDays} ngày sử dụng. Khi nâng cấp lên gói ${targetPlan.name}, hệ thống sẽ quy đổi tương đương và cộng thêm ${convertedDays} ngày vào thời hạn gói mới.`,
+          `Gói ${effectivePurchasedPlan.name} hiện tại của bạn còn ${remainingDays} ngày sử dụng. Khi nâng cấp lên gói ${targetPlan.name}, hệ thống sẽ quy đổi tương đương và cộng thêm ${convertedDays} ngày vào thời hạn gói mới.`,
           () => {
             openVipVietQrCheckoutModal(targetPlan);
           }
@@ -3887,7 +4212,7 @@
         return;
       }
 
-      if (planId === currentTeacherPlanId && !getTrialStatusInfo().isActive) {
+      if (planId === currentTeacherPlanId && !isInActiveTrial) {
         showUndoToast(`Bạn đang sử dụng gói ${targetPlan.name}.`);
         return;
       }
@@ -3897,6 +4222,19 @@
           closeModal('modalVipSubscription');
           openAuthModal('signin');
           showUndoToast('Vui lòng đăng nhập để thanh toán nâng cấp gói!');
+          return;
+        }
+        if (isInActiveTrial) {
+          const confirmDesc = targetPlan.id === 'tra_chanh'
+            ? 'Bạn được giữ quyền lợi Trà Sữa đến hết ngày dùng thử + cộng thêm 10 ngày, sau đó mới bắt đầu tính gói Trà Chanh.'
+            : 'Toàn bộ số ngày dùng thử còn lại sẽ được cộng dồn vào thời hạn gói mới và áp dụng quyền lợi gói mới ngay lập tức.';
+          openConfirmModal(
+            `Xác nhận mua gói ${targetPlan.name}?`,
+            confirmDesc,
+            () => {
+              openVipVietQrCheckoutModal(targetPlan);
+            }
+          );
           return;
         }
         openVipVietQrCheckoutModal(targetPlan);
@@ -4442,9 +4780,13 @@
         tuitionRemarksMap,
         vipPlansConfig,
         currentTeacherPlanId,
+        purchasedPlanId,
+        purchasedStartsAtIso,
         vipExpiresAt: vipExpiresAtIso,
         trialStartedAtIso,
-        hasUsedFreeTrial
+        trialExpiresAt: trialExpiresAtIso,
+        hasUsedFreeTrial,
+        hasUsedPioneerDiscount
       };
     }
 
@@ -4489,6 +4831,27 @@
             currentTeacherPlanId = appData.currentTeacherPlanId;
             localStorage.setItem(`${getStorageKeyPrefix()}_active_vip_plan`, currentTeacherPlanId);
           }
+          if (appData.purchasedPlanId !== undefined) {
+            purchasedPlanId = (appData.purchasedPlanId && vipPlansConfig.some(p => p.id === appData.purchasedPlanId))
+              ? appData.purchasedPlanId
+              : null;
+            if (purchasedPlanId) {
+              localStorage.setItem(`${getStorageKeyPrefix()}_purchased_vip_plan`, purchasedPlanId);
+            } else {
+              localStorage.removeItem(`${getStorageKeyPrefix()}_purchased_vip_plan`);
+            }
+          }
+          const remotePurchasedStart = appData.purchasedStartsAt !== undefined
+            ? appData.purchasedStartsAt
+            : appData.purchasedStartsAtIso;
+          if (remotePurchasedStart !== undefined) {
+            purchasedStartsAtIso = remotePurchasedStart || null;
+            if (purchasedStartsAtIso) {
+              localStorage.setItem(`${getStorageKeyPrefix()}_purchased_starts_at`, purchasedStartsAtIso);
+            } else {
+              localStorage.removeItem(`${getStorageKeyPrefix()}_purchased_starts_at`);
+            }
+          }
           if (appData.vipExpiresAt !== undefined) {
             vipExpiresAtIso = appData.vipExpiresAt || null;
             if (vipExpiresAtIso) {
@@ -4505,14 +4868,42 @@
               localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
             }
           }
+          if (appData.trialExpiresAt !== undefined) {
+            trialExpiresAtIso = appData.trialExpiresAt || null;
+            if (currentUser && currentUser.id) {
+              if (trialExpiresAtIso) {
+                localStorage.setItem(`dipi_user_${currentUser.id}_trial_expires_at`, trialExpiresAtIso);
+              } else {
+                localStorage.removeItem(`dipi_user_${currentUser.id}_trial_expires_at`);
+              }
+            }
+          } else if (trialStartedAtIso && !trialExpiresAtIso) {
+            const startedMs = new Date(trialStartedAtIso).getTime();
+            if (!Number.isNaN(startedMs)) {
+              trialExpiresAtIso = new Date(startedMs + 30 * 86400000).toISOString();
+              if (currentUser && currentUser.id) {
+                localStorage.setItem(`dipi_user_${currentUser.id}_trial_expires_at`, trialExpiresAtIso);
+              }
+            }
+          }
           if (appData.hasUsedFreeTrial) {
             hasUsedFreeTrial = true;
             if (currentUser && currentUser.id) {
               localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
             }
           }
-          enforcePaidVipExpirationIfNeeded();
-          enforceTrialExpirationIfNeeded();
+          if (appData.hasUsedPioneerDiscount) {
+            hasUsedPioneerDiscount = true;
+            if (currentUser && currentUser.id) {
+              localStorage.setItem(`dipi_user_${currentUser.id}_pioneer_used`, '1');
+            }
+          }
+
+          const autoActivatedFromCloud = autoActivateThirtyDayTrialIfEligible(true);
+          if (!autoActivatedFromCloud) {
+            enforcePaidVipExpirationIfNeeded();
+            enforceTrialExpirationIfNeeded();
+          }
           updateHeaderVipBadge();
 
           ensureAllStudentsHaveUniqueCodes();
@@ -4533,6 +4924,7 @@
           renderAll();
         } else {
           clearAllDemoDataCompletely();
+          autoActivateThirtyDayTrialIfEligible(true);
           saveAllToLocalStorage(false);
           renderAll();
         }
@@ -4567,8 +4959,40 @@
               if (!Number.isNaN(remoteExpMs) && remoteExpMs > Date.now() && remoteExpMs >= (localExpMs || 0)) {
                 currentTeacherPlanId = remoteData.currentTeacherPlanId;
                 vipExpiresAtIso = remoteData.vipExpiresAt;
-                localStorage.setItem(`${getStorageKeyPrefix()}_active_vip_plan`, currentTeacherPlanId);
-                localStorage.setItem(`${getStorageKeyPrefix()}_vip_expires_at`, vipExpiresAtIso);
+                if (remoteData.purchasedPlanId !== undefined) {
+                  purchasedPlanId = (remoteData.purchasedPlanId && vipPlansConfig.some(p => p.id === remoteData.purchasedPlanId))
+                    ? remoteData.purchasedPlanId
+                    : null;
+                }
+                purchasedStartsAtIso = remoteData.purchasedStartsAt ?? remoteData.purchasedStartsAtIso ?? purchasedStartsAtIso;
+                trialExpiresAtIso = remoteData.trialExpiresAt !== undefined ? remoteData.trialExpiresAt : trialExpiresAtIso;
+                if (remoteData.hasUsedPioneerDiscount) {
+                  hasUsedPioneerDiscount = true;
+                }
+
+                const prefix = getStorageKeyPrefix();
+                localStorage.setItem(`${prefix}_active_vip_plan`, currentTeacherPlanId);
+                localStorage.setItem(`${prefix}_vip_expires_at`, vipExpiresAtIso);
+                if (purchasedPlanId) {
+                  localStorage.setItem(`${prefix}_purchased_vip_plan`, purchasedPlanId);
+                } else {
+                  localStorage.removeItem(`${prefix}_purchased_vip_plan`);
+                }
+                if (purchasedStartsAtIso) {
+                  localStorage.setItem(`${prefix}_purchased_starts_at`, purchasedStartsAtIso);
+                } else {
+                  localStorage.removeItem(`${prefix}_purchased_starts_at`);
+                }
+                if (currentUser && currentUser.id) {
+                  if (trialExpiresAtIso) {
+                    localStorage.setItem(`dipi_user_${currentUser.id}_trial_expires_at`, trialExpiresAtIso);
+                  } else {
+                    localStorage.removeItem(`dipi_user_${currentUser.id}_trial_expires_at`);
+                  }
+                  if (hasUsedPioneerDiscount) {
+                    localStorage.setItem(`dipi_user_${currentUser.id}_pioneer_used`, '1');
+                  }
+                }
                 updateHeaderVipBadge();
               }
             }
@@ -7811,6 +8235,7 @@
     function initApp() {
       try {
         initSupabaseClient();
+        loadPioneerPromoSettings();
         loadScopedUserData();
         loadVipSubscriptionState();
         startTrialExpirationWatcher();
