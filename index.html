@@ -3548,11 +3548,11 @@
       const planGrid = document.getElementById('vipPlansGridContainer');
       if (planGrid) {
         const themeStyles = {
-          slate: {
-            card: 'border-slate-200 bg-slate-50/70',
-            badge: 'bg-slate-200 text-slate-700',
-            btn: 'bg-slate-800 hover:bg-slate-900 text-white',
-            btnMuted: 'bg-slate-800/90 text-white'
+          sky: {
+            card: 'border-[#7DD3FC] bg-gradient-to-b from-[#F0F9FF] to-[#E0F2FE]',
+            badge: 'bg-[#BAE6FD] text-[#0369A1]',
+            btn: 'bg-[#0284C7] hover:bg-[#0369A1] text-white',
+            btnMuted: 'bg-[#0284C7]/90 text-white'
           },
           emerald: {
             card: 'border-[#86EFAC] bg-gradient-to-b from-[#F2FDF5] to-[#DCFCE7]',
@@ -3579,6 +3579,13 @@
             btnMuted: 'bg-rose-600/90 text-white'
           }
         };
+        const planAccentMap = {
+          free: 'sky',
+          tra_chanh: 'emerald',
+          tra_sua: 'amber',
+          trum_tra: 'indigo',
+          trung_tam: 'rose'
+        };
 
         planGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
@@ -3587,8 +3594,7 @@
           const isCurrentPaidVip = paidActive && p.id === effectivePurchasedPlan.id;
           const isLowerTierLockedByPaidVip = paidActive && p.id !== effectivePurchasedPlan.id && (Number(p.maxStudents) || 0) < (Number(effectivePurchasedPlan.maxStudents) || 0);
           const pricing = calculateVipPlanPricing(p);
-          const accentKey = p.accent || DEFAULT_VIP_PLANS.find(d => d.id === p.id)?.accent || 'slate';
-          const style = themeStyles[accentKey] || themeStyles.slate;
+          const style = themeStyles[planAccentMap[p.id]] || themeStyles.sky;
           const isTrialTarget = p.id === TRIAL_PLAN_ID && (!currentUser?.id || canActivateFreeTrial());
 
           let actionButtonLabel = '';
@@ -3596,14 +3602,10 @@
             actionButtonLabel = 'Đã bao gồm';
           } else if (isCurrentPaidVip) {
             actionButtonLabel = 'Gia hạn thêm';
-          } else if (keepingTraSua && p.id === TRIAL_PLAN_ID) {
-            actionButtonLabel = 'Thanh toán QR';
-          } else if (isCurrent) {
-            actionButtonLabel = trialInfo.isActive ? 'Mua chính thức' : 'Gói hiện tại';
           } else if (p.price === 0) {
-            actionButtonLabel = 'Chuyển về Free';
+            actionButtonLabel = isCurrent ? 'Gói hiện tại' : 'Chuyển về Free';
           } else {
-            actionButtonLabel = 'Thanh toán QR';
+            actionButtonLabel = 'Mua Gói';
           }
 
           return `
