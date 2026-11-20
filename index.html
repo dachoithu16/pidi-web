@@ -215,7 +215,7 @@
         <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0 text-xs text-indigo-300 font-medium min-w-0 flex-1">
           <div class="flex items-center gap-1 shrink-0 bg-white/5 py-1 px-1.5 sm:px-2 rounded-lg border border-white/10 text-[10px] sm:text-xs">
             <i data-lucide="calendar" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0"></i>
-            <span id="currentDateDisplayBanner" class="font-semibold text-slate-200 whitespace-nowrap">Thứ 5, 19/11/26</span>
+            <span id="currentDateDisplayBanner" class="font-semibold text-slate-200 whitespace-nowrap">Thứ 6, 20/11/26</span>
           </div>
 
           <div id="teacherClassBannerBox" class="inline-flex items-center gap-1 bg-slate-800/90 py-1 px-1.5 sm:px-2 rounded-lg border border-slate-700 shadow-inner min-w-0 shrink">
@@ -274,7 +274,7 @@
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="homeVipPlanTitle">Gói hiện tại: Free</span>
               <span id="homeVipTrialBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                Dùng thử 10 phút
+                Dùng thử 30 ngày
               </span>
               <span id="homeVipQuotaAlertBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700 border border-rose-200 animate-pulse">
                 Sắp đạt giới hạn!
@@ -1986,7 +1986,7 @@
         </div>
       </div>
 
-      <!-- Banner dùng thử 10 phút -->
+      <!-- Banner dùng thử 30 ngày -->
       <div id="vipModalTrialTopBanner" class="hidden rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5"></div>
 
       <!-- Banner ưu đãi 500 giáo viên tiên phong -->
@@ -2083,7 +2083,6 @@
   <!-- ==================== MODAL THANH TOÁN QR VIETINBANK ==================== -->
   <div id="modalVipVietQrCheckout" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/70 backdrop-blur-sm">
     <div class="bg-white rounded-3xl max-w-sm w-full p-3.5 sm:p-5 border border-slate-200/90 shadow-2xl space-y-2.5 max-h-[95vh] overflow-y-auto">
-      <!-- Header gọn -->
       <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
@@ -2096,7 +2095,6 @@
         </button>
       </div>
 
-      <!-- Thanh trạng thái chờ -->
       <div id="vipVietQrStatusBanner" class="rounded-xl bg-[#fffbeb] border border-[#fde68a] px-2.5 py-1.5 flex items-center justify-between gap-2 text-xs">
         <div class="flex items-center gap-1.5 text-[#78350f] font-bold min-w-0">
           <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
@@ -2111,7 +2109,6 @@
         </button>
       </div>
 
-      <!-- Khung QR thuần & badge VietinBank -->
       <div class="flex flex-col items-center justify-center bg-slate-50/70 rounded-2xl border border-slate-200/90 p-2.5 sm:p-3.5 space-y-2">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -2135,7 +2132,6 @@
         </p>
       </div>
 
-      <!-- Bảng thông tin chuyển khoản tách riêng -->
       <div class="rounded-2xl border border-slate-200 bg-white divide-y divide-slate-100 text-xs overflow-hidden">
         <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
           <span class="text-slate-500 font-medium">Gói đăng ký</span>
@@ -2168,7 +2164,6 @@
         </div>
       </div>
 
-      <!-- Ghi chú & Dòng hỗ trợ Zalo -->
       <div class="text-center space-y-0.5 pt-0.5">
         <p class="text-[10.5px] text-slate-500 leading-tight">
           Giữ nguyên nội dung chuyển khoản để tự động kích hoạt.
@@ -2375,7 +2370,10 @@
           deadline: '2026-11-25',
           description: 'Chọn đáp án đúng A, B, C, D cho các câu hỏi dưới đây.',
           totalPoints: 10,
-          examPaper: null,
+          examPaper: {
+            name: 'De_On_Tap_Unit_4.txt',
+            text: 'BÀI TẬP ÔN TẬP UNIT 4\n\nCâu 1: She usually _____ to school by bike every morning.\nA. go    B. goes    C. going    D. went\n\nCâu 2: Listen! Someone _____ at the door.\nA. knocks    B. knocked    C. is knocking    D. knock'
+          },
           questions: [
             {
               id: 'q_def_1',
@@ -3128,6 +3126,8 @@
           }
           if (trialExpiresAtIso) {
             localStorage.setItem(`dipi_user_${currentUser.id}_trial_expires_at`, trialExpiresAtIso);
+          } else {
+            localStorage.removeItem(`dipi_user_${currentUser.id}_trial_expires_at`);
           }
           if (hasUsedFreeTrial) {
             localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
@@ -3267,7 +3267,7 @@
       if (subEl) {
         subEl.innerText = isHardLimit
           ? 'Vui lòng nâng cấp gói để tiếp tục thêm học sinh mới'
-          : 'Gợi ý nâng cấp sớm để không gián đoạn việc quản lý lớp';
+          : 'Gợi ý nâng cấp sớm để không gián đoạn việc thêm học sinh';
       }
       if (bodyEl) {
         bodyEl.innerHTML = `
@@ -3880,6 +3880,7 @@
 
             showUndoToast(`Đã duyệt tay thành công đơn ${orderCode}!`);
             await loadAdminVipOrders(false);
+            await loadPioneerPromoSettings();
             if (currentUser?.id) {
               await loadUserDataFromCloud(currentUser, false);
             }
@@ -4170,13 +4171,11 @@
         const effectiveMaxStudents = Number(effectivePurchasedPlan?.maxStudents) || 0;
         const targetMaxStudents = Number(targetPlan.maxStudents) || 0;
 
-        // 1. Gói có bậc thấp hơn gói VIP đã mua hiện tại
         if (targetPlan.id !== effectivePurchasedPlan.id && targetMaxStudents < effectiveMaxStudents) {
           showUndoToast(`Gói ${targetPlan.name} đã bao gồm trong gói ${effectivePurchasedPlan.name} hiện tại.`);
           return;
         }
 
-        // 2. Cùng gói đang sở hữu -> Gia hạn thêm
         if (targetPlan.id === effectivePurchasedPlan.id) {
           if (!currentUser || !currentUser.id) {
             closeModal('modalVipSubscription');
@@ -4188,7 +4187,6 @@
           return;
         }
 
-        // 3. Nâng cấp lên gói cao hơn -> Tính số ngày quy đổi tương đương và xác nhận trước khi mở QR
         if (!currentUser || !currentUser.id) {
           closeModal('modalVipSubscription');
           openAuthModal('signin');
@@ -4423,17 +4421,17 @@
 
     const DEFAULT_CLASS_STUDENTS_MAP = {
       'class_ta_6_1': [
-        { id: '61_01', name: 'Ninh Ngọc Hà', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
-        { id: '61_02', name: 'Trung', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
-        { id: '61_03', name: 'Dũng', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
-        { id: '61_04', name: 'Nguyễn Đức Trí', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} }
+        { id: '61_01', name: 'Ninh Ngọc Hà', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: { '03/11/2026': 'present', '07/11/2026': 'present', '10/11/2026': 'present', '14/11/2026': 'present', '17/11/2026': 'present' } },
+        { id: '61_02', name: 'Nguyễn Minh Trung', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: { '03/11/2026': 'present', '07/11/2026': 'absent', '10/11/2026': 'present', '14/11/2026': 'present', '17/11/2026': 'present' } },
+        { id: '61_03', name: 'Lê Hoàng Dũng', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: { '03/11/2026': 'present', '07/11/2026': 'present', '10/11/2026': 'present', '14/11/2026': 'present', '17/11/2026': 'present' } },
+        { id: '61_04', name: 'Nguyễn Đức Trí', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: { '03/11/2026': 'present', '07/11/2026': 'present', '10/11/2026': 'absent', '14/11/2026': 'present', '17/11/2026': 'present' } }
       ],
       'class_ta_6_2': [
-        { id: '62_01', name: 'Nghĩa', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
-        { id: '62_02', name: 'Ngọc', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
-        { id: '62_03', name: 'Bảo', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
-        { id: '62_04', name: 'Dương', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
-        { id: '62_05', name: 'Diễm', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} }
+        { id: '62_01', name: 'Trần Trọng Nghĩa', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
+        { id: '62_02', name: 'Phạm Bảo Ngọc', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
+        { id: '62_03', name: 'Hoàng Quốc Bảo', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
+        { id: '62_04', name: 'Vũ Thùy Dương', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} },
+        { id: '62_05', name: 'Lê Ngọc Diễm', status: 'unrecorded', paidSessions: [], pricePerSession: 40000, attendanceHistory: {} }
       ],
       'class_ta_7': [
         { id: '7_01', name: 'Trần Minh Khôi', status: 'unrecorded', paidSessions: [], pricePerSession: 45000, attendanceHistory: {} },
@@ -4956,7 +4954,12 @@
             if (remoteData.vipExpiresAt && remoteData.currentTeacherPlanId && remoteData.currentTeacherPlanId !== 'free') {
               const remoteExpMs = new Date(remoteData.vipExpiresAt).getTime();
               const localExpMs = vipExpiresAtIso ? new Date(vipExpiresAtIso).getTime() : 0;
-              if (!Number.isNaN(remoteExpMs) && remoteExpMs > Date.now() && remoteExpMs >= (localExpMs || 0)) {
+              const remotePurchasedId = remoteData.purchasedPlanId || null;
+              const remoteHasNewerVip = !Number.isNaN(remoteExpMs) && remoteExpMs > Date.now() && (
+                remoteExpMs > (localExpMs || 0) ||
+                (remotePurchasedId && remotePurchasedId !== purchasedPlanId)
+              );
+              if (remoteHasNewerVip) {
                 currentTeacherPlanId = remoteData.currentTeacherPlanId;
                 vipExpiresAtIso = remoteData.vipExpiresAt;
                 if (remoteData.purchasedPlanId !== undefined) {
@@ -4966,6 +4969,10 @@
                 }
                 purchasedStartsAtIso = remoteData.purchasedStartsAt ?? remoteData.purchasedStartsAtIso ?? purchasedStartsAtIso;
                 trialExpiresAtIso = remoteData.trialExpiresAt !== undefined ? remoteData.trialExpiresAt : trialExpiresAtIso;
+                const mergedTrialExpMs = trialExpiresAtIso ? new Date(trialExpiresAtIso).getTime() : NaN;
+                if (purchasedPlanId === 'tra_chanh' && currentTeacherPlanId === TRIAL_PLAN_ID && !Number.isNaN(mergedTrialExpMs) && mergedTrialExpMs <= Date.now()) {
+                  currentTeacherPlanId = 'tra_chanh';
+                }
                 if (remoteData.hasUsedPioneerDiscount) {
                   hasUsedPioneerDiscount = true;
                 }
@@ -8114,6 +8121,8 @@
       const grid = document.getElementById('parentAttendanceGrid');
 
       if (card) {
+        const feeInfo = calculateStudentFeeForSelectedDates(student);
+        const { presentCount: totalB, absentCount: totalV } = getStudentAttendanceCounts(student);
         card.innerHTML = `
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
@@ -8121,11 +8130,14 @@
                 <h3 class="font-extrabold text-base text-slate-900">${student.name}</h3>
                 <span class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-extrabold text-xs">${student.studentCode || ''}</span>
               </div>
-              <div class="text-xs text-slate-500 mt-0.5">Lớp: <strong class="text-indigo-700">${student._className || ''}</strong></div>
+              <div class="text-xs text-slate-500 mt-0.5">
+                Lớp: <strong class="text-indigo-700">${student._className || ''}</strong> • Đi học: <strong class="text-emerald-700">${totalB} buổi</strong> • Vắng: <strong class="text-rose-600">${totalV} buổi</strong>
+              </div>
             </div>
             <div class="flex items-center gap-1.5">
-              <button type="button" onclick="openTuitionNoticeModal('${student.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-2xs transition">
-                Phiếu học phí
+              <button type="button" onclick="openTuitionNoticeModal('${student.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-2xs transition inline-flex items-center gap-1">
+                <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+                <span>Phiếu học phí (${formatMoneyK(feeInfo.finalAmount)})</span>
               </button>
               <button type="button" onclick="logoutParentStudentCode()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
                 Đổi mã HS
