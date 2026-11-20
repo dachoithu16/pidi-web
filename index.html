@@ -2747,10 +2747,10 @@
         yearlyPrice: 390000,
         salePercent: 25,
         maxStudents: 80,
-        maxTeachers: 1,
+        maxTeachers: 2,
         badge: 'Phổ biến nhất',
         accent: 'amber',
-        description: 'Quản lý nhiều lớp học cùng lúc với sĩ số lên tới 80 em.'
+        description: 'Quản lý nhiều lớp học cùng lúc với sĩ số lên tới 80 em và 2 giáo viên.'
       },
       {
         id: 'trum_tra',
@@ -2759,10 +2759,10 @@
         yearlyPrice: 890000,
         salePercent: 35,
         maxStudents: 200,
-        maxTeachers: 2,
+        maxTeachers: 3,
         badge: 'Nhóm giáo viên',
         accent: 'indigo',
-        description: 'Mở rộng tới 200 học sinh và đồng hành cùng 2 giáo viên.'
+        description: 'Mở rộng tới 200 học sinh và đồng hành cùng 3 giáo viên.'
       },
       {
         id: 'trung_tam',
@@ -3504,14 +3504,11 @@
       const pioneerBanner = document.getElementById('vipModalPioneerPromoBanner');
       if (pioneerBanner) {
         if (activePioneerDiscount > 0) {
-          const maxSlots = Number(pioneerPromoState.max_slots) || 500;
-          const usedSlots = Math.max(0, Number(pioneerPromoState.used_slots) || 0);
-          const remainingSlots = Math.max(0, maxSlots - usedSlots);
           pioneerBanner.classList.remove('hidden');
           pioneerBanner.innerHTML = `
             <div class="flex items-center gap-1.5 min-w-0">
               <i data-lucide="sparkles" class="w-4 h-4 text-amber-600 shrink-0"></i>
-              <span>Ưu đãi 500 giáo viên tiên phong: Còn <strong class="text-rose-600">${remainingSlots}/${maxSlots}</strong> suất • Giảm <strong>35%</strong> (ngày 1–15) / <strong>25%</strong> (ngày 16–30)</span>
+              <span>Ưu đãi 500 giáo viên tiên phong: Giảm <strong>35%</strong> (ngày 1–15) / <strong>25%</strong> (ngày 16–30)</span>
             </div>
             <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black shrink-0">-${activePioneerDiscount}%</span>
           `;
@@ -3586,14 +3583,14 @@
           trum_tra: 'indigo',
           trung_tam: 'rose'
         };
-        const VIP_PROMO_FEATURES = [
-          'Quản lý học sinh chi tiết',
-          'Điểm danh hàng loạt',
-          'Full Chức Năng / Tải phiếu không giới hạn',
-          'Thu/Nợ Học Phí',
-          'Tải file / Lịch dạy',
-          'Xuất Excel báo cáo'
+        const VIP_COMMON_FEATURES = [
+          'Quản lý thu/nợ học phí',
+          'Tải phiếu báo thu không giới hạn',
+          'Lịch dạy & điểm danh hàng loạt',
+          'Hồ sơ học sinh & nạp file nhanh',
+          'Xuất báo cáo Excel'
         ];
+        const VIP_PREMIUM_ONLY_PLANS = ['tra_sua', 'trum_tra', 'trung_tam'];
 
         planGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
@@ -3605,6 +3602,7 @@
           const style = themeStyles[planAccentMap[p.id]] || themeStyles.sky;
           const isTrialTarget = p.id === TRIAL_PLAN_ID && (!currentUser?.id || canActivateFreeTrial());
           const isFreePlan = p.id === 'free';
+          const isPremiumTier = VIP_PREMIUM_ONLY_PLANS.includes(p.id);
 
           let actionButtonLabel = '';
           if (isLowerTierLockedByPaidVip) {
@@ -3646,12 +3644,24 @@
                 <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
                 <span><strong>${p.maxTeachers || 1}</strong> giáo viên quản lý</span>
               </li>
-              ${VIP_PROMO_FEATURES.map(feat => `
+              ${isPremiumTier ? `
+                <li class="flex items-start gap-1 font-extrabold text-slate-900">
+                  <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
+                  <span>Mở khóa full chức năng</span>
+                </li>
+              ` : ''}
+              ${VIP_COMMON_FEATURES.map(feat => `
                 <li class="flex items-start gap-1">
                   <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
                   <span>${feat}</span>
                 </li>
               `).join('')}
+              ${isPremiumTier ? `
+                <li class="flex items-start gap-1 font-extrabold text-indigo-700">
+                  <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
+                  <span>Thử nghiệm sớm giao bài tập</span>
+                </li>
+              ` : ''}
             </ul>
           `;
 
