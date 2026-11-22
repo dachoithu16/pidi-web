@@ -28,7 +28,7 @@
     body {
       font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
+      overflow-x: clip;
     }
     .scrollbar-none::-webkit-scrollbar {
       display: none;
@@ -216,16 +216,16 @@
 
   <!-- ==================== BANNER GỌN 1 HÀNG ==================== -->
   <div id="globalSubBanner" class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-950/50 shadow-sm">
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-1.5 sm:py-2">
-      <div class="flex items-center justify-between gap-1 sm:gap-2">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between gap-1 sm:gap-2 h-10 sm:h-11">
         
         <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0 text-xs text-indigo-300 font-medium min-w-0 flex-1">
-          <div class="flex items-center gap-1 shrink-0 bg-white/5 py-1 px-1.5 sm:px-2 rounded-lg border border-white/10 text-[10px] sm:text-xs">
+          <div class="flex items-center gap-1 shrink-0 bg-white/5 h-7 sm:h-8 px-1.5 sm:px-2 rounded-lg border border-white/10 text-[10px] sm:text-xs">
             <i data-lucide="calendar" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0"></i>
             <span id="currentDateDisplayBanner" class="font-semibold text-slate-200 whitespace-nowrap">Thứ 7, 21/11/26</span>
           </div>
 
-          <div id="teacherClassBannerBox" class="inline-flex items-center gap-1 bg-slate-800/90 py-1 px-1.5 sm:px-2 rounded-lg border border-slate-700 shadow-inner min-w-0 shrink">
+          <div id="teacherClassBannerBox" class="inline-flex items-center gap-1 bg-slate-800/90 h-7 sm:h-8 px-1.5 sm:px-2 rounded-lg border border-slate-700 shadow-inner min-w-0 shrink">
             <span class="text-indigo-300 text-[10px] sm:text-[11px] font-bold shrink-0">LỚP:</span>
             <select
               id="classListSelect"
@@ -249,7 +249,7 @@
         </div>
 
         <!-- Khối bên phải (chế độ Phụ huynh / HS) -->
-        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 px-2.5 py-1 rounded-lg flex items-center gap-2 shrink-0">
+        <div id="parentStudentSelectBox" class="hidden bg-slate-800/90 border border-slate-700 h-7 sm:h-8 px-2.5 rounded-lg flex items-center gap-2 shrink-0">
           <span id="parentActiveStudentBannerBadge" class="text-[11px] sm:text-xs font-bold text-emerald-300 truncate max-w-[160px]">Chưa nhập mã HS</span>
           <button
             type="button"
@@ -269,7 +269,7 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-4 pb-24 sm:pb-8 flex flex-col">
 
     <!-- ==================== GIAO DIỆN GIÁO VIÊN ==================== -->
-    <div id="teacherViewSection" class="space-y-3 sm:space-y-4 flex-1 flex flex-col">
+    <div id="teacherViewSection" class="gap-3 sm:gap-4 flex-1 flex flex-col">
       
       <!-- CÁC TAB CHỨC NĂNG: HIỂN THỊ TRÊN PC (ĐẶT TRÊN CÙNG ĐỂ ĐỨNG IM KHI CHUYỂN TAB) -->
       <div class="hidden sm:flex bg-slate-200/70 p-1 rounded-2xl items-center justify-between gap-1 border border-slate-200/90 text-center shrink-0">
@@ -277,7 +277,7 @@
           <button
             onclick="switchTab('home')"
             id="tabHomeBtn"
-            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-bold text-sm transition-all bg-white text-indigo-700 shadow-sm"
+            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-bold text-sm transition-colors bg-white text-indigo-700 shadow-sm"
           >
             <i data-lucide="home" class="w-4 h-4 shrink-0"></i>
             <span>Trang chủ</span>
@@ -286,11 +286,11 @@
           <button
             onclick="switchTab('attendance')"
             id="tabAttendanceBtn"
-            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-semibold text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60"
+            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-bold text-sm transition-colors text-slate-600 hover:text-slate-900 hover:bg-white/60"
           >
             <i data-lucide="calendar-check" class="w-4 h-4 shrink-0"></i>
             <span>Lịch học</span>
-            <span id="headerPresentBadge" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+            <span id="headerPresentBadge" class="ml-1 px-1.5 py-0.5 min-w-[36px] text-center tabular-nums rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
               0/0
             </span>
           </button>
@@ -298,7 +298,7 @@
           <button
             onclick="switchTab('finance')"
             id="tabFinanceBtn"
-            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-semibold text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60"
+            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-bold text-sm transition-colors text-slate-600 hover:text-slate-900 hover:bg-white/60"
           >
             <i data-lucide="receipt" class="w-4 h-4 shrink-0"></i>
             <span>Học phí</span>
@@ -307,7 +307,7 @@
           <button
             onclick="switchTab('homework')"
             id="tabHomeworkBtn"
-            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-semibold text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60"
+            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-bold text-sm transition-colors text-slate-600 hover:text-slate-900 hover:bg-white/60"
           >
             <i data-lucide="book-marked" class="w-4 h-4 shrink-0"></i>
             <span>Bài tập & Phiếu trả lời</span>
@@ -316,7 +316,7 @@
           <button
             onclick="switchTab('classes')"
             id="tabClassesBtn"
-            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-semibold text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60"
+            class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-bold text-sm transition-colors text-slate-600 hover:text-slate-900 hover:bg-white/60"
           >
             <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
             <span>Quản lý</span>
@@ -506,8 +506,8 @@
         <!-- LƯỚI RESPONSIVE GỘP KHỐI 2 (2 THẺ CHỈ SỐ) VÀ KHỐI 3 (KHÔNG GIAN CHIA SẺ) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-stretch flex-1">
 
-          <!-- CỘT TRÁI: 2 THẺ CHỈ SỐ (BÀI TẬP & DOANH THU) -->
-          <div class="lg:col-span-5 grid grid-cols-2 lg:grid-cols-1 gap-2.5 sm:gap-3">
+          <!-- CỘT PHẢI TRÊN PC (BÊN TRÊN TRÊN MOBILE): 2 THẺ CHỈ SỐ (BÀI TẬP & DOANH THU) -->
+          <div class="lg:col-span-5 lg:order-2 grid grid-cols-2 lg:grid-cols-1 gap-2.5 sm:gap-3">
             <!-- Thẻ 1: Bài Tập -->
             <button
               type="button"
@@ -565,8 +565,8 @@
             </button>
           </div>
 
-          <!-- CỘT PHẢI: KHÔNG GIAN CHIA SẺ -->
-          <div class="lg:col-span-7 flex flex-col gap-1.5 min-h-[195px]">
+          <!-- CỘT TRÁI TRÊN PC (BÊN DƯỚI TRÊN MOBILE): KHÔNG GIAN CHIA SẺ -->
+          <div class="lg:col-span-7 lg:order-1 flex flex-col gap-1.5 min-h-[195px]">
             <div class="flex items-center justify-between px-0.5 shrink-0">
               <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-[#e95c32]"></span>
@@ -5900,10 +5900,8 @@
       students = getStudentsForClass(ALL_CLASSES_ID);
 
       renderClassSelectOptions();
-      syncFinanceDatesForCurrentClass();
       saveUiNavigationState();
       switchTab('finance');
-      renderFinanceTab();
     }
 
     // ==================== CHỌN LỚP & THỜI KHÓA BIỂU ====================
@@ -8493,13 +8491,13 @@
         const mobLabel = document.getElementById(`mobileLabel${cap}`);
 
         if (k === tabKey) {
-          btnPc?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm', 'font-bold');
-          btnPc?.classList.remove('text-slate-600');
+          btnPc?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
+          btnPc?.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-white/60');
           if (mobIconBg) mobIconBg.className = 'w-10 h-7 rounded-full flex items-center justify-center bg-indigo-50 text-indigo-600 transition';
           if (mobLabel) mobLabel.className = 'text-[10px] font-extrabold mt-0.5 text-indigo-600';
         } else {
-          btnPc?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm', 'font-bold');
-          btnPc?.classList.add('text-slate-600');
+          btnPc?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
+          btnPc?.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-white/60');
           if (mobIconBg) mobIconBg.className = 'w-10 h-7 rounded-full flex items-center justify-center text-slate-500 transition';
           if (mobLabel) mobLabel.className = 'text-[10px] font-semibold mt-0.5 text-slate-500';
         }
