@@ -22,6 +22,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
+    html {
+      scrollbar-gutter: stable;
+    }
     body {
       font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -211,8 +214,8 @@
     </div>
   </header>
 
-  <!-- ==================== BANNER GỌN 1 HÀNG (ẨN Ở TAB TRANG CHỦ GV ĐỂ GỌN SẠCH) ==================== -->
-  <div id="globalSubBanner" class="hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-950/50 shadow-sm">
+  <!-- ==================== BANNER GỌN 1 HÀNG ==================== -->
+  <div id="globalSubBanner" class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-b border-indigo-950/50 shadow-sm">
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-1.5 sm:py-2">
       <div class="flex items-center justify-between gap-1 sm:gap-2">
         
@@ -268,42 +271,7 @@
     <!-- ==================== GIAO DIỆN GIÁO VIÊN ==================== -->
     <div id="teacherViewSection" class="space-y-3 sm:space-y-4 flex-1 flex flex-col">
       
-      <!-- THANH TRẠNG THÁI GÓI HIỆN TẠI & NÚT NÂNG CẤP (HIỆN Ở CÁC TAB KHÁC, ẨN Ở TRANG CHỦ VÌ HERO ĐÃ CÓ) -->
-      <div id="homeVipStatusBanner" class="hidden bg-white rounded-2xl border border-slate-200/90 px-3 py-2 sm:px-4 sm:py-2.5 shadow-2xs flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-2 min-w-0 flex-1">
-          <div id="homeVipPlanIconBox" class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center shrink-0">
-            <i data-lucide="crown" class="w-4 h-4"></i>
-          </div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="homeVipPlanTitle">Gói hiện tại: Free</span>
-              <span id="homeVipTrialBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                Dùng thử 30 ngày
-              </span>
-              <span id="homeVipQuotaAlertBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700 border border-rose-200 animate-pulse">
-                Sắp đạt giới hạn!
-              </span>
-            </div>
-            <p class="text-[11px] text-slate-500 font-medium truncate" id="homeVipPlanSubtitle">
-              Đang sử dụng 0 / 15 học sinh • 1 giáo viên
-            </p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            id="btnHomeUpgradeVip"
-            onclick="handleHomeVipActionClick()"
-            class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 text-white text-xs sm:text-[13px] font-black tracking-wide shadow-lg shadow-orange-500/35 ring-2 ring-amber-300/80 transition-all hover:scale-[1.03] active:scale-95 inline-flex items-center gap-1.5"
-          >
-            <i id="btnHomeUpgradeVipIcon" data-lucide="gift" class="w-4 h-4 animate-bounce"></i>
-            <span id="btnHomeUpgradeVipLabel">Dùng thử</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- CÁC TAB CHỨC NĂNG: HIỂN THỊ TRÊN PC -->
+      <!-- CÁC TAB CHỨC NĂNG: HIỂN THỊ TRÊN PC (ĐẶT TRÊN CÙNG ĐỂ ĐỨNG IM KHI CHUYỂN TAB) -->
       <div class="hidden sm:flex bg-slate-200/70 p-1 rounded-2xl items-center justify-between gap-1 border border-slate-200/90 text-center shrink-0">
         <div class="flex items-center gap-1">
           <button
@@ -316,7 +284,7 @@
           </button>
 
           <button
-            onclick="openScheduleFromHome('week')"
+            onclick="switchTab('attendance')"
             id="tabAttendanceBtn"
             class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-semibold text-sm transition-all text-slate-600 hover:text-slate-900 hover:bg-white/60"
           >
@@ -365,13 +333,48 @@
         </button>
       </div>
 
+      <!-- THANH TRẠNG THÁI GÓI HIỆN TẠI & NÚT NÂNG CẤP (HIỆN Ở CÁC TAB KHÁC, ẨN Ở TRANG CHỦ VÌ HERO ĐÃ CÓ) -->
+      <div id="homeVipStatusBanner" class="hidden bg-white rounded-2xl border border-slate-200/90 px-3 py-2 sm:px-4 sm:py-2.5 shadow-2xs flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <div id="homeVipPlanIconBox" class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/80 flex items-center justify-center shrink-0">
+            <i data-lucide="crown" class="w-4 h-4"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-xs sm:text-sm font-extrabold text-slate-900" id="homeVipPlanTitle">Gói hiện tại: Free</span>
+              <span id="homeVipTrialBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                Dùng thử 30 ngày
+              </span>
+              <span id="homeVipQuotaAlertBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700 border border-rose-200 animate-pulse">
+                Sắp đạt giới hạn!
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium truncate" id="homeVipPlanSubtitle">
+              Đang sử dụng 0 / 15 học sinh • 1 giáo viên
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            id="btnHomeUpgradeVip"
+            onclick="handleHomeVipActionClick()"
+            class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 text-white text-xs sm:text-[13px] font-black tracking-wide shadow-lg shadow-orange-500/35 ring-2 ring-amber-300/80 transition-all hover:scale-[1.03] active:scale-95 inline-flex items-center gap-1.5"
+          >
+            <i id="btnHomeUpgradeVipIcon" data-lucide="gift" class="w-4 h-4 animate-bounce"></i>
+            <span id="btnHomeUpgradeVipLabel">Dùng thử</span>
+          </button>
+        </div>
+      </div>
+
       <!-- ==================== TAB 0: TRANG CHỦ TỐI GIẢN (GẮN DỮ LIỆU THẬT) ==================== -->
-      <div id="contentTabHome" class="flex-1 flex flex-col gap-3 max-w-3xl w-full mx-auto">
+      <div id="contentTabHome" class="flex-1 flex flex-col gap-3 sm:gap-4 w-full">
 
         <!-- KHỐI 1: HERO CARD CÓ TRANH NỀN VECTOR + THANH 3 PHÍM TẮT NỔI -->
         <div class="shrink-0">
-          <div class="rounded-3xl bg-slate-900 text-white p-4 sm:p-5 pb-9 sm:pb-10 relative overflow-hidden shadow-md shadow-indigo-950/20">
-            <!-- Tranh nền minh họa SVG tối giản: bình minh cam san hô, đồi mềm, sách mở & mầm lá phát sáng -->
+          <div class="rounded-3xl bg-slate-900 text-white p-4 sm:p-6 pb-9 sm:pb-12 relative overflow-hidden shadow-md shadow-indigo-950/20">
+            <!-- Tranh nền minh họa SVG tối giản -->
             <svg
               class="absolute inset-0 w-full h-full pointer-events-none"
               viewBox="0 0 400 165"
@@ -432,16 +435,15 @@
               <rect width="400" height="165" fill="url(#leftTextProtect)" />
             </svg>
 
-            <div class="relative z-10 space-y-3">
-              <!-- Hàng trên: Lời chào + Ngày | Pill Gói VIP (chỉ hiện tên gói, không kèm -35%) -->
+            <div class="relative z-10 space-y-3 sm:space-y-4">
               <div class="flex items-start justify-between gap-2">
                 <div class="min-w-0">
-                  <h2 id="homeHeroGreeting" class="text-base sm:text-lg font-extrabold tracking-tight text-white truncate">
+                  <h2 id="homeHeroGreeting" class="text-base sm:text-2xl font-extrabold tracking-tight text-white truncate">
                     Xin chào, Thầy/Cô
                   </h2>
-                  <p class="text-[11.5px] sm:text-xs text-indigo-100/90 font-medium mt-0.5 flex items-center gap-1.5">
-                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-amber-300 shrink-0"></i>
-                    <span id="homeHeroDate">Thứ 7, 21/11/2026</span>
+                  <p class="text-[10px] sm:text-xs text-slate-200 font-semibold mt-1 flex items-center gap-1 whitespace-nowrap">
+                    <i data-lucide="calendar" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0"></i>
+                    <span id="homeHeroDate">Chủ Nhật, 22/11/26</span>
                   </p>
                 </div>
 
@@ -449,7 +451,7 @@
                   type="button"
                   id="homeHeroVipPill"
                   onclick="openVipSubscriptionModal()"
-                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/55 hover:bg-slate-900/75 border border-amber-300/35 backdrop-blur-xs text-[11px] sm:text-xs font-extrabold text-amber-200 transition active:scale-95 shrink-0 shadow-xs"
+                  class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-slate-900/55 hover:bg-slate-900/75 border border-amber-300/35 backdrop-blur-xs text-[11px] sm:text-xs font-extrabold text-amber-200 transition active:scale-95 shrink-0 shadow-xs"
                   title="Xem gói đang sử dụng & nâng cấp"
                 >
                   <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i>
@@ -457,7 +459,6 @@
                 </button>
               </div>
 
-              <!-- Dòng tóm tắt nhỏ từ dữ liệu thật -->
               <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-100/95 font-semibold">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
                 <span id="homeHeroSummary">Hôm nay 0 ca dạy • 0 / 15 học sinh</span>
@@ -465,188 +466,193 @@
             </div>
           </div>
 
-          <!-- Thanh 3 nút nổi vắt ngang mép dưới Hero (-mt-6): Quản lý | Sổ tay | Điểm danh -->
-          <div class="-mt-6 mx-3 sm:mx-5 relative z-10 bg-white rounded-2xl shadow-md shadow-slate-900/5 border border-slate-200/80 grid grid-cols-3 divide-x divide-slate-100 overflow-hidden">
+          <!-- Thanh 3 nút nổi vắt ngang mép dưới Hero: Quản lý | Sổ tay | Điểm danh -->
+          <div class="-mt-6 sm:-mt-7 mx-3 sm:mx-8 relative z-10 bg-white rounded-2xl shadow-md shadow-slate-900/5 border border-slate-200/80 grid grid-cols-3 divide-x divide-slate-100 overflow-hidden">
             <button
               type="button"
               onclick="switchTab('classes')"
-              class="py-2.5 sm:py-3 px-2 flex flex-col items-center justify-center gap-1 hover:bg-violet-50/60 transition active:scale-95"
+              class="py-2.5 sm:py-4 px-2 flex flex-col items-center justify-center gap-1.5 hover:bg-violet-50/60 transition active:scale-95"
             >
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
-                <i data-lucide="layout-grid" class="w-4 h-4 sm:w-4.5 sm:h-4.5"></i>
+              <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
+                <i data-lucide="layout-grid" class="w-4 h-4 sm:w-5 sm:h-5"></i>
               </div>
-              <span class="text-[11.5px] sm:text-xs font-bold text-slate-800">Quản lý</span>
+              <span class="text-xs sm:text-sm font-bold text-slate-800">Quản lý</span>
             </button>
 
             <button
               type="button"
               onclick="openModal('modalNotebook')"
-              class="py-2.5 sm:py-3 px-2 flex flex-col items-center justify-center gap-1 hover:bg-emerald-50/60 transition active:scale-95"
+              class="py-2.5 sm:py-4 px-2 flex flex-col items-center justify-center gap-1.5 hover:bg-emerald-50/60 transition active:scale-95"
             >
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <i data-lucide="notebook-pen" class="w-4 h-4 sm:w-4.5 sm:h-4.5"></i>
+              <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <i data-lucide="notebook-pen" class="w-4 h-4 sm:w-5 sm:h-5"></i>
               </div>
-              <span class="text-[11.5px] sm:text-xs font-bold text-slate-800">Sổ tay</span>
+              <span class="text-xs sm:text-sm font-bold text-slate-800">Sổ tay</span>
             </button>
 
             <button
               type="button"
               onclick="openScheduleFromHome('today')"
-              class="py-2.5 sm:py-3 px-2 flex flex-col items-center justify-center gap-1 hover:bg-indigo-50/60 transition active:scale-95"
+              class="py-2.5 sm:py-4 px-2 flex flex-col items-center justify-center gap-1.5 hover:bg-indigo-50/60 transition active:scale-95"
             >
-              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                <i data-lucide="calendar-check" class="w-4 h-4 sm:w-4.5 sm:h-4.5"></i>
+              <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <i data-lucide="calendar-check" class="w-4 h-4 sm:w-5 sm:h-5"></i>
               </div>
-              <span class="text-[11.5px] sm:text-xs font-bold text-slate-800">Điểm danh</span>
+              <span class="text-xs sm:text-sm font-bold text-slate-800">Điểm danh</span>
             </button>
           </div>
         </div>
 
-        <!-- KHỐI 2: 2 THẺ CHỈ SỐ GỌN (BÀI TẬP & DOANH THU THÁNG NÀY) -->
-        <div class="grid grid-cols-2 gap-2.5 sm:gap-3 shrink-0">
-          <!-- Thẻ 1: Bài Tập -->
-          <button
-            type="button"
-            onclick="switchTab('homework')"
-            class="bg-white rounded-2xl border border-amber-200/90 hover:border-amber-300 p-3 sm:p-3.5 text-left shadow-2xs hover:shadow-sm transition active:scale-[0.98] flex flex-col justify-between gap-2"
-          >
-            <div class="flex items-center justify-between gap-1">
-              <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-extrabold text-amber-800">
-                <i data-lucide="book-open-check" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
-                <span>Bài Tập</span>
-              </span>
-              <span id="homeStatHwPercent" class="px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[9.5px] sm:text-[10px] font-extrabold">0%</span>
-            </div>
+        <!-- LƯỚI RESPONSIVE GỘP KHỐI 2 (2 THẺ CHỈ SỐ) VÀ KHỐI 3 (KHÔNG GIAN CHIA SẺ) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-stretch flex-1">
 
-            <div>
-              <div class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-none">
-                <span id="homeStatHwSubmitted">0</span><span class="text-sm sm:text-base font-bold text-slate-400">/<span id="homeStatHwTotal">0</span></span>
+          <!-- CỘT TRÁI: 2 THẺ CHỈ SỐ (BÀI TẬP & DOANH THU) -->
+          <div class="lg:col-span-5 grid grid-cols-2 lg:grid-cols-1 gap-2.5 sm:gap-3">
+            <!-- Thẻ 1: Bài Tập -->
+            <button
+              type="button"
+              onclick="switchTab('homework')"
+              class="bg-white rounded-2xl border border-amber-200/90 hover:border-amber-300 p-3.5 sm:p-5 text-left shadow-2xs hover:shadow-sm transition active:scale-[0.98] flex flex-col justify-between gap-2.5"
+            >
+              <div class="flex items-center justify-between gap-1">
+                <span class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold text-amber-800">
+                  <i data-lucide="book-open-check" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                  <span>Bài Tập</span>
+                </span>
+                <span id="homeStatHwPercent" class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[10px] sm:text-xs font-extrabold">0%</span>
               </div>
-              <div id="homeStatHwSub" class="text-[10.5px] sm:text-xs text-slate-500 font-semibold mt-1 truncate">
-                Đã nộp • Còn 0 em chưa nộp
+
+              <div>
+                <div class="text-xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none">
+                  <span id="homeStatHwSubmitted">0</span><span class="text-sm sm:text-lg font-bold text-slate-400">/<span id="homeStatHwTotal">0</span></span>
+                </div>
+                <div id="homeStatHwSub" class="text-[11px] sm:text-xs text-slate-500 font-semibold mt-1.5 truncate">
+                  Chưa có bài tập nào được giao
+                </div>
               </div>
-            </div>
 
-            <div class="w-full h-1.5 rounded-full bg-amber-100 overflow-hidden">
-              <div id="homeStatHwBar" class="h-full rounded-full bg-amber-500 transition-all duration-300" style="width: 0%;"></div>
-            </div>
-          </button>
-
-          <!-- Thẻ 2: Doanh Thu tháng hiện tại -->
-          <button
-            type="button"
-            onclick="openHomeFinanceOverview()"
-            class="bg-white rounded-2xl border border-emerald-200/90 hover:border-emerald-300 p-3 sm:p-3.5 text-left shadow-2xs hover:shadow-sm transition active:scale-[0.98] flex flex-col justify-between gap-2"
-          >
-            <div class="flex items-center justify-between gap-1">
-              <span class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-extrabold text-emerald-800 truncate">
-                <i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
-                <span id="homeStatRevTitle">Doanh Thu T11</span>
-              </span>
-              <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
-            </div>
-
-            <div>
-              <div id="homeStatRevCollected" class="text-xl sm:text-2xl font-black text-emerald-700 tracking-tight leading-none">
-                0k
+              <div class="w-full h-1.5 sm:h-2 rounded-full bg-amber-100 overflow-hidden">
+                <div id="homeStatHwBar" class="h-full rounded-full bg-amber-500 transition-all duration-300" style="width: 0%;"></div>
               </div>
-              <div id="homeStatRevSub" class="text-[10.5px] sm:text-xs text-slate-500 font-semibold mt-1 truncate">
-                Đã thu • Chưa thu 0k
+            </button>
+
+            <!-- Thẻ 2: Doanh Thu tháng hiện tại -->
+            <button
+              type="button"
+              onclick="openHomeFinanceOverview()"
+              class="bg-white rounded-2xl border border-emerald-200/90 hover:border-emerald-300 p-3.5 sm:p-5 text-left shadow-2xs hover:shadow-sm transition active:scale-[0.98] flex flex-col justify-between gap-2.5"
+            >
+              <div class="flex items-center justify-between gap-1">
+                <span class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold text-emerald-800 truncate">
+                  <i data-lucide="wallet" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span id="homeStatRevTitle">Doanh Thu T11</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-emerald-400 shrink-0"></i>
               </div>
-            </div>
 
-            <div class="w-full h-1.5 rounded-full bg-emerald-100 overflow-hidden">
-              <div id="homeStatRevBar" class="h-full rounded-full bg-emerald-500 transition-all duration-300" style="width: 0%;"></div>
-            </div>
-          </button>
-        </div>
+              <div>
+                <div id="homeStatRevCollected" class="text-xl sm:text-3xl font-black text-emerald-700 tracking-tight leading-none">
+                  0k
+                </div>
+                <div id="homeStatRevSub" class="text-[11px] sm:text-xs text-slate-500 font-semibold mt-1.5 truncate">
+                  Đã thu • Chưa thu 0k
+                </div>
+              </div>
 
-        <!-- KHỐI 3 (DƯỚI CÙNG): KHÔNG GIAN CHIA SẺ (CARD LỚN CÓ TRANH NỀN) -->
-        <div class="flex-1 flex flex-col gap-1.5 min-h-[195px]">
-          <div class="flex items-center justify-between px-0.5 shrink-0">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-[#e95c32]"></span>
-              <h3 class="text-xs font-extrabold text-slate-800 uppercase tracking-wide">Không gian chia sẻ</h3>
-            </div>
-            <span class="px-2 py-0.5 rounded-full bg-orange-100 text-[#c2410c] border border-orange-200/80 text-[10px] font-extrabold">
-              Sắp ra mắt
-            </span>
+              <div class="w-full h-1.5 sm:h-2 rounded-full bg-emerald-100 overflow-hidden">
+                <div id="homeStatRevBar" class="h-full rounded-full bg-emerald-500 transition-all duration-300" style="width: 0%;"></div>
+              </div>
+            </button>
           </div>
 
-          <button
-            type="button"
-            onclick="openModal('modalCommunityPreview')"
-            class="flex-1 min-h-[168px] sm:min-h-[190px] w-full rounded-3xl border border-orange-200/90 hover:border-orange-300 shadow-sm hover:shadow-md relative overflow-hidden p-4 sm:p-5 text-left flex flex-col justify-between transition active:scale-[0.99] group"
-          >
-            <!-- Tranh nền minh họa góc tám chuyện thầy cô & học sinh -->
-            <svg
-              class="absolute inset-0 w-full h-full pointer-events-none"
-              viewBox="0 0 400 185"
-              preserveAspectRatio="xMaxYMid slice"
-              xmlns="http://www.w3.org/2000/svg"
+          <!-- CỘT PHẢI: KHÔNG GIAN CHIA SẺ -->
+          <div class="lg:col-span-7 flex flex-col gap-1.5 min-h-[195px]">
+            <div class="flex items-center justify-between px-0.5 shrink-0">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-[#e95c32]"></span>
+                <h3 class="text-xs sm:text-sm font-extrabold text-slate-800 uppercase tracking-wide">Không gian chia sẻ</h3>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-orange-100 text-[#c2410c] border border-orange-200/80 text-[10px] sm:text-[11px] font-extrabold">
+                Sắp ra mắt
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onclick="openModal('modalCommunityPreview')"
+              class="flex-1 min-h-[175px] sm:min-h-[220px] w-full rounded-3xl border border-orange-200/90 hover:border-orange-300 shadow-sm hover:shadow-md relative overflow-hidden p-4 sm:p-6 text-left flex flex-col justify-between transition active:scale-[0.99] group"
             >
-              <defs>
-                <linearGradient id="shareBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#fffaf5" />
-                  <stop offset="52%" stop-color="#fff1e6" />
-                  <stop offset="100%" stop-color="#e8f6f2" />
-                </linearGradient>
-                <radialGradient id="shareWarmGlow" cx="85%" cy="28%" r="55%">
-                  <stop offset="0%" stop-color="#fdba74" stop-opacity="0.45" />
-                  <stop offset="100%" stop-color="#fff1e6" stop-opacity="0" />
-                </radialGradient>
-                <linearGradient id="shareTextProtect" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#fffaf5" stop-opacity="0.96" />
-                  <stop offset="56%" stop-color="#fff5ed" stop-opacity="0.88" />
-                  <stop offset="100%" stop-color="#fff5ed" stop-opacity="0" />
-                </linearGradient>
-              </defs>
+              <!-- Tranh nền minh họa góc tám chuyện thầy cô & học sinh -->
+              <svg
+                class="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="0 0 400 185"
+                preserveAspectRatio="xMaxYMid slice"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <linearGradient id="shareBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#fffaf5" />
+                    <stop offset="52%" stop-color="#fff1e6" />
+                    <stop offset="100%" stop-color="#e8f6f2" />
+                  </linearGradient>
+                  <radialGradient id="shareWarmGlow" cx="85%" cy="28%" r="55%">
+                    <stop offset="0%" stop-color="#fdba74" stop-opacity="0.45" />
+                    <stop offset="100%" stop-color="#fff1e6" stop-opacity="0" />
+                  </radialGradient>
+                  <linearGradient id="shareTextProtect" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#fffaf5" stop-opacity="0.96" />
+                    <stop offset="56%" stop-color="#fff5ed" stop-opacity="0.88" />
+                    <stop offset="100%" stop-color="#fff5ed" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
 
-              <rect width="400" height="185" fill="url(#shareBgGrad)" />
-              <rect width="400" height="185" fill="url(#shareWarmGlow)" />
+                <rect width="400" height="185" fill="url(#shareBgGrad)" />
+                <rect width="400" height="185" fill="url(#shareWarmGlow)" />
 
-              <circle cx="342" cy="148" r="64" fill="#3a5d57" opacity="0.08" />
-              <circle cx="356" cy="40" r="34" fill="#fa8644" opacity="0.14" />
+                <circle cx="342" cy="148" r="64" fill="#3a5d57" opacity="0.08" />
+                <circle cx="356" cy="40" r="34" fill="#fa8644" opacity="0.14" />
 
-              <g transform="translate(262, 34)">
-                <rect x="28" y="4" width="92" height="44" rx="16" fill="#fa8644" opacity="0.92" />
-                <path d="M 102 46 L 114 56 L 110 42 Z" fill="#fa8644" opacity="0.92" />
-                <rect x="42" y="18" width="54" height="5.5" rx="2.75" fill="#ffffff" opacity="0.92" />
-                <rect x="42" y="29" width="36" height="5" rx="2.5" fill="#ffedd5" opacity="0.85" />
+                <g transform="translate(262, 34)">
+                  <rect x="28" y="4" width="92" height="44" rx="16" fill="#fa8644" opacity="0.92" />
+                  <path d="M 102 46 L 114 56 L 110 42 Z" fill="#fa8644" opacity="0.92" />
+                  <rect x="42" y="18" width="54" height="5.5" rx="2.75" fill="#ffffff" opacity="0.92" />
+                  <rect x="42" y="29" width="36" height="5" rx="2.5" fill="#ffedd5" opacity="0.85" />
 
-                <rect x="6" y="62" width="98" height="46" rx="16" fill="#3a5d57" opacity="0.9" />
-                <path d="M 24 106 L 14 117 L 36 106 Z" fill="#3a5d57" opacity="0.9" />
-                <rect x="22" y="77" width="60" height="5.5" rx="2.75" fill="#ffffff" opacity="0.9" />
-                <rect x="22" y="88" width="42" height="5" rx="2.5" fill="#d1fae5" opacity="0.85" />
+                  <rect x="6" y="62" width="98" height="46" rx="16" fill="#3a5d57" opacity="0.9" />
+                  <path d="M 24 106 L 14 117 L 36 106 Z" fill="#3a5d57" opacity="0.9" />
+                  <rect x="22" y="77" width="60" height="5.5" rx="2.75" fill="#ffffff" opacity="0.9" />
+                  <rect x="22" y="88" width="42" height="5" rx="2.5" fill="#d1fae5" opacity="0.85" />
 
-                <circle cx="118" cy="78" r="7" fill="#fbbf24" opacity="0.85" />
-                <circle cx="12" cy="36" r="4.5" fill="#34d399" opacity="0.7" />
-                <circle cx="100" cy="116" r="3.5" fill="#e95c32" opacity="0.65" />
-              </g>
+                  <circle cx="118" cy="78" r="7" fill="#fbbf24" opacity="0.85" />
+                  <circle cx="12" cy="36" r="4.5" fill="#34d399" opacity="0.7" />
+                  <circle cx="100" cy="116" r="3.5" fill="#e95c32" opacity="0.65" />
+                </g>
 
-              <rect width="400" height="185" fill="url(#shareTextProtect)" />
-            </svg>
+                <rect width="400" height="185" fill="url(#shareTextProtect)" />
+              </svg>
 
-            <div class="relative z-10 max-w-[66%] space-y-1.5">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/90 border border-orange-200/80 text-[10px] font-extrabold text-[#c2410c] shadow-2xs">
-                <i data-lucide="message-circle-heart" class="w-3 h-3 text-[#e95c32]"></i>
-                <span>Góc lớp học</span>
-              </span>
-              <h4 class="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
-                Góc tám chuyện của thầy cô & học sinh
-              </h4>
-              <p class="text-[11px] sm:text-xs text-slate-600 font-medium leading-relaxed line-clamp-2">
-                Hỏi đáp bài khó, chia sẻ kỷ niệm buổi học và cổ vũ nhau mỗi ngày.
-              </p>
-            </div>
+              <div class="relative z-10 max-w-[66%] space-y-2">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/90 border border-orange-200/80 text-[10px] sm:text-[11px] font-extrabold text-[#c2410c] shadow-2xs">
+                  <i data-lucide="message-circle-heart" class="w-3.5 h-3.5 text-[#e95c32]"></i>
+                  <span>Góc lớp học</span>
+                </span>
+                <h4 class="text-sm sm:text-xl font-extrabold text-slate-900 leading-snug">
+                  Góc tám chuyện của thầy cô & học sinh
+                </h4>
+                <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed line-clamp-2 sm:line-clamp-3">
+                  Hỏi đáp bài khó, chia sẻ kỷ niệm buổi học và cổ vũ nhau mỗi ngày.
+                </p>
+              </div>
 
-            <div class="relative z-10 pt-2">
-              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#e95c32] to-[#fa8644] text-white text-[11px] sm:text-xs font-extrabold shadow-xs shadow-orange-500/20 group-hover:translate-x-0.5 transition-transform">
-                <span>Khám phá ngay</span>
-                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-              </span>
-            </div>
-          </button>
+              <div class="relative z-10 pt-2">
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#e95c32] to-[#fa8644] text-white text-xs sm:text-sm font-extrabold shadow-xs shadow-orange-500/20 group-hover:translate-x-0.5 transition-transform">
+                  <span>Khám phá ngay</span>
+                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </span>
+              </div>
+            </button>
+          </div>
+
         </div>
 
       </div>
@@ -2674,7 +2680,7 @@
         <span id="mobileLabelHome" class="text-[10px] font-extrabold mt-0.5 text-indigo-600">Trang chủ</span>
       </button>
 
-      <button type="button" onclick="openScheduleFromHome('week')" id="mobileBottomTabAttendance" class="flex flex-col items-center justify-center py-0.5 transition">
+      <button type="button" onclick="switchTab('attendance')" id="mobileBottomTabAttendance" class="flex flex-col items-center justify-center py-0.5 transition">
         <div id="mobileIconBgAttendance" class="w-10 h-7 rounded-full flex items-center justify-center text-slate-500 transition">
           <i data-lucide="calendar-days" class="w-4 h-4"></i>
         </div>
@@ -4770,7 +4776,7 @@
       }
 
       if (planId === 'free') {
-        if (trialInfo.isActive || paidActive) {
+        if (isInActiveTrial || paidActive) {
           showUndoToast('Gói Free đã được bao gồm trong gói đang sử dụng của bạn.');
           return;
         }
@@ -5332,7 +5338,6 @@
         homeworkSubmissions: homeworkSubmissions.slice(-1000),
         teacherPaymentQr,
         tuitionRemarksMap,
-        vipPlansConfig,
         currentTeacherPlanId,
         purchasedPlanId,
         purchasedStartsAtIso,
@@ -5377,10 +5382,6 @@
           if (Array.isArray(appData.homeworkSubmissions)) homeworkSubmissions = appData.homeworkSubmissions;
           if (appData.teacherPaymentQr && typeof appData.teacherPaymentQr === 'object') teacherPaymentQr = appData.teacherPaymentQr;
           if (appData.tuitionRemarksMap && typeof appData.tuitionRemarksMap === 'object') tuitionRemarksMap = appData.tuitionRemarksMap;
-          if (isCurrentUserVipAdmin() && Array.isArray(appData.vipPlansConfig) && appData.vipPlansConfig.length === 5) {
-            vipPlansConfig = appData.vipPlansConfig;
-            localStorage.setItem('dipi_vip_plans_config_v2', JSON.stringify(vipPlansConfig));
-          }
           if (appData.currentTeacherPlanId && vipPlansConfig.some(p => p.id === appData.currentTeacherPlanId)) {
             currentTeacherPlanId = appData.currentTeacherPlanId;
             localStorage.setItem(`${getStorageKeyPrefix()}_active_vip_plan`, currentTeacherPlanId);
@@ -5757,7 +5758,7 @@
         greetingEl.innerText = `Xin chào, ${displayName}`;
       }
       if (dateEl) {
-        dateEl.innerText = `${todayInfo.dayName}, ${todayFullStr}`;
+        dateEl.innerText = `${todayInfo.dayName}, ${todayInfo.dateFormatted}`;
       }
       if (vipLabelEl) {
         vipLabelEl.innerText = plan.name;
@@ -5782,33 +5783,40 @@
       }
 
       // 1. Thẻ chỉ số Bài Tập (chỉ tính những học sinh thuộc lớp ĐÃ CÓ ít nhất 1 bài tập được giao)
-      let candidateStudentsForHw = [];
+      const evaluateHomeworkStats = (studentsList) => {
+        let total = 0;
+        let submitted = 0;
+        studentsList.forEach(st => {
+          const stStatus = getStudentHomeworkCompletionStatus(st);
+          if (stStatus.total > 0) {
+            total++;
+            if (stStatus.isCompleted) {
+              submitted++;
+            }
+          }
+        });
+        return { total, submitted };
+      };
+
+      let todayStudents = [];
       if (todayClassIds.size > 0) {
         todayClassIds.forEach(cid => {
           const list = classStudentsMap[cid] || [];
           list.forEach(st => {
-            candidateStudentsForHw.push(Object.assign({}, st, { _classId: cid }));
+            todayStudents.push(Object.assign({}, st, { _classId: cid }));
           });
         });
       }
-      if (candidateStudentsForHw.length === 0) {
-        candidateStudentsForHw = getStudentsForClass(ALL_CLASSES_ID);
+
+      let hwStats = todayStudents.length > 0 ? evaluateHomeworkStats(todayStudents) : { total: 0, submitted: 0 };
+      if (hwStats.total === 0) {
+        hwStats = evaluateHomeworkStats(getStudentsForClass(ALL_CLASSES_ID));
       }
 
-      let hwTotalCount = 0;
-      let hwSubmittedCount = 0;
-      candidateStudentsForHw.forEach(st => {
-        const stStatus = getStudentHomeworkCompletionStatus(st);
-        if (stStatus.total > 0) {
-          hwTotalCount++;
-          if (stStatus.isCompleted) {
-            hwSubmittedCount++;
-          }
-        }
-      });
-
-      const hwPct = hwTotalCount > 0 ? Math.round((hwSubmittedCount / hwTotalCount) * 100) : 0;
+      const hwTotalCount = hwStats.total;
+      const hwSubmittedCount = hwStats.submitted;
       const hwNotSubmitted = Math.max(0, hwTotalCount - hwSubmittedCount);
+      const hwPct = hwTotalCount > 0 ? Math.round((hwSubmittedCount / hwTotalCount) * 100) : 0;
 
       const hwSubEl = document.getElementById('homeStatHwSubmitted');
       const hwTotEl = document.getElementById('homeStatHwTotal');
@@ -7127,6 +7135,8 @@
       } else {
         currentExamPaperData.text = val;
       }
+      const box = document.getElementById('assignmentExamPreviewBox');
+      if (box && box.value !== val) box.value = val;
     }
 
     function clearExamPaperUpload() {
@@ -8236,7 +8246,12 @@
 
       activeTuitionStudentId = s.id;
       let targetDates = [];
-      if (selectedFinanceDates.length > 0) {
+      if (currentRole === 'parent') {
+        const allClsDates = getCurrentClassSessionDates(found ? found.classId : currentClassId);
+        const now = new Date();
+        const curMonthStr = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+        targetDates = allClsDates.filter(d => d.includes(`/${curMonthStr}`));
+      } else if (selectedFinanceDates.length > 0) {
         targetDates = selectedFinanceDates;
       } else {
         const allClsDates = getCurrentClassSessionDates(found ? found.classId : currentClassId);
@@ -8458,9 +8473,13 @@
 
       const isHomeTab = tabKey === 'home';
       const subBanner = document.getElementById('globalSubBanner');
+      const teacherClassBox = document.getElementById('teacherClassBannerBox');
       const vipBanner = document.getElementById('homeVipStatusBanner');
       if (subBanner) {
-        subBanner.classList.toggle('hidden', isHomeTab && currentRole === 'teacher');
+        subBanner.classList.remove('hidden');
+      }
+      if (teacherClassBox && currentRole === 'teacher') {
+        teacherClassBox.classList.toggle('hidden', isHomeTab);
       }
       if (vipBanner) {
         vipBanner.classList.toggle('hidden', isHomeTab);
@@ -8487,6 +8506,7 @@
       });
 
       if (tabKey === 'home') renderHomeTab();
+      if (tabKey === 'attendance') { renderWeeklyScheduleGrid(); renderAttendanceTab(); }
       if (tabKey === 'finance') { syncFinanceDatesForCurrentClass(); renderFinanceTab(); }
       if (tabKey === 'homework') renderHomeworkTab();
       if (tabKey === 'classes') renderClassesManagementTab();
@@ -8776,6 +8796,13 @@
       try {
         sessionStorage.setItem('dipi_parent_verified_student_id', selectedParentStudentId);
       } catch (e) {}
+
+      const nowParent = new Date();
+      currentClassId = match.classObj.id;
+      financeFilterMode = 'month';
+      currentFinanceMonth = `${String(nowParent.getMonth() + 1).padStart(2, '0')}/${nowParent.getFullYear()}`;
+      syncFinanceDatesForCurrentClass();
+
       renderParentView();
       showUndoToast(`Đã mở hồ sơ học sinh ${match.student.name}!`);
     }
@@ -8814,14 +8841,14 @@
       if (role === 'teacher') {
         tView?.classList.remove('hidden');
         pView?.classList.add('hidden');
+        subBanner?.classList.remove('hidden');
         pSelectBox?.classList.add('hidden');
         mobileBottomNav?.classList.remove('hidden');
         headerQuickBtn?.classList.add('hidden', 'md:inline-flex');
-        teacherClassBox?.classList.remove('hidden');
+        teacherClassBox?.classList.toggle('hidden', currentTab === 'home');
         headerVipBtn?.classList.add('hidden', 'sm:inline-flex');
         tBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
         pBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
-        if (subBanner) subBanner.classList.toggle('hidden', currentTab === 'home');
       } else {
         tView?.classList.add('hidden');
         pView?.classList.remove('hidden');
