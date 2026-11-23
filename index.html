@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DiPi - Sổ Lớp Nhỏ | Quản Lý Lớp Học Thông Minh</title>
+  <title>DPA - Sổ Lớp Nhỏ | Quản Lý Lớp Học Thông Minh</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons CDN -->
@@ -119,7 +119,7 @@
 
           <div class="min-w-0">
             <h1 class="text-sm sm:text-lg font-extrabold text-slate-900 tracking-tight leading-tight flex items-center gap-1 whitespace-nowrap">
-              <span>DiPi</span><span class="hidden sm:inline"> - Sổ Lớp Nhỏ</span>
+              <span>DPA</span><span class="hidden sm:inline"> - Sổ Lớp Nhỏ</span>
               <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse hidden sm:inline-block"></span>
             </h1>
             <p class="text-[10px] sm:text-[11px] text-slate-500 font-semibold tracking-tight hidden sm:block">
@@ -178,16 +178,6 @@
               </button>
             </div>
           </div>
-
-          <button
-            id="headerQuickCreateBtn"
-            type="button"
-            onclick="handleQuickActionPlus()"
-            class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition active:scale-95"
-          >
-            <i data-lucide="plus" class="w-3.5 h-3.5 stroke-[2.5]"></i>
-            <span>Tạo mới</span>
-          </button>
 
           <!-- Chuyển đổi Giáo viên / Phụ huynh -->
           <div class="flex items-center p-0.5 sm:p-1 bg-slate-100/90 rounded-xl border border-slate-200/70 shadow-inner shrink-0">
@@ -284,12 +274,12 @@
           </button>
 
           <button
-            onclick="switchTab('attendance')"
+            onclick="openScheduleFromHome('week')"
             id="tabAttendanceBtn"
             class="flex items-center justify-center space-x-1.5 py-2 px-4 rounded-xl font-bold text-sm transition-colors text-slate-600 hover:text-slate-900 hover:bg-white/60"
           >
             <i data-lucide="calendar-check" class="w-4 h-4 shrink-0"></i>
-            <span>Lịch học</span>
+            <span>Lịch dạy</span>
             <span id="headerPresentBadge" class="ml-1 px-1.5 py-0.5 min-w-[36px] text-center tabular-nums rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
               0/0
             </span>
@@ -326,9 +316,9 @@
         <button
           type="button"
           onclick="handleQuickActionPlus()"
-          class="flex items-center justify-center space-x-1.5 py-2 px-3.5 rounded-xl font-bold text-xs bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition active:scale-95"
+          class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 px-3.5 text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition active:scale-95 shrink-0"
         >
-          <i data-lucide="plus" class="w-4 h-4 stroke-[2.5]"></i>
+          <i data-lucide="plus" class="w-3.5 h-3.5 stroke-[2.5]"></i>
           <span>Tạo mới</span>
         </button>
       </div>
@@ -441,10 +431,6 @@
                   <h2 id="homeHeroGreeting" class="text-base sm:text-2xl font-extrabold tracking-tight text-white truncate">
                     Xin chào, Thầy/Cô
                   </h2>
-                  <p class="text-[10px] sm:text-xs text-slate-200 font-semibold mt-1 flex items-center gap-1 whitespace-nowrap">
-                    <i data-lucide="calendar" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0"></i>
-                    <span id="homeHeroDate">Chủ Nhật, 22/11/26</span>
-                  </p>
                 </div>
 
                 <button
@@ -459,8 +445,8 @@
                 </button>
               </div>
 
-              <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-100/95 font-semibold">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+              <div class="flex items-center gap-2 text-sm sm:text-base text-slate-100 font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
                 <span id="homeHeroSummary">Hôm nay 0 ca dạy • 0 / 15 học sinh</span>
               </div>
             </div>
@@ -481,7 +467,7 @@
 
             <button
               type="button"
-              onclick="openModal('modalNotebook')"
+              onclick="openNotebookModal()"
               class="py-2.5 sm:py-4 px-2 flex flex-col items-center justify-center gap-1.5 hover:bg-emerald-50/60 transition active:scale-95"
             >
               <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -929,6 +915,36 @@
         </div>
 
         <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div id="financeBulkActionBar" class="hidden px-3 py-1.5 bg-indigo-950 text-white border-b border-indigo-900 flex items-center justify-between gap-1.5 transition-all text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="financeBulkSelectedCountText" class="font-bold text-indigo-200 text-[11px] sm:text-xs">Đã chọn 0 HS</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                type="button"
+                onclick="openConfirmBulkFinancePayModal()"
+                class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10.5px] font-bold transition"
+              >
+                Thu đủ
+              </button>
+              <button
+                type="button"
+                onclick="openConfirmBulkFinanceResetModal()"
+                class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-[10.5px] font-bold transition"
+              >
+                Hủy thu
+              </button>
+              <button
+                type="button"
+                onclick="clearFinanceSelection()"
+                class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 text-[10.5px] font-medium transition"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+
           <div class="overflow-x-auto scrollbar-none">
             <table class="w-full text-left border-collapse text-xs sm:text-sm min-w-full">
               <thead>
@@ -1112,48 +1128,12 @@
     <div id="ytTimeOptionsList" class="max-h-60 overflow-y-auto yt-dropdown-scroll py-1.5 divide-y divide-slate-100"></div>
   </div>
 
-  <!-- ==================== MODAL SỔ TAY (/so-tay - TRỐNG CHỜ PHÁT TRIỂN) ==================== -->
-  <div id="modalNotebook" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm" onclick="if(event.target===this) closeModal('modalNotebook')">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-4 sm:p-5 border border-slate-200/90 shadow-2xl space-y-3.5">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-            <i data-lucide="notebook-pen" class="w-4 h-4"></i>
-          </div>
-          <div>
-            <h4 class="font-extrabold text-sm text-slate-900">Sổ tay</h4>
-            <p class="text-[10.5px] font-mono text-slate-400">/so-tay</p>
-          </div>
-        </div>
-        <button type="button" onclick="closeModal('modalNotebook')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center shrink-0">
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
-        </button>
-      </div>
-
-      <div class="py-10 px-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 text-center space-y-2">
-        <div class="w-10 h-10 rounded-2xl bg-white border border-slate-200 text-slate-400 mx-auto flex items-center justify-center shadow-2xs">
-          <i data-lucide="notebook-pen" class="w-5 h-5"></i>
-        </div>
-        <div class="text-xs font-bold text-slate-600">Chưa có ghi chú nào</div>
-        <p class="text-[11px] text-slate-400">Khu vực Sổ tay đang để trống để hoàn thiện ở bước tiếp theo.</p>
-      </div>
-
-      <button
-        type="button"
-        onclick="closeModal('modalNotebook')"
-        class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
-      >
-        Đóng
-      </button>
-    </div>
-  </div>
-
   <!-- ==================== MODAL XEM TRƯỚC KHÔNG GIAN CHIA SẺ ==================== -->
   <div id="modalCommunityPreview" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm" onclick="if(event.target===this) closeModal('modalCommunityPreview')">
     <div class="bg-white rounded-3xl max-w-sm w-full p-4 sm:p-5 border border-orange-200/80 shadow-2xl space-y-3.5">
       <div class="flex items-start justify-between gap-2 pb-2 border-b border-slate-100">
         <div class="space-y-1 min-w-0">
-          <span class="inline-block px-2 py-0.5 rounded-full bg-orange-100 text-[#c2410c] text-[10px] font-extrabold">Cộng đồng DiPi • Sắp ra mắt</span>
+          <span class="inline-block px-2 py-0.5 rounded-full bg-orange-100 text-[#c2410c] text-[10px] font-extrabold">Cộng đồng DPA • Sắp ra mắt</span>
           <h4 class="font-extrabold text-sm text-slate-900 leading-snug">Không gian chia sẻ</h4>
         </div>
         <button type="button" onclick="closeModal('modalCommunityPreview')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center shrink-0">
@@ -1185,69 +1165,69 @@
       </button>
     </div>
   </div>
-
-  <!-- ==================== MODAL XÁC NHẬN HÀNH ĐỘNG ==================== -->
-  <div id="modalConfirmAction" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-5 border border-slate-200/90 shadow-2xl space-y-3.5 text-center">
-      <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 mx-auto flex items-center justify-center">
-        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
-      </div>
-      <div>
-        <h4 id="confirmActionTitle" class="text-sm sm:text-base font-extrabold text-slate-900">Xác nhận?</h4>
-        <p id="confirmActionDesc" class="text-xs text-slate-500 mt-1 font-medium">Bạn có chắc chắn muốn thực hiện thao tác này?</p>
-      </div>
-      <div class="flex justify-center gap-2 pt-2 border-t border-slate-100">
-        <button type="button" onclick="closeModal('modalConfirmAction')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">Hủy</button>
-        <button type="button" id="confirmActionExecuteBtn" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition shadow-sm">Xác nhận</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== MODAL TRẠNG THÁI ĐỒNG BỘ ĐÁM MÂY ==================== -->
-  <div id="modalCloudSyncInfo" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
-    <div class="bg-white rounded-3xl max-w-md w-full p-5 border border-slate-200/90 shadow-2xl space-y-3.5">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <i data-lucide="cloud-check" class="w-4 h-4"></i>
+  <!-- ==================== MODAL SỔ TAY GHI CHÚ NHANH ==================== -->
+  <div id="modalNotebook" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm" onclick="if(event.target===this) closeModal('modalNotebook')">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col p-4 sm:p-5 border border-slate-200/90 shadow-2xl space-y-3.5">
+      <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i data-lucide="notebook-pen" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-slate-900 text-sm">Đồng bộ Đám mây Đa thiết bị</h3>
-            <p class="text-[11px] text-slate-500">Lưu trữ an toàn trên bảng user_app_data của Supabase</p>
+            <h4 class="font-extrabold text-sm sm:text-base text-slate-900">Sổ tay ghi chú nhanh</h4>
+            <p class="text-[11px] text-slate-500 font-medium">Ghi nhớ dặn dò lớp học, kế hoạch giảng dạy • Tự đồng bộ</p>
           </div>
         </div>
-        <button type="button" onclick="closeModal('modalCloudSyncInfo')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        <button type="button" onclick="closeModal('modalNotebook')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center shrink-0 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
-      <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs space-y-1.5">
-        <div class="flex justify-between">
-          <span class="text-slate-500">Tài khoản:</span>
-          <strong id="syncModalAccountEmail" class="text-slate-900">--</strong>
+      <!-- Form soạn / chỉnh sửa ghi chú -->
+      <form onsubmit="handleSaveNotebookNote(event)" class="bg-slate-50/90 rounded-2xl border border-slate-200/90 p-3 space-y-2 shrink-0">
+        <input
+          type="text"
+          id="notebookNoteTitleInput"
+          placeholder="Tiêu đề ghi chú (tùy chọn)..."
+          class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-white font-bold text-slate-900 placeholder:font-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+        >
+        <textarea
+          id="notebookNoteContentInput"
+          rows="3"
+          required
+          placeholder="Nhập nội dung cần ghi nhớ..."
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 resize-y leading-relaxed"
+        ></textarea>
+        <div class="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            id="btnCancelNotebookEdit"
+            onclick="cancelEditNotebookNote()"
+            class="hidden px-3 py-1.5 rounded-xl bg-slate-200/80 hover:bg-slate-300/80 text-slate-700 text-xs font-bold transition"
+          >
+            Hủy sửa
+          </button>
+          <button
+            type="submit"
+            id="btnSaveNotebookNote"
+            class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-2xs transition active:scale-95 inline-flex items-center gap-1.5"
+          >
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span id="btnSaveNotebookNoteLabel">Lưu ghi chú</span>
+          </button>
         </div>
-        <div class="flex justify-between">
-          <span class="text-slate-500">Kho lưu trữ:</span>
-          <strong class="text-indigo-700">bảng user_app_data</strong>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-500">Trạng thái:</span>
-          <strong id="syncModalStatusText" class="text-emerald-700">Đã đồng bộ đám mây</strong>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-500">Lần đồng bộ cuối:</span>
-          <span id="syncModalLastTime" class="font-mono text-slate-700">--</span>
-        </div>
-      </div>
+      </form>
 
-      <div class="flex items-center justify-between gap-2 pt-1">
-        <button type="button" onclick="forceSyncNow()" class="flex-1 py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-          <span>Đồng bộ ngay</span>
-        </button>
-        <button type="button" onclick="pullFromCloudNow()" class="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
-          <i data-lucide="cloud-download" class="w-3.5 h-3.5"></i>
-          <span>Tải từ đám mây</span>
+      <!-- Danh sách ghi chú đã lưu -->
+      <div id="notebookNotesListContainer" class="flex-1 overflow-y-auto space-y-2 pr-0.5 min-h-[120px]"></div>
+
+      <div class="pt-2 border-t border-slate-100 shrink-0">
+        <button
+          type="button"
+          onclick="closeModal('modalNotebook')"
+          class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
+        >
+          Đóng
         </button>
       </div>
     </div>
@@ -1258,7 +1238,7 @@
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 border border-slate-200/90 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <div>
-          <h3 id="authModalTitle" class="font-extrabold text-slate-900 text-sm sm:text-base">Đăng nhập DiPi</h3>
+          <h3 id="authModalTitle" class="font-extrabold text-slate-900 text-sm sm:text-base">Đăng nhập DPA</h3>
           <p id="authModalSubtitle" class="text-[11px] text-slate-500 font-medium">Lưu trữ và đồng bộ hóa lớp học của bạn</p>
         </div>
         <button type="button" onclick="closeModal('modalAuth')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition">
@@ -2321,7 +2301,7 @@
                 Đang dùng: Free
               </span>
             </div>
-            <p class="text-[11px] text-slate-500 font-medium">Mở rộng quy mô học sinh & số lượng giáo viên đồng hành</p>
+            <p class="text-[11px] text-slate-500 font-medium">Mở rộng giới hạn sĩ số học sinh cho lớp học của bạn</p>
           </div>
         </div>
 
@@ -2355,8 +2335,8 @@
         </div>
         <div class="grid grid-cols-2 sm:contents gap-2">
           <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
-            <span class="text-slate-500 font-medium text-[11px] sm:text-xs">GV tối đa</span>
-            <strong id="vipUsageTeacherText" class="text-slate-900 font-extrabold text-xs sm:text-sm">1 giáo viên</strong>
+            <span class="text-slate-500 font-medium text-[11px] sm:text-xs">Lớp học</span>
+            <strong id="vipUsageTeacherText" class="text-slate-900 font-extrabold text-xs sm:text-sm">Không giới hạn</strong>
           </div>
           <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
             <span class="text-slate-500 font-medium text-[11px] sm:text-xs">Suất còn lại</span>
@@ -2498,6 +2478,7 @@
         </div>
 
         <div class="w-52 h-52 sm:w-64 sm:h-64 rounded-2xl bg-white p-2 border border-slate-200 shadow-xs flex items-center justify-center">
+          <div id="vipVietQrPlaceholderBox" class="hidden w-full h-full flex flex-col items-center justify-center text-center p-3 space-y-2"></div>
           <img
             id="vipVietQrImage"
             src=""
@@ -2537,7 +2518,7 @@
         <div class="py-1.5 px-2.5 bg-indigo-50/70 flex items-center justify-between gap-2">
           <span class="text-indigo-700 font-bold shrink-0">Nội dung CK</span>
           <div class="flex items-center gap-1.5 min-w-0">
-            <strong id="vipVietQrContentNote" class="font-mono font-black text-indigo-900 truncate">SEVQR DIPIVIP00000</strong>
+            <strong id="vipVietQrContentNote" class="font-mono font-black text-indigo-900 truncate">SEVQR DPA00000000</strong>
             <button type="button" onclick="copyVipVietQrTransferNote()" class="px-2 py-0.5 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-extrabold transition shrink-0">Copy</button>
           </div>
         </div>
@@ -2586,7 +2567,7 @@
 
       <div class="bg-gradient-to-br from-amber-50/90 to-orange-50/70 rounded-2xl p-3.5 border border-amber-200/80 space-y-2.5 text-xs text-slate-700">
         <p class="font-semibold text-slate-800 leading-relaxed">
-          Chào mừng bạn đến với <strong class="text-indigo-700">DiPi - Sổ Lớp Nhỏ</strong>! Tài khoản của bạn đã được kích hoạt tự động <strong class="text-emerald-700">30 ngày dùng thử miễn phí gói Trà Sữa</strong> (quản lý tối đa <strong class="text-amber-700">80 học sinh</strong>).
+          Chào mừng bạn đến với <strong class="text-indigo-700">DPA - Sổ Lớp Nhỏ</strong>! Tài khoản của bạn đã được kích hoạt tự động <strong class="text-emerald-700">30 ngày dùng thử miễn phí gói Trà Sữa</strong> (quản lý tối đa <strong class="text-amber-700">80 học sinh</strong>).
         </p>
 
         <div class="bg-white/90 rounded-xl p-2.5 border border-amber-200/80 space-y-1.5">
@@ -2670,6 +2651,60 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL XÁC NHẬN THAO TÁC ==================== -->
+  <div id="modalConfirmAction" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-4 bg-slate-900/65 backdrop-blur-sm" onclick="if(event.target===this) closeModal('modalConfirmAction')">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 border border-slate-200/90 shadow-2xl space-y-3.5">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <h4 id="confirmActionTitle" class="font-extrabold text-sm sm:text-base text-slate-900">Xác nhận thao tác</h4>
+          <p id="confirmActionDesc" class="text-xs text-slate-600 mt-1 leading-relaxed">Bạn có chắc chắn muốn thực hiện thao tác này?</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeModal('modalConfirmAction')" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">Hủy</button>
+        <button type="button" id="confirmActionExecuteBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL THÔNG TIN ĐỒNG BỘ ĐÁM MÂY ==================== -->
+  <div id="modalCloudSyncInfo" class="hidden fixed inset-0 z-[75] flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm" onclick="if(event.target===this) closeModal('modalCloudSyncInfo')">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 border border-slate-200/90 shadow-2xl space-y-3.5">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="cloud-check" class="w-4 h-4"></i>
+          </div>
+          <h4 class="font-extrabold text-sm text-slate-900">Đồng bộ đa thiết bị</h4>
+        </div>
+        <button type="button" onclick="closeModal('modalCloudSyncInfo')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+      <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-1.5 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500">Tài khoản:</span>
+          <strong id="syncModalAccountEmail" class="text-slate-900 truncate max-w-[180px]">--</strong>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500">Trạng thái:</span>
+          <strong id="syncModalStatusText" class="text-emerald-700">Đã đồng bộ</strong>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-500">Lần cuối:</span>
+          <strong id="syncModalLastTime" class="text-slate-700">--</strong>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button type="button" onclick="pullFromCloudNow()" class="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition">Tải từ đám mây</button>
+        <button type="button" onclick="forceSyncNow()" class="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition">Lưu ngay</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== BOTTOM TAB BAR NỔI TRÊN ĐIỆN THOẠI (5 Ô CHUẨN DEMO) ==================== -->
   <div id="mobileBottomNavWrapper" class="block sm:hidden fixed bottom-3 inset-x-3 z-40">
     <nav class="bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.18)] rounded-full px-1.5 py-1.5 grid grid-cols-5 items-center">
@@ -2680,11 +2715,11 @@
         <span id="mobileLabelHome" class="text-[10px] font-extrabold mt-0.5 text-indigo-600">Trang chủ</span>
       </button>
 
-      <button type="button" onclick="switchTab('attendance')" id="mobileBottomTabAttendance" class="flex flex-col items-center justify-center py-0.5 transition">
+      <button type="button" onclick="openScheduleFromHome('week')" id="mobileBottomTabAttendance" class="flex flex-col items-center justify-center py-0.5 transition">
         <div id="mobileIconBgAttendance" class="w-10 h-7 rounded-full flex items-center justify-center text-slate-500 transition">
           <i data-lucide="calendar-days" class="w-4 h-4"></i>
         </div>
-        <span id="mobileLabelAttendance" class="text-[10px] font-semibold mt-0.5 text-slate-500">Lịch học</span>
+        <span id="mobileLabelAttendance" class="text-[10px] font-semibold mt-0.5 text-slate-500">Lịch dạy</span>
       </button>
 
       <div class="flex items-center justify-center">
@@ -2797,11 +2832,13 @@
       classStudentsMap = {};
       homeworks = [];
       homeworkSubmissions = [];
+      teacherNotebookNotes = [];
+      editingNotebookNoteId = null;
       currentClassId = null;
       isClassSelected = false;
       students = [];
       try {
-        ['classes', 'students', 'homeworks', 'submissions'].forEach(suffix => {
+        ['classes', 'students', 'homeworks', 'submissions', 'notebook_notes'].forEach(suffix => {
           localStorage.removeItem(`dipi_guest_${suffix}`);
         });
       } catch (e) {}
@@ -2999,13 +3036,13 @@
       const toggleBtn = document.getElementById('authToggleBtn');
 
       if (authMode === 'signin') {
-        if (title) title.innerText = 'Đăng nhập DiPi';
+        if (title) title.innerText = 'Đăng nhập DPA';
         if (subtitle) subtitle.innerText = 'Lưu trữ và đồng bộ hóa lớp học của bạn';
         if (submitBtn) submitBtn.innerText = 'Đăng nhập';
         if (question) question.innerText = 'Chưa có tài khoản?';
         if (toggleBtn) toggleBtn.innerText = 'Đăng ký ngay';
       } else {
-        if (title) title.innerText = 'Tạo tài khoản DiPi';
+        if (title) title.innerText = 'Tạo tài khoản DPA';
         if (subtitle) subtitle.innerText = 'Bắt đầu quản lý lớp học dễ dàng hôm nay';
         if (submitBtn) submitBtn.innerText = 'Đăng ký tài khoản';
         if (question) question.innerText = 'Đã có tài khoản?';
@@ -3111,7 +3148,7 @@
         maxTeachers: 1,
         badge: 'Mặc định',
         accent: 'slate',
-        description: 'Dành cho giáo viên mới bắt đầu làm quen với Sổ Lớp Nhỏ.'
+        description: 'Đầy đủ tính năng cho giáo viên mới bắt đầu (tối đa 15 học sinh).'
       },
       {
         id: 'tra_chanh',
@@ -3123,7 +3160,7 @@
         maxTeachers: 1,
         badge: 'Tiết kiệm',
         accent: 'emerald',
-        description: 'Phù hợp lớp dạy thêm cá nhân quy mô vừa và nhỏ.'
+        description: 'Đầy đủ tính năng, mở rộng giới hạn lên tới 35 học sinh.'
       },
       {
         id: 'tra_sua',
@@ -3135,7 +3172,7 @@
         maxTeachers: 2,
         badge: 'Phổ biến nhất',
         accent: 'amber',
-        description: 'Quản lý nhiều lớp học cùng lúc với sĩ số lên tới 80 em và 2 giáo viên.'
+        description: 'Đầy đủ tính năng, quản lý thoải mái tới 80 học sinh.'
       },
       {
         id: 'trum_tra',
@@ -3145,21 +3182,21 @@
         salePercent: 35,
         maxStudents: 200,
         maxTeachers: 3,
-        badge: 'Nhóm giáo viên',
+        badge: 'Quy mô vừa',
         accent: 'indigo',
-        description: 'Mở rộng tới 200 học sinh và đồng hành cùng 3 giáo viên.'
+        description: 'Mở rộng tới 200 học sinh, ưu tiên hỗ trợ & tính năng mới.'
       },
       {
         id: 'trung_tam',
         name: 'Trung tâm',
         price: 399000,
-        yearlyPrice: 3900000,
+        yearlyPrice: 3990000,
         salePercent: 30,
         maxStudents: 1000,
         maxTeachers: 12,
         badge: 'Quy mô lớn',
         accent: 'rose',
-        description: 'Giải pháp toàn diện cho trung tâm ngoại ngữ & bồi dưỡng.'
+        description: 'Giải pháp quy mô lớn lên tới 1.000 học sinh & ưu tiên hỗ trợ 1-1.'
       }
     ];
 
@@ -3630,7 +3667,7 @@
         const expText = paidActive && vipExpiresAtIso
           ? ` • HSD: ${new Date(vipExpiresAtIso).toLocaleDateString('vi-VN')}`
           : '';
-        homeSubtitle.innerText = `Đang sử dụng ${totalSt.toLocaleString('vi-VN')} / ${maxSt.toLocaleString('vi-VN')} học sinh • ${maxTeachers} giáo viên${expText}`;
+        homeSubtitle.innerText = `Đang sử dụng ${totalSt.toLocaleString('vi-VN')} / ${maxSt.toLocaleString('vi-VN')} học sinh • ${classesList.length} lớp học${expText}`;
       }
 
       if (homeTrialBadge) {
@@ -3669,7 +3706,26 @@
           homeBtn.className = 'px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-xs sm:text-[13px] font-extrabold shadow-sm transition-all active:scale-95 inline-flex items-center gap-1.5';
         }
       }
+      updateHomeVipBannerVisibility();
       safeCreateIcons();
+    }
+
+    function updateHomeVipBannerVisibility() {
+      const vipBanner = document.getElementById('homeVipStatusBanner');
+      if (!vipBanner) return;
+
+      if (currentRole !== 'teacher' || currentTab === 'home') {
+        vipBanner.classList.add('hidden');
+        return;
+      }
+
+      const plan = getActiveVipPlan();
+      const totalSt = getTotalUniqueStudentsCount();
+      const maxSt = Math.max(1, Number(plan.maxStudents) || 15);
+      const usagePercent = Math.round((totalSt / maxSt) * 100);
+
+      const shouldShow = !currentUser || shouldShowTrialButtonOnHome() || usagePercent >= 90;
+      vipBanner.classList.toggle('hidden', !shouldShow);
     }
 
     function dismissFirstLoginVipPromo() {
@@ -3719,7 +3775,7 @@
           <p>Hiện tài khoản của bạn đang có <strong>${currentCount.toLocaleString('vi-VN')} / ${maxStudents.toLocaleString('vi-VN')} học sinh</strong>.</p>
           ${suggested ? `
             <p class="text-indigo-800 font-bold bg-indigo-50 border border-indigo-200 rounded-xl p-2.5">
-              Gợi ý phù hợp: Gói ${suggested.name} (${suggested.price.toLocaleString('vi-VN')}đ/tháng) — tối đa ${suggested.maxStudents.toLocaleString('vi-VN')} học sinh & ${suggested.maxTeachers || 1} giáo viên.
+              Gợi ý phù hợp: Gói ${suggested.name} (${suggested.price.toLocaleString('vi-VN')}đ/tháng) — tối đa ${suggested.maxStudents.toLocaleString('vi-VN')} học sinh.
             </p>
           ` : ''}
         `;
@@ -3942,7 +3998,7 @@
         usageStBar.style.width = `${pct}%`;
         usageStBar.className = `h-full rounded-full transition-all ${pct >= 90 ? 'bg-rose-600' : 'bg-indigo-600'}`;
       }
-      if (usageTText) usageTText.innerText = `${maxTeachers} giáo viên`;
+      if (usageTText) usageTText.innerText = `${classesList.length} lớp • Không giới hạn`;
       if (remainText) remainText.innerText = `${remaining.toLocaleString('vi-VN')} học sinh`;
 
       const adminBtn = document.getElementById('btnToggleVipAdminMode');
@@ -4053,14 +4109,14 @@
           trum_tra: 'indigo',
           trung_tam: 'rose'
         };
-        const VIP_COMMON_FEATURES = [
-          'Quản lý thu/nợ học phí',
-          'Tải phiếu báo thu không giới hạn',
-          'Lịch dạy & điểm danh hàng loạt',
-          'Hồ sơ học sinh & nạp file nhanh',
-          'Xuất báo cáo Excel'
+        const VIP_ALL_PLANS_FEATURES = [
+          'Quản lý lớp & Thời khóa biểu',
+          'Điểm danh & theo dõi chuyên cần',
+          'Tính học phí & Phiếu báo thu QR',
+          'Bài tập Online & Xuất Excel'
         ];
-        const VIP_PREMIUM_ONLY_PLANS = ['tra_sua', 'trum_tra', 'trung_tam'];
+        const VIP_PRIORITY_SUPPORT_PLANS = ['tra_sua', 'trum_tra', 'trung_tam'];
+        const VIP_MULTI_TEACHER_SOON_PLANS = ['trum_tra', 'trung_tam'];
 
         planGrid.innerHTML = vipPlansConfig.map(p => {
           const isCurrent = p.id === currentTeacherPlanId;
@@ -4072,7 +4128,9 @@
           const style = themeStyles[planAccentMap[p.id]] || themeStyles.sky;
           const isTrialTarget = p.id === TRIAL_PLAN_ID && (!currentUser?.id || canActivateFreeTrial());
           const isFreePlan = p.id === 'free';
-          const isPremiumTier = VIP_PREMIUM_ONLY_PLANS.includes(p.id);
+          const hasPrioritySupport = VIP_PRIORITY_SUPPORT_PLANS.includes(p.id);
+          const hasMultiTeacherSoon = VIP_MULTI_TEACHER_SOON_PLANS.includes(p.id);
+          const checkIconColor = isFreePlan ? 'text-sky-600' : 'text-emerald-600';
           const isFreeLockedByHigherActivePlan = isFreePlan && (trialInfo.isActive || paidActive);
           const isPlanActionDisabled = isLowerTierLockedByPaidVip || isFreeLockedByHigherActivePlan;
 
@@ -4087,51 +4145,32 @@
             actionButtonLabel = 'Mua Gói';
           }
 
-          const featuresListHtml = isFreePlan ? `
+          const featuresListHtml = `
             <ul class="grid grid-cols-2 sm:block gap-x-2 gap-y-1 sm:space-y-1 text-[10.5px] sm:text-[11px] font-semibold text-slate-700 pt-1.5 border-t border-black/5 w-full">
               <li class="flex items-start gap-1">
-                <i data-lucide="check" class="w-3 h-3 text-sky-600 shrink-0 mt-0.5"></i>
+                <i data-lucide="check" class="w-3 h-3 ${checkIconColor} shrink-0 mt-0.5"></i>
                 <span>Tối đa <strong>${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> học sinh</span>
               </li>
               <li class="flex items-start gap-1">
-                <i data-lucide="check" class="w-3 h-3 text-sky-600 shrink-0 mt-0.5"></i>
-                <span><strong>${p.maxTeachers || 1}</strong> giáo viên quản lý</span>
+                <i data-lucide="check" class="w-3 h-3 ${checkIconColor} shrink-0 mt-0.5"></i>
+                <span>Không giới hạn số lớp học</span>
               </li>
-              <li class="flex items-start gap-1">
-                <i data-lucide="check" class="w-3 h-3 text-sky-600 shrink-0 mt-0.5"></i>
-                <span>Quản lý lớp & điểm danh cơ bản</span>
-              </li>
-              <li class="flex items-start gap-1">
-                <i data-lucide="check" class="w-3 h-3 text-sky-600 shrink-0 mt-0.5"></i>
-                <span>Phù hợp làm quen trải nghiệm</span>
-              </li>
-            </ul>
-          ` : `
-            <ul class="grid grid-cols-2 sm:block gap-x-2 gap-y-1 sm:space-y-1 text-[10.5px] sm:text-[11px] font-semibold text-slate-700 pt-1.5 border-t border-black/5 w-full">
-              <li class="flex items-start gap-1">
-                <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
-                <span>Tối đa <strong>${Number(p.maxStudents).toLocaleString('vi-VN')}</strong> học sinh</span>
-              </li>
-              <li class="flex items-start gap-1">
-                <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
-                <span><strong>${p.maxTeachers || 1}</strong> giáo viên quản lý</span>
-              </li>
-              ${isPremiumTier ? `
-                <li class="flex items-start gap-1 font-extrabold text-slate-900">
-                  <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
-                  <span>Mở khóa full chức năng</span>
-                </li>
-              ` : ''}
-              ${VIP_COMMON_FEATURES.map(feat => `
+              ${VIP_ALL_PLANS_FEATURES.map(feat => `
                 <li class="flex items-start gap-1">
-                  <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
+                  <i data-lucide="check" class="w-3 h-3 ${checkIconColor} shrink-0 mt-0.5"></i>
                   <span>${feat}</span>
                 </li>
               `).join('')}
-              ${isPremiumTier ? `
+              ${hasPrioritySupport ? `
+                <li class="flex items-start gap-1 font-extrabold text-slate-900">
+                  <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
+                  <span>Ưu tiên hỗ trợ & tính năng mới</span>
+                </li>
+              ` : ''}
+              ${hasMultiTeacherSoon ? `
                 <li class="flex items-start gap-1 font-extrabold text-indigo-700">
                   <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
-                  <span>Thử nghiệm sớm giao bài tập</span>
+                  <span>Hỗ trợ nhiều giáo viên (Sắp ra mắt)</span>
                 </li>
               ` : ''}
             </ul>
@@ -4452,7 +4491,7 @@
       prefix: 'SEVQR'
     };
 
-    let activeVietQrNoteText = 'SEVQR DIPIVIP00000';
+    let activeVietQrNoteText = '';
     let activeVietQrOrderCode = null;
     let activeVietQrOrderAmount = 0;
     let activeVietQrPlanId = null;
@@ -4468,10 +4507,6 @@
       } catch (e) {}
       document.body.removeChild(tempInp);
       showUndoToast(toastMsg);
-    }
-
-    function generateSePayOrderCode() {
-      return 'DIPIVIP' + Math.floor(10000 + Math.random() * 90000);
     }
 
     function buildVietinBankQrUrls(amount, transferContent) {
@@ -4511,33 +4546,6 @@
         if (textEl) textEl.innerText = message || 'Đang chờ chuyển khoản...';
       }
       safeCreateIcons();
-    }
-
-    async function createPendingPaymentOrderOnSupabase(orderPayload) {
-      if (!supabaseClient || !currentUser?.id) return false;
-      try {
-        const { error } = await supabaseClient
-          .from('vip_orders')
-          .insert({
-            order_code: orderPayload.orderCode,
-            user_id: currentUser.id,
-            user_email: currentUser.email || null,
-            plan_id: orderPayload.planId,
-            billing_cycle: orderPayload.billingCycle,
-            amount: orderPayload.amount,
-            status: 'pending'
-          });
-        if (error) {
-          console.warn('Lỗi tạo đơn vip_orders:', error.message);
-          showUndoToast(`Không thể tạo đơn thanh toán: ${error.message}`);
-          return false;
-        }
-        return true;
-      } catch (err) {
-        console.warn('Lỗi tạo đơn hàng Supabase:', err);
-        showUndoToast('Lỗi kết nối khi tạo đơn thanh toán VIP.');
-        return false;
-      }
     }
 
     async function checkActiveVietQrOrderStatus(showFeedback = false) {
@@ -4594,60 +4602,54 @@
 
       stopVipVietQrStatusPolling();
 
-      const pricing = calculateVipPlanPricing(plan);
-      const orderCode = generateSePayOrderCode();
-      const transferContent = `${VIETINBANK_QR_CONFIG.prefix} ${orderCode}`;
-
-      activeVietQrOrderCode = orderCode;
-      activeVietQrOrderAmount = pricing.finalPrice;
+      activeVietQrOrderCode = null;
+      activeVietQrOrderAmount = 0;
       activeVietQrPlanId = plan.id;
-      activeVietQrNoteText = transferContent;
+      activeVietQrNoteText = '';
+
+      const cycleShort = currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng';
+      const badgeAccentClasses = {
+        sky: 'bg-sky-50 text-sky-700 border-sky-200',
+        slate: 'bg-slate-100 text-slate-800 border-slate-300',
+        emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        amber: 'bg-amber-50 text-amber-800 border-amber-300',
+        indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+        rose: 'bg-rose-50 text-rose-700 border-rose-200'
+      };
+      const qrAccentMap = {
+        free: 'sky',
+        tra_chanh: 'emerald',
+        tra_sua: 'amber',
+        trum_tra: 'indigo',
+        trung_tam: 'rose'
+      };
+      const resolvedAccent = qrAccentMap[plan.id] || 'emerald';
 
       const planBadgeEl = document.getElementById('vipVietQrPlanBadge');
       if (planBadgeEl) {
-        const shortPrice = pricing.finalPrice >= 1000
-          ? `${Math.round(pricing.finalPrice / 1000).toLocaleString('vi-VN')}k`
-          : `${pricing.finalPrice}đ`;
-        const cycleShort = currentVipBillingCycle === 'yearly' ? 'năm' : 'tháng';
-        const badgeAccentClasses = {
-          sky: 'bg-sky-50 text-sky-700 border-sky-200',
-          slate: 'bg-slate-100 text-slate-800 border-slate-300',
-          emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-          amber: 'bg-amber-50 text-amber-800 border-amber-300',
-          indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-          rose: 'bg-rose-50 text-rose-700 border-rose-200'
-        };
-        const qrAccentMap = {
-          free: 'sky',
-          tra_chanh: 'emerald',
-          tra_sua: 'amber',
-          trum_tra: 'indigo',
-          trung_tam: 'rose'
-        };
-        const resolvedAccent = qrAccentMap[plan.id] || 'emerald';
-        planBadgeEl.innerText = `${plan.name} - ${shortPrice}/${cycleShort}`;
+        planBadgeEl.innerText = `${plan.name} / ${cycleShort}`;
         planBadgeEl.className = `px-2 py-0.5 rounded-full font-extrabold text-[10.5px] border ${badgeAccentClasses[resolvedAccent] || badgeAccentClasses.emerald}`;
       }
 
       const amountEl = document.getElementById('vipVietQrAmountValue');
       const noteEl = document.getElementById('vipVietQrContentNote');
       const qrImg = document.getElementById('vipVietQrImage');
-      if (amountEl) amountEl.innerText = `${pricing.finalPrice.toLocaleString('vi-VN')}đ`;
-      if (noteEl) noteEl.innerText = transferContent;
+      const qrPlaceholder = document.getElementById('vipVietQrPlaceholderBox');
 
-      const { primaryVietQrUrl, fallbackSePayUrl } = buildVietinBankQrUrls(pricing.finalPrice, transferContent);
+      if (amountEl) amountEl.innerText = '--';
+      if (noteEl) noteEl.innerText = 'Đang tạo mã...';
+
       if (qrImg) {
-        qrImg.onerror = function () {
-          if (this.dataset.fallbackApplied !== '1') {
-            this.dataset.fallbackApplied = '1';
-            this.src = fallbackSePayUrl;
-          } else {
-            this.onerror = null;
-            this.src = 'https://placehold.co/240x240/e0f2fe/0369a1?text=VietinBank+QR';
-          }
-        };
-        qrImg.dataset.fallbackApplied = '0';
-        qrImg.src = primaryVietQrUrl;
+        qrImg.src = '';
+        qrImg.classList.add('hidden');
+      }
+      if (qrPlaceholder) {
+        qrPlaceholder.classList.remove('hidden');
+        qrPlaceholder.innerHTML = `
+          <i data-lucide="loader-2" class="w-7 h-7 text-indigo-600 animate-spin"></i>
+          <div class="text-xs font-extrabold text-slate-800">Đang khởi tạo đơn hàng an toàn...</div>
+          <div class="text-[10.5px] text-slate-500">Vui lòng đợi trong giây lát</div>
+        `;
       }
 
       const statusBanner = document.getElementById('vipVietQrStatusBanner');
@@ -4656,7 +4658,7 @@
         statusBanner.innerHTML = `
           <div class="flex items-center gap-1.5 text-[#78350f] font-bold min-w-0">
             <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
-            <span id="vipVietQrStatusText" class="truncate">Đang chờ chuyển khoản...</span>
+            <span id="vipVietQrStatusText" class="truncate">Đang tạo đơn hàng...</span>
           </div>
           <button
             type="button"
@@ -4670,22 +4672,98 @@
 
       openModal('modalVipVietQrCheckout');
 
-      if (currentUser?.id) {
-        const created = await createPendingPaymentOrderOnSupabase({
-          orderCode,
-          planId: plan.id,
-          billingCycle: currentVipBillingCycle,
-          amount: pricing.finalPrice
-        });
-        if (created) {
-          vipVietQrPollTimer = setInterval(() => {
-            checkActiveVietQrOrderStatus(false);
-          }, 4000);
+      const showOrderCreateError = (errMsg) => {
+        if (noteEl) noteEl.innerText = 'Không thể tạo mã';
+        if (amountEl) amountEl.innerText = '--';
+        setVipVietQrStatusUI('underpaid', 'Khởi tạo đơn hàng thất bại.');
+        if (qrImg) qrImg.classList.add('hidden');
+        if (qrPlaceholder) {
+          qrPlaceholder.classList.remove('hidden');
+          qrPlaceholder.innerHTML = `
+            <div class="w-9 h-9 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+              <i data-lucide="alert-circle" class="w-5 h-5"></i>
+            </div>
+            <div class="text-xs font-extrabold text-rose-700 leading-snug">${errMsg}</div>
+            <button
+              type="button"
+              id="btnRetryCreateVipOrder"
+              class="mt-1 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-2xs transition active:scale-95"
+            >
+              Thử lại
+            </button>
+          `;
+          const retryBtn = document.getElementById('btnRetryCreateVipOrder');
+          if (retryBtn) {
+            retryBtn.onclick = () => openVipVietQrCheckoutModal(plan);
+          }
         }
+        safeCreateIcons();
+      };
+
+      if (!supabaseClient) {
+        showOrderCreateError('Chưa kết nối được máy chủ thanh toán.');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient.rpc('create_vip_payment_order', {
+          p_plan_id: plan.id,
+          p_billing_cycle: currentVipBillingCycle
+        });
+
+        if (error || !data || data.ok !== true) {
+          const errMessage = error?.message || data?.message || 'Không thể khởi tạo đơn hàng trên máy chủ.';
+          showOrderCreateError(errMessage);
+          return;
+        }
+
+        const orderCode = String(data.order_code || '').trim();
+        const serverAmount = Math.max(0, Math.round(Number(data.amount) || 0));
+        const transferContent = `${VIETINBANK_QR_CONFIG.prefix} ${orderCode}`;
+
+        activeVietQrOrderCode = orderCode;
+        activeVietQrOrderAmount = serverAmount;
+        activeVietQrNoteText = transferContent;
+
+        if (planBadgeEl) {
+          const shortPrice = serverAmount >= 1000
+            ? `${Math.round(serverAmount / 1000).toLocaleString('vi-VN')}k`
+            : `${serverAmount}đ`;
+          planBadgeEl.innerText = `${plan.name} - ${shortPrice}/${cycleShort}`;
+        }
+
+        if (amountEl) amountEl.innerText = `${serverAmount.toLocaleString('vi-VN')}đ`;
+        if (noteEl) noteEl.innerText = transferContent;
+
+        const { primaryVietQrUrl, fallbackSePayUrl } = buildVietinBankQrUrls(serverAmount, transferContent);
+        if (qrPlaceholder) qrPlaceholder.classList.add('hidden');
+        if (qrImg) {
+          qrImg.onerror = function () {
+            if (this.dataset.fallbackApplied !== '1') {
+              this.dataset.fallbackApplied = '1';
+              this.src = fallbackSePayUrl;
+            } else {
+              this.onerror = null;
+              this.src = 'https://placehold.co/240x240/e0f2fe/0369a1?text=VietinBank+QR';
+            }
+          };
+          qrImg.dataset.fallbackApplied = '0';
+          qrImg.src = primaryVietQrUrl;
+          qrImg.classList.remove('hidden');
+        }
+
+        setVipVietQrStatusUI('pending', 'Đang chờ chuyển khoản...');
+        vipVietQrPollTimer = setInterval(() => {
+          checkActiveVietQrOrderStatus(false);
+        }, 4000);
+      } catch (err) {
+        console.warn('Lỗi gọi RPC create_vip_payment_order:', err);
+        showOrderCreateError('Lỗi kết nối mạng khi tạo đơn hàng. Vui lòng thử lại.');
       }
     }
 
     function copyVipVietQrTransferNote() {
+      if (!activeVietQrNoteText) { showUndoToast('Chưa có mã chuyển khoản để sao chép.'); return; }
       copyTextToClipboardFallback(
         activeVietQrNoteText,
         `Đã sao chép nội dung chuyển khoản: ${activeVietQrNoteText}`
@@ -4782,7 +4860,7 @@
         }
         openConfirmModal(
           'Chuyển về gói Free?',
-          'Giới hạn học sinh sẽ chuyển về tối đa 15 học sinh và 1 giáo viên. Bạn có chắc chắn muốn chuyển về gói Free?',
+          'Giới hạn học sinh sẽ chuyển về tối đa 15 học sinh. Bạn có chắc chắn muốn chuyển về gói Free?',
           () => {
             currentTeacherPlanId = 'free';
             vipExpiresAtIso = null;
@@ -5087,6 +5165,8 @@
 
     let homeworks = [];
     let homeworkSubmissions = [];
+    let teacherNotebookNotes = [];
+    let editingNotebookNoteId = null;
     let teacherPaymentQr = { imageData: '', bankName: 'BIDV' };
     let tuitionRemarksMap = {};
 
@@ -5189,6 +5269,7 @@
       const savedStudents = localStorage.getItem(`${prefix}_students`);
       const savedHomeworks = localStorage.getItem(`${prefix}_homeworks`);
       const savedSubmissions = localStorage.getItem(`${prefix}_submissions`);
+      const savedNotebook = localStorage.getItem(`${prefix}_notebook_notes`);
       const savedQr = localStorage.getItem(`${prefix}_teacher_qr`);
       const savedRemarks = localStorage.getItem(`${prefix}_tuition_remarks`);
 
@@ -5214,6 +5295,10 @@
           homeworks = Array.isArray(parsedHw) ? parsedHw.filter(h => h.id !== 'HW_DEFAULT_01') : [];
         } catch (e) { homeworks = []; }
         try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
+        try {
+          const parsedNotes = savedNotebook ? JSON.parse(savedNotebook) : [];
+          teacherNotebookNotes = Array.isArray(parsedNotes) ? parsedNotes : [];
+        } catch (e) { teacherNotebookNotes = []; }
       } else {
         if (savedClasses && savedStudents) {
           try {
@@ -5229,7 +5314,12 @@
         }
         try { homeworks = savedHomeworks ? JSON.parse(savedHomeworks) : getDefaultHomeworks(); } catch (e) { homeworks = getDefaultHomeworks(); }
         try { homeworkSubmissions = savedSubmissions ? JSON.parse(savedSubmissions) : []; } catch (e) { homeworkSubmissions = []; }
+        try {
+          const parsedNotes = savedNotebook ? JSON.parse(savedNotebook) : [];
+          teacherNotebookNotes = Array.isArray(parsedNotes) ? parsedNotes : [];
+        } catch (e) { teacherNotebookNotes = []; }
       }
+      editingNotebookNoteId = null;
 
       const codesBackfilled = ensureAllStudentsHaveUniqueCodes();
 
@@ -5263,6 +5353,7 @@
         localStorage.setItem(`${prefix}_students`, JSON.stringify(classStudentsMap));
         localStorage.setItem(`${prefix}_homeworks`, JSON.stringify(homeworks));
         localStorage.setItem(`${prefix}_submissions`, JSON.stringify(homeworkSubmissions));
+        localStorage.setItem(`${prefix}_notebook_notes`, JSON.stringify(teacherNotebookNotes));
         localStorage.setItem(`${prefix}_teacher_qr`, JSON.stringify(teacherPaymentQr));
         localStorage.setItem(`${prefix}_tuition_remarks`, JSON.stringify(tuitionRemarksMap));
         updateHeaderVipBadge();
@@ -5336,6 +5427,7 @@
         classStudentsMap,
         homeworks: compactHomeworks,
         homeworkSubmissions: homeworkSubmissions.slice(-1000),
+        teacherNotebookNotes,
         teacherPaymentQr,
         tuitionRemarksMap,
         currentTeacherPlanId,
@@ -5380,6 +5472,7 @@
           if (appData.classStudentsMap && typeof appData.classStudentsMap === 'object') classStudentsMap = appData.classStudentsMap;
           if (Array.isArray(appData.homeworks)) homeworks = appData.homeworks;
           if (Array.isArray(appData.homeworkSubmissions)) homeworkSubmissions = appData.homeworkSubmissions;
+          if (Array.isArray(appData.teacherNotebookNotes)) teacherNotebookNotes = appData.teacherNotebookNotes;
           if (appData.teacherPaymentQr && typeof appData.teacherPaymentQr === 'object') teacherPaymentQr = appData.teacherPaymentQr;
           if (appData.tuitionRemarksMap && typeof appData.tuitionRemarksMap === 'object') tuitionRemarksMap = appData.tuitionRemarksMap;
           if (appData.currentTeacherPlanId && vipPlansConfig.some(p => p.id === appData.currentTeacherPlanId)) {
@@ -5749,16 +5842,12 @@
       const maxSt = Math.max(1, Number(plan.maxStudents) || 15);
 
       const greetingEl = document.getElementById('homeHeroGreeting');
-      const dateEl = document.getElementById('homeHeroDate');
       const vipLabelEl = document.getElementById('homeHeroVipPlanLabel');
       const summaryEl = document.getElementById('homeHeroSummary');
 
       if (greetingEl) {
         const displayName = currentUser?.full_name ? currentUser.full_name : 'Thầy/Cô';
         greetingEl.innerText = `Xin chào, ${displayName}`;
-      }
-      if (dateEl) {
-        dateEl.innerText = `${todayInfo.dayName}, ${todayInfo.dateFormatted}`;
       }
       if (vipLabelEl) {
         vipLabelEl.innerText = plan.name;
@@ -7854,7 +7943,7 @@
           : '';
 
         return `
-          <tr class="hover:bg-slate-50 transition group/row bg-white text-slate-900">
+          <tr class="hover:bg-slate-50 transition group/row bg-white text-slate-900 ${isChecked ? 'bg-indigo-50/40' : ''}">
             <td class="py-2.5 sm:py-3 px-2 sm:px-3 text-center">
               <input
                 type="checkbox"
@@ -7914,13 +8003,102 @@
           </tr>
         `;
       }).join('');
+      updateFinanceBulkActionBar();
       safeCreateIcons();
+    }
+
+    function updateFinanceBulkActionBar() {
+      const bar = document.getElementById('financeBulkActionBar');
+      const countText = document.getElementById('financeBulkSelectedCountText');
+      const masterCb = document.getElementById('selectAllStudentsCheckbox');
+
+      if (masterCb) {
+        masterCb.checked = students.length > 0 && selectedStudentIds.length === students.length;
+      }
+      if (!bar) return;
+
+      if (selectedStudentIds.length > 0) {
+        bar.classList.remove('hidden');
+        if (countText) countText.innerText = `Đã chọn ${selectedStudentIds.length} HS`;
+      } else {
+        bar.classList.add('hidden');
+        if (countText) countText.innerText = 'Đã chọn 0 HS';
+      }
+    }
+
+    function clearFinanceSelection() {
+      selectedStudentIds = [];
+      const masterCb = document.getElementById('selectAllStudentsCheckbox');
+      if (masterCb) masterCb.checked = false;
+      renderFinanceTab();
+    }
+
+    function openConfirmBulkFinancePayModal() {
+      const count = selectedStudentIds.length;
+      if (count === 0) return;
+
+      openConfirmModal(
+        `Thu đủ học phí hàng loạt (${count} học sinh)?`,
+        `Xác nhận đánh dấu ĐÃ THU ĐỦ học phí kỳ đang chọn cho ${count} học sinh đã tích chọn?`,
+        () => {
+          const periodKey = getActiveFinancePeriodKey();
+          const datesToMark = selectedFinanceDates.length > 0 ? selectedFinanceDates : getAllKnownDatesForCurrentScope();
+
+          selectedStudentIds.forEach(studentId => {
+            const found = findStudentAndClassById(studentId);
+            const s = found ? found.student : students.find(x => x.id === studentId);
+            if (!s) return;
+            if (!s.paidSessions) s.paidSessions = [];
+            if (!s.paidPeriods) s.paidPeriods = [];
+            if (!s.paidPeriods.includes(periodKey)) s.paidPeriods.push(periodKey);
+            datesToMark.forEach(d => {
+              if (!s.paidSessions.includes(d)) s.paidSessions.push(d);
+            });
+          });
+
+          students = getStudentsForClass(currentClassId);
+          clearFinanceSelection();
+          saveAllToLocalStorage(true);
+          renderFinanceTab();
+          renderHomeTab();
+          showUndoToast(`Đã đánh dấu thu đủ học phí cho ${count} học sinh!`);
+        }
+      );
+    }
+
+    function openConfirmBulkFinanceResetModal() {
+      const count = selectedStudentIds.length;
+      if (count === 0) return;
+
+      openConfirmModal(
+        `Hủy thu học phí hàng loạt (${count} học sinh)?`,
+        `Xác nhận hủy trạng thái đã đóng học phí kỳ đang chọn cho ${count} học sinh đã tích chọn?`,
+        () => {
+          const periodKey = getActiveFinancePeriodKey();
+          const datesToClear = selectedFinanceDates.length > 0 ? selectedFinanceDates : getAllKnownDatesForCurrentScope();
+
+          selectedStudentIds.forEach(studentId => {
+            const found = findStudentAndClassById(studentId);
+            const s = found ? found.student : students.find(x => x.id === studentId);
+            if (!s) return;
+            s.paidPeriods = (s.paidPeriods || []).filter(p => p !== periodKey);
+            s.paidSessions = (s.paidSessions || []).filter(d => !datesToClear.includes(d));
+          });
+
+          students = getStudentsForClass(currentClassId);
+          clearFinanceSelection();
+          saveAllToLocalStorage(true);
+          renderFinanceTab();
+          renderHomeTab();
+          showUndoToast(`Đã hủy thu học phí kỳ đang chọn cho ${count} học sinh!`);
+        }
+      );
     }
 
     function toggleSelectStudent(id, checked) {
       if (checked) { if (!selectedStudentIds.includes(id)) selectedStudentIds.push(id); }
       else { selectedStudentIds = selectedStudentIds.filter(x => x !== id); }
-      renderFinanceTab();
+      updateFinanceBulkActionBar();
     }
 
     function toggleSelectAllStudents(checked) {
@@ -8472,16 +8650,13 @@
       const isHomeTab = tabKey === 'home';
       const subBanner = document.getElementById('globalSubBanner');
       const teacherClassBox = document.getElementById('teacherClassBannerBox');
-      const vipBanner = document.getElementById('homeVipStatusBanner');
       if (subBanner) {
         subBanner.classList.remove('hidden');
       }
       if (teacherClassBox && currentRole === 'teacher') {
         teacherClassBox.classList.toggle('hidden', isHomeTab);
       }
-      if (vipBanner) {
-        vipBanner.classList.toggle('hidden', isHomeTab);
-      }
+      updateHomeVipBannerVisibility();
 
       ['home', 'attendance', 'finance', 'homework', 'classes'].forEach(k => {
         const cap = k.charAt(0).toUpperCase() + k.slice(1);
@@ -8822,120 +8997,76 @@
       renderParentView();
     }
 
-    function switchRole(role) {
-      currentRole = role;
-      saveUiNavigationState();
-      const tView = document.getElementById('teacherViewSection');
-      const pView = document.getElementById('parentViewSection');
-      const tBtn = document.getElementById('roleTeacherBtn');
-      const pBtn = document.getElementById('roleParentBtn');
-      const pSelectBox = document.getElementById('parentStudentSelectBox');
-      const mobileBottomNav = document.getElementById('mobileBottomNavWrapper');
-      const headerQuickBtn = document.getElementById('headerQuickCreateBtn');
-      const teacherClassBox = document.getElementById('teacherClassBannerBox');
-      const headerVipBtn = document.getElementById('btnHeaderVipPlan');
-      const subBanner = document.getElementById('globalSubBanner');
-
-      if (role === 'teacher') {
-        tView?.classList.remove('hidden');
-        pView?.classList.add('hidden');
-        subBanner?.classList.remove('hidden');
-        pSelectBox?.classList.add('hidden');
-        mobileBottomNav?.classList.remove('hidden');
-        headerQuickBtn?.classList.add('hidden', 'md:inline-flex');
-        teacherClassBox?.classList.toggle('hidden', currentTab === 'home');
-        headerVipBtn?.classList.add('hidden', 'sm:inline-flex');
-        tBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
-        pBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
-      } else {
-        tView?.classList.add('hidden');
-        pView?.classList.remove('hidden');
-        subBanner?.classList.remove('hidden');
-        pSelectBox?.classList.remove('hidden');
-        mobileBottomNav?.classList.add('hidden');
-        headerQuickBtn?.classList.add('hidden');
-        headerQuickBtn?.classList.remove('md:inline-flex');
-        teacherClassBox?.classList.add('hidden');
-        headerVipBtn?.classList.add('hidden');
-        headerVipBtn?.classList.remove('sm:inline-flex');
-        pBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
-        tBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
-        renderParentView();
-      }
-      safeCreateIcons();
-    }
-
     function renderParentView() {
-      const allStudents = getStudentsForClass(ALL_CLASSES_ID);
-      const student = selectedParentStudentId
-        ? allStudents.find(s => s.id === selectedParentStudentId)
-        : null;
-
       const gateCard = document.getElementById('parentCodeGateCard');
       const authContent = document.getElementById('parentAuthenticatedContent');
       const bannerBadge = document.getElementById('parentActiveStudentBannerBadge');
-      const logoutBtn = document.getElementById('btnParentLogoutCode');
+      const logoutCodeBtn = document.getElementById('btnParentLogoutCode');
+      const overview = document.getElementById('parentOverviewCard');
+      const hwList = document.getElementById('studentHomeworkCardsList');
+      const attGrid = document.getElementById('parentAttendanceGrid');
 
-      if (!student) {
+      const allSt = getStudentsForClass(ALL_CLASSES_ID);
+      const st = selectedParentStudentId ? allSt.find(s => s.id === selectedParentStudentId) : null;
+
+      if (!st) {
         gateCard?.classList.remove('hidden');
         authContent?.classList.add('hidden');
         if (bannerBadge) bannerBadge.innerText = 'Chưa nhập mã HS';
-        logoutBtn?.classList.add('hidden');
+        logoutCodeBtn?.classList.add('hidden');
         safeCreateIcons();
         return;
       }
 
       gateCard?.classList.add('hidden');
       authContent?.classList.remove('hidden');
-      if (bannerBadge) bannerBadge.innerText = `${student.name} (${student.studentCode || ''})`;
-      logoutBtn?.classList.remove('hidden');
+      if (bannerBadge) bannerBadge.innerText = `${st.name} (${st.studentCode || ''})`;
+      logoutCodeBtn?.classList.remove('hidden');
 
-      const card = document.getElementById('parentOverviewCard');
-      const hwListEl = document.getElementById('studentHomeworkCardsList');
-      const grid = document.getElementById('parentAttendanceGrid');
-
-      if (card) {
-        const feeInfo = calculateStudentFeeForSelectedDates(student);
-        const { presentCount: totalB, absentCount: totalV } = getStudentAttendanceCounts(student);
-        card.innerHTML = `
+      const fee = calculateStudentFeeForSelectedDates(st);
+      if (overview) {
+        overview.innerHTML = `
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-extrabold text-base text-slate-900">${student.name}</h3>
-                <span class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-extrabold text-xs">${student.studentCode || ''}</span>
+                <h4 class="font-extrabold text-sm sm:text-base text-slate-900">${st.name}</h4>
+                <span class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-extrabold text-xs">${st.studentCode || ''}</span>
               </div>
-              <div class="text-xs text-slate-500 mt-0.5">
-                Lớp: <strong class="text-indigo-700">${student._className || ''}</strong> • Đi học: <strong class="text-emerald-700">${totalB} buổi</strong> • Vắng: <strong class="text-rose-600">${totalV} buổi</strong>
-              </div>
+              <p class="text-xs text-slate-500">Lớp: <strong>${st._className || ''}</strong> • Học phí: <strong>${formatMoneyK(st.pricePerSession || 40000)}/buổi</strong></p>
             </div>
-            <div class="flex items-center gap-1.5">
-              <button type="button" onclick="openTuitionNoticeModal('${student.id}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-pink-600 hover:bg-pink-700 text-white shadow-2xs transition inline-flex items-center gap-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onclick="openTuitionNoticeModal('${st.id}')"
+                class="px-3 py-1 rounded-full text-xs font-extrabold bg-pink-600 hover:bg-pink-700 text-white shadow-2xs transition inline-flex items-center gap-1 active:scale-95"
+              >
                 <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
-                <span>Phiếu học phí (${formatMoneyK(feeInfo.finalAmount)})</span>
+                <span>Phiếu báo học phí</span>
               </button>
-              <button type="button" onclick="logoutParentStudentCode()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
-                Đổi mã HS
-              </button>
+              <div class="px-3 py-1 rounded-full text-xs font-extrabold ${fee.isFullyPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${fee.isFullyPaid ? 'Đã đóng đủ học phí' : `Cần đóng: ${formatMoneyK(fee.remaining)}`}
+              </div>
             </div>
           </div>
         `;
       }
 
-      if (hwListEl) {
-        const classHomeworks = homeworks.filter(hw => !hw.classId || hw.classId === student._classId);
-        if (classHomeworks.length === 0) {
-          hwListEl.innerHTML = `<div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">Hiện chưa có bài tập nào được giao cho lớp này.</div>`;
+      if (hwList) {
+        const classHws = homeworks.filter(h => !h.classId || h.classId === st._classId);
+        if (classHws.length === 0) {
+          hwList.innerHTML = `<div class="text-xs text-slate-400 italic">Hiện chưa có bài tập online nào.</div>`;
         } else {
-          hwListEl.innerHTML = classHomeworks.map(hw => {
-            const sub = homeworkSubmissions.find(x => x.homeworkId === hw.id && x.studentId === student.id);
+          hwList.innerHTML = classHws.map(hw => {
+            const sub = homeworkSubmissions.find(x => x.homeworkId === hw.id && x.studentId === st.id);
             return `
-              <div class="p-3 rounded-2xl border border-slate-200 bg-slate-50/60 flex items-center justify-between gap-2">
+              <div class="p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-2 text-xs">
                 <div>
-                  <div class="font-extrabold text-xs sm:text-sm text-slate-900">${hw.title}</div>
-                  <div class="text-[11px] text-slate-500 mt-0.5">Hạn nộp: ${hw.deadline} ${sub ? `• <strong class="text-emerald-700">Điểm: ${sub.score}/10</strong>` : ''}</div>
-                  ${sub?.teacherComment ? `<div class="text-[11px] text-indigo-700 font-semibold mt-0.5">Lời phê: "${sub.teacherComment}"</div>` : ''}
+                  <div class="font-extrabold text-slate-900">${hw.title}</div>
+                  <div class="text-[11px] text-slate-500 mt-0.5">
+                    ${sub ? `<span class="text-emerald-700 font-bold">Đã nộp • Điểm: ${sub.score}/10</span> ${sub.teacherComment ? `• Nhận xét: "${sub.teacherComment}"` : ''}` : `Hạn nộp: ${hw.deadline}`}
+                  </div>
                 </div>
-                <button type="button" onclick="openTakeHomeworkModal('${hw.id}', false)" class="px-3.5 py-1.5 rounded-xl ${sub ? 'bg-slate-800 hover:bg-slate-700' : 'bg-indigo-600 hover:bg-indigo-700'} text-white text-xs font-bold transition shrink-0 shadow-2xs">
+                <button type="button" onclick="openTakeHomeworkModal('${hw.id}', false)" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold shrink-0">
                   ${sub ? 'Làm lại' : 'Làm bài'}
                 </button>
               </div>
@@ -8944,78 +9075,304 @@
         }
       }
 
-      if (grid) {
-        const classDates = getCurrentClassSessionDates(student._classId || currentClassId);
-        const now = new Date();
-        const curMonthKey = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-        const thisMonthDates = classDates.filter(d => d.includes(`/${curMonthKey}`));
-        const datesToShow = thisMonthDates.length > 0 ? thisMonthDates : classDates.slice(-12);
-
-        grid.innerHTML = datesToShow.map((d, idx) => {
-          const st = student.attendanceHistory?.[d] || 'unrecorded';
-          const isPresent = st === 'present';
-          const isAbsent = st === 'absent';
-          return `
-            <div class="p-2 rounded-xl border text-center ${
-              isPresent
-                ? 'bg-emerald-50 border-emerald-300'
-                : (isAbsent ? 'bg-rose-50 border-rose-300' : 'bg-slate-50 border-slate-200')
-            }">
-              <div class="text-[9.5px] font-bold">Buổi ${idx + 1}</div>
-              <div class="text-[10.5px] font-mono mt-0.5">${d}</div>
-              <div class="text-[11px] font-bold mt-1 ${
-                isPresent
-                  ? 'text-emerald-700'
-                  : (isAbsent ? 'text-rose-600' : 'text-slate-400')
-              }">
-                ${isPresent ? '✓ Đi học' : (isAbsent ? '✗ Vắng' : '--')}
-              </div>
-            </div>
-          `;
-        }).join('');
+      if (attGrid) {
+        const hist = st.attendanceHistory || {};
+        const dates = Object.keys(hist).filter(d => hist[d] === 'present' || hist[d] === 'absent');
+        attGrid.innerHTML = dates.length === 0
+          ? `<div class="col-span-full text-xs text-slate-400 italic">Chưa có dữ liệu điểm danh.</div>`
+          : dates.map(d => {
+              const isP = hist[d] === 'present';
+              return `
+                <div class="p-2 rounded-xl border text-center text-xs ${isP ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}">
+                  <div class="font-mono font-bold">${d}</div>
+                  <div class="font-extrabold mt-0.5">${isP ? '✓ Đi học' : '✗ Vắng mặt'}</div>
+                </div>
+              `;
+            }).join('');
       }
       safeCreateIcons();
+    }
+
+    function switchRole(role) {
+      currentRole = role;
+      saveUiNavigationState();
+      const teacherSec = document.getElementById('teacherViewSection');
+      const parentSec = document.getElementById('parentViewSection');
+      const teacherBtn = document.getElementById('roleTeacherBtn');
+      const parentBtn = document.getElementById('roleParentBtn');
+      const teacherClassBox = document.getElementById('teacherClassBannerBox');
+      const parentBox = document.getElementById('parentStudentSelectBox');
+      const quickPlusBtn = document.getElementById('headerQuickCreateBtn');
+      const mobileNav = document.getElementById('mobileBottomNavWrapper');
+      const subBanner = document.getElementById('globalSubBanner');
+
+      if (role === 'teacher') {
+        teacherSec?.classList.remove('hidden');
+        parentSec?.classList.add('hidden');
+        if (subBanner) subBanner.classList.remove('hidden');
+        teacherClassBox?.classList.toggle('hidden', currentTab === 'home');
+        updateHomeVipBannerVisibility();
+        parentBox?.classList.add('hidden');
+        quickPlusBtn?.classList.add('sm:inline-flex');
+        mobileNav?.classList.remove('hidden');
+        teacherBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
+        teacherBtn?.classList.remove('text-slate-500');
+        parentBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
+        parentBtn?.classList.add('text-slate-500');
+      } else {
+        teacherSec?.classList.add('hidden');
+        parentSec?.classList.remove('hidden');
+        subBanner?.classList.remove('hidden');
+        teacherClassBox?.classList.add('hidden');
+        updateHomeVipBannerVisibility();
+        parentBox?.classList.remove('hidden');
+        quickPlusBtn?.classList.remove('sm:inline-flex');
+        mobileNav?.classList.add('hidden');
+        parentBtn?.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
+        parentBtn?.classList.remove('text-slate-500');
+        teacherBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
+        teacherBtn?.classList.add('text-slate-500');
+        renderParentView();
+      }
+      safeCreateIcons();
+    }
+
+    function openModal(id) {
+      document.getElementById(id)?.classList.remove('hidden');
+      safeCreateIcons();
+    }
+
+    function closeModal(id) {
+      if (id === 'modalVipVietQrCheckout') {
+        stopVipVietQrStatusPolling();
+      }
+      document.getElementById(id)?.classList.add('hidden');
     }
 
     function handleQuickActionPlus() {
-      document.getElementById('quickCreateActionMenu')?.classList.remove('hidden');
-      safeCreateIcons();
+      openModal('quickCreateActionMenu');
     }
 
-    function closeQuickActionMenu() { document.getElementById('quickCreateActionMenu')?.classList.add('hidden'); }
-    function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); safeCreateIcons(); }
-    function closeModal(id) {
-      document.getElementById(id)?.classList.add('hidden');
-      if (id === 'modalVipVietQrCheckout') stopVipVietQrStatusPolling();
-      if (id === 'modalTakeHomework') {
-        activeTakingHomeworkId = null;
-        activeTakingSessionKey = null;
-      }
-      closeYtDropdown();
+    function closeQuickActionMenu() {
+      closeModal('quickCreateActionMenu');
     }
 
     function renderAll() {
+      renderHomeTab();
       renderClassSelectOptions();
-      renderWeeklyScheduleGrid();
       const scheduleSec = document.getElementById('weeklyScheduleSection');
-      const attendanceSec = document.getElementById('studentAttendanceSection');
+      const attSec = document.getElementById('studentAttendanceSection');
       if (isClassSelected && currentClassId) {
         scheduleSec?.classList.add('hidden');
-        attendanceSec?.classList.remove('hidden');
+        attSec?.classList.remove('hidden');
+        renderAttendanceTab();
       } else {
         scheduleSec?.classList.remove('hidden');
-        attendanceSec?.classList.add('hidden');
+        attSec?.classList.add('hidden');
         toggleScheduleViewMode(currentScheduleViewMode);
+        renderWeeklyScheduleGrid();
       }
-      renderHomeTab();
-      renderAttendanceTab();
-      renderFinanceTab();
-      renderHomeworkTab();
-      renderClassesManagementTab();
-      if (currentRole === 'parent') {
-        renderParentView();
+      if (currentTab === 'finance') renderFinanceTab();
+      if (currentTab === 'homework') renderHomeworkTab();
+      if (currentTab === 'classes') renderClassesManagementTab();
+      if (currentRole === 'parent') renderParentView();
+      const modal = document.getElementById('modalNotebook');
+      if (modal && !modal.classList.contains('hidden')) {
+        renderNotebookNotesList();
       }
-      updateHeaderVipBadge();
+      safeCreateIcons();
+    }
+
+    // ==================== SỔ TAY GHI CHÚ NHANH ====================
+    function escapeNotebookHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function openNotebookModal() {
+      cancelEditNotebookNote();
+      renderNotebookNotesList();
+      openModal('modalNotebook');
+    }
+
+    function cancelEditNotebookNote() {
+      editingNotebookNoteId = null;
+      const titleInp = document.getElementById('notebookNoteTitleInput');
+      const contentInp = document.getElementById('notebookNoteContentInput');
+      const cancelBtn = document.getElementById('btnCancelNotebookEdit');
+      const saveLbl = document.getElementById('btnSaveNotebookNoteLabel');
+      if (titleInp) titleInp.value = '';
+      if (contentInp) contentInp.value = '';
+      cancelBtn?.classList.add('hidden');
+      if (saveLbl) saveLbl.innerText = 'Lưu ghi chú';
+    }
+
+    function handleSaveNotebookNote(e) {
+      e.preventDefault();
+      const titleInp = document.getElementById('notebookNoteTitleInput');
+      const contentInp = document.getElementById('notebookNoteContentInput');
+      const title = (titleInp?.value || '').trim();
+      const content = (contentInp?.value || '').trim();
+      if (!content) {
+        showUndoToast('Vui lòng nhập nội dung ghi chú!');
+        return;
+      }
+
+      const nowIso = new Date().toISOString();
+      if (editingNotebookNoteId) {
+        const idx = teacherNotebookNotes.findIndex(n => n.id === editingNotebookNoteId);
+        if (idx >= 0) {
+          teacherNotebookNotes[idx] = {
+            ...teacherNotebookNotes[idx],
+            title,
+            content,
+            updatedAt: nowIso
+          };
+        }
+        showUndoToast('Đã cập nhật ghi chú!');
+      } else {
+        teacherNotebookNotes.unshift({
+          id: `NOTE_${Date.now()}`,
+          title,
+          content,
+          updatedAt: nowIso,
+          pinned: false
+        });
+        showUndoToast('Đã lưu ghi chú mới!');
+      }
+
+      cancelEditNotebookNote();
+      saveAllToLocalStorage(true);
+      renderNotebookNotesList();
+    }
+
+    function startEditNotebookNote(noteId) {
+      const note = teacherNotebookNotes.find(n => n.id === noteId);
+      if (!note) return;
+      editingNotebookNoteId = note.id;
+      const titleInp = document.getElementById('notebookNoteTitleInput');
+      const contentInp = document.getElementById('notebookNoteContentInput');
+      const cancelBtn = document.getElementById('btnCancelNotebookEdit');
+      const saveLbl = document.getElementById('btnSaveNotebookNoteLabel');
+      if (titleInp) titleInp.value = note.title || '';
+      if (contentInp) {
+        contentInp.value = note.content || '';
+        contentInp.focus();
+      }
+      cancelBtn?.classList.remove('hidden');
+      if (saveLbl) saveLbl.innerText = 'Cập nhật ghi chú';
+    }
+
+    function togglePinNotebookNote(noteId) {
+      const note = teacherNotebookNotes.find(n => n.id === noteId);
+      if (!note) return;
+      note.pinned = !note.pinned;
+      saveAllToLocalStorage(true);
+      renderNotebookNotesList();
+      showUndoToast(note.pinned ? 'Đã ghim ghi chú lên đầu!' : 'Đã bỏ ghim ghi chú.');
+    }
+
+    function deleteNotebookNote(noteId) {
+      const note = teacherNotebookNotes.find(n => n.id === noteId);
+      if (!note) return;
+      openConfirmModal(
+        'Xóa ghi chú này?',
+        `Bạn có chắc chắn muốn xóa ghi chú "${note.title || 'Không tiêu đề'}"?`,
+        () => {
+          teacherNotebookNotes = teacherNotebookNotes.filter(n => n.id !== noteId);
+          if (editingNotebookNoteId === noteId) {
+            cancelEditNotebookNote();
+          }
+          saveAllToLocalStorage(true);
+          renderNotebookNotesList();
+          showUndoToast('Đã xóa ghi chú.');
+        }
+      );
+    }
+
+    function renderNotebookNotesList() {
+      const container = document.getElementById('notebookNotesListContainer');
+      if (!container) return;
+
+      if (!Array.isArray(teacherNotebookNotes) || teacherNotebookNotes.length === 0) {
+        container.innerHTML = `
+          <div class="py-8 px-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 text-center space-y-1.5">
+            <div class="w-9 h-9 rounded-2xl bg-white border border-slate-200 text-slate-400 mx-auto flex items-center justify-center shadow-2xs">
+              <i data-lucide="notebook-pen" class="w-4 h-4"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-600">Chưa có ghi chú nào</div>
+            <p class="text-[11px] text-slate-400">Nhập ghi chú phía trên để lưu dặn dò lớp học hoặc lịch trình quan trọng.</p>
+          </div>
+        `;
+        safeCreateIcons();
+        return;
+      }
+
+      const sortedNotes = [...teacherNotebookNotes].sort((a, b) => {
+        if (Boolean(a.pinned) !== Boolean(b.pinned)) {
+          return a.pinned ? -1 : 1;
+        }
+        return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime();
+      });
+
+      container.innerHTML = sortedNotes.map(note => {
+        const isPinned = Boolean(note.pinned);
+        let timeStr = '';
+        if (note.updatedAt) {
+          const d = new Date(note.updatedAt);
+          if (!Number.isNaN(d.getTime())) {
+            timeStr = d.toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+          }
+        }
+        return `
+          <div class="rounded-2xl border p-3 space-y-1.5 transition ${isPinned ? 'bg-amber-50/60 border-amber-200/90 shadow-2xs' : 'bg-white border-slate-200/90 hover:border-slate-300'}">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1 flex items-center gap-1.5 flex-wrap">
+                ${isPinned ? `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-extrabold shrink-0"><i data-lucide="pin" class="w-2.5 h-2.5"></i> Đã ghim</span>` : ''}
+                ${note.title ? `<h5 class="font-extrabold text-xs text-slate-900 break-words">${escapeNotebookHtml(note.title)}</h5>` : `<span class="text-[11px] font-bold text-slate-400 italic">Ghi chú nhanh</span>`}
+              </div>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onclick="togglePinNotebookNote('${note.id}')"
+                  class="px-2 py-1 rounded-lg text-[10.5px] font-bold transition inline-flex items-center gap-1 ${isPinned ? 'bg-amber-200/80 text-amber-900' : 'bg-slate-100 hover:bg-amber-50 text-slate-600 hover:text-amber-700'}"
+                  title="${isPinned ? 'Bỏ ghim' : 'Ghim lên đầu'}"
+                >
+                  <i data-lucide="pin" class="w-3 h-3"></i>
+                  <span>${isPinned ? 'Bỏ ghim' : 'Ghim'}</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="startEditNotebookNote('${note.id}')"
+                  class="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold transition inline-flex items-center gap-1"
+                  title="Sửa ghi chú"
+                >
+                  <i data-lucide="pencil" class="w-3 h-3"></i>
+                  <span>Sửa</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="deleteNotebookNote('${note.id}')"
+                  class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-[10.5px] font-bold transition inline-flex items-center gap-1"
+                  title="Xóa ghi chú"
+                >
+                  <i data-lucide="trash-2" class="w-3 h-3"></i>
+                  <span>Xóa</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="text-xs text-slate-700 leading-relaxed whitespace-pre-line break-words font-medium">${escapeNotebookHtml(note.content)}</div>
+
+            ${timeStr ? `<div class="text-[10px] text-slate-400 font-medium pt-0.5">Cập nhật: ${timeStr}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+
       safeCreateIcons();
     }
 
