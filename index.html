@@ -3385,6 +3385,37 @@
       return vipPlansConfig.find(p => p.id === currentTeacherPlanId) || vipPlansConfig[0] || DEFAULT_VIP_PLANS[0];
     }
 
+    function getOwnedPlanBadgeStyle(planId) {
+      const map = {
+        free: {
+          bg: 'bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 shadow-sm shadow-sky-500/30',
+          hover: 'hover:from-sky-600 hover:via-blue-700 hover:to-indigo-700',
+          border: 'border-sky-300/40'
+        },
+        tra_chanh: {
+          bg: 'bg-gradient-to-r from-emerald-500 via-green-500 to-teal-600 shadow-sm shadow-emerald-500/30',
+          hover: 'hover:from-emerald-600 hover:via-green-600 hover:to-teal-700',
+          border: 'border-emerald-300/40'
+        },
+        tra_sua: {
+          bg: 'bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 shadow-sm shadow-orange-500/30',
+          hover: 'hover:from-amber-600 hover:via-orange-600 hover:to-rose-600',
+          border: 'border-amber-200/45'
+        },
+        trum_tra: {
+          bg: 'bg-gradient-to-r from-indigo-500 via-violet-600 to-purple-600 shadow-sm shadow-indigo-500/30',
+          hover: 'hover:from-indigo-600 hover:via-violet-700 hover:to-purple-700',
+          border: 'border-indigo-300/40'
+        },
+        trung_tam: {
+          bg: 'bg-gradient-to-r from-rose-500 via-pink-600 to-fuchsia-600 shadow-sm shadow-rose-500/35',
+          hover: 'hover:from-rose-600 hover:via-pink-700 hover:to-fuchsia-700',
+          border: 'border-rose-300/45'
+        }
+      };
+      return map[planId] || map.free;
+    }
+
     function getTrialStatusInfo() {
       if (isPaidVipActive()) {
         return { isActive: false, isExpired: false, remainingMs: 0, remainingMinutes: 0, expiresAt: null };
@@ -3630,12 +3661,18 @@
 
     function updateHeaderVipBadge() {
       const plan = getActiveVipPlan();
+      const planStyle = getOwnedPlanBadgeStyle(plan.id);
       const trialInfo = getTrialStatusInfo();
       const paidActive = isPaidVipActive();
       const keepingTraSua = isKeepingTraSuaAfterTraChanhPurchase();
       const totalSt = getTotalUniqueStudentsCount();
       const maxSt = Math.max(1, Number(plan.maxStudents) || 15);
       const usagePercent = Math.round((totalSt / maxSt) * 100);
+
+      const headerBtn = document.getElementById('btnHeaderVipPlan');
+      if (headerBtn) {
+        headerBtn.className = `hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl ${planStyle.bg} ${planStyle.hover} text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0`;
+      }
 
       const headerLabel = document.getElementById('headerVipPlanLabel');
       if (headerLabel) {
@@ -3644,9 +3681,24 @@
           : `Gói ${plan.name}`;
       }
 
+      const heroVipPill = document.getElementById('homeHeroVipPill');
+      if (heroVipPill) {
+        heroVipPill.className = `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ${planStyle.bg} ${planStyle.hover} border border-white/25 text-[11px] sm:text-xs font-extrabold text-white transition active:scale-95 shrink-0 shadow-sm`;
+        const heroCrownIcon = heroVipPill.querySelector('svg, [data-lucide="crown"]');
+        if (heroCrownIcon) {
+          heroCrownIcon.classList.remove('text-amber-400');
+          heroCrownIcon.classList.add('text-white');
+        }
+      }
+
       const heroVipLabel = document.getElementById('homeHeroVipPlanLabel');
       if (heroVipLabel) {
         heroVipLabel.innerText = plan.name;
+      }
+
+      const homeIconBox = document.getElementById('homeVipPlanIconBox');
+      if (homeIconBox) {
+        homeIconBox.className = `w-8 h-8 rounded-xl ${planStyle.bg} text-white border border-transparent flex items-center justify-center shrink-0`;
       }
 
       const homeTitle = document.getElementById('homeVipPlanTitle');
@@ -3969,6 +4021,7 @@
 
     function renderVipSubscriptionModal() {
       const activePlan = getActiveVipPlan();
+      const activePlanStyle = getOwnedPlanBadgeStyle(activePlan.id);
       const trialInfo = getTrialStatusInfo();
       const paidActive = isPaidVipActive();
       const keepingTraSua = isKeepingTraSuaAfterTraChanhPurchase();
@@ -3979,6 +4032,7 @@
 
       const activeBadge = document.getElementById('vipCurrentActiveBadge');
       if (activeBadge) {
+        activeBadge.className = `px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold ${activePlanStyle.bg} text-white border border-transparent shadow-sm`;
         if (keepingTraSua && trialExpiresAtIso && vipExpiresAtIso) {
           const keepUntilStr = new Date(trialExpiresAtIso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
           const traChanhExpStr = new Date(vipExpiresAtIso).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
@@ -5833,16 +5887,26 @@
       const todayInfo = getCurrentDayOfWeekInfo();
       const todayFullStr = getTodayFullDateString();
       const plan = getActiveVipPlan();
+      const planStyle = getOwnedPlanBadgeStyle(plan.id);
       const totalSt = getTotalUniqueStudentsCount();
       const maxSt = Math.max(1, Number(plan.maxStudents) || 15);
 
       const greetingEl = document.getElementById('homeHeroGreeting');
+      const heroVipPillEl = document.getElementById('homeHeroVipPill');
       const vipLabelEl = document.getElementById('homeHeroVipPlanLabel');
       const summaryEl = document.getElementById('homeHeroSummary');
 
       if (greetingEl) {
         const displayName = currentUser?.full_name ? currentUser.full_name : 'Thầy/Cô';
         greetingEl.innerText = `Xin chào, ${displayName}`;
+      }
+      if (heroVipPillEl) {
+        heroVipPillEl.className = `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ${planStyle.bg} ${planStyle.hover} border border-white/25 text-[11px] sm:text-xs font-extrabold text-white transition active:scale-95 shrink-0 shadow-sm`;
+        const crownEl = heroVipPillEl.querySelector('svg, [data-lucide="crown"]');
+        if (crownEl) {
+          crownEl.classList.remove('text-amber-400');
+          crownEl.classList.add('text-white');
+        }
       }
       if (vipLabelEl) {
         vipLabelEl.innerText = plan.name;
