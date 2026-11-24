@@ -2348,43 +2348,6 @@
       <!-- Banner ưu đãi 500 giáo viên tiên phong -->
       <div id="vipModalPioneerPromoBanner" class="hidden rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-orange-50 to-rose-50 px-3 py-2 flex items-center justify-between gap-2 text-[11px] sm:text-xs font-extrabold text-amber-950 shadow-sm"></div>
 
-      <!-- Khung nhập Mã ưu đãi -->
-      <div class="rounded-2xl border border-slate-200/90 bg-slate-50/80 p-2.5 sm:p-3 space-y-1.5">
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center gap-1.5 text-xs font-extrabold text-slate-800 shrink-0">
-            <i data-lucide="ticket-percent" class="w-4 h-4 text-amber-600"></i>
-            <span>Mã ưu đãi</span>
-          </div>
-          <div class="flex-1 min-w-[180px] flex items-center gap-1.5">
-            <input
-              type="text"
-              id="vipPromoCodeInput"
-              oninput="this.value = this.value.toUpperCase()"
-              onkeydown="if(event.key==='Enter'){ event.preventDefault(); applyVipPromoCode(); }"
-              placeholder="Nhập mã ưu đãi (VD: TIENPHONG)"
-              class="flex-1 min-w-0 px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-mono font-extrabold uppercase tracking-wider text-slate-900 placeholder:font-sans placeholder:font-normal placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-            >
-            <button
-              type="button"
-              id="btnApplyVipPromo"
-              onclick="applyVipPromoCode()"
-              class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0"
-            >
-              Áp dụng
-            </button>
-            <button
-              type="button"
-              id="btnClearVipPromo"
-              onclick="clearVipPromoCode()"
-              class="hidden px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold transition shrink-0"
-            >
-              Gỡ mã
-            </button>
-          </div>
-        </div>
-        <div id="vipPromoFeedbackText" class="hidden text-[11px] font-bold pl-0.5"></div>
-      </div>
-
       <!-- Bộ chuyển đổi chu kỳ thanh toán Tháng / Năm -->
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="text-xs font-bold text-slate-600">Chọn chu kỳ thanh toán:</div>
@@ -2594,6 +2557,38 @@
         </button>
       </div>
 
+      <!-- Khung nhập Mã ưu đãi trong Modal Thanh Toán -->
+      <div class="rounded-2xl border border-slate-200/90 bg-slate-50/80 p-2.5 space-y-1.5">
+        <div class="flex items-center gap-1.5">
+          <i data-lucide="ticket-percent" class="w-4 h-4 text-amber-600 shrink-0"></i>
+          <input
+            type="text"
+            id="vipPromoCodeInput"
+            oninput="this.value = this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter'){ event.preventDefault(); applyVipPromoCode(); }"
+            placeholder="Nhập mã ưu đãi (VD: TIENPHONG)"
+            class="flex-1 min-w-0 px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-mono font-extrabold uppercase tracking-wider text-slate-900 placeholder:font-sans placeholder:font-normal placeholder:normal-case placeholder:tracking-normal placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+          >
+          <button
+            type="button"
+            id="btnApplyVipPromo"
+            onclick="applyVipPromoCode()"
+            class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0"
+          >
+            Áp dụng
+          </button>
+          <button
+            type="button"
+            id="btnClearVipPromo"
+            onclick="clearVipPromoCode()"
+            class="hidden px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-bold transition shrink-0"
+          >
+            Gỡ mã
+          </button>
+        </div>
+        <div id="vipPromoFeedbackText" class="hidden text-[11px] font-bold pl-0.5"></div>
+      </div>
+
       <div class="flex flex-col items-center justify-center bg-slate-50/70 rounded-2xl border border-slate-200/90 p-2.5 sm:p-3.5 space-y-2">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-sm">
           <svg class="w-4 h-4 shrink-0" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -2633,6 +2628,14 @@
             <strong class="font-mono font-extrabold text-slate-900">104869424470</strong>
             <button type="button" onclick="copyTextToClipboardFallback('104869424470', 'Đã sao chép số tài khoản!')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold transition">Copy</button>
           </div>
+        </div>
+        <div id="vipVietQrBaseAmountRow" class="hidden py-1.5 px-2.5 flex items-center justify-between gap-2">
+          <span class="text-slate-500 font-medium">Giá gốc</span>
+          <span id="vipVietQrBaseAmountValue" class="font-mono font-bold text-slate-400 line-through">0đ</span>
+        </div>
+        <div id="vipVietQrDiscountRow" class="hidden py-1.5 px-2.5 bg-emerald-50/60 flex items-center justify-between gap-2">
+          <span id="vipVietQrDiscountLabel" class="text-emerald-700 font-bold">Giảm thêm</span>
+          <strong id="vipVietQrDiscountValue" class="font-mono font-extrabold text-emerald-700">-0đ</strong>
         </div>
         <div class="py-1.5 px-2.5 flex items-center justify-between gap-2">
           <span class="text-slate-500 font-medium">Số tiền</span>
@@ -3393,13 +3396,7 @@
           };
           const modal = document.getElementById('modalVipSubscription');
           if (modal && !modal.classList.contains('hidden')) {
-            if (!hasUserClearedVipPromo && !appliedVipPromo && currentUser?.id && getActivePioneerDiscountPercent() > 0) {
-              const promoInput = document.getElementById('vipPromoCodeInput');
-              if (promoInput) promoInput.value = 'TIENPHONG';
-              await applyVipPromoCode('TIENPHONG', true);
-            } else {
-              renderVipSubscriptionModal();
-            }
+            renderVipSubscriptionModal();
           }
         }
       } catch (err) {
@@ -4070,37 +4067,16 @@
       enforcePaidVipExpirationIfNeeded();
       enforceTrialExpirationIfNeeded();
       isVipAdminEditMode = false;
-      hasUserClearedVipPromo = false;
-
-      const promoInput = document.getElementById('vipPromoCodeInput');
-      if (!appliedVipPromo) {
-        if (currentUser?.id && getActivePioneerDiscountPercent() > 0) {
-          if (promoInput) promoInput.value = 'TIENPHONG';
-          renderVipSubscriptionModal();
-          openModal('modalVipSubscription');
-          applyVipPromoCode('TIENPHONG', true);
-        } else {
-          appliedVipPromo = null;
-          if (promoInput) promoInput.value = '';
-          const feedbackEl = document.getElementById('vipPromoFeedbackText');
-          if (feedbackEl) {
-            feedbackEl.innerText = '';
-            feedbackEl.classList.add('hidden');
-          }
-          renderVipSubscriptionModal();
-          openModal('modalVipSubscription');
-        }
-      } else {
-        renderVipSubscriptionModal();
-        openModal('modalVipSubscription');
-      }
+      renderVipSubscriptionModal();
+      openModal('modalVipSubscription');
       loadPioneerPromoSettings();
     }
 
     async function applyVipPromoCode(codeOverride = null, isSilent = false) {
-      if (isValidatingVipPromo) return;
+      if (isValidatingVipPromo || activeVietQrIsPaid) return false;
       const promoInput = document.getElementById('vipPromoCodeInput');
       const applyBtn = document.getElementById('btnApplyVipPromo');
+      const clearBtn = document.getElementById('btnClearVipPromo');
       const feedbackEl = document.getElementById('vipPromoFeedbackText');
       const rawCode = codeOverride !== null ? codeOverride : (promoInput?.value || '');
       const code = String(rawCode).trim().toUpperCase();
@@ -4111,7 +4087,7 @@
           feedbackEl.className = 'text-[11px] font-bold pl-0.5 text-rose-600';
           feedbackEl.classList.remove('hidden');
         }
-        return;
+        return false;
       }
 
       if (!currentUser || !currentUser.id) {
@@ -4123,7 +4099,7 @@
           }
           showUndoToast('Vui lòng đăng nhập để áp dụng mã ưu đãi.');
         }
-        return;
+        return false;
       }
 
       if (!supabaseClient) {
@@ -4132,15 +4108,17 @@
           feedbackEl.className = 'text-[11px] font-bold pl-0.5 text-rose-600';
           feedbackEl.classList.remove('hidden');
         }
-        return;
+        return false;
       }
 
       isValidatingVipPromo = true;
       if (applyBtn) applyBtn.disabled = true;
 
       try {
+        const targetPlanId = activeVietQrPlanObj?.id || activeVietQrPlanId || null;
         const { data, error } = await supabaseClient.rpc('validate_vip_promo_code', {
-          p_promo_code: code
+          p_promo_code: code,
+          p_plan_id: targetPlanId
         });
 
         if (!error && data && data.ok === true) {
@@ -4154,45 +4132,60 @@
             feedbackEl.className = 'text-[11px] font-bold pl-0.5 text-emerald-700';
             feedbackEl.classList.remove('hidden');
           }
-          renderVipSubscriptionModal();
+          clearBtn?.classList.remove('hidden');
+          if (!isSilent && activeVietQrPlanObj) {
+            await createVipOrderAndRenderQr(activeVietQrPlanObj);
+          }
+          return true;
         } else {
-          appliedVipPromo = null;
-          if (!isSilent && feedbackEl) {
-            feedbackEl.innerText = data?.message || error?.message || 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.';
-            feedbackEl.className = 'text-[11px] font-bold pl-0.5 text-rose-600';
-            feedbackEl.classList.remove('hidden');
-          } else if (isSilent && feedbackEl) {
-            feedbackEl.innerText = '';
-            feedbackEl.classList.add('hidden');
+          const errMsg = data?.message || error?.message || 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.';
+          if (!isSilent) {
+            if (feedbackEl) {
+              feedbackEl.innerText = errMsg;
+              feedbackEl.className = 'text-[11px] font-bold pl-0.5 text-rose-600';
+              feedbackEl.classList.remove('hidden');
+            }
+            showUndoToast(errMsg);
+          } else {
+            appliedVipPromo = null;
+            clearBtn?.classList.add('hidden');
+            if (feedbackEl) {
+              feedbackEl.innerText = '';
+              feedbackEl.classList.add('hidden');
+            }
             if (promoInput && code === 'TIENPHONG') promoInput.value = '';
           }
-          renderVipSubscriptionModal();
+          return false;
         }
       } catch (err) {
-        appliedVipPromo = null;
         if (!isSilent && feedbackEl) {
           feedbackEl.innerText = 'Lỗi kết nối khi kiểm tra mã ưu đãi.';
           feedbackEl.className = 'text-[11px] font-bold pl-0.5 text-rose-600';
           feedbackEl.classList.remove('hidden');
         }
-        renderVipSubscriptionModal();
+        return false;
       } finally {
         isValidatingVipPromo = false;
-        if (applyBtn) applyBtn.disabled = false;
+        if (applyBtn && !activeVietQrIsPaid) applyBtn.disabled = false;
       }
     }
 
-    function clearVipPromoCode() {
+    async function clearVipPromoCode() {
+      if (activeVietQrIsPaid) return;
       appliedVipPromo = null;
       hasUserClearedVipPromo = true;
       const promoInput = document.getElementById('vipPromoCodeInput');
       const feedbackEl = document.getElementById('vipPromoFeedbackText');
+      const clearBtn = document.getElementById('btnClearVipPromo');
       if (promoInput) promoInput.value = '';
       if (feedbackEl) {
         feedbackEl.innerText = '';
         feedbackEl.classList.add('hidden');
       }
-      renderVipSubscriptionModal();
+      clearBtn?.classList.add('hidden');
+      if (activeVietQrPlanObj) {
+        await createVipOrderAndRenderQr(activeVietQrPlanObj);
+      }
     }
 
     function toggleVipAdminEditMode() {
@@ -4219,48 +4212,11 @@
           originalPrice: 0,
           salePercent: 0,
           effectiveMonthly: 0,
-          yearlySaved: 0,
-          isPromoApplied: false,
-          promoLabel: ''
+          yearlySaved: 0
         };
       }
 
       const yearlyPrice = Math.max(0, Number(plan.yearlyPrice) || (monthlyPrice * 10));
-
-      if (appliedVipPromo && ((Number(appliedVipPromo.discount_percent) || 0) > 0 || (Number(appliedVipPromo.discount_amount) || 0) > 0)) {
-        const basePrice = currentVipBillingCycle === 'yearly' ? yearlyPrice : monthlyPrice;
-        const discPct = Math.max(0, Number(appliedVipPromo.discount_percent) || 0);
-        const discAmt = Math.max(0, Number(appliedVipPromo.discount_amount) || 0);
-        let finalPrice = basePrice;
-
-        if (discPct > 0) {
-          finalPrice = Math.max(2000, Math.round((basePrice * (1 - discPct / 100)) / 1000) * 1000);
-        } else if (discAmt > 0) {
-          finalPrice = Math.max(2000, Math.round(Math.max(0, basePrice - discAmt) / 1000) * 1000);
-        }
-
-        const effectiveMonthly = currentVipBillingCycle === 'yearly'
-          ? Math.round((finalPrice / 12) / 100) * 100
-          : finalPrice;
-
-        const promoLabel = appliedVipPromo.is_pioneer
-          ? `Tiên phong -${discPct}%`
-          : (discPct > 0
-              ? `${appliedVipPromo.code} -${discPct}%`
-              : `${appliedVipPromo.code} -${Math.round(discAmt / 1000)}k`);
-
-        return {
-          isFree: false,
-          finalPrice,
-          originalPrice: basePrice,
-          salePercent: discPct > 0 ? discPct : (basePrice > 0 ? Math.round(((basePrice - finalPrice) / basePrice) * 100) : 0),
-          effectiveMonthly,
-          yearlySaved: Math.max(0, monthlyPrice * 12 - finalPrice),
-          isPromoApplied: true,
-          promoLabel
-        };
-      }
-
       const salePercent = Math.max(0, Math.min(80, Number(plan.salePercent) || 0));
       const monthlyOriginal = salePercent > 0
         ? Math.round((monthlyPrice / (1 - salePercent / 100)) / 1000) * 1000
@@ -4279,9 +4235,7 @@
           originalPrice: twelveMonthsFull,
           salePercent: extraYearlyDiscountPercent,
           effectiveMonthly,
-          yearlySaved,
-          isPromoApplied: false,
-          promoLabel: ''
+          yearlySaved
         };
       }
 
@@ -4291,9 +4245,7 @@
         originalPrice: monthlyOriginal,
         salePercent,
         effectiveMonthly: monthlyPrice,
-        yearlySaved: Math.max(0, monthlyPrice * 12 - yearlyPrice),
-        isPromoApplied: false,
-        promoLabel: ''
+        yearlySaved: Math.max(0, monthlyPrice * 12 - yearlyPrice)
       };
     }
 
@@ -4362,11 +4314,6 @@
         yearlySaveBadge.innerText = 'Giảm đến 19%';
       }
 
-      const clearPromoBtn = document.getElementById('btnClearVipPromo');
-      if (clearPromoBtn) {
-        clearPromoBtn.classList.toggle('hidden', !appliedVipPromo);
-      }
-
       const activePioneerDiscount = getActivePioneerDiscountPercent();
       const pioneerBanner = document.getElementById('vipModalPioneerPromoBanner');
       if (pioneerBanner) {
@@ -4375,7 +4322,7 @@
           pioneerBanner.innerHTML = `
             <div class="flex items-center gap-1.5 min-w-0">
               <i data-lucide="sparkles" class="w-4 h-4 text-amber-600 shrink-0"></i>
-              <span>Ưu đãi 500 giáo viên tiên phong: Giảm <strong>35%</strong> (ngày 1–15) / <strong>25%</strong> (ngày 16–30)</span>
+              <span>Ưu đãi 500 giáo viên tiên phong: Giảm <strong>35%</strong> (ngày 1–15) / <strong>25%</strong> (ngày 16–30) • <strong class="text-indigo-700">Tự động áp mã TIENPHONG ở bước Thanh toán</strong></span>
             </div>
             <span class="px-2 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black shrink-0">-${activePioneerDiscount}%</span>
           `;
@@ -4533,10 +4480,10 @@
                       <div class="text-base sm:text-xl font-black text-slate-900">Miễn phí</div>
                     ` : `
                       <div class="flex items-center justify-end sm:justify-start gap-1 flex-wrap">
-                        ${(pricing.salePercent > 0 || pricing.isPromoApplied) ? `<span class="text-[10.5px] sm:text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
-                        ${(pricing.salePercent > 0 || pricing.isPromoApplied) ? `
-                          <span class="px-1.5 py-0.5 rounded ${pricing.isPromoApplied ? 'bg-rose-600 text-white' : 'bg-rose-100 text-rose-700'} text-[9.5px] sm:text-[10px] font-extrabold">
-                            ${pricing.isPromoApplied ? escapeHtml(pricing.promoLabel) : `-${pricing.salePercent}%`}
+                        ${pricing.salePercent > 0 ? `<span class="text-[10.5px] sm:text-[11px] line-through text-slate-400 font-semibold">${pricing.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+                        ${pricing.salePercent > 0 ? `
+                          <span class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9.5px] sm:text-[10px] font-extrabold">
+                            -${pricing.salePercent}%
                           </span>
                         ` : ''}
                       </div>
@@ -5109,6 +5056,8 @@
     let activeVietQrOrderCode = null;
     let activeVietQrOrderAmount = 0;
     let activeVietQrPlanId = null;
+    let activeVietQrPlanObj = null;
+    let activeVietQrIsPaid = false;
     let vipVietQrPollTimer = null;
 
     function copyTextToClipboardFallback(textVal, toastMsg = 'Đã sao chép!') {
@@ -5181,6 +5130,21 @@
 
         if (data.status === 'paid') {
           stopVipVietQrStatusPolling();
+          activeVietQrIsPaid = true;
+          const promoInput = document.getElementById('vipPromoCodeInput');
+          const applyBtn = document.getElementById('btnApplyVipPromo');
+          const clearBtn = document.getElementById('btnClearVipPromo');
+          const feedbackEl = document.getElementById('vipPromoFeedbackText');
+          if (promoInput) {
+            promoInput.disabled = true;
+            promoInput.value = '';
+          }
+          if (applyBtn) applyBtn.disabled = true;
+          if (clearBtn) {
+            clearBtn.disabled = true;
+            clearBtn.classList.add('hidden');
+          }
+
           const wasPioneerPromo = Boolean(appliedVipPromo?.is_pioneer);
           if (wasPioneerPromo) {
             hasUsedPioneerDiscount = true;
@@ -5193,9 +5157,6 @@
             localStorage.setItem(`dipi_user_${currentUser.id}_trial_used`, '1');
           }
           appliedVipPromo = null;
-          const promoInput = document.getElementById('vipPromoCodeInput');
-          const feedbackEl = document.getElementById('vipPromoFeedbackText');
-          if (promoInput) promoInput.value = '';
           if (feedbackEl) {
             feedbackEl.innerText = '';
             feedbackEl.classList.add('hidden');
@@ -5229,6 +5190,52 @@
 
       stopVipVietQrStatusPolling();
 
+      activeVietQrPlanObj = plan;
+      activeVietQrIsPaid = false;
+      appliedVipPromo = null;
+      hasUserClearedVipPromo = false;
+      activeVietQrOrderCode = null;
+      activeVietQrOrderAmount = 0;
+      activeVietQrPlanId = plan.id;
+      activeVietQrNoteText = '';
+
+      const promoInput = document.getElementById('vipPromoCodeInput');
+      const applyBtn = document.getElementById('btnApplyVipPromo');
+      const clearBtn = document.getElementById('btnClearVipPromo');
+      const feedbackEl = document.getElementById('vipPromoFeedbackText');
+      const baseAmountRow = document.getElementById('vipVietQrBaseAmountRow');
+      const discountRow = document.getElementById('vipVietQrDiscountRow');
+
+      if (promoInput) {
+        promoInput.disabled = false;
+        promoInput.value = '';
+      }
+      if (applyBtn) applyBtn.disabled = false;
+      if (clearBtn) {
+        clearBtn.disabled = false;
+        clearBtn.classList.add('hidden');
+      }
+      if (feedbackEl) {
+        feedbackEl.innerText = '';
+        feedbackEl.classList.add('hidden');
+      }
+      baseAmountRow?.classList.add('hidden');
+      discountRow?.classList.add('hidden');
+
+      openModal('modalVipVietQrCheckout');
+
+      if (currentUser?.id && getActivePioneerDiscountPercent() > 0) {
+        if (promoInput) promoInput.value = 'TIENPHONG';
+        await applyVipPromoCode('TIENPHONG', true);
+      }
+
+      await createVipOrderAndRenderQr(plan);
+    }
+
+    async function createVipOrderAndRenderQr(plan) {
+      if (!plan) return;
+      stopVipVietQrStatusPolling();
+
       activeVietQrOrderCode = null;
       activeVietQrOrderAmount = 0;
       activeVietQrPlanId = plan.id;
@@ -5258,11 +5265,18 @@
         planBadgeEl.className = `px-2 py-0.5 rounded-full font-extrabold text-[10.5px] border ${badgeAccentClasses[resolvedAccent] || badgeAccentClasses.emerald}`;
       }
 
+      const baseAmountRow = document.getElementById('vipVietQrBaseAmountRow');
+      const baseAmountValEl = document.getElementById('vipVietQrBaseAmountValue');
+      const discountRow = document.getElementById('vipVietQrDiscountRow');
+      const discountLabelEl = document.getElementById('vipVietQrDiscountLabel');
+      const discountValEl = document.getElementById('vipVietQrDiscountValue');
       const amountEl = document.getElementById('vipVietQrAmountValue');
       const noteEl = document.getElementById('vipVietQrContentNote');
       const qrImg = document.getElementById('vipVietQrImage');
       const qrPlaceholder = document.getElementById('vipVietQrPlaceholderBox');
 
+      baseAmountRow?.classList.add('hidden');
+      discountRow?.classList.add('hidden');
       if (amountEl) amountEl.innerText = '--';
       if (noteEl) noteEl.innerText = 'Đang tạo mã...';
 
@@ -5287,10 +5301,16 @@
             <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0"></span>
             <span id="vipVietQrStatusText" class="truncate">Đang tạo đơn hàng...</span>
           </div>
+          <button
+            type="button"
+            onclick="checkActiveVietQrOrderStatus(true)"
+            class="px-2 py-0.5 rounded-lg bg-white hover:bg-amber-50 text-[#92400e] border border-[#fcd34d] text-[10.5px] font-extrabold transition shrink-0 shadow-sm"
+          >
+            Kiểm tra ngay
+          </button>
         `;
       }
-
-      openModal('modalVipVietQrCheckout');
+      safeCreateIcons();
 
       const showOrderCreateError = (errMsg) => {
         setVipVietQrStatusUI('underpaid', 'Không thể tạo đơn hàng');
@@ -5316,7 +5336,7 @@
           `;
           const retryBtn = document.getElementById('btnRetryCreateVipOrder');
           if (retryBtn) {
-            retryBtn.onclick = () => openVipVietQrCheckoutModal(plan);
+            retryBtn.onclick = () => createVipOrderAndRenderQr(plan);
           }
         }
         safeCreateIcons();
@@ -5342,6 +5362,10 @@
 
         const orderCode = String(data.order_code || '').trim();
         const serverAmount = Math.max(0, Math.round(Number(data.amount) || 0));
+        const baseAmount = Math.max(0, Math.round(Number(data.base_amount) || serverAmount));
+        const discountSaved = Math.max(0, baseAmount - serverAmount);
+        const appliedCodeStr = String(data.promo_code || '').trim().toUpperCase();
+        const appliedDiscPct = Math.max(0, Number(data.discount_percent) || 0);
         const transferContent = `${VIETINBANK_QR_CONFIG.prefix} ${orderCode}`;
 
         activeVietQrOrderCode = orderCode;
@@ -5353,6 +5377,19 @@
             ? `${Math.round(serverAmount / 1000).toLocaleString('vi-VN')}k`
             : `${serverAmount}đ`;
           planBadgeEl.innerText = `${plan.name} - ${shortPrice}/${cycleShort}`;
+        }
+
+        if (appliedCodeStr && discountSaved > 0) {
+          if (baseAmountValEl) baseAmountValEl.innerText = `${baseAmount.toLocaleString('vi-VN')}đ`;
+          if (discountLabelEl) {
+            discountLabelEl.innerText = `Giảm thêm (${appliedCodeStr}${appliedDiscPct > 0 ? ` -${appliedDiscPct}%` : ''})`;
+          }
+          if (discountValEl) discountValEl.innerText = `-${discountSaved.toLocaleString('vi-VN')}đ`;
+          baseAmountRow?.classList.remove('hidden');
+          discountRow?.classList.remove('hidden');
+        } else {
+          baseAmountRow?.classList.add('hidden');
+          discountRow?.classList.add('hidden');
         }
 
         if (amountEl) amountEl.innerText = `${serverAmount.toLocaleString('vi-VN')}đ`;
