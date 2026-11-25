@@ -142,6 +142,18 @@
             <span id="headerVipPlanLabel">Gói Free</span>
           </button>
 
+          <!-- Nút chuông thông báo học sinh nộp bài tập -->
+          <button
+            id="btnTeacherNotifications"
+            type="button"
+            onclick="openTeacherNotificationsModal()"
+            class="hidden relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 border border-slate-200/80 flex items-center justify-center transition active:scale-95 shrink-0"
+            title="Thông báo học sinh nộp bài tập"
+          >
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span id="teacherNotifBadge" class="hidden absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-rose-600 text-white text-[10px] font-extrabold flex items-center justify-center shadow-sm">0</span>
+          </button>
+
           <div id="authContainer" class="flex items-center min-w-0">
             <button
               id="btnOpenAuthModal"
@@ -331,6 +343,9 @@
           <span>Tạo mới</span>
         </button>
       </div>
+
+      <!-- BANNER LỜI MỜI THAM GIA GIẢNG DẠY CHUNG ĐANG CHỜ XÁC NHẬN -->
+      <div id="pendingWorkspaceInvitesBanner" class="hidden space-y-2"></div>
 
       <!-- THANH TRẠNG THÁI GÓI HIỆN TẠI & NÚT NÂNG CẤP (HIỆN Ở CÁC TAB KHÁC, ẨN Ở TRANG CHỦ VÌ HERO ĐÃ CÓ) -->
       <div id="homeVipStatusBanner" class="hidden bg-white rounded-2xl border border-slate-200/90 px-3 py-2 sm:px-4 sm:py-2.5 shadow-sm flex flex-wrap items-center justify-between gap-2">
@@ -3174,6 +3189,38 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL THÔNG BÁO HỌC SINH NỘP BÀI TẬP ==================== -->
+  <div id="modalTeacherNotifications" class="hidden fixed inset-0 z-[76] flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm" onclick="if(event.target===this) closeModal('modalTeacherNotifications')">
+    <div class="bg-white rounded-3xl max-w-md w-full max-h-[85vh] flex flex-col p-4 sm:p-5 border border-slate-200/90 shadow-2xl space-y-3">
+      <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 shrink-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+          </div>
+          <h4 class="font-extrabold text-sm text-slate-900 truncate">Thông báo nộp bài tập</h4>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onclick="markAllTeacherNotificationsRead()"
+            class="px-2.5 py-1 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-bold transition active:scale-95"
+          >
+            Đánh dấu đã đọc
+          </button>
+          <button
+            type="button"
+            onclick="closeModal('modalTeacherNotifications')"
+            class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition"
+          >
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="teacherNotificationsList" class="flex-1 overflow-y-auto space-y-2 pr-0.5"></div>
+    </div>
+  </div>
+
   <!-- ==================== BOTTOM TAB BAR NỔI TRÊN ĐIỆN THOẠI (5 Ô CHUẨN DEMO) ==================== -->
   <div id="mobileBottomNavWrapper" class="block sm:hidden fixed bottom-3 inset-x-3 z-40">
     <nav class="bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.18)] rounded-full px-1.5 py-1.5 grid grid-cols-5 items-center">
@@ -3614,6 +3661,7 @@
       mySharedWorkspacesList = [];
       ownerHasActiveMembers = false;
       workspaceMembersList = [];
+      parentPortalSession = null;
       try {
         if (supabaseClient) {
           await supabaseClient.auth.signOut();
@@ -3623,6 +3671,7 @@
       }
       currentUser = null;
       updateAuthUI();
+      updateTeacherNotificationBadgeUI();
       renderWorkspaceSwitcherUI();
       loadScopedUserData();
       loadVipSubscriptionState();
@@ -3888,6 +3937,13 @@
 
     function getActiveVipPlan() {
       return vipPlansConfig.find(p => p.id === currentTeacherPlanId) || vipPlansConfig[0] || DEFAULT_VIP_PLANS[0];
+    }
+
+    function hasHomeworkFeatureAccess() {
+      if (activeWorkspaceMode === 'shared') return true;
+      enforcePaidVipExpirationIfNeeded();
+      enforceTrialExpirationIfNeeded();
+      return currentTeacherPlanId !== 'free';
     }
 
     function getOwnedPlanBadgeStyle(planId) {
@@ -4776,7 +4832,7 @@
           'Quản lý lớp & Thời khóa biểu',
           'Điểm danh & theo dõi chuyên cần',
           'Tính học phí & Phiếu báo thu QR',
-          'Bài tập Online & Xuất Excel'
+          'Xuất dữ liệu Excel'
         ];
         const VIP_PRIORITY_SUPPORT_PLANS = ['tra_sua', 'trum_tra', 'trung_tam'];
         const VIP_MULTI_TEACHER_SOON_PLANS = ['trum_tra', 'trung_tam'];
@@ -4824,6 +4880,12 @@
                   <span>${feat}</span>
                 </li>
               `).join('')}
+              ${!isFreePlan ? `
+                <li class="flex items-start gap-1">
+                  <i data-lucide="check" class="w-3 h-3 ${checkIconColor} shrink-0 mt-0.5"></i>
+                  <span>Bài tập & Phiếu trả lời Online</span>
+                </li>
+              ` : ''}
               ${hasPrioritySupport ? `
                 <li class="flex items-start gap-1 font-extrabold text-slate-900">
                   <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
@@ -6446,6 +6508,7 @@
       currentTab = 'home';
       isClassSelected = false;
       selectedParentStudentId = null;
+      parentPortalSession = null;
       if (classesList.length > 0 && (!currentClassId || currentClassId === ALL_CLASSES_ID || !classesList.some(c => c.id === currentClassId))) {
         currentClassId = classesList[0].id;
       }
@@ -6871,6 +6934,7 @@
         const prefix = getStorageKeyPrefix();
         localStorage.setItem(`${prefix}_last_synced_at`, new Date().toISOString());
         setCloudSyncBadge('synced', 'Đã đồng bộ đám mây');
+        updateTeacherNotificationBadgeUI();
         if (showToastFeedback) showUndoToast('Đã tải dữ liệu mới nhất từ đám mây!');
       } catch (err) {
         console.warn('Lỗi tải dữ liệu đám mây:', err);
@@ -7018,12 +7082,217 @@
 
         lastVisibilityRefreshAt = nowMs;
 
+        pollLatestHomeworkSubmissions();
+
         if (activeWorkspaceMode === 'shared' && activeSharedWorkspace?.owner_id) {
           switchActiveWorkspace(activeSharedWorkspace.owner_id, true);
         } else if (activeWorkspaceMode === 'own' && ownerHasActiveMembers === true && !isSyncingCloud && currentUser?.id) {
           loadUserDataFromCloud(currentUser, false);
         }
       });
+    }
+
+    // ==================== THÔNG BÁO HỌC SINH NỘP BÀI TẬP ====================
+    let teacherNotifPollTimer = null;
+
+    function getSubmissionNotifKey(sub) {
+      if (!sub) return '';
+      return `${sub.id || ''}_${sub.submittedAt || ''}`;
+    }
+
+    function getSeenSubmissionNotifStorageKey() {
+      const scope = activeWorkspaceMode === 'shared'
+        ? `shared_${activeSharedWorkspace?.owner_id || ''}`
+        : 'own';
+      return `${getStorageKeyPrefix()}_seen_hw_subs_${scope}`;
+    }
+
+    function getSeenSubmissionNotifSet() {
+      try {
+        const raw = localStorage.getItem(getSeenSubmissionNotifStorageKey());
+        const arr = raw ? JSON.parse(raw) : [];
+        return new Set(Array.isArray(arr) ? arr : []);
+      } catch (e) {
+        return new Set();
+      }
+    }
+
+    function saveSeenSubmissionNotifSet(setObj) {
+      try {
+        const arr = Array.from(setObj || []).slice(-500);
+        localStorage.setItem(getSeenSubmissionNotifStorageKey(), JSON.stringify(arr));
+      } catch (e) {}
+    }
+
+    function updateTeacherNotificationBadgeUI() {
+      const bellBtn = document.getElementById('btnTeacherNotifications');
+      const badgeEl = document.getElementById('teacherNotifBadge');
+      if (!bellBtn) return;
+
+      const canShowBell = currentRole === 'teacher' && Boolean(currentUser?.id) && hasHomeworkFeatureAccess();
+      bellBtn.classList.toggle('hidden', !canShowBell);
+      if (!canShowBell) {
+        badgeEl?.classList.add('hidden');
+        return;
+      }
+
+      const validHwIds = new Set((homeworks || []).map(h => h.id));
+      const seenSet = getSeenSubmissionNotifSet();
+      let unreadCount = 0;
+
+      (homeworkSubmissions || []).forEach(sub => {
+        if (!sub || !validHwIds.has(sub.homeworkId)) return;
+        const key = getSubmissionNotifKey(sub);
+        if (key && !seenSet.has(key)) {
+          unreadCount++;
+        }
+      });
+
+      if (badgeEl) {
+        if (unreadCount > 0) {
+          badgeEl.innerText = unreadCount > 99 ? '99+' : String(unreadCount);
+          badgeEl.classList.remove('hidden');
+        } else {
+          badgeEl.classList.add('hidden');
+        }
+      }
+    }
+
+    function openTeacherNotificationsModal() {
+      renderTeacherNotificationsModal();
+      openModal('modalTeacherNotifications');
+    }
+
+    function renderTeacherNotificationsModal() {
+      const listEl = document.getElementById('teacherNotificationsList');
+      if (!listEl) return;
+
+      const hwMap = new Map();
+      (homeworks || []).forEach(h => { if (h && h.id) hwMap.set(h.id, h); });
+      const seenSet = getSeenSubmissionNotifSet();
+
+      const validSubs = (homeworkSubmissions || [])
+        .filter(sub => sub && hwMap.has(sub.homeworkId))
+        .slice()
+        .reverse()
+        .slice(0, 30);
+
+      if (validSubs.length === 0) {
+        listEl.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">Chưa có thông báo nộp bài tập nào.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = validSubs.map(sub => {
+        const hw = hwMap.get(sub.homeworkId);
+        const notifKey = getSubmissionNotifKey(sub);
+        const isUnread = notifKey && !seenSet.has(notifKey);
+        const studentName = sub.studentName || 'Học sinh';
+        const hwTitle = hw?.title || 'Bài tập';
+        const scoreVal = sub.score ?? 0;
+        const submittedAt = sub.submittedAt || '';
+
+        return `
+          <button
+            type="button"
+            onclick="openNotificationSubmission('${escapeHtml(sub.homeworkId)}', '${escapeHtml(notifKey)}')"
+            class="w-full text-left p-3 rounded-2xl border transition flex items-start justify-between gap-2.5 ${
+              isUnread
+                ? 'bg-indigo-50/70 hover:bg-indigo-100/70 border-indigo-200 shadow-2xs'
+                : 'bg-white hover:bg-slate-50 border-slate-200/80'
+            }"
+          >
+            <div class="min-w-0 flex-1 space-y-0.5">
+              <div class="flex items-center gap-1.5">
+                ${isUnread ? `<span class="w-2 h-2 rounded-full bg-rose-600 shrink-0"></span>` : ''}
+                <span class="font-extrabold text-xs text-slate-900 truncate">${escapeHtml(studentName)}</span>
+                <span class="px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold shrink-0">${escapeHtml(String(scoreVal))}/10</span>
+              </div>
+              <div class="text-[11px] font-semibold text-indigo-700 truncate">${escapeHtml(hwTitle)}</div>
+              ${submittedAt ? `<div class="text-[10px] text-slate-400 font-medium">${escapeHtml(submittedAt)}</div>` : ''}
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 shrink-0 mt-1"></i>
+          </button>
+        `;
+      }).join('');
+
+      safeCreateIcons();
+    }
+
+    function openNotificationSubmission(hwId, notifKey) {
+      if (notifKey) {
+        const seenSet = getSeenSubmissionNotifSet();
+        seenSet.add(notifKey);
+        saveSeenSubmissionNotifSet(seenSet);
+      }
+      updateTeacherNotificationBadgeUI();
+      closeModal('modalTeacherNotifications');
+      openGradeHomeworkModal(hwId);
+    }
+
+    function markAllTeacherNotificationsRead() {
+      const validHwIds = new Set((homeworks || []).map(h => h.id));
+      const seenSet = getSeenSubmissionNotifSet();
+      (homeworkSubmissions || []).forEach(sub => {
+        if (!sub || !validHwIds.has(sub.homeworkId)) return;
+        const key = getSubmissionNotifKey(sub);
+        if (key) seenSet.add(key);
+      });
+      saveSeenSubmissionNotifSet(seenSet);
+      updateTeacherNotificationBadgeUI();
+      renderTeacherNotificationsModal();
+    }
+
+    async function pollLatestHomeworkSubmissions() {
+      if (
+        !supabaseClient ||
+        !currentUser?.id ||
+        currentRole !== 'teacher' ||
+        document.visibilityState !== 'visible' ||
+        !hasHomeworkFeatureAccess()
+      ) {
+        return;
+      }
+
+      try {
+        const ownerIdParam = activeWorkspaceMode === 'shared'
+          ? (activeSharedWorkspace?.owner_id || null)
+          : null;
+
+        const { data, error } = await supabaseClient.rpc('get_latest_homework_submissions', {
+          p_owner_id: ownerIdParam
+        });
+
+        if (error || !data?.ok || !Array.isArray(data.submissions)) {
+          return;
+        }
+
+        const existingKeys = new Set((homeworkSubmissions || []).map(s => getSubmissionNotifKey(s)).filter(Boolean));
+        const validHwIds = new Set((homeworks || []).map(h => h.id));
+        const newSubs = data.submissions.filter(sub => {
+          const key = getSubmissionNotifKey(sub);
+          return key && !existingKeys.has(key) && validHwIds.has(sub.homeworkId);
+        });
+
+        if (newSubs.length > 0) {
+          homeworkSubmissions = data.submissions;
+          if (activeWorkspaceMode === 'own') {
+            saveAllToLocalStorage(false);
+          }
+          updateTeacherNotificationBadgeUI();
+          renderHomeTab();
+          if (currentTab === 'homework') {
+            renderHomeworkTab();
+          }
+
+          if (newSubs.length === 1) {
+            showUndoToast(`${newSubs[0].studentName} vừa nộp bài (${newSubs[0].score}/10)!`);
+          } else {
+            showUndoToast(`Có ${newSubs.length} bài tập học sinh vừa nộp mới!`);
+          }
+        }
+      } catch (err) {
+        console.warn('Lỗi kiểm tra bài nộp mới:', err);
+      }
     }
 
     // ==================== TIỆN ÍCH NGÀY THÁNG & UI ====================
@@ -8448,6 +8717,7 @@
     let editingHomeworkId = null;
 
     function openCreateAssignmentModal() {
+      if (!hasHomeworkFeatureAccess()) { showUndoToast('Tính năng Bài tập Online chỉ có trên các gói trả phí. Vui lòng nâng cấp!'); openVipSubscriptionModal(); return; }
       editingHomeworkId = null;
       const headerTitle = document.getElementById('assignmentModalHeaderTitle');
       const submitBtnLabel = document.getElementById('btnSubmitAssignmentFormLabel');
@@ -8477,6 +8747,7 @@
     }
 
     function openEditAssignmentModal(hwId) {
+      if (!hasHomeworkFeatureAccess()) { showUndoToast('Tính năng Bài tập Online chỉ có trên các gói trả phí. Vui lòng nâng cấp!'); openVipSubscriptionModal(); return; }
       const hw = homeworks.find(h => h.id === hwId);
       if (!hw) return;
 
@@ -8856,6 +9127,7 @@
 
     async function handleSaveAssignment(e) {
       e.preventDefault();
+      if (!hasHomeworkFeatureAccess()) { showUndoToast('Tính năng Bài tập Online chỉ có trên các gói trả phí. Vui lòng nâng cấp!'); openVipSubscriptionModal(); return; }
       const classId = document.getElementById('assignmentClassSelect')?.value || classesList[0]?.id;
       const title = document.getElementById('assignmentTitleInput')?.value.trim();
       const deadline = document.getElementById('assignmentDeadlineInput')?.value;
@@ -8967,7 +9239,42 @@
 
     function renderHomeworkTab() {
       const container = document.getElementById('homeworkCardsContainer');
+      const createBtn = document.querySelector('#contentTabHomework button[onclick="openCreateAssignmentModal()"]');
       if (!container) return;
+
+      if (!hasHomeworkFeatureAccess()) {
+        createBtn?.classList.add('hidden');
+        container.innerHTML = `
+          <div class="bg-white rounded-3xl border border-amber-200/90 p-6 sm:p-8 text-center shadow-sm space-y-3 max-w-lg mx-auto my-2">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white mx-auto flex items-center justify-center shadow-md shadow-orange-500/20">
+              <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <div class="space-y-1">
+              <h4 class="font-extrabold text-sm sm:text-base text-slate-900">
+                Tính năng Bài tập &amp; Phiếu trả lời Online dành riêng cho gói VIP
+              </h4>
+              <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                Giao đề bài trực tuyến, tạo phiếu trả lời trắc nghiệm &amp; điền từ tự động chấm điểm cho học sinh khi nâng cấp lên các gói trả phí.
+              </p>
+            </div>
+            <div class="pt-1">
+              <button
+                type="button"
+                onclick="openVipSubscriptionModal()"
+                class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs sm:text-sm font-extrabold shadow-sm transition active:scale-95 inline-flex items-center gap-1.5"
+              >
+                <i data-lucide="crown" class="w-4 h-4"></i>
+                <span>Nâng cấp gói ngay</span>
+              </button>
+            </div>
+          </div>
+        `;
+        safeCreateIcons();
+        return;
+      }
+
+      createBtn?.classList.remove('hidden');
+
       const filtered = (currentClassId && currentClassId !== ALL_CLASSES_ID)
         ? homeworks.filter(h => !h.classId || h.classId === currentClassId)
         : homeworks;
@@ -9050,12 +9357,22 @@
     let isPreviewingHomework = false;
 
     function openTakeHomeworkModal(hwId, isPreview = false) {
-      const hw = homeworks.find(h => h.id === hwId);
+      isPreviewingHomework = Boolean(isPreview);
+      const isParentRealMode = !isPreviewingHomework && currentRole === 'parent';
+
+      const hw = isParentRealMode
+        ? (parentPortalSession?.homeworks || []).find(h => h.id === hwId)
+        : homeworks.find(h => h.id === hwId);
       if (!hw) return;
 
-      isPreviewingHomework = Boolean(isPreview);
-      const allSt = getStudentsForClass(ALL_CLASSES_ID);
-      const st = allSt.find(s => s.id === selectedParentStudentId) || allSt[0] || { id: 'PREVIEW_ST', name: 'Học sinh xem thử' };
+      let st = null;
+      if (isParentRealMode) {
+        st = parentPortalSession?.student || null;
+        if (!st) return;
+      } else {
+        const allSt = getStudentsForClass(ALL_CLASSES_ID);
+        st = allSt.find(s => s.id === selectedParentStudentId) || allSt[0] || { id: 'PREVIEW_ST', name: 'Học sinh xem thử' };
+      }
 
       const sessionKey = `${hwId}_${st.id}_${isPreviewingHomework ? 'preview' : 'real'}`;
       const isNewSession = activeTakingSessionKey !== sessionKey;
@@ -9080,8 +9397,9 @@
       }
 
       if (isNewSession) {
+        const subsList = isParentRealMode ? (parentPortalSession?.submissions || []) : homeworkSubmissions;
         const existingSub = !isPreviewingHomework
-          ? homeworkSubmissions.find(s => s.homeworkId === hwId && s.studentId === st.id)
+          ? subsList.find(s => s.homeworkId === hwId && s.studentId === st.id)
           : null;
         activeStudentAnswersMap = existingSub ? { ...existingSub.answers } : {};
       }
@@ -9140,10 +9458,9 @@
     }
 
     async function handleSubmitStudentHomework() {
-      const hw = homeworks.find(h => h.id === activeTakingHomeworkId);
-      if (!hw) return;
-
       if (isPreviewingHomework || currentRole === 'teacher') {
+        const hw = homeworks.find(h => h.id === activeTakingHomeworkId);
+        if (!hw) return;
         let previewCorrect = 0;
         const totalPreviewQ = (hw.questions || []).length;
         (hw.questions || []).forEach(q => {
@@ -9156,10 +9473,44 @@
         return;
       }
 
-      const allSt = getStudentsForClass(ALL_CLASSES_ID);
-      const st = allSt.find(s => s.id === selectedParentStudentId);
-      if (!st) {
-        showUndoToast('Không xác định được hồ sơ học sinh đang làm bài.');
+      if (!parentPortalSession?.student) return;
+      const st = parentPortalSession.student;
+      const hw = (parentPortalSession.homeworks || []).find(h => h.id === activeTakingHomeworkId);
+      if (!hw) return;
+
+      if (parentPortalSession.isRemote) {
+        if (!supabaseClient) {
+          showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
+          return;
+        }
+        try {
+          const { data, error } = await supabaseClient.rpc('submit_student_homework_by_code', {
+            p_code: parentPortalSession.studentCode,
+            p_homework_id: hw.id,
+            p_answers: { ...activeStudentAnswersMap },
+            p_password: parentPortalSession.classPassword || null
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || 'Nộp bài thất bại, kiểm tra lại kết nối mạng');
+            return;
+          }
+          if (!Array.isArray(parentPortalSession.submissions)) {
+            parentPortalSession.submissions = [];
+          }
+          if (data.submission) {
+            const subIdx = parentPortalSession.submissions.findIndex(s => s.homeworkId === hw.id);
+            if (subIdx >= 0) parentPortalSession.submissions[subIdx] = data.submission;
+            else parentPortalSession.submissions.push(data.submission);
+          }
+          activeTakingHomeworkId = null;
+          activeTakingSessionKey = null;
+          closeModal('modalTakeHomework');
+          renderParentView();
+          showUndoToast(`Đã nộp bài! Điểm tự chấm: ${data.score}/10 (${data.correctCount}/${data.totalQ} câu đúng)`);
+        } catch (rpcErr) {
+          console.warn('Lỗi ngoại lệ khi gọi RPC nộp bài:', rpcErr);
+          showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
+        }
         return;
       }
 
@@ -9184,38 +9535,26 @@
         teacherComment: existingIdx >= 0 ? homeworkSubmissions[existingIdx].teacherComment : ''
       };
 
-      const ownerUserId = st._teacherUserId || currentUser?.id;
-      if (supabaseClient && ownerUserId) {
-        try {
-          const { data, error } = await supabaseClient.rpc('submit_student_homework_by_code', {
-            p_teacher_id: ownerUserId,
-            p_submission: subObj
-          });
-          if (error || data === false) {
-            console.warn('Lỗi RPC submit_student_homework_by_code:', error?.message || data);
-            showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
-            return;
-          }
-        } catch (rpcErr) {
-          console.warn('Lỗi ngoại lệ khi gọi RPC nộp bài:', rpcErr);
-          showUndoToast('Nộp bài thất bại, kiểm tra lại kết nối mạng');
-          return;
-        }
-      }
-
       if (existingIdx >= 0) homeworkSubmissions[existingIdx] = subObj;
       else homeworkSubmissions.push(subObj);
 
-      saveAllToLocalStorage(true);
+      if (!Array.isArray(parentPortalSession.submissions)) {
+        parentPortalSession.submissions = [];
+      }
+      const sessionSubIdx = parentPortalSession.submissions.findIndex(s => s.homeworkId === hw.id && s.studentId === st.id);
+      if (sessionSubIdx >= 0) parentPortalSession.submissions[sessionSubIdx] = subObj;
+      else parentPortalSession.submissions.push(subObj);
+
+      saveAllToLocalStorage(false);
       activeTakingHomeworkId = null;
       activeTakingSessionKey = null;
       closeModal('modalTakeHomework');
-      renderHomeworkTab();
       renderParentView();
       showUndoToast(`Đã nộp bài! Điểm tự chấm: ${score}/10 (${correctCount}/${totalQ} câu đúng)`);
     }
 
     async function openGradeHomeworkModal(hwId) {
+      if (!hasHomeworkFeatureAccess()) { showUndoToast('Tính năng Bài tập Online chỉ có trên các gói trả phí. Vui lòng nâng cấp!'); openVipSubscriptionModal(); return; }
       const hw = homeworks.find(h => h.id === hwId);
       const container = document.getElementById('gradeSubmissionsContainer');
       if (!hw || !container) return;
@@ -10263,6 +10602,9 @@
     }
 
     function getTuitionMonthTitle() {
+      if (currentRole === 'parent' && parentPortalSession?.student) {
+        return `Tháng ${new Date().getMonth() + 1}`;
+      }
       if (financeFilterMode === 'month' && currentFinanceMonth && currentFinanceMonth !== 'all') {
         const mNum = parseInt(currentFinanceMonth.split('/')[0], 10);
         return `Tháng ${mNum}`;
@@ -10295,8 +10637,11 @@
 
     function openTuitionNoticeModal(studentId) {
       if (currentRole === 'teacher' && activeWorkspaceMode === 'shared' && !activeSharedWorkspace?.can_manage_finance) { showUndoToast('Bạn không có quyền xem phiếu báo thu ở không gian này.'); return; }
-      const found = findStudentAndClassById(studentId);
-      const s = found ? found.student : students.find(x => x.id === studentId);
+      const isParentView = currentRole === 'parent' && Boolean(parentPortalSession?.student);
+      const found = isParentView ? null : findStudentAndClassById(studentId);
+      const s = isParentView
+        ? parentPortalSession.student
+        : (found ? found.student : students.find(x => x.id === studentId));
       if (!s) return;
 
       const toggleEditBtn = document.getElementById('btnToggleTuitionEdit');
@@ -10306,11 +10651,15 @@
 
       activeTuitionStudentId = s.id;
       let targetDates = [];
-      if (currentRole === 'parent') {
-        const allClsDates = getCurrentClassSessionDates(found ? found.classId : currentClassId);
+      let remarksSource = tuitionRemarksMap;
+      let remarkKey = getTuitionRemarkStorageKey(s.id);
+
+      if (isParentView) {
         const now = new Date();
         const curMonthStr = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
-        targetDates = allClsDates.filter(d => d.includes(`/${curMonthStr}`));
+        targetDates = getParentCurrentMonthSessionDates(parentPortalSession.classObj, s);
+        remarksSource = parentPortalSession.tuitionRemarks || {};
+        remarkKey = `${s.id}_${curMonthStr}`;
       } else if (selectedFinanceDates.length > 0) {
         targetDates = selectedFinanceDates;
       } else {
@@ -10347,9 +10696,8 @@
         }
       }
 
-      const remarkKey = getTuitionRemarkStorageKey(s.id);
       const defaultRemark = `Con chăm ngoan, tích cực phát biểu và nắm vững kiến thức trọng tâm trên lớp.`;
-      const currentRemark = tuitionRemarksMap[remarkKey] !== undefined ? tuitionRemarksMap[remarkKey] : defaultRemark;
+      const currentRemark = remarksSource[remarkKey] !== undefined ? remarksSource[remarkKey] : defaultRemark;
 
       updateTuitionRemarkSectionVisibility(currentRemark);
       const remarkInput = document.getElementById('tuitionRemarkInput');
@@ -10366,16 +10714,23 @@
       const qrWrapper = document.getElementById('tuitionQrImageWrapper');
       if (!qrWrapper) return;
 
-      if (teacherPaymentQr.imageData) {
+      const isParentView = currentRole === 'parent' && Boolean(parentPortalSession?.student);
+      const qrSource = isParentView
+        ? (parentPortalSession.paymentQr || { imageData: '' })
+        : teacherPaymentQr;
+
+      if (qrSource && qrSource.imageData) {
         qrWrapper.innerHTML = `
           <div class="w-52 h-52 sm:w-56 sm:h-56 rounded-xl overflow-hidden bg-white flex items-center justify-center">
-            <img src="${teacherPaymentQr.imageData}" alt="Mã QR thanh toán" class="w-full h-full object-contain">
+            <img src="${qrSource.imageData}" alt="Mã QR thanh toán" class="w-full h-full object-contain">
           </div>
         `;
       } else {
-        const emptyQrMessage = activeWorkspaceMode === 'shared'
-          ? 'Chủ lớp chưa tải mã QR thanh toán'
-          : 'Bấm "Sửa" ở góc trên để tải mã QR ngân hàng';
+        const emptyQrMessage = isParentView
+          ? 'Giáo viên chưa tải mã QR thanh toán'
+          : (activeWorkspaceMode === 'shared'
+            ? 'Chủ lớp chưa tải mã QR thanh toán'
+            : 'Bấm "Sửa" ở góc trên để tải mã QR ngân hàng');
         qrWrapper.innerHTML = `
           <div class="w-36 h-36 rounded-xl bg-slate-50 border border-dashed border-slate-200 flex flex-col items-center justify-center p-2 text-center gap-1">
             <i data-lucide="qr-code" class="w-6 h-6 text-slate-300"></i>
@@ -10615,14 +10970,16 @@
       if (!s) return;
       activeDetailStudent = s;
 
+      const isShared = activeWorkspaceMode === 'shared';
+      const canViewContacts = !isShared || activeSharedWorkspace?.can_view_contacts === true;
+
       document.getElementById('detailStudentHeaderTitle').innerText = `Hồ sơ: ${s.name}`;
       document.getElementById('detailStudentCodeBadge').innerText = s.studentCode || '--';
       document.getElementById('editStudentName').value = s.name || '';
       document.getElementById('editStudentFeePerSession').value = s.pricePerSession || 40000;
-      document.getElementById('editStudentParentPhone').value = s.parentPhone || '';
-      document.getElementById('editStudentParentName').value = s.parentName || '';
+      document.getElementById('editStudentParentPhone').value = canViewContacts ? (s.parentPhone || '') : '';
+      document.getElementById('editStudentParentName').value = canViewContacts ? (s.parentName || '') : '';
 
-      const isShared = activeWorkspaceMode === 'shared';
       document.getElementById('editStudentName').disabled = isShared;
       document.getElementById('editStudentFeePerSession').disabled = isShared;
       document.getElementById('editStudentParentPhone').disabled = isShared;
@@ -10871,12 +11228,98 @@
       applySharedWorkspaceUiRestrictions();
     }
 
+    async function respondWorkspaceInvite(ownerId, decision) {
+      if (!supabaseClient || !currentUser?.id || !ownerId) return;
+      const cleanDecision = decision === 'accept' ? 'accept' : 'decline';
+      try {
+        const { data, error } = await supabaseClient.rpc('respond_workspace_invite', {
+          p_owner_id: ownerId,
+          p_decision: cleanDecision
+        });
+
+        if (error || !data?.ok) {
+          showUndoToast(data?.message || error?.message || 'Không thể phản hồi lời mời giảng dạy.');
+          return;
+        }
+
+        await loadMySharedWorkspaces();
+        showUndoToast(data?.message || (cleanDecision === 'accept' ? 'Đã chấp nhận lời mời tham gia giảng dạy!' : 'Đã từ chối lời mời.'));
+
+        if (cleanDecision === 'accept') {
+          await switchActiveWorkspace(ownerId);
+        }
+      } catch (err) {
+        console.warn('Lỗi phản hồi lời mời không gian làm việc:', err);
+        showUndoToast('Lỗi kết nối khi phản hồi lời mời.');
+      }
+    }
+
     function renderWorkspaceSwitcherUI() {
       const box = document.getElementById('workspaceSwitcherBox');
       const select = document.getElementById('workspaceSwitcherSelect');
+      const pendingBanner = document.getElementById('pendingWorkspaceInvitesBanner');
+
+      const allWorkspaces = Array.isArray(mySharedWorkspacesList) ? mySharedWorkspacesList : [];
+      const acceptedList = allWorkspaces.filter(ws => (ws.invite_status || 'accepted') === 'accepted');
+      const pendingList = allWorkspaces.filter(ws => ws.invite_status === 'pending');
+
+      if (pendingBanner) {
+        const showPending = currentRole === 'teacher' && pendingList.length > 0;
+        pendingBanner.classList.toggle('hidden', !showPending);
+        if (showPending) {
+          pendingBanner.innerHTML = pendingList.map(ws => {
+            const ownerId = String(ws.owner_id || '');
+            const ownerName = ws.owner_name || ws.owner_email || 'Chủ lớp';
+            const perms = [];
+            if (ws.can_manage_finance) perms.push('Quản lý học phí');
+            if (ws.can_view_contacts) perms.push('Xem SĐT & Xuất Excel');
+            const permNote = perms.length > 0
+              ? ` • Quyền cấp: ${perms.join(', ')}`
+              : ' • Quyền cấp: Điểm danh & Bài tập';
+
+            return `
+              <div class="bg-violet-50 border border-violet-200 rounded-2xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs shadow-sm">
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <div class="w-7 h-7 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0">
+                    <i data-lucide="mail-plus" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-extrabold text-violet-950 leading-snug">
+                      Thầy/Cô ${escapeHtml(ownerName)} mời bạn tham gia giảng dạy chung
+                    </div>
+                    <div class="text-[11px] text-violet-700/90 font-medium truncate">
+                      Lớp được phân công${escapeHtml(permNote)}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onclick="respondWorkspaceInvite('${escapeHtml(ownerId)}', 'accept')"
+                    class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95"
+                  >
+                    Chấp nhận
+                  </button>
+                  <button
+                    type="button"
+                    onclick="respondWorkspaceInvite('${escapeHtml(ownerId)}', 'decline')"
+                    class="px-3 py-1.5 rounded-xl bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-xs font-bold transition active:scale-95"
+                  >
+                    Từ chối
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+          safeCreateIcons();
+        } else {
+          pendingBanner.innerHTML = '';
+        }
+      }
+
       if (!box || !select) return;
 
-      const shouldShow = currentRole === 'teacher' && Array.isArray(mySharedWorkspacesList) && mySharedWorkspacesList.length > 0;
+      const shouldShow = currentRole === 'teacher' && acceptedList.length > 0;
       box.classList.toggle('hidden', !shouldShow);
       if (!shouldShow) return;
 
@@ -10886,7 +11329,7 @@
 
       select.innerHTML = [
         `<option value="own" ${currentVal === 'own' ? 'selected' : ''}>Lớp cá nhân của tôi</option>`,
-        ...mySharedWorkspacesList.map(ws => {
+        ...acceptedList.map(ws => {
           const ownerId = String(ws.owner_id || '');
           const ownerName = ws.owner_name || ws.owner_email || 'Chủ lớp';
           const lockedTag = ws.is_owner_vip_active === false ? ' (Tạm khóa)' : '';
@@ -11005,6 +11448,7 @@
         syncFinanceDatesForCurrentClass();
         renderWorkspaceSwitcherUI();
         applySharedWorkspaceUiRestrictions();
+        updateTeacherNotificationBadgeUI();
         if (!isSilent) {
           switchTab('home');
         }
@@ -11082,7 +11526,7 @@
     function updateWorkspaceMemberQuotaUI() {
       const activePlan = getActiveVipPlan();
       const maxTeachers = getEffectiveMaxTeachersForCurrentPlan();
-      const usedCount = 1 + (Array.isArray(workspaceMembersList) ? workspaceMembersList.filter(m => m.is_active !== false).length : 0);
+      const usedCount = 1 + (Array.isArray(workspaceMembersList) ? workspaceMembersList.filter(m => m.is_active !== false && m.invite_status !== 'declined').length : 0);
       const isPlanLocked = maxTeachers <= 1;
 
       const quotaEl = document.getElementById('workspaceMemberQuotaText');
@@ -11226,9 +11670,10 @@
       try {
         const { data, error } = await supabaseClient
           .from('workspace_members')
-          .select('id, is_active')
+          .select('id, is_active, invite_status')
           .eq('owner_id', currentUser.id)
           .eq('is_active', true)
+          .eq('invite_status', 'accepted')
           .limit(1);
         if (!error && Array.isArray(data)) {
           ownerHasActiveMembers = data.length > 0;
@@ -11259,7 +11704,7 @@
         }
 
         workspaceMembersList = Array.isArray(data) ? data : [];
-        ownerHasActiveMembers = workspaceMembersList.some(m => m.is_active !== false);
+        ownerHasActiveMembers = workspaceMembersList.some(m => m.is_active === true && (m.invite_status || 'accepted') === 'accepted');
         updateWorkspaceMemberQuotaUI();
         renderWorkspaceMembersList();
         if (showToast) showUndoToast(`Đã cập nhật ${workspaceMembersList.length} giáo viên phụ.`);
@@ -11297,8 +11742,22 @@
               ? assignedIds.map(id => classNameMap[id] || id).join(', ')
               : 'Chưa phân lớp');
         const isActive = m.is_active !== false;
+        const inviteStatus = m.invite_status || 'accepted';
         const canFinance = Boolean(m.can_manage_finance);
         const canContacts = Boolean(m.can_view_contacts);
+
+        let statusBadgeHtml = '';
+        if (!isActive) {
+          statusBadgeHtml = `<span class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-[10px] font-bold">Đã khóa</span>`;
+        } else if (inviteStatus === 'declined') {
+          statusBadgeHtml = `<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-extrabold">Đã từ chối</span>`;
+        } else if (inviteStatus === 'pending') {
+          statusBadgeHtml = `<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-extrabold">Chờ chấp nhận</span>`;
+        } else {
+          statusBadgeHtml = `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-extrabold">Đã tham gia</span>`;
+        }
+
+        const editButtonLabel = inviteStatus === 'declined' ? 'Mời lại' : 'Sửa';
 
         return `
           <div class="rounded-2xl border p-3 space-y-2 transition ${isActive ? 'bg-white border-slate-200/90' : 'bg-slate-50/90 border-slate-200 opacity-75'}">
@@ -11306,9 +11765,7 @@
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <span class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(displayName)}</span>
-                  ${isActive
-                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-extrabold">Đang bật</span>`
-                    : `<span class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-[10px] font-bold">Đã tắt</span>`}
+                  ${statusBadgeHtml}
                 </div>
                 <div class="text-[11px] font-mono text-slate-500 truncate mt-0.5">${escapeHtml(emailStr)}</div>
               </div>
@@ -11319,7 +11776,7 @@
                   onclick="startEditWorkspaceMember('${escapeHtml(emailStr)}')"
                   class="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold transition"
                 >
-                  Sửa
+                  ${editButtonLabel}
                 </button>
                 <button
                   type="button"
@@ -11428,7 +11885,7 @@
           return;
         }
 
-        showUndoToast(editingWorkspaceMemberEmail ? `Đã cập nhật giáo viên ${memberEmail}!` : `Đã thêm giáo viên ${memberEmail}!`);
+        showUndoToast(editingWorkspaceMemberEmail ? `Đã cập nhật giáo viên ${memberEmail}!` : `Đã gửi lời mời tới ${memberEmail}! Đang chờ họ xác nhận.`);
         resetWorkspaceMemberForm();
         await loadWorkspaceMembers(false);
       } catch (err) {
@@ -11493,6 +11950,7 @@
         return null;
       }
     })();
+    let parentPortalSession = null;
 
     function findStudentByCodeAcrossClasses(codeInput) {
       const normalized = String(codeInput || '').trim().toUpperCase();
@@ -11503,68 +11961,57 @@
         if (st) {
           return {
             student: Object.assign({}, st, { _classId: cls.id, _className: cls.class_name }),
-            classObj: cls,
-            isRemotePayload: false
+            classObj: cls
           };
         }
       }
       return null;
     }
 
-    async function lookupStudentFromSupabaseByCode(codeInput) {
+    async function lookupStudentFromSupabaseByCode(codeInput, pwdInput = '') {
       const normalized = String(codeInput || '').trim().toUpperCase();
       if (!normalized || !supabaseClient) return null;
+      const trimmedPwd = String(pwdInput || '').trim();
       try {
         const { data, error } = await supabaseClient.rpc('get_student_portal_by_code', {
-          p_code: normalized
+          p_code: normalized,
+          p_password: trimmedPwd || null
         });
-        if (error || !data || !data.student || !data.classObj) {
+        if (error || !data) {
           return null;
         }
-
-        const classObj = data.classObj;
-        const student = Object.assign({}, data.student, {
-          _classId: classObj.id,
-          _className: classObj.class_name,
-          _teacherUserId: data.teacherUserId || null
-        });
-
-        return {
-          student,
-          classObj,
-          isRemotePayload: true,
-          remoteHomeworks: Array.isArray(data.homeworks) ? data.homeworks : null,
-          remoteSubmissions: Array.isArray(data.submissions) ? data.submissions : null,
-          remotePaymentQr: (data.teacherPaymentQr && typeof data.teacherPaymentQr === 'object') ? data.teacherPaymentQr : null,
-          remoteTuitionRemarks: (data.tuitionRemarksMap && typeof data.tuitionRemarksMap === 'object') ? data.tuitionRemarksMap : null
-        };
+        if (data.ok === false) {
+          return {
+            ok: false,
+            need_password: Boolean(data.need_password),
+            not_found: Boolean(data.not_found),
+            message: data.message
+          };
+        }
+        if (data.ok === true && data.student && data.classObj) {
+          return {
+            ok: true,
+            isRemote: true,
+            studentCode: normalized,
+            classPassword: trimmedPwd,
+            teacherUserId: data.teacherUserId || null,
+            student: {
+              ...data.student,
+              _classId: data.classObj.id,
+              _className: data.classObj.class_name
+            },
+            classObj: data.classObj,
+            homeworks: Array.isArray(data.homeworks) ? data.homeworks : [],
+            submissions: Array.isArray(data.submissions) ? data.submissions : [],
+            paymentQr: data.teacherPaymentQr || { imageData: '', bankName: 'BIDV' },
+            tuitionRemarks: data.tuitionRemarksMap || {}
+          };
+        }
+        return null;
       } catch (err) {
         console.warn('Lỗi tra cứu RPC get_student_portal_by_code:', err);
         return null;
       }
-    }
-
-    function commitVerifiedParentPortalData(match) {
-      if (!match || !match.isRemotePayload) return;
-      const { student, classObj, remoteHomeworks, remoteSubmissions, remotePaymentQr, remoteTuitionRemarks } = match;
-
-      if (!classesList.some(c => c.id === classObj.id)) {
-        classesList.push(classObj);
-      }
-      if (!Array.isArray(classStudentsMap[classObj.id])) {
-        classStudentsMap[classObj.id] = [];
-      }
-      const existingStudentIdx = classStudentsMap[classObj.id].findIndex(s => s.id === student.id);
-      if (existingStudentIdx >= 0) {
-        classStudentsMap[classObj.id][existingStudentIdx] = student;
-      } else {
-        classStudentsMap[classObj.id].push(student);
-      }
-
-      if (remoteHomeworks) homeworks = remoteHomeworks;
-      if (remoteSubmissions) homeworkSubmissions = remoteSubmissions;
-      if (remotePaymentQr) teacherPaymentQr = remotePaymentQr;
-      if (remoteTuitionRemarks) tuitionRemarksMap = remoteTuitionRemarks;
     }
 
     function onParentCodeInputTyping(val) {
@@ -11589,55 +12036,73 @@
       const pwdVal = document.getElementById('parentClassPasswordInput')?.value || '';
       const errBox = document.getElementById('parentCodeErrorBox');
 
-      let match = null;
-      if (!currentUser) {
-        match = await lookupStudentFromSupabaseByCode(codeVal);
-        if (!match) {
-          match = findStudentByCodeAcrossClasses(codeVal);
+      let res = null;
+      if (supabaseClient) {
+        res = await lookupStudentFromSupabaseByCode(codeVal, pwdVal);
+      }
+
+      if (res && res.need_password === true) {
+        if (errBox) {
+          errBox.innerText = res.message || 'Mật khẩu lớp không chính xác. Vui lòng nhập đúng mật khẩu do giáo viên cung cấp.';
+          errBox.classList.remove('hidden');
         }
+        return;
+      }
+
+      if (res && res.ok === true) {
+        parentPortalSession = res;
+        selectedParentStudentId = res.student.id;
+      } else if (!res || res.not_found === true) {
+        const match = findStudentByCodeAcrossClasses(codeVal);
+        if (!match) {
+          if (errBox) {
+            errBox.innerText = (res && res.message) || 'Không tìm thấy mã học sinh này. Vui lòng kiểm tra lại với giáo viên.';
+            errBox.classList.remove('hidden');
+          }
+          return;
+        }
+        const requiredPwd = (match.classObj?.classPassword || '').trim();
+        if (requiredPwd && pwdVal.trim() !== requiredPwd) {
+          if (errBox) {
+            errBox.innerText = 'Mật khẩu lớp không chính xác. Vui lòng nhập đúng mật khẩu do giáo viên cung cấp.';
+            errBox.classList.remove('hidden');
+          }
+          return;
+        }
+        parentPortalSession = {
+          ok: true,
+          isRemote: false,
+          studentCode: codeVal.trim().toUpperCase(),
+          classPassword: pwdVal.trim(),
+          teacherUserId: null,
+          student: match.student,
+          classObj: match.classObj,
+          homeworks: homeworks.filter(h => !h.classId || h.classId === match.classObj.id),
+          submissions: homeworkSubmissions.filter(s => s.studentId === match.student.id),
+          paymentQr: teacherPaymentQr,
+          tuitionRemarks: tuitionRemarksMap
+        };
+        selectedParentStudentId = match.student.id;
       } else {
-        match = findStudentByCodeAcrossClasses(codeVal);
-        if (!match) {
-          match = await lookupStudentFromSupabaseByCode(codeVal);
-        }
-      }
-
-      if (!match) {
         if (errBox) {
-          errBox.innerText = 'Không tìm thấy mã học sinh này. Vui lòng kiểm tra lại với giáo viên.';
+          errBox.innerText = res.message || 'Không thể truy cập hồ sơ học sinh. Vui lòng kiểm tra lại.';
           errBox.classList.remove('hidden');
         }
         return;
       }
 
-      const requiredPwd = (match.classObj?.classPassword || '').trim();
-      if (requiredPwd && pwdVal.trim() !== requiredPwd) {
-        if (errBox) {
-          errBox.innerText = 'Mật khẩu lớp không chính xác. Vui lòng nhập đúng mật khẩu do giáo viên cung cấp.';
-          errBox.classList.remove('hidden');
-        }
-        return;
-      }
-
-      commitVerifiedParentPortalData(match);
       errBox?.classList.add('hidden');
-      selectedParentStudentId = match.student.id;
       try {
         sessionStorage.setItem('dipi_parent_verified_student_id', selectedParentStudentId);
       } catch (e) {}
 
-      const nowParent = new Date();
-      currentClassId = match.classObj.id;
-      financeFilterMode = 'month';
-      currentFinanceMonth = `${String(nowParent.getMonth() + 1).padStart(2, '0')}/${nowParent.getFullYear()}`;
-      syncFinanceDatesForCurrentClass();
-
       renderParentView();
-      showUndoToast(`Đã mở hồ sơ học sinh ${match.student.name}!`);
+      showUndoToast(`Đã mở hồ sơ học sinh ${parentPortalSession.student.name}!`);
     }
 
     function logoutParentStudentCode() {
       selectedParentStudentId = null;
+      parentPortalSession = null;
       try {
         sessionStorage.removeItem('dipi_parent_verified_student_id');
       } catch (e) {}
@@ -11653,6 +12118,27 @@
       renderParentView();
     }
 
+    function getParentCurrentMonthSessionDates(classObj, studentObj = null) {
+      const now = new Date();
+      const curMonth = now.getMonth() + 1;
+      const curYear = now.getFullYear();
+      const curMonthTag = `/${String(curMonth).padStart(2, '0')}/${curYear}`;
+
+      const generated = generateClassSessionDates(classObj?.schedules || [], [{ month: curMonth, year: curYear }]);
+      if (generated.length > 0) {
+        return generated;
+      }
+
+      const hist = (studentObj || parentPortalSession?.student)?.attendanceHistory || {};
+      return Object.keys(hist)
+        .filter(d => d.includes(curMonthTag))
+        .sort((a, b) => {
+          const [d1, m1, y1] = a.split('/').map(Number);
+          const [d2, m2, y2] = b.split('/').map(Number);
+          return new Date(y1, m1 - 1, d1) - new Date(y2, m2 - 1, d2);
+        });
+    }
+
     function renderParentView() {
       const gateCard = document.getElementById('parentCodeGateCard');
       const authContent = document.getElementById('parentAuthenticatedContent');
@@ -11662,8 +12148,8 @@
       const hwList = document.getElementById('studentHomeworkCardsList');
       const attGrid = document.getElementById('parentAttendanceGrid');
 
-      const allSt = getStudentsForClass(ALL_CLASSES_ID);
-      const st = selectedParentStudentId ? allSt.find(s => s.id === selectedParentStudentId) : null;
+      const st = parentPortalSession?.student || null;
+      const cls = parentPortalSession?.classObj || null;
 
       if (!st) {
         gateCard?.classList.remove('hidden');
@@ -11679,7 +12165,30 @@
       if (bannerBadge) bannerBadge.innerText = `${st.name} (${st.studentCode || ''})`;
       logoutCodeBtn?.classList.remove('hidden');
 
-      const fee = calculateStudentFeeForSelectedDates(st);
+      const now = new Date();
+      const curMonthStr = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+      const monthDates = getParentCurrentMonthSessionDates(cls, st);
+      const history = st.attendanceHistory || {};
+      const paidList = Array.isArray(st.paidSessions) ? st.paidSessions : [];
+      const paidPeriods = Array.isArray(st.paidPeriods) ? st.paidPeriods : [];
+      const price = Number(st.pricePerSession) || 40000;
+
+      let presentCount = 0;
+      const unpaidPresentDates = [];
+      monthDates.forEach(d => {
+        if (history[d] === 'present') {
+          presentCount++;
+          if (!paidList.includes(d)) {
+            unpaidPresentDates.push(d);
+          }
+        }
+      });
+
+      const remainingAmount = unpaidPresentDates.length * price;
+      const isFullyPaid = presentCount > 0
+        ? (unpaidPresentDates.length === 0)
+        : (paidPeriods.includes(curMonthStr) || (monthDates.length > 0 && monthDates.every(d => paidList.includes(d))));
+
       if (overview) {
         overview.innerHTML = `
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -11688,7 +12197,7 @@
                 <h4 class="font-extrabold text-sm sm:text-base text-slate-900">${escapeHtml(st.name)}</h4>
                 <span class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-extrabold text-xs">${escapeHtml(st.studentCode || '')}</span>
               </div>
-              <p class="text-xs text-slate-500">Lớp: <strong>${escapeHtml(st._className || '')}</strong> • Học phí: <strong>${formatMoneyK(st.pricePerSession || 40000)}/buổi</strong></p>
+              <p class="text-xs text-slate-500">Lớp: <strong>${escapeHtml(cls?.class_name || st._className || '')}</strong> • Học phí: <strong>${formatMoneyK(price)}/buổi</strong></p>
             </div>
             <div class="flex items-center gap-2 flex-wrap">
               <button
@@ -11699,8 +12208,8 @@
                 <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
                 <span>Phiếu báo học phí</span>
               </button>
-              <div class="px-3 py-1 rounded-full text-xs font-extrabold ${fee.isFullyPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                ${fee.isFullyPaid ? 'Đã đóng đủ học phí' : `Cần đóng: ${formatMoneyK(fee.remaining)}`}
+              <div class="px-3 py-1 rounded-full text-xs font-extrabold ${isFullyPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${isFullyPaid ? 'Đã đóng đủ học phí' : `Cần đóng: ${formatMoneyK(remainingAmount)}`}
               </div>
             </div>
           </div>
@@ -11708,12 +12217,13 @@
       }
 
       if (hwList) {
-        const classHws = homeworks.filter(h => !h.classId || h.classId === st._classId);
+        const classHws = Array.isArray(parentPortalSession.homeworks) ? parentPortalSession.homeworks : [];
+        const sessionSubs = Array.isArray(parentPortalSession.submissions) ? parentPortalSession.submissions : [];
         if (classHws.length === 0) {
           hwList.innerHTML = `<div class="text-xs text-slate-400 italic">Hiện chưa có bài tập online nào.</div>`;
         } else {
           hwList.innerHTML = classHws.map(hw => {
-            const sub = homeworkSubmissions.find(x => x.homeworkId === hw.id && x.studentId === st.id);
+            const sub = sessionSubs.find(x => x.homeworkId === hw.id && x.studentId === st.id);
             return `
               <div class="p-3 rounded-xl border border-slate-200 flex items-center justify-between gap-2 text-xs">
                 <div>
@@ -11732,12 +12242,11 @@
       }
 
       if (attGrid) {
-        const hist = st.attendanceHistory || {};
-        const dates = Object.keys(hist).filter(d => hist[d] === 'present' || hist[d] === 'absent');
+        const dates = Object.keys(history).filter(d => history[d] === 'present' || history[d] === 'absent');
         attGrid.innerHTML = dates.length === 0
           ? `<div class="col-span-full text-xs text-slate-400 italic">Chưa có dữ liệu điểm danh.</div>`
           : dates.map(d => {
-              const isP = hist[d] === 'present';
+              const isP = history[d] === 'present';
               return `
                 <div class="p-2 rounded-xl border text-center text-xs ${isP ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}">
                   <div class="font-mono font-bold">${d}</div>
@@ -11780,6 +12289,7 @@
         parentSec?.classList.remove('hidden');
         subBanner?.classList.remove('hidden');
         document.getElementById('workspaceSwitcherBox')?.classList.add('hidden');
+        document.getElementById('pendingWorkspaceInvitesBanner')?.classList.add('hidden');
         teacherClassBox?.classList.add('hidden');
         updateHomeVipBannerVisibility();
         parentBox?.classList.remove('hidden');
@@ -11790,6 +12300,7 @@
         teacherBtn?.classList.add('text-slate-500');
         renderParentView();
       }
+      updateTeacherNotificationBadgeUI();
       safeCreateIcons();
     }
 
@@ -11838,6 +12349,7 @@
       }
       renderWorkspaceSwitcherUI();
       applySharedWorkspaceUiRestrictions();
+      updateTeacherNotificationBadgeUI();
       safeCreateIcons();
     }
 
@@ -12024,6 +12536,8 @@
       renderAll();
       startTrialExpirationWatcher();
       setupAutoCloudSyncListeners();
+      if (teacherNotifPollTimer) clearInterval(teacherNotifPollTimer);
+      teacherNotifPollTimer = setInterval(() => { pollLatestHomeworkSubmissions(); }, 60000);
       initSupabaseClient();
       loadVipPlansSettingsFromCloud();
       loadPioneerPromoSettings();
