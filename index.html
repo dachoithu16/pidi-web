@@ -2558,15 +2558,138 @@
                 0 chờ duyệt
               </span>
             </div>
-            <button
-              type="button"
-              id="btnRefreshAdminVipOrders"
-              onclick="loadAdminVipOrders(true)"
-              class="px-2.5 py-1 rounded-lg bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-bold transition inline-flex items-center gap-1 shadow-sm active:scale-95"
-            >
-              <i data-lucide="refresh-cw" class="w-3 h-3"></i>
-              <span>Làm mới</span>
-            </button>
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                id="btnExportAdminVipExcel"
+                onclick="exportAdminVipOrdersExcel()"
+                class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold transition inline-flex items-center gap-1 shadow-sm active:scale-95"
+              >
+                <i data-lucide="file-spreadsheet" class="w-3 h-3"></i>
+                <span>Xuất Excel</span>
+              </button>
+              <button
+                type="button"
+                id="btnRefreshAdminVipOrders"
+                onclick="loadAdminVipOrders(true)"
+                class="px-2.5 py-1 rounded-lg bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-bold transition inline-flex items-center gap-1 shadow-sm active:scale-95"
+              >
+                <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                <span>Làm mới</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Khối A: Thanh bộ lọc thời gian, trạng thái & tìm kiếm -->
+          <div class="bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-1 flex-wrap">
+                <button
+                  type="button"
+                  data-vip-date-mode="today"
+                  onclick="setAdminVipDateMode('today')"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-indigo-600 text-white shadow-2xs transition"
+                >
+                  Hôm nay
+                </button>
+                <button
+                  type="button"
+                  data-vip-date-mode="7days"
+                  onclick="setAdminVipDateMode('7days')"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                >
+                  7 ngày
+                </button>
+                <button
+                  type="button"
+                  data-vip-date-mode="month"
+                  onclick="setAdminVipDateMode('month')"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                >
+                  Tháng này
+                </button>
+                <button
+                  type="button"
+                  data-vip-date-mode="all"
+                  onclick="setAdminVipDateMode('all')"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                >
+                  Tất cả
+                </button>
+                <button
+                  type="button"
+                  data-vip-date-mode="custom"
+                  onclick="setAdminVipDateMode('custom')"
+                  class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                >
+                  Chọn ngày
+                </button>
+              </div>
+
+              <div id="adminVipCustomDateBox" class="hidden flex items-center gap-1.5 text-[11px]">
+                <input
+                  type="date"
+                  id="adminVipDateFrom"
+                  onchange="loadAdminVipOrders(false)"
+                  class="px-2 py-1 rounded-lg border border-slate-300 font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                >
+                <span class="text-slate-400 font-bold">→</span>
+                <input
+                  type="date"
+                  id="adminVipDateTo"
+                  onchange="loadAdminVipOrders(false)"
+                  class="px-2 py-1 rounded-lg border border-slate-300 font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                >
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <div class="sm:col-span-4">
+                <select
+                  id="adminVipStatusFilter"
+                  onchange="loadAdminVipOrders(false)"
+                  class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-slate-50 font-bold text-slate-800 text-[11px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
+                >
+                  <option value="active_all">Tất cả (ẩn đơn hủy)</option>
+                  <option value="pending">Chờ duyệt</option>
+                  <option value="paid">Đã kích hoạt</option>
+                  <option value="rejected">Đã từ chối</option>
+                  <option value="cancelled">Đã tự hủy</option>
+                </select>
+              </div>
+              <div class="sm:col-span-8 flex items-center gap-1.5">
+                <input
+                  type="text"
+                  id="adminVipSearchInput"
+                  placeholder="Tìm mã đơn hoặc email..."
+                  onkeydown="if(event.key==='Enter'){ event.preventDefault(); loadAdminVipOrders(false); }"
+                  class="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white font-medium text-slate-800 text-[11px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                >
+                <button
+                  type="button"
+                  onclick="loadAdminVipOrders(false)"
+                  class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-extrabold shadow-2xs transition active:scale-95 shrink-0"
+                >
+                  Tìm
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Khối B: 3 ô thống kê nhỏ -->
+          <div class="grid grid-cols-3 gap-2">
+            <div class="bg-emerald-50/80 border border-emerald-200/90 rounded-xl px-2.5 py-2">
+              <div class="text-[10px] font-bold text-emerald-700 uppercase">Doanh thu đã thu</div>
+              <strong id="adminVipStatRevenue" class="block text-xs sm:text-sm font-black text-emerald-800 font-mono mt-0.5">0đ</strong>
+            </div>
+            <div class="bg-indigo-50/80 border border-indigo-200/90 rounded-xl px-2.5 py-2">
+              <div class="text-[10px] font-bold text-indigo-700 uppercase">Đã kích hoạt</div>
+              <strong id="adminVipStatPaidCount" class="block text-xs sm:text-sm font-black text-indigo-800 mt-0.5">0 đơn</strong>
+            </div>
+            <div class="bg-amber-50/80 border border-amber-200/90 rounded-xl px-2.5 py-2">
+              <div class="text-[10px] font-bold text-amber-700 uppercase">Chờ duyệt</div>
+              <strong id="adminVipStatPendingCount" class="block text-xs sm:text-sm font-black text-amber-800 mt-0.5">0 đơn</strong>
+            </div>
           </div>
 
           <div id="adminVipOrdersContainer" class="bg-white rounded-xl border border-slate-200 overflow-x-auto">
@@ -5179,6 +5302,34 @@
     }
 
     // ==================== QUẢN TRỊ ĐƠN NÂNG CẤP VIP (DÀNH CHO ADMIN) ====================
+    let adminVipDateMode = 'today';
+
+    function setAdminVipDateMode(mode) {
+      adminVipDateMode = mode || 'today';
+      document.querySelectorAll('[data-vip-date-mode]').forEach(btn => {
+        const isActive = btn.getAttribute('data-vip-date-mode') === adminVipDateMode;
+        btn.className = isActive
+          ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-indigo-600 text-white border-indigo-600 shadow-2xs transition'
+          : 'px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-white text-slate-700 border-slate-200 hover:bg-slate-50 transition';
+      });
+
+      const customBox = document.getElementById('adminVipCustomDateBox');
+      if (customBox) {
+        customBox.classList.toggle('hidden', adminVipDateMode !== 'custom');
+      }
+
+      if (adminVipDateMode === 'custom') {
+        const now = new Date();
+        const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const fromInp = document.getElementById('adminVipDateFrom');
+        const toInp = document.getElementById('adminVipDateTo');
+        if (fromInp && !fromInp.value) fromInp.value = todayIso;
+        if (toInp && !toInp.value) toInp.value = todayIso;
+      }
+
+      loadAdminVipOrders(false);
+    }
+
     async function loadAdminVipOrders(showToast = false) {
       if (!isCurrentUserVipAdmin() || !supabaseClient || isLoadingAdminVipOrders) return;
       isLoadingAdminVipOrders = true;
@@ -5190,11 +5341,54 @@
       }
 
       try {
-        const { data, error } = await supabaseClient
+        let query = supabaseClient
           .from('vip_orders')
           .select('*')
           .order('created_at', { ascending: false })
-          .limit(30);
+          .limit(500);
+
+        const rawKw = String(document.getElementById('adminVipSearchInput')?.value || '')
+          .trim()
+          .replace(/[,()%]/g, '');
+
+        if (rawKw) {
+          query = query.or(`order_code.ilike.%${rawKw}%,user_email.ilike.%${rawKw}%`);
+        } else {
+          const now = new Date();
+          if (adminVipDateMode === 'today') {
+            const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+            const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+            query = query.gte('created_at', start.toISOString()).lte('created_at', end.toISOString());
+          } else if (adminVipDateMode === '7days') {
+            const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6, 0, 0, 0, 0);
+            const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+            query = query.gte('created_at', start.toISOString()).lte('created_at', end.toISOString());
+          } else if (adminVipDateMode === 'month') {
+            const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+            query = query.gte('created_at', start.toISOString()).lte('created_at', end.toISOString());
+          } else if (adminVipDateMode === 'custom') {
+            const fromDate = parseLocalDateInput(document.getElementById('adminVipDateFrom')?.value);
+            const toDate = parseLocalDateInput(document.getElementById('adminVipDateTo')?.value);
+            if (fromDate) {
+              fromDate.setHours(0, 0, 0, 0);
+              query = query.gte('created_at', fromDate.toISOString());
+            }
+            if (toDate) {
+              toDate.setHours(23, 59, 59, 999);
+              query = query.lte('created_at', toDate.toISOString());
+            }
+          }
+        }
+
+        const statusFilter = document.getElementById('adminVipStatusFilter')?.value || 'active_all';
+        if (statusFilter === 'active_all' && rawKw === '') {
+          query = query.neq('status', 'cancelled');
+        } else if (statusFilter !== 'active_all') {
+          query = query.eq('status', statusFilter);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
           if (container) {
@@ -5205,6 +5399,16 @@
 
         adminVipOrdersList = Array.isArray(data) ? data : [];
         const pendingCount = adminVipOrdersList.filter(o => o.status === 'pending').length;
+        const paidOrders = adminVipOrdersList.filter(o => o.status === 'paid');
+        const totalRevenue = paidOrders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
+
+        const statRevEl = document.getElementById('adminVipStatRevenue');
+        const statPaidEl = document.getElementById('adminVipStatPaidCount');
+        const statPendingEl = document.getElementById('adminVipStatPendingCount');
+        if (statRevEl) statRevEl.innerText = `${totalRevenue.toLocaleString('vi-VN')}đ`;
+        if (statPaidEl) statPaidEl.innerText = `${paidOrders.length} đơn`;
+        if (statPendingEl) statPendingEl.innerText = `${pendingCount} đơn`;
+
         const badgeEl = document.getElementById('adminVipPendingCountBadge');
         if (badgeEl) {
           badgeEl.innerText = `${pendingCount} chờ duyệt`;
@@ -5215,7 +5419,7 @@
 
         if (!container) return;
         if (adminVipOrdersList.length === 0) {
-          container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">Chưa có đơn nâng cấp VIP nào.</div>`;
+          container.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs">Không có đơn nâng cấp VIP nào trong khoảng thời gian đã chọn.</div>`;
           return;
         }
 
@@ -5237,6 +5441,7 @@
             <tbody class="divide-y divide-slate-100">
               ${adminVipOrdersList.map(order => {
                 const isPending = order.status === 'pending';
+                const canApproveManually = isPending || order.status === 'cancelled';
                 const planLabel = planNameMap[order.plan_id] || order.plan_id || '--';
                 const cycleLabel = order.billing_cycle === 'yearly' ? 'Năm' : 'Tháng';
                 const amountVal = Number(order.amount) || 0;
@@ -5249,6 +5454,8 @@
                   statusBadge = `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 font-extrabold text-[10px]">Đã kích hoạt</span>`;
                 } else if (order.status === 'rejected') {
                   statusBadge = `<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-[10px]">Đã từ chối</span>`;
+                } else if (order.status === 'cancelled') {
+                  statusBadge = `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px]">Đã hủy</span>`;
                 }
 
                 return `
@@ -5270,7 +5477,7 @@
                       ${statusBadge}
                     </td>
                     <td class="py-2 px-2.5 text-right whitespace-nowrap">
-                      ${isPending ? `
+                      ${canApproveManually ? `
                         <div class="inline-flex items-center gap-1">
                           <button
                             type="button"
@@ -5279,13 +5486,15 @@
                           >
                             Duyệt tay
                           </button>
-                          <button
-                            type="button"
-                            onclick="rejectAdminVipOrder('${escapeHtml(order.id)}', '${escapeHtml(order.order_code)}')"
-                            class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[10.5px] font-bold transition"
-                          >
-                            Từ chối
-                          </button>
+                          ${isPending ? `
+                            <button
+                              type="button"
+                              onclick="rejectAdminVipOrder('${escapeHtml(order.id)}', '${escapeHtml(order.order_code)}')"
+                              class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[10.5px] font-bold transition"
+                            >
+                              Từ chối
+                            </button>
+                          ` : ''}
                         </div>
                       ` : `<span class="text-[10.5px] text-slate-400 font-medium">--</span>`}
                     </td>
@@ -5365,6 +5574,105 @@
           }
         }
       );
+    }
+
+    function exportAdminVipOrdersExcel() {
+      if (!isCurrentUserVipAdmin()) return;
+      if (typeof XLSX === 'undefined') {
+        showUndoToast('Thư viện Excel chưa sẵn sàng.');
+        return;
+      }
+      if (!Array.isArray(adminVipOrdersList) || adminVipOrdersList.length === 0) {
+        showUndoToast('Không có đơn hàng nào trong bộ lọc hiện tại để xuất Excel.');
+        return;
+      }
+
+      const planNameMap = {};
+      vipPlansConfig.forEach(p => { planNameMap[p.id] = p.name; });
+
+      const statusLabelMap = {
+        paid: 'Đã kích hoạt',
+        pending: 'Chờ duyệt',
+        rejected: 'Đã từ chối',
+        underpaid: 'Chuyển thiếu',
+        cancelled: 'Đã hủy'
+      };
+
+      const rows = [
+        ['BÁO CÁO ĐƠN NÂNG CẤP VIP & DOANH THU'],
+        ['Ngày xuất:', new Date().toLocaleString('vi-VN'), 'Kỳ lọc:', adminVipDateMode],
+        [],
+        ['STT', 'Thời gian tạo', 'Thời gian kích hoạt', 'Mã đơn', 'Email khách hàng', 'Gói VIP', 'Chu kỳ', 'Mã ưu đãi', 'Giảm (%)', 'Số tiền (VNĐ)', 'Trạng thái', 'Mã GD SePay']
+      ];
+
+      let totalPaidRevenue = 0;
+      let totalPaidCount = 0;
+
+      adminVipOrdersList.forEach((o, idx) => {
+        const amountNum = Number(o.amount) || 0;
+        if (o.status === 'paid') {
+          totalPaidRevenue += amountNum;
+          totalPaidCount += 1;
+        }
+        const createdAtStr = o.created_at ? new Date(o.created_at).toLocaleString('vi-VN') : '';
+        const paidAtStr = o.paid_at ? new Date(o.paid_at).toLocaleString('vi-VN') : '';
+        const planLabel = planNameMap[o.plan_id] || o.plan_id || '';
+        const cycleLabel = o.billing_cycle === 'yearly' ? 'Năm' : 'Tháng';
+        const statusLabel = statusLabelMap[o.status] || o.status || '';
+
+        rows.push([
+          idx + 1,
+          createdAtStr,
+          paidAtStr,
+          o.order_code || '',
+          o.user_email || '',
+          planLabel,
+          cycleLabel,
+          o.promo_code || '',
+          Number(o.discount_percent) || 0,
+          amountNum,
+          statusLabel,
+          o.gateway_tx_id || ''
+        ]);
+      });
+
+      rows.push([]);
+      rows.push([
+        '',
+        '',
+        '',
+        'TỔNG DOANH THU THỰC THU (Đơn đã kích hoạt)',
+        `${totalPaidCount} đơn đã kích hoạt`,
+        '',
+        '',
+        '',
+        '',
+        totalPaidRevenue,
+        '',
+        ''
+      ]);
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols'] = [
+        { wch: 6 },
+        { wch: 20 },
+        { wch: 20 },
+        { wch: 16 },
+        { wch: 28 },
+        { wch: 16 },
+        { wch: 10 },
+        { wch: 14 },
+        { wch: 10 },
+        { wch: 18 },
+        { wch: 16 },
+        { wch: 20 }
+      ];
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'DoanhThuVIP');
+      const fileName = `Doanh_Thu_VIP_${adminVipDateMode}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+      showUndoToast('Đã xuất file Excel doanh thu thành công!');
     }
 
     // ==================== COMPONENT THANH TOÁN QR VIETINBANK (SEPAY) ====================
