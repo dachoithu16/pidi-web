@@ -215,6 +215,17 @@
             <span id="currentDateDisplayBanner" class="font-semibold text-slate-200 whitespace-nowrap">Thứ 7, 21/11/26</span>
           </div>
 
+          <div id="workspaceSwitcherBox" class="hidden inline-flex items-center gap-1 bg-violet-950/90 h-7 sm:h-8 px-1.5 sm:px-2 rounded-lg border border-violet-500/40 shadow-inner min-w-0 shrink">
+            <i data-lucide="briefcase" class="w-3 h-3 text-violet-300 shrink-0"></i>
+            <select
+              id="workspaceSwitcherSelect"
+              onchange="switchActiveWorkspace(this.value)"
+              class="bg-transparent text-violet-100 font-bold text-[11px] sm:text-xs focus:outline-none cursor-pointer pr-1 truncate max-w-[125px] sm:max-w-[200px]"
+            >
+              <option value="own">Lớp cá nhân của tôi</option>
+            </select>
+          </div>
+
           <div id="teacherClassBannerBox" class="inline-flex items-center gap-1 bg-slate-800/90 h-7 sm:h-8 px-1.5 sm:px-2 rounded-lg border border-slate-700 shadow-inner min-w-0 shrink">
             <span class="text-indigo-300 text-[10px] sm:text-[11px] font-bold shrink-0">LỚP:</span>
             <select
@@ -312,6 +323,7 @@
 
         <button
           type="button"
+          id="pcQuickCreateBtn"
           onclick="handleQuickActionPlus()"
           class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 px-3.5 text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition active:scale-95 shrink-0"
         >
@@ -464,6 +476,7 @@
 
             <button
               type="button"
+              id="homeQuickNotebookBtn"
               onclick="openNotebookModal()"
               class="py-2.5 sm:py-4 px-2 flex flex-col items-center justify-center gap-1.5 hover:bg-emerald-50/60 transition active:scale-95"
             >
@@ -522,6 +535,7 @@
             <!-- Thẻ 2: Doanh Thu tháng hiện tại -->
             <button
               type="button"
+              id="homeStatRevenueCard"
               onclick="openHomeFinanceOverview()"
               class="bg-white rounded-2xl border border-emerald-200/90 hover:border-emerald-300 p-3.5 sm:p-5 text-left shadow-sm hover:shadow-md transition active:scale-[0.98] flex flex-col justify-between gap-2.5"
             >
@@ -739,6 +753,7 @@
               <div class="flex items-center gap-1.5 shrink-0 flex-wrap">
                 <button
                   type="button"
+                  id="btnAttendanceExportExcel"
                   onclick="openExportExcelModal()"
                   class="text-[10.5px] sm:text-xs font-bold px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm flex items-center gap-1 active:scale-95"
                 >
@@ -747,6 +762,7 @@
                 </button>
                 <button
                   type="button"
+                  id="btnAttendanceAddStudent"
                   onclick="openAddStudentModal('single')"
                   class="text-[10.5px] sm:text-xs font-bold px-2 py-1 sm:px-2.5 sm:py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm flex items-center gap-1 active:scale-95"
                 >
@@ -1002,29 +1018,30 @@
             <i data-lucide="layout-grid" class="w-4 h-4 text-indigo-600"></i>
             <span>Danh sách lớp học</span>
           </h3>
-          <button
-            type="button"
-            onclick="openCreateClassModal()"
-            class="px-2.5 py-1 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1 shrink-0 active:scale-95"
-          >
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>Tạo lớp</span>
-          </button>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              id="btnOpenWorkspaceMembers"
+              onclick="openWorkspaceMembersModal()"
+              class="hidden px-2.5 py-1 sm:px-3.5 sm:py-2 bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1 shrink-0 active:scale-95"
+              title="Quản lý giáo viên phụ trong không gian làm việc"
+            >
+              <i data-lucide="users" class="w-3.5 h-3.5"></i>
+              <span>Giáo viên</span>
+            </button>
+            <button
+              type="button"
+              id="btnClassesCreateClass"
+              onclick="openCreateClassModal()"
+              class="px-2.5 py-1 sm:px-3.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1 shrink-0 active:scale-95"
+            >
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>Tạo lớp</span>
+            </button>
+          </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
-          <table class="w-full text-left border-collapse table-fixed text-xs">
-            <thead>
-              <tr class="bg-slate-50/90 border-b border-slate-200/80 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
-                <th class="py-2.5 px-3 sm:px-4 w-[44%] sm:w-[46%]">Tên lớp</th>
-                <th class="py-2.5 px-2 sm:px-3 w-[28%] sm:w-[26%] text-center">Giờ dạy</th>
-                <th class="py-2.5 px-1 sm:px-2 w-[12%] sm:w-[12%] text-center">Sĩ số</th>
-                <th class="py-2.5 px-2 w-[16%] text-right">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="classesManagementList" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
+        <div id="classesManagementList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
       </div>
 
     </div>
@@ -2015,7 +2032,7 @@
           <label class="block text-[11px] font-bold text-slate-700 mb-1">Học phí mỗi buổi (VNĐ) *</label>
           <input type="number" id="editStudentFeePerSession" step="5000" required class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-bold text-indigo-700 bg-white">
         </div>
-        <div class="grid grid-cols-2 gap-2.5">
+        <div id="studentDetailContactFieldsRow" class="grid grid-cols-2 gap-2.5">
           <div>
             <label class="block text-[11px] font-bold text-slate-700 mb-1">SĐT Phụ huynh</label>
             <input type="text" id="editStudentParentPhone" placeholder="09xx xxx xxx" class="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 font-mono font-medium bg-white">
@@ -2039,12 +2056,12 @@
       </div>
 
       <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-        <button type="button" onclick="openConfirmSingleDeleteModal()" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
+        <button type="button" id="btnDeleteSingleStudentModal" onclick="openConfirmSingleDeleteModal()" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition flex items-center gap-1">
           <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
           <span>Xóa học sinh</span>
         </button>
         <div class="flex items-center gap-2">
-          <button type="button" onclick="const sid = activeDetailStudent?.id; closeModal('modalStudentDetail'); if(sid) openTuitionNoticeModal(sid);" class="px-3.5 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <button type="button" id="btnStudentDetailTuitionNotice" onclick="const sid = activeDetailStudent?.id; closeModal('modalStudentDetail'); if(sid) openTuitionNoticeModal(sid);" class="px-3.5 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
             <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
             <span>Báo thu</span>
           </button>
@@ -2124,7 +2141,7 @@
           ></textarea>
         </div>
 
-        <div class="pt-2 border-t border-slate-200/80 space-y-2">
+        <div id="tuitionTeacherQrUploadSection" class="pt-2 border-t border-slate-200/80 space-y-2">
           <div class="flex items-center justify-between">
             <span class="font-bold text-slate-700 flex items-center gap-1">
               <i data-lucide="qr-code" class="w-3.5 h-3.5 text-teal-600"></i>
@@ -2231,6 +2248,7 @@
       <div class="grid grid-cols-1 gap-2 pt-1">
         <button
           type="button"
+          id="quickMenuAddStudentBtn"
           onclick="closeQuickActionMenu(); openAddStudentModal('single');"
           class="w-full p-2.5 sm:p-3 rounded-2xl border border-indigo-100 bg-indigo-50/50 hover:bg-indigo-100/60 transition flex items-center gap-3 text-left group active:scale-[0.98]"
         >
@@ -2248,6 +2266,7 @@
 
         <button
           type="button"
+          id="quickMenuAddClassBtn"
           onclick="closeQuickActionMenu(); openCreateClassModal();"
           class="w-full p-2.5 sm:p-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 hover:bg-emerald-100/60 transition flex items-center gap-3 text-left group active:scale-[0.98]"
         >
@@ -2319,51 +2338,53 @@
         </div>
       </div>
 
-      <!-- Thanh tiến độ sử dụng giới hạn hiện tại -->
-      <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-2.5 sm:p-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-xs">
-        <div class="space-y-1 sm:space-y-1.5">
-          <div class="flex items-center justify-between font-bold text-slate-700 text-[11.5px] sm:text-xs">
-            <span>Học sinh đang quản lý</span>
-            <span id="vipUsageStudentText" class="text-indigo-700 font-extrabold">0 / 15 học sinh</span>
+      <div id="vipCustomerViewWrapper" class="space-y-4">
+        <!-- Thanh tiến độ sử dụng giới hạn hiện tại -->
+        <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-2.5 sm:p-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-xs">
+          <div class="space-y-1 sm:space-y-1.5">
+            <div class="flex items-center justify-between font-bold text-slate-700 text-[11.5px] sm:text-xs">
+              <span>Học sinh đang quản lý</span>
+              <span id="vipUsageStudentText" class="text-indigo-700 font-extrabold">0 / 15 học sinh</span>
+            </div>
+            <div class="w-full h-1.5 sm:h-2 rounded-full bg-slate-200 overflow-hidden">
+              <div id="vipUsageStudentBar" class="h-full rounded-full bg-indigo-600 transition-all" style="width: 0%;"></div>
+            </div>
           </div>
-          <div class="w-full h-1.5 sm:h-2 rounded-full bg-slate-200 overflow-hidden">
-            <div id="vipUsageStudentBar" class="h-full rounded-full bg-indigo-600 transition-all" style="width: 0%;"></div>
+          <div class="grid grid-cols-2 sm:contents gap-2">
+            <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
+              <span class="text-slate-500 font-medium text-[11px] sm:text-xs">Lớp học</span>
+              <strong id="vipUsageTeacherText" class="text-slate-900 font-extrabold text-xs sm:text-sm">Không giới hạn</strong>
+            </div>
+            <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
+              <span class="text-slate-500 font-medium text-[11px] sm:text-xs">Suất còn lại</span>
+              <strong id="vipRemainingSlotsText" class="text-emerald-700 font-extrabold text-xs sm:text-sm">15 học sinh</strong>
+            </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 sm:contents gap-2">
-          <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
-            <span class="text-slate-500 font-medium text-[11px] sm:text-xs">Lớp học</span>
-            <strong id="vipUsageTeacherText" class="text-slate-900 font-extrabold text-xs sm:text-sm">Không giới hạn</strong>
-          </div>
-          <div class="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start bg-white rounded-xl border border-slate-200 px-2.5 py-1.5 sm:px-3 sm:py-2">
-            <span class="text-slate-500 font-medium text-[11px] sm:text-xs">Suất còn lại</span>
-            <strong id="vipRemainingSlotsText" class="text-emerald-700 font-extrabold text-xs sm:text-sm">15 học sinh</strong>
+
+        <!-- Banner dùng thử 30 ngày -->
+        <div id="vipModalTrialTopBanner" class="hidden rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5"></div>
+
+        <!-- Banner ưu đãi 500 giáo viên tiên phong -->
+        <div id="vipModalPioneerPromoBanner" class="hidden rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-orange-50 to-rose-50 px-3 py-2 flex items-center justify-between gap-2 text-[11px] sm:text-xs font-extrabold text-amber-950 shadow-sm"></div>
+
+        <!-- Bộ chuyển đổi chu kỳ thanh toán Tháng / Năm -->
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="text-xs font-bold text-slate-600">Chọn chu kỳ thanh toán:</div>
+          <div class="inline-flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs">
+            <button type="button" id="btnBillingMonthly" onclick="switchVipBillingCycle('monthly')" class="px-3 py-1 rounded-lg font-extrabold bg-slate-900 text-white shadow-sm transition">
+              Theo Tháng
+            </button>
+            <button type="button" id="btnBillingYearly" onclick="switchVipBillingCycle('yearly')" class="px-3 py-1 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+              <span>Theo Năm</span>
+              <span class="px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold">Tiết kiệm</span>
+            </button>
           </div>
         </div>
+
+        <!-- Bảng 5 thẻ gói đăng ký -->
+        <div id="vipPlansGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"></div>
       </div>
-
-      <!-- Banner dùng thử 30 ngày -->
-      <div id="vipModalTrialTopBanner" class="hidden rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5"></div>
-
-      <!-- Banner ưu đãi 500 giáo viên tiên phong -->
-      <div id="vipModalPioneerPromoBanner" class="hidden rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 via-orange-50 to-rose-50 px-3 py-2 flex items-center justify-between gap-2 text-[11px] sm:text-xs font-extrabold text-amber-950 shadow-sm"></div>
-
-      <!-- Bộ chuyển đổi chu kỳ thanh toán Tháng / Năm -->
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div class="text-xs font-bold text-slate-600">Chọn chu kỳ thanh toán:</div>
-        <div class="inline-flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs">
-          <button type="button" id="btnBillingMonthly" onclick="switchVipBillingCycle('monthly')" class="px-3 py-1 rounded-lg font-extrabold bg-slate-900 text-white shadow-sm transition">
-            Theo Tháng
-          </button>
-          <button type="button" id="btnBillingYearly" onclick="switchVipBillingCycle('yearly')" class="px-3 py-1 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-            <span>Theo Năm</span>
-            <span class="px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold">Tiết kiệm</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Bảng 5 thẻ gói đăng ký -->
-      <div id="vipPlansGridContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"></div>
 
       <!-- Khung quản trị bảng giá dành riêng cho Admin -->
       <div id="vipAdminEditorSection" class="hidden bg-slate-50 rounded-2xl border border-indigo-200 p-3.5 space-y-4 text-xs">
@@ -2451,11 +2472,11 @@
                   <option value="amount">VNĐ</option>
                 </select>
                 <input
-                  type="number"
+                  type="text"
+                  inputmode="numeric"
                   id="adminNewPromoValueInput"
                   required
-                  min="1"
-                  max="100"
+                  oninput="onAdminNewPromoValueInput(this)"
                   placeholder="20"
                   class="w-full min-w-0 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono font-bold text-emerald-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
                 >
@@ -2476,7 +2497,7 @@
               <input
                 type="date"
                 id="adminNewPromoExpiresInput"
-                class="w-full px-2 py-1.5 rounded-lg border border-slate-300 font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               >
             </div>
             <div class="col-span-2 sm:col-span-2">
@@ -2488,6 +2509,35 @@
                 <i data-lucide="plus" class="w-3.5 h-3.5"></i>
                 <span>Tạo mã</span>
               </button>
+            </div>
+            <div class="col-span-full pt-2 border-t border-slate-100 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px]">
+              <span class="font-extrabold text-slate-700">Gói áp dụng:</span>
+              <label class="inline-flex items-center gap-1.5 font-extrabold text-indigo-700 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  id="adminNewPromoAllPlansCb"
+                  checked
+                  onchange="toggleAdminNewPromoAllPlans(this.checked)"
+                  class="w-3.5 h-3.5 rounded text-indigo-600 border-slate-300 cursor-pointer"
+                >
+                <span>Tất cả các gói</span>
+              </label>
+              <label class="inline-flex items-center gap-1.5 font-semibold text-slate-700 cursor-pointer select-none">
+                <input type="checkbox" class="admin-promo-plan-cb w-3.5 h-3.5 rounded text-emerald-600 border-slate-300" value="tra_chanh" checked disabled>
+                <span>Trà chanh</span>
+              </label>
+              <label class="inline-flex items-center gap-1.5 font-semibold text-slate-700 cursor-pointer select-none">
+                <input type="checkbox" class="admin-promo-plan-cb w-3.5 h-3.5 rounded text-amber-600 border-slate-300" value="tra_sua" checked disabled>
+                <span>Trà Sữa</span>
+              </label>
+              <label class="inline-flex items-center gap-1.5 font-semibold text-slate-700 cursor-pointer select-none">
+                <input type="checkbox" class="admin-promo-plan-cb w-3.5 h-3.5 rounded text-indigo-600 border-slate-300" value="trum_tra" checked disabled>
+                <span>Trùm Trà</span>
+              </label>
+              <label class="inline-flex items-center gap-1.5 font-semibold text-slate-700 cursor-pointer select-none">
+                <input type="checkbox" class="admin-promo-plan-cb w-3.5 h-3.5 rounded text-rose-600 border-slate-300" value="trung_tam" checked disabled>
+                <span>Trung tâm</span>
+              </label>
             </div>
           </form>
 
@@ -2834,6 +2884,173 @@
     </div>
   </div>
 
+  <!-- ==================== MODAL QUẢN LÝ GIÁO VIÊN PHỤ (WORKSPACE MEMBERS) ==================== -->
+  <div id="modalWorkspaceMembers" class="hidden fixed inset-0 z-[72] flex items-center justify-center p-2.5 sm:p-4 bg-slate-900/65 backdrop-blur-sm" onclick="if(event.target===this) closeModal('modalWorkspaceMembers')">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col p-4 sm:p-6 border border-slate-200/90 shadow-2xl space-y-3.5">
+      <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-violet-50 text-violet-600 border border-violet-200/80 flex items-center justify-center shrink-0">
+            <i data-lucide="users" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Quản lý giáo viên phụ</h3>
+            <p class="text-[11px] text-slate-500 font-medium">Phân công lớp phụ trách và cấp quyền thao tác cho giáo viên đồng hành</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('modalWorkspaceMembers')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center shrink-0 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Thanh thông tin giới hạn số lượng giáo viên -->
+      <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-3 flex flex-wrap items-center justify-between gap-2 text-xs shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-violet-600 shrink-0"></span>
+          <span id="workspaceMemberQuotaText" class="font-extrabold text-slate-800">Đang dùng 1 / 1 giáo viên (gồm chủ lớp)</span>
+        </div>
+        <span id="workspaceMemberPlanTag" class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10.5px] font-extrabold">Gói Free</span>
+      </div>
+
+      <!-- Hộp cảnh báo nâng cấp khi gói hiện tại maxTeachers <= 1 -->
+      <div id="workspaceMemberUpgradeNotice" class="hidden rounded-2xl border border-amber-200 bg-amber-50/90 p-3 flex flex-wrap items-center justify-between gap-2.5 text-xs shrink-0">
+        <div class="space-y-0.5 min-w-0 flex-1">
+          <div class="font-extrabold text-amber-950">Gói hiện tại chỉ hỗ trợ 1 giáo viên (chủ lớp)</div>
+          <p class="text-[11px] text-amber-800 font-medium">Nâng cấp lên gói <strong>Trùm Trà</strong> (tối đa 3 GV) hoặc <strong>Trung tâm</strong> (tối đa 12 GV) để thêm giáo viên phụ.</p>
+        </div>
+        <button
+          type="button"
+          onclick="closeModal('modalWorkspaceMembers'); openVipSubscriptionModal();"
+          class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0"
+        >
+          Nâng cấp gói
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-3.5 pr-0.5">
+        <!-- Form thêm / sửa giáo viên phụ -->
+        <form id="workspaceMemberForm" onsubmit="handleSaveWorkspaceMember(event)" class="bg-slate-50/90 rounded-2xl border border-slate-200/90 p-3 sm:p-3.5 space-y-3 text-xs">
+          <div class="flex items-center justify-between">
+            <span id="workspaceMemberFormTitle" class="font-extrabold text-slate-800">Thêm giáo viên phụ mới</span>
+            <button
+              type="button"
+              id="btnCancelEditWorkspaceMember"
+              onclick="resetWorkspaceMemberForm()"
+              class="hidden text-[11px] font-bold text-rose-600 hover:underline"
+            >
+              Hủy sửa
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Email giáo viên phụ *</label>
+              <input
+                type="email"
+                id="wsMemberEmailInput"
+                required
+                placeholder="giaovien@gmail.com"
+                class="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 disabled:bg-slate-100 disabled:text-slate-400"
+              >
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Tên hiển thị (tùy chọn)</label>
+              <input
+                type="text"
+                id="wsMemberNameInput"
+                placeholder="VD: Cô Lan Anh"
+                class="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 disabled:bg-slate-100 disabled:text-slate-400"
+              >
+            </div>
+          </div>
+
+          <!-- Chọn lớp phụ trách -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-slate-700">Lớp phụ trách *</label>
+              <label class="inline-flex items-center gap-1.5 cursor-pointer select-none text-[11px] font-extrabold text-indigo-700">
+                <input
+                  type="checkbox"
+                  id="wsMemberAllClassesCheckbox"
+                  onchange="toggleWorkspaceMemberAllClasses(this.checked)"
+                  class="w-3.5 h-3.5 rounded text-indigo-600 border-slate-300 cursor-pointer"
+                >
+                <span>Tất cả các lớp</span>
+              </label>
+            </div>
+            <div id="wsMemberClassesCheckboxList" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-32 overflow-y-auto bg-white p-2 rounded-xl border border-slate-200"></div>
+          </div>
+
+          <!-- Công tắc phân quyền -->
+          <div class="space-y-2 pt-1 border-t border-slate-200/80">
+            <label class="flex items-start gap-2.5 p-2 rounded-xl bg-white border border-slate-200 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="wsMemberCanFinanceCheckbox"
+                class="mt-0.5 w-4 h-4 rounded text-emerald-600 border-slate-300 cursor-pointer shrink-0"
+              >
+              <div class="min-w-0">
+                <div class="font-extrabold text-slate-800 text-[11.5px]">Quyền Học phí</div>
+                <p class="text-[10.5px] text-slate-500 leading-snug mt-0.5">
+                  Xem học phí, bấm thu tiền &amp; gửi phiếu báo thu; KHÔNG sửa được đơn giá, KHÔNG đổi mã QR, ẩn Doanh thu tổng.
+                </p>
+              </div>
+            </label>
+
+            <label class="flex items-center gap-2.5 p-2 rounded-xl bg-white border border-slate-200 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="wsMemberCanContactsCheckbox"
+                class="w-4 h-4 rounded text-indigo-600 border-slate-300 cursor-pointer shrink-0"
+              >
+              <span class="font-extrabold text-slate-800 text-[11.5px]">Xem SĐT phụ huynh &amp; Xuất Excel</span>
+            </label>
+          </div>
+
+          <div class="flex justify-end pt-1">
+            <button
+              type="submit"
+              id="btnSaveWorkspaceMember"
+              class="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-xs font-extrabold shadow-sm transition active:scale-95 inline-flex items-center gap-1.5"
+            >
+              <i data-lucide="save" class="w-3.5 h-3.5"></i>
+              <span id="btnSaveWorkspaceMemberLabel">Lưu giáo viên</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Danh sách giáo viên phụ đã thêm -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between px-0.5">
+            <span class="text-xs font-extrabold text-slate-800">Danh sách giáo viên phụ</span>
+            <button
+              type="button"
+              onclick="loadWorkspaceMembers(true)"
+              class="text-[11px] font-bold text-indigo-600 hover:underline inline-flex items-center gap-1"
+            >
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+              <span>Làm mới</span>
+            </button>
+          </div>
+          <div id="workspaceMembersListContainer" class="space-y-2">
+            <div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+              Đang tải danh sách giáo viên phụ...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 shrink-0">
+        <button
+          type="button"
+          onclick="closeModal('modalWorkspaceMembers')"
+          class="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
+        >
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== BOTTOM TAB BAR NỔI TRÊN ĐIỆN THOẠI (5 Ô CHUẨN DEMO) ==================== -->
   <div id="mobileBottomNavWrapper" class="block sm:hidden fixed bottom-3 inset-x-3 z-40">
     <nav class="bg-white/95 backdrop-blur-xl border border-slate-200/90 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.18)] rounded-full px-1.5 py-1.5 grid grid-cols-5 items-center">
@@ -2854,6 +3071,7 @@
       <div class="flex items-center justify-center">
         <button
           type="button"
+          id="mobileQuickCreateBtn"
           onclick="handleQuickActionPlus()"
           class="w-11 h-11 -my-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/35 flex items-center justify-center transition active:scale-95"
           title="Tạo mới"
@@ -3023,6 +3241,16 @@
           renderHomeTab();
         }
         maybeShowFirstLoginVipPromo();
+        await loadMySharedWorkspaces();
+        await checkOwnerHasActiveMembers();
+      } else {
+        activeWorkspaceMode = 'own';
+        activeSharedWorkspace = null;
+        mySharedWorkspacesList = [];
+        ownerHasActiveMembers = false;
+        workspaceMembersList = [];
+        renderWorkspaceSwitcherUI();
+        applySharedWorkspaceUiRestrictions();
       }
     }
 
@@ -3258,6 +3486,11 @@
 
     async function handleSignOut() {
       resetUiNavigationToHome();
+      activeWorkspaceMode = 'own';
+      activeSharedWorkspace = null;
+      mySharedWorkspacesList = [];
+      ownerHasActiveMembers = false;
+      workspaceMembersList = [];
       try {
         if (supabaseClient) {
           await supabaseClient.auth.signOut();
@@ -3267,6 +3500,7 @@
       }
       currentUser = null;
       updateAuthUI();
+      renderWorkspaceSwitcherUI();
       loadScopedUserData();
       loadVipSubscriptionState();
       switchTab('home');
@@ -3307,7 +3541,7 @@
         yearlyPrice: 390000,
         salePercent: 25,
         maxStudents: 80,
-        maxTeachers: 2,
+        maxTeachers: 1,
         badge: 'Phổ biến nhất',
         accent: 'amber',
         description: 'Đầy đủ tính năng, quản lý thoải mái tới 80 học sinh.'
@@ -3337,6 +3571,17 @@
         description: 'Giải pháp quy mô lớn lên tới 1.000 học sinh & ưu tiên hỗ trợ 1-1.'
       }
     ];
+
+    let activeWorkspaceMode = 'own';
+    let activeSharedWorkspace = null;
+    let mySharedWorkspacesList = [];
+    let ownerHasActiveMembers = false;
+    let lastVisibilityRefreshAt = 0;
+    let workspaceMembersList = [];
+    let isLoadingWorkspaceMembers = false;
+    let editingWorkspaceMemberEmail = null;
+    let wsMemberAssignedClassIds = ['*'];
+    let wsMemberEditingIsActive = true;
 
     let vipPlansConfig = JSON.parse(JSON.stringify(DEFAULT_VIP_PLANS));
     let currentTeacherPlanId = 'free';
@@ -3392,7 +3637,7 @@
           pioneerPromoState = {
             is_active: Boolean(data.is_active),
             max_slots: Number(data.max_slots) || 500,
-            used_slots: Math.max(0, Number(data.used_slots) || 0)
+            used_slots: Number(data.used_slots) || 0
           };
           const modal = document.getElementById('modalVipSubscription');
           if (modal && !modal.classList.contains('hidden')) {
@@ -3400,7 +3645,7 @@
           }
         }
       } catch (err) {
-        console.warn('Lỗi tải cấu hình app_promo_settings:', err);
+        console.warn('Lỗi tải cấu hình ưu đãi tiên phong:', err);
       }
     }
 
@@ -3810,7 +4055,9 @@
 
       const headerBtn = document.getElementById('btnHeaderVipPlan');
       if (headerBtn) {
-        headerBtn.className = `hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl ${planStyle.bg} ${planStyle.hover} text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0`;
+        headerBtn.className = activeWorkspaceMode === 'shared'
+          ? 'hidden'
+          : `hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl ${planStyle.bg} ${planStyle.hover} text-white text-[11px] sm:text-xs font-extrabold shadow-sm transition active:scale-95 shrink-0`;
       }
 
       const headerLabel = document.getElementById('headerVipPlanLabel');
@@ -3822,11 +4069,15 @@
 
       const heroVipPill = document.getElementById('homeHeroVipPill');
       if (heroVipPill) {
-        heroVipPill.className = `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ${planStyle.bg} ${planStyle.hover} border border-white/25 text-[11px] sm:text-xs font-extrabold text-white transition active:scale-95 shrink-0 shadow-sm`;
-        const heroCrownIcon = heroVipPill.querySelector('svg, [data-lucide="crown"]');
-        if (heroCrownIcon) {
-          heroCrownIcon.classList.remove('text-amber-400');
-          heroCrownIcon.classList.add('text-white');
+        if (activeWorkspaceMode === 'shared') {
+          heroVipPill.className = 'hidden';
+        } else {
+          heroVipPill.className = `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ${planStyle.bg} ${planStyle.hover} border border-white/25 text-[11px] sm:text-xs font-extrabold text-white transition active:scale-95 shrink-0 shadow-sm`;
+          const heroCrownIcon = heroVipPill.querySelector('svg, [data-lucide="crown"]');
+          if (heroCrownIcon) {
+            heroCrownIcon.classList.remove('text-amber-400');
+            heroCrownIcon.classList.add('text-white');
+          }
         }
       }
 
@@ -3910,7 +4161,7 @@
       const vipBanner = document.getElementById('homeVipStatusBanner');
       if (!vipBanner) return;
 
-      if (currentRole !== 'teacher' || currentTab === 'home') {
+      if (currentRole !== 'teacher' || currentTab === 'home' || activeWorkspaceMode === 'shared') {
         vipBanner.classList.add('hidden');
         return;
       }
@@ -4295,6 +4546,7 @@
       const isAdmin = isCurrentUserVipAdmin();
       if (adminBtn) adminBtn.classList.toggle('hidden', !isAdmin);
       if (adminLabel) adminLabel.innerText = isVipAdminEditMode ? 'Đóng quản trị' : 'Quản trị gói';
+      document.getElementById('vipCustomerViewWrapper')?.classList.toggle('hidden', isAdmin && isVipAdminEditMode);
       if (adminSection) adminSection.classList.toggle('hidden', !(isAdmin && isVipAdminEditMode));
 
       const btnMonthly = document.getElementById('btnBillingMonthly');
@@ -4458,7 +4710,7 @@
               ${hasMultiTeacherSoon ? `
                 <li class="flex items-start gap-1 font-extrabold text-indigo-700">
                   <i data-lucide="check" class="w-3 h-3 text-emerald-600 shrink-0 mt-0.5"></i>
-                  <span>Hỗ trợ nhiều giáo viên (Sắp ra mắt)</span>
+                  <span>Hỗ trợ tối đa ${Number(p.maxTeachers) || 1} giáo viên</span>
                 </li>
               ` : ''}
             </ul>
@@ -4549,50 +4801,95 @@
             : 'px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition shadow-sm active:scale-95';
         }
 
-        adminList.innerHTML = vipPlansConfig.map((p, idx) => `
-          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-white p-2.5 rounded-xl border border-slate-200 items-center">
-            <div class="col-span-2 sm:col-span-1 border-b sm:border-b-0 border-slate-100 pb-1 sm:pb-0">
-              <strong class="text-slate-900">${p.name}</strong>
-            </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá tháng (đ)</label>
-              <input id="adminPlanPrice_${idx}" type="number" value="${p.price}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá tháng">
-            </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá năm (đ)</label>
-              <input id="adminPlanYearlyPrice_${idx}" type="number" value="${p.yearlyPrice || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá năm">
-            </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">% Sale</label>
-              <input id="adminPlanSale_${idx}" type="number" value="${p.salePercent || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="% Sale">
-            </div>
-            <div>
-              <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa HS</label>
-              <input id="adminPlanStudents_${idx}" type="number" value="${p.maxStudents}" class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa HS">
-            </div>
+        adminList.innerHTML = `
+          <div class="hidden sm:grid sm:grid-cols-6 gap-2 px-2.5 text-[11px] font-extrabold text-slate-600 uppercase">
+            <div>Gói</div>
+            <div>Giá tháng (VNĐ)</div>
+            <div>Giá năm (VNĐ)</div>
+            <div>% Sale</div>
+            <div>Tối đa HS</div>
+            <div>Tối đa GV</div>
           </div>
-        `).join('');
+          ${vipPlansConfig.map((p, idx) => `
+            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-white p-2.5 rounded-xl border border-slate-200 items-center">
+              <div class="col-span-2 sm:col-span-1 border-b sm:border-b-0 border-slate-100 pb-1 sm:pb-0">
+                <strong class="text-slate-900">${escapeHtml(p.name)}</strong>
+              </div>
+              <div>
+                <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá tháng (VNĐ)</label>
+                <input id="adminPlanPrice_${idx}" type="text" inputmode="numeric" value="${p.id === 'free' ? '0' : formatVndDots(p.price)}" oninput="this.value = formatVndDots(this.value)" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá tháng">
+              </div>
+              <div>
+                <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Giá năm (VNĐ)</label>
+                <input id="adminPlanYearlyPrice_${idx}" type="text" inputmode="numeric" value="${p.id === 'free' ? '0' : formatVndDots(p.yearlyPrice || 0)}" oninput="this.value = formatVndDots(this.value)" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Giá năm">
+              </div>
+              <div>
+                <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">% Sale</label>
+                <input id="adminPlanSale_${idx}" type="number" value="${p.salePercent || 0}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="% Sale">
+              </div>
+              <div>
+                <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa HS</label>
+                <input id="adminPlanStudents_${idx}" type="text" inputmode="numeric" value="${formatVndDots(p.maxStudents)}" oninput="this.value = formatVndDots(this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa HS">
+              </div>
+              <div>
+                <label class="block sm:hidden text-[10px] text-slate-500 font-bold mb-0.5">Tối đa GV</label>
+                <input id="adminPlanTeachers_${idx}" type="number" min="1" value="${p.id === 'free' ? 1 : (Number(p.maxTeachers) || DEFAULT_VIP_PLANS[idx]?.maxTeachers || 1)}" ${p.id === 'free' ? 'disabled' : ''} class="w-full px-2 py-1 rounded-lg border border-slate-300 font-mono" title="Tối đa GV">
+              </div>
+            </div>
+          `).join('')}
+        `;
       }
 
       safeCreateIcons();
     }
 
     // ==================== QUẢN LÝ MÃ ƯU ĐÃI (DÀNH CHO ADMIN) ====================
+    function formatVndDots(val) {
+      const digits = String(val ?? '').replace(/\D/g, '');
+      return digits ? Number(digits).toLocaleString('vi-VN') : '';
+    }
+
+    function parseVndDots(val) {
+      return Number(String(val ?? '').replace(/\D/g, '')) || 0;
+    }
+
+    function onAdminNewPromoValueInput(el) {
+      if (!el) return;
+      const typeSel = document.getElementById('adminNewPromoTypeSelect');
+      const mode = typeSel?.value || 'percent';
+      if (mode === 'amount') {
+        el.value = formatVndDots(el.value);
+      } else {
+        const digits = String(el.value ?? '').replace(/\D/g, '');
+        if (!digits) {
+          el.value = '';
+        } else {
+          const num = Math.min(100, Number(digits));
+          el.value = String(num);
+        }
+      }
+    }
+
+    function toggleAdminNewPromoAllPlans(isAllChecked) {
+      const planCbs = document.querySelectorAll('.admin-promo-plan-cb');
+      planCbs.forEach(cb => {
+        cb.disabled = Boolean(isAllChecked);
+        if (isAllChecked) {
+          cb.checked = true;
+        }
+      });
+    }
+
     function onAdminNewPromoTypeChange() {
       const typeSel = document.getElementById('adminNewPromoTypeSelect');
       const valInp = document.getElementById('adminNewPromoValueInput');
       if (!typeSel || !valInp) return;
       if (typeSel.value === 'percent') {
-        valInp.min = '1';
-        valInp.max = '100';
-        valInp.step = '1';
         valInp.placeholder = '20';
       } else {
-        valInp.min = '1000';
-        valInp.removeAttribute('max');
-        valInp.step = '1000';
-        valInp.placeholder = '10000';
+        valInp.placeholder = '10.000';
       }
+      onAdminNewPromoValueInput(valInp);
     }
 
     async function loadAdminPromoCodes(showToast = false) {
@@ -4608,7 +4905,7 @@
       try {
         const { data, error } = await supabaseClient
           .from('promo_codes')
-          .select('code, discount_percent, discount_amount, max_uses, used_count, is_active, expires_at')
+          .select('code, discount_percent, discount_amount, max_uses, used_count, is_active, expires_at, applicable_plans')
           .order('is_active', { ascending: false })
           .order('code', { ascending: true });
 
@@ -4631,12 +4928,16 @@
           return;
         }
 
+        const planLabelMap = {};
+        vipPlansConfig.forEach(p => { planLabelMap[p.id] = p.name; });
+
         container.innerHTML = `
-          <table class="w-full text-left border-collapse text-[11px] sm:text-xs min-w-[560px]">
+          <table class="w-full text-left border-collapse text-[11px] sm:text-xs min-w-[660px]">
             <thead>
               <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold uppercase text-[10px]">
                 <th class="py-2 px-2.5">Mã ưu đãi</th>
                 <th class="py-2 px-2.5">Mức giảm</th>
+                <th class="py-2 px-2.5">Gói áp dụng</th>
                 <th class="py-2 px-2.5 text-center">Lượt dùng</th>
                 <th class="py-2 px-2.5 text-center">Hạn dùng</th>
                 <th class="py-2 px-2.5 text-center">Trạng thái</th>
@@ -4651,6 +4952,10 @@
                 const discountText = pct > 0
                   ? `-${pct}%`
                   : `-${amt.toLocaleString('vi-VN')}đ`;
+                const hasSpecificPlans = Array.isArray(item.applicable_plans) && item.applicable_plans.length > 0;
+                const applicablePlansHtml = hasSpecificPlans
+                  ? `<span class="text-slate-700 font-semibold">${escapeHtml(item.applicable_plans.map(pid => planLabelMap[pid] || pid).join(', '))}</span>`
+                  : `<span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-extrabold text-[10px]">Tất cả gói</span>`;
                 const usedCount = Number(item.used_count) || 0;
                 const maxUsesText = (item.max_uses !== null && item.max_uses !== undefined && item.max_uses !== '')
                   ? Number(item.max_uses).toLocaleString('vi-VN')
@@ -4673,6 +4978,9 @@
                     </td>
                     <td class="py-2 px-2.5 font-extrabold text-emerald-700 whitespace-nowrap">
                       ${escapeHtml(discountText)}
+                    </td>
+                    <td class="py-2 px-2.5">
+                      ${applicablePlansHtml}
                     </td>
                     <td class="py-2 px-2.5 text-center font-mono font-bold text-slate-800 whitespace-nowrap">
                       ${escapeHtml(`${usedCount.toLocaleString('vi-VN')} / ${maxUsesText}`)}
@@ -4729,6 +5037,7 @@
       const valInp = document.getElementById('adminNewPromoValueInput');
       const maxInp = document.getElementById('adminNewPromoMaxUsesInput');
       const expInp = document.getElementById('adminNewPromoExpiresInput');
+      const allPlansCb = document.getElementById('adminNewPromoAllPlansCb');
       const submitBtn = document.getElementById('btnCreateAdminPromoCode');
 
       const rawCode = String(codeInp?.value || '').trim().toUpperCase().replace(/\s+/g, '');
@@ -4745,10 +5054,20 @@
       }
 
       const discountType = typeSel?.value || 'percent';
-      const rawVal = Number(valInp?.value) || 0;
+      const rawVal = parseVndDots(valInp?.value);
       if (rawVal <= 0) {
         showUndoToast('Vui lòng nhập giá trị giảm lớn hơn 0.');
         return;
+      }
+
+      let applicablePlans = null;
+      if (!allPlansCb?.checked) {
+        const checkedPlans = Array.from(document.querySelectorAll('.admin-promo-plan-cb:checked')).map(cb => cb.value);
+        if (checkedPlans.length === 0) {
+          showUndoToast('Vui lòng chọn ít nhất 1 gói áp dụng.');
+          return;
+        }
+        applicablePlans = checkedPlans;
       }
 
       let discountPercent = 0;
@@ -4788,7 +5107,8 @@
             max_uses: maxUses,
             used_count: 0,
             is_active: true,
-            expires_at: expiresAtIso
+            expires_at: expiresAtIso,
+            applicable_plans: applicablePlans
           });
 
         if (error) {
@@ -4800,6 +5120,10 @@
         if (valInp) valInp.value = '';
         if (maxInp) maxInp.value = '';
         if (expInp) expInp.value = '';
+        if (allPlansCb) {
+          allPlansCb.checked = true;
+          toggleAdminNewPromoAllPlans(true);
+        }
 
         showUndoToast(`Đã tạo mã ưu đãi ${cleanCode}!`);
         await loadAdminPromoCodes(false);
@@ -5536,11 +5860,11 @@
       if (!isCurrentUserVipAdmin()) return;
       vipPlansConfig = vipPlansConfig.map((p, idx) => {
         const isFree = p.id === 'free';
-        const priceVal = isFree ? 0 : Math.max(0, Number(document.getElementById(`adminPlanPrice_${idx}`)?.value) || p.price);
-        const yearlyPriceVal = isFree ? 0 : Math.max(0, Number(document.getElementById(`adminPlanYearlyPrice_${idx}`)?.value) || p.yearlyPrice || (priceVal * 10));
+        const priceVal = isFree ? 0 : Math.max(0, parseVndDots(document.getElementById(`adminPlanPrice_${idx}`)?.value) || p.price);
+        const yearlyPriceVal = isFree ? 0 : Math.max(0, parseVndDots(document.getElementById(`adminPlanYearlyPrice_${idx}`)?.value) || (priceVal * 10));
         const saleVal = isFree ? 0 : Math.max(0, Math.min(80, Number(document.getElementById(`adminPlanSale_${idx}`)?.value) || 0));
-        const studentsVal = Math.max(1, Number(document.getElementById(`adminPlanStudents_${idx}`)?.value) || p.maxStudents);
-        const teachersVal = isFree ? 1 : Math.max(1, Number(document.getElementById(`adminPlanTeachers_${idx}`)?.value) || 1);
+        const studentsVal = Math.max(1, parseVndDots(document.getElementById(`adminPlanStudents_${idx}`)?.value) || p.maxStudents);
+        const teachersVal = isFree ? 1 : Math.max(1, Number(document.getElementById(`adminPlanTeachers_${idx}`)?.value) || Number(p.maxTeachers) || DEFAULT_VIP_PLANS[idx]?.maxTeachers || 1);
         return {
           ...p,
           price: priceVal,
@@ -6007,6 +6331,9 @@
     }
 
     function saveAllToLocalStorage(syncCloudNow = false) {
+      if (activeWorkspaceMode === 'shared') {
+        return;
+      }
       try {
         const prefix = getStorageKeyPrefix();
         localStorage.setItem(`${prefix}_classes`, JSON.stringify(classesList));
@@ -6244,6 +6571,7 @@
     }
 
     async function syncUserDataToCloud(showToastFeedback = false) {
+      if (activeWorkspaceMode === 'shared') return;
       if (!supabaseClient || !currentUser?.id || isSyncingCloud) return;
       isSyncingCloud = true;
       setCloudSyncBadge('syncing');
@@ -6351,7 +6679,42 @@
 
     function setupAutoCloudSyncListeners() {
       window.addEventListener('online', () => {
-        if (currentUser?.id) syncUserDataToCloud(false);
+        if (currentUser?.id && activeWorkspaceMode === 'own') syncUserDataToCloud(false);
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState !== 'visible') return;
+        const nowMs = Date.now();
+        if (nowMs - lastVisibilityRefreshAt < 15000) return;
+
+        // Tránh làm mới khi người dùng đang mở modal nhập liệu/chỉnh sửa
+        const blockingModalIds = [
+          'modalAddStudent',
+          'modalCreateAssignment',
+          'modalTakeHomework',
+          'modalGradeHomework',
+          'modalCreateClass',
+          'modalEditClass',
+          'modalEditFeePrice',
+          'modalStudentDetail',
+          'modalTuitionNotice',
+          'modalNotebook',
+          'modalWorkspaceMembers',
+          'modalVipVietQrCheckout'
+        ];
+        const hasOpenInputModal = blockingModalIds.some(id => {
+          const el = document.getElementById(id);
+          return el && !el.classList.contains('hidden');
+        });
+        if (hasOpenInputModal) return;
+
+        lastVisibilityRefreshAt = nowMs;
+
+        if (activeWorkspaceMode === 'shared' && activeSharedWorkspace?.owner_id) {
+          switchActiveWorkspace(activeSharedWorkspace.owner_id, true);
+        } else if (activeWorkspaceMode === 'own' && ownerHasActiveMembers === true && !isSyncingCloud && currentUser?.id) {
+          loadUserDataFromCloud(currentUser, false);
+        }
       });
     }
 
@@ -6512,11 +6875,15 @@
         greetingEl.innerText = `Xin chào, ${displayName}`;
       }
       if (heroVipPillEl) {
-        heroVipPillEl.className = `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ${planStyle.bg} ${planStyle.hover} border border-white/25 text-[11px] sm:text-xs font-extrabold text-white transition active:scale-95 shrink-0 shadow-sm`;
-        const crownEl = heroVipPillEl.querySelector('svg, [data-lucide="crown"]');
-        if (crownEl) {
-          crownEl.classList.remove('text-amber-400');
-          crownEl.classList.add('text-white');
+        if (activeWorkspaceMode === 'shared') {
+          heroVipPillEl.className = 'hidden';
+        } else {
+          heroVipPillEl.className = `inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full ${planStyle.bg} ${planStyle.hover} border border-white/25 text-[11px] sm:text-xs font-extrabold text-white transition active:scale-95 shrink-0 shadow-sm`;
+          const crownEl = heroVipPillEl.querySelector('svg, [data-lucide="crown"]');
+          if (crownEl) {
+            crownEl.classList.remove('text-amber-400');
+            crownEl.classList.add('text-white');
+          }
         }
       }
       if (vipLabelEl) {
@@ -6538,7 +6905,9 @@
       });
 
       if (summaryEl) {
-        summaryEl.innerText = `Hôm nay ${todaySessionsCount} ca dạy • ${totalSt} / ${maxSt} học sinh`;
+        summaryEl.innerText = activeWorkspaceMode === 'shared'
+          ? `Hôm nay ${todaySessionsCount} ca dạy • ${totalSt} học sinh (${activeSharedWorkspace?.owner_name || 'Lớp chia sẻ'})`
+          : `Hôm nay ${todaySessionsCount} ca dạy • ${totalSt} / ${maxSt} học sinh`;
       }
 
       // 1. Thẻ chỉ số Bài Tập (chỉ tính những học sinh thuộc lớp ĐÃ CÓ ít nhất 1 bài tập được giao)
@@ -6629,6 +6998,8 @@
       if (revColEl) revColEl.innerText = formatMoneyK(monthCollected);
       if (revSubEl) revSubEl.innerText = `Đã thu • Chưa thu ${formatMoneyK(monthUnpaid)}`;
       if (revBarEl) revBarEl.style.width = `${revPct}%`;
+
+      applySharedWorkspaceUiRestrictions();
     }
 
     function openScheduleFromHome(mode = 'today') {
@@ -6687,7 +7058,7 @@
       `;
 
       if (editBtn) {
-        editBtn.classList.toggle('hidden', currentClassId === ALL_CLASSES_ID);
+        editBtn.classList.toggle('hidden', currentClassId === ALL_CLASSES_ID || activeWorkspaceMode === 'shared');
       }
     }
 
@@ -6754,14 +7125,22 @@
       const todayClasses = [];
 
       if (classesList.length === 0 && todayCardsContainer) {
-        todayCardsContainer.innerHTML = `
-          <div class="p-6 rounded-2xl border-2 border-dashed border-indigo-200 text-center bg-indigo-50/40 space-y-2">
-            <h4 class="font-extrabold text-sm text-slate-900">Chưa có lớp học nào</h4>
-            <button type="button" onclick="openCreateClassModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
-              + Tạo lớp học đầu tiên
-            </button>
-          </div>
-        `;
+        if (activeWorkspaceMode === 'shared') {
+          todayCardsContainer.innerHTML = `
+            <div class="p-6 rounded-2xl border-2 border-dashed border-slate-200 text-center bg-slate-50/70">
+              <h4 class="font-extrabold text-sm text-slate-700">Chủ lớp chưa phân công lớp nào cho bạn</h4>
+            </div>
+          `;
+        } else {
+          todayCardsContainer.innerHTML = `
+            <div class="p-6 rounded-2xl border-2 border-dashed border-indigo-200 text-center bg-indigo-50/40 space-y-2">
+              <h4 class="font-extrabold text-sm text-slate-900">Chưa có lớp học nào</h4>
+              <button type="button" onclick="openCreateClassModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
+                + Tạo lớp học đầu tiên
+              </button>
+            </div>
+          `;
+        }
       }
 
       DAYS_OF_WEEK.forEach(day => {
@@ -6931,84 +7310,103 @@
       if (statPresent) statPresent.innerText = `${presentCount} em`;
       if (statAbsent) statAbsent.innerText = `${absentCount} em`;
 
-      const listContainer = document.getElementById('studentAttendanceList');
-      if (!listContainer) return;
+      const listEl = document.getElementById('studentAttendanceList');
+      const isSharedMode = activeWorkspaceMode === 'shared';
+      const canViewContacts = !isSharedMode || activeSharedWorkspace?.can_view_contacts === true;
+      const selectAllCb = document.getElementById('selectAllAttendanceCheckbox');
+      if (selectAllCb) {
+        selectAllCb.classList.toggle('hidden', isSharedMode);
+        if (isSharedMode) selectAllCb.checked = false;
+      }
+      if (!listEl) return;
+
       if (students.length === 0) {
-        listContainer.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Lớp chưa có học sinh. Bấm "+ Thêm HS" để thêm.</div>`;
+        listEl.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Chưa có học sinh nào trong lớp này.</div>`;
+        updateAttendanceBulkActionBar();
         return;
       }
 
-      listContainer.innerHTML = students.map((s, idx) => {
-        const status = s.attendanceHistory?.[activeAttendanceDate] || 'unrecorded';
-        const isPresent = status === 'present';
-        const isAbsent = status === 'absent';
-        const isSelected = selectedAttendanceStudentIds.includes(s.id);
-        const displayName = getShortName(s.name);
-        const { presentCount: bCount, absentCount: vCount } = getStudentAttendanceCounts(s);
+      listEl.innerHTML = students.map((s, idx) => {
+        const curStatus = s.attendanceHistory?.[activeAttendanceDate] || 'unrecorded';
+        const isPresent = curStatus === 'present';
+        const isAbsent = curStatus === 'absent';
+        const isChecked = !isSharedMode && selectedAttendanceStudentIds.includes(s.id);
+        const counts = getStudentAttendanceCounts(s);
         const hwStat = getStudentHomeworkCompletionStatus(s);
+        const displayName = getShortName(s.name);
         const classTag = (currentClassId === ALL_CLASSES_ID && s._className)
-          ? `<span class="text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200/70">${escapeHtml(s._className)}</span>`
+          ? `<span class="text-[9.5px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">${escapeHtml(s._className)}</span>`
+          : '';
+        const phoneTag = (canViewContacts && s.parentPhone)
+          ? `<span class="font-mono text-slate-500">• ${escapeHtml(s.parentPhone)}</span>`
           : '';
 
-        const hwBadgeHtml = hwStat.total === 0
-          ? `<span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-400 border border-slate-200/70 text-[10.5px] sm:text-xs font-semibold">--</span>`
-          : hwStat.isCompleted
-            ? `<span class="inline-flex items-center justify-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10.5px] sm:text-xs font-extrabold">
-                 <i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-600 shrink-0"></i>
-                 <span>Hoàn Thành</span>
-               </span>`
-            : `<span class="inline-flex items-center justify-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10.5px] sm:text-xs font-bold">
-                 <span>Chưa nộp</span>
-                 ${hwStat.total > 1 ? `<span class="text-[9.5px] opacity-80">(${hwStat.submitted}/${hwStat.total})</span>` : ''}
-               </span>`;
-
         return `
-          <div class="px-3 py-2 sm:px-4 sm:py-2.5 flex items-center justify-between gap-2 bg-white text-slate-900 hover:bg-slate-50 transition ${isSelected ? 'bg-indigo-50/50' : ''}">
+          <div class="px-3 py-2.5 sm:px-4 sm:py-3 flex items-center justify-between gap-2 hover:bg-slate-50/90 transition ${isChecked ? 'bg-indigo-50/40' : 'bg-white'}">
             <div class="flex items-center gap-2 min-w-0 flex-1">
-              <input
-                type="checkbox"
-                class="w-4 h-4 rounded text-indigo-600 focus:ring-0 cursor-pointer shrink-0"
-                ${isSelected ? 'checked' : ''}
-                onchange="toggleStudentAttendanceSelection('${s.id}', this.checked)"
-              >
-              <span class="text-xs font-extrabold text-slate-400 w-6 text-center shrink-0">${idx + 1}</span>
-              <div onclick="openStudentDetailModal('${s.id}')" class="cursor-pointer min-w-0 flex-1 group" title="${escapeHtml(s.name)}">
-                <div class="flex items-center gap-1.5 min-w-0 flex-wrap">
-                  <span class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-indigo-600 transition truncate">${escapeHtml(displayName)}</span>
-                  <span class="text-[9.5px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200/80">${escapeHtml(s.studentCode || '')}</span>
+              ${isSharedMode ? '' : `
+                <input
+                  type="checkbox"
+                  ${isChecked ? 'checked' : ''}
+                  onchange="toggleStudentAttendanceSelection('${s.id}', this.checked)"
+                  class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 cursor-pointer shrink-0"
+                >
+              `}
+              <span class="w-6 text-center text-xs font-extrabold text-slate-400 shrink-0">${idx + 1}</span>
+              <div onclick="openStudentDetailModal('${s.id}')" class="min-w-0 flex-1 cursor-pointer group">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-indigo-600 transition truncate" title="${escapeHtml(s.name)}">${escapeHtml(displayName)}</span>
                   ${classTag}
                 </div>
-                <div class="text-[10.5px] text-slate-500 font-semibold mt-0.5 flex items-center gap-1.5 flex-wrap">
-                  <span class="text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded border border-emerald-200/60 font-bold">${bCount}B</span>
+                <div class="text-[10px] sm:text-[11px] text-slate-500 font-medium flex items-center gap-2 mt-0.5 flex-wrap">
+                  <span class="text-emerald-600 font-bold">Có mặt: ${counts.presentCount}</span>
                   <span>•</span>
-                  <span class="text-rose-700 bg-rose-50 px-1 py-0.5 rounded border border-rose-200/60 font-bold">${vCount}V</span>
-                  <span class="sm:hidden">•</span>
-                  <span class="sm:hidden">${hwBadgeHtml}</span>
-                  ${s.parentPhone ? `<span class="hidden md:inline text-slate-400">• SĐT: ${escapeHtml(s.parentPhone)}</span>` : ''}
+                  <span class="text-rose-500 font-bold">Vắng: ${counts.absentCount}</span>
+                  ${phoneTag}
+                  <span class="sm:hidden">• BT: <strong class="${hwStat.isCompleted ? 'text-emerald-600' : 'text-amber-600'}">${hwStat.submitted}/${hwStat.total}</strong></span>
                 </div>
               </div>
             </div>
 
-            <div onclick="switchTab('homework')" class="hidden sm:flex w-36 md:w-44 items-center justify-center shrink-0 border-x border-slate-100 px-2 py-1 cursor-pointer hover:bg-indigo-50/40 transition" title="Bấm để xem danh sách bài tập về nhà">
-              ${hwBadgeHtml}
+            <div class="hidden sm:flex w-36 md:w-44 justify-center items-center shrink-0 border-x border-slate-100 px-2">
+              ${hwStat.total === 0
+                ? `<span class="text-[11px] text-slate-400 italic">Chưa giao BT</span>`
+                : `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${
+                    hwStat.isCompleted
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border border-amber-200'
+                  }">${hwStat.submitted}/${hwStat.total} bài (${hwStat.percent}%)</span>`
+              }
             </div>
 
-            <div class="flex items-center justify-center gap-1 sm:w-36 shrink-0">
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'present')" class="px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap shrink-0 ${isPresent ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
-                <i data-lucide="check" class="w-3.5 h-3.5 shrink-0"></i>
-                <span>Đi học</span>
+            <div class="flex items-center justify-center gap-1.5 w-32 sm:w-36 shrink-0">
+              <button
+                type="button"
+                onclick="toggleStudentAttendance('${s.id}', 'present')"
+                class="px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold border transition active:scale-95 ${
+                  isPresent
+                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                    : 'bg-slate-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border-slate-200'
+                }"
+              >
+                Đi học
               </button>
-              <button type="button" onclick="toggleStudentAttendance('${s.id}', 'absent')" class="px-2 py-1 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 whitespace-nowrap shrink-0 ${isAbsent ? 'bg-rose-600 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}">
-                <i data-lucide="x" class="w-3.5 h-3.5 shrink-0"></i>
-                <span>Vắng</span>
+              <button
+                type="button"
+                onclick="toggleStudentAttendance('${s.id}', 'absent')"
+                class="px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-extrabold border transition active:scale-95 ${
+                  isAbsent
+                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
+                    : 'bg-slate-50 hover:bg-rose-50 text-slate-600 hover:text-rose-700 border-slate-200'
+                }"
+              >
+                Vắng
               </button>
             </div>
 
-            <div onclick="openStudentDetailModal('${s.id}')" class="hidden sm:flex w-40 md:w-48 pl-3 border-l border-slate-100 items-center justify-between cursor-pointer shrink-0 group" title="${escapeHtml(s.name)}">
-              <div class="text-xs sm:text-sm font-extrabold text-slate-800 group-hover:text-indigo-600 transition truncate flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full shrink-0 ${isPresent ? 'bg-emerald-500' : (isAbsent ? 'bg-rose-500' : 'bg-slate-300')}"></span>
-                <span class="truncate">${escapeHtml(displayName)}</span>
-              </div>
+            <div onclick="openStudentDetailModal('${s.id}')" class="hidden sm:flex w-40 md:w-48 pl-3 border-l border-slate-100 items-center justify-between gap-1 shrink-0 cursor-pointer group">
+              <span class="text-xs font-extrabold text-slate-800 group-hover:text-indigo-600 truncate">${escapeHtml(displayName)}</span>
+              <span class="text-[10px] font-mono text-slate-400">${escapeHtml(s.studentCode || '')}</span>
             </div>
           </div>
         `;
@@ -7018,13 +7416,55 @@
       safeCreateIcons();
     }
 
-    function toggleStudentAttendance(studentId, targetStatus) {
+    async function toggleStudentAttendance(studentId, targetStatus) {
       const found = findStudentAndClassById(studentId);
       const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
       if (!s.attendanceHistory) s.attendanceHistory = {};
       const cur = s.attendanceHistory[activeAttendanceDate] || 'unrecorded';
       const nextStatus = cur === targetStatus ? 'unrecorded' : targetStatus;
+
+      if (activeWorkspaceMode === 'shared') {
+        const targetClassId = found?.classId || s._classId || currentClassId;
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id || !targetClassId) {
+          showUndoToast('Không xác định được không gian chia sẻ để lưu điểm danh.');
+          return;
+        }
+        try {
+          const { data, error } = await supabaseClient.rpc('member_update_attendance', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_updates: [{
+              class_id: targetClassId,
+              student_id: s.id,
+              date: activeAttendanceDate,
+              status: nextStatus
+            }]
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Lỗi lưu điểm danh lên máy chủ.');
+            await reloadActiveSharedWorkspaceQuietly();
+            return;
+          }
+          s.attendanceHistory[activeAttendanceDate] = nextStatus;
+          if (nextStatus !== 'present' && Array.isArray(s.paidSessions)) {
+            s.paidSessions = s.paidSessions.filter(d => d !== activeAttendanceDate);
+          }
+          students = getStudentsForClass(currentClassId);
+          syncFinanceDatesForCurrentClass();
+          if (nextStatus === 'present' && activeAttendanceDate && !selectedFinanceDates.includes(activeAttendanceDate)) {
+            selectedFinanceDates.push(activeAttendanceDate);
+            updateFinanceDateBadge();
+          }
+          renderAttendanceTab();
+          renderFinanceTab();
+          renderHomeTab();
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi lưu điểm danh.');
+          await reloadActiveSharedWorkspaceQuietly();
+        }
+        return;
+      }
+
       s.attendanceHistory[activeAttendanceDate] = nextStatus;
 
       if (nextStatus !== 'present' && Array.isArray(s.paidSessions)) {
@@ -7042,8 +7482,58 @@
       renderFinanceTab();
     }
 
-    function markAllAttendance(targetStatus) {
+    async function markAllAttendance(targetStatus) {
       if (students.length === 0) return;
+
+      if (activeWorkspaceMode === 'shared') {
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id) {
+          showUndoToast('Không xác định được không gian chia sẻ để điểm danh.');
+          return;
+        }
+        const updates = students.map(s => {
+          const found = findStudentAndClassById(s.id);
+          return {
+            class_id: found?.classId || s._classId || currentClassId,
+            student_id: s.id,
+            date: activeAttendanceDate,
+            status: targetStatus
+          };
+        }).filter(u => Boolean(u.class_id));
+
+        try {
+          const { data, error } = await supabaseClient.rpc('member_update_attendance', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_updates: updates
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Lỗi lưu điểm danh hàng loạt.');
+            await reloadActiveSharedWorkspaceQuietly();
+            return;
+          }
+          students.forEach(s => {
+            if (!s.attendanceHistory) s.attendanceHistory = {};
+            s.attendanceHistory[activeAttendanceDate] = targetStatus;
+            if (targetStatus !== 'present' && Array.isArray(s.paidSessions)) {
+              s.paidSessions = s.paidSessions.filter(d => d !== activeAttendanceDate);
+            }
+          });
+          students = getStudentsForClass(currentClassId);
+          syncFinanceDatesForCurrentClass();
+          if (targetStatus === 'present' && activeAttendanceDate && !selectedFinanceDates.includes(activeAttendanceDate)) {
+            selectedFinanceDates.push(activeAttendanceDate);
+            updateFinanceDateBadge();
+          }
+          renderAttendanceTab();
+          renderFinanceTab();
+          renderHomeTab();
+          showUndoToast(`Đã điểm danh tất cả đi học buổi ${activeAttendanceDate}!`);
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi lưu điểm danh.');
+          await reloadActiveSharedWorkspaceQuietly();
+        }
+        return;
+      }
+
       students.forEach(s => {
         if (!s.attendanceHistory) s.attendanceHistory = {};
         s.attendanceHistory[activeAttendanceDate] = targetStatus;
@@ -7092,6 +7582,10 @@
         masterCb.checked = students.length > 0 && selectedAttendanceStudentIds.length === students.length;
       }
       if (!bar) return;
+      if (activeWorkspaceMode === 'shared') {
+        bar.classList.add('hidden');
+        return;
+      }
       if (selectedAttendanceStudentIds.length > 0) {
         bar.classList.remove('hidden');
         if (countText) countText.innerText = `Đã chọn ${selectedAttendanceStudentIds.length} HS`;
@@ -7101,6 +7595,7 @@
     }
 
     function openConfirmBulkDeleteModal() {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       const count = selectedAttendanceStudentIds.length;
       if (count === 0) return;
       openConfirmModal(`Xóa ${count} học sinh đã chọn?`, 'Dữ liệu của các học sinh này sẽ bị xóa khỏi lớp.', () => {
@@ -7117,6 +7612,7 @@
     }
 
     function openExportExcelModal() {
+      if (activeWorkspaceMode === 'shared' && !activeSharedWorkspace?.can_view_contacts) { showUndoToast('Bạn không có quyền xuất dữ liệu ở không gian này.'); return; }
       const previewEl = document.getElementById('exportClassPreviewName');
       const monthSel = document.getElementById('exportMonthSelect');
       if (previewEl) {
@@ -7142,6 +7638,7 @@
     }
 
     function handleExportAttendanceExcel() {
+      if (activeWorkspaceMode === 'shared' && !activeSharedWorkspace?.can_view_contacts) { showUndoToast('Bạn không có quyền xuất dữ liệu ở không gian này.'); return; }
       if (typeof XLSX === 'undefined') {
         showUndoToast('Thư viện xuất Excel đang tải, vui lòng thử lại!');
         return;
@@ -7204,6 +7701,7 @@
     }
 
     function openCreateClassModal() {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       document.getElementById('newClassNameInput').value = '';
       document.getElementById('newClassFeeInput').value = 40000;
       document.getElementById('newClassRoomInput').value = 'P.101';
@@ -7216,6 +7714,7 @@
 
     function handleCreateClass(e) {
       e.preventDefault();
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       const name = document.getElementById('newClassNameInput')?.value.trim();
       const fee = Number(document.getElementById('newClassFeeInput')?.value) || 40000;
       const room = document.getElementById('newClassRoomInput')?.value.trim() || 'P.101';
@@ -7256,6 +7755,7 @@
     }
 
     function openEditClassModal(targetClsId = null) {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       if (targetClsId) {
         currentClassId = targetClsId;
       }
@@ -7275,6 +7775,7 @@
 
     function handleEditClass(e) {
       e.preventDefault();
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       const cls = classesList.find(c => c.id === currentClassId);
       if (!cls) return;
       const schedules = JSON.parse(JSON.stringify(formSchedulesState.edit));
@@ -7298,6 +7799,7 @@
     }
 
     function handleDeleteCurrentClass() {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       const cls = classesList.find(c => c.id === currentClassId);
       if (!cls) return;
       openConfirmModal(`Xóa lớp ${cls.class_name}?`, 'Toàn bộ danh sách học sinh của lớp này cũng sẽ bị xóa.', () => {
@@ -7448,6 +7950,7 @@
     }
 
     function openAddStudentModal(initialTab = 'single') {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       if (classesList.length === 0) {
         showUndoToast('Vui lòng tạo lớp học trước khi thêm học sinh!');
         openCreateClassModal();
@@ -7472,6 +7975,7 @@
 
     function handleCreateStudent(e) {
       e.preventDefault();
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       if (!checkCanAddStudents(1)) return;
 
       const targetClassId = document.getElementById('newStudentClassSelect')?.value || classesList[0]?.id;
@@ -7591,6 +8095,7 @@
     }
 
     function handleConfirmBatchImport() {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       const targetClassId = document.getElementById('batchStudentTargetClassSelect')?.value || classesList[0]?.id;
       const fee = Number(document.getElementById('batchStudentFeeInput')?.value) || 40000;
       const selected = parsedBatchStudents.filter(s => s.selected && s.name);
@@ -7971,50 +8476,77 @@
         normalizedLines.push(line);
       }
 
-      const cleanedText = normalizedLines.join('\n').trim();
-      let tokens = [];
-
-      const numberedItemPattern = /(?:^|[\s,;])(?:câu\s*)?(\d+)(?:\s*[\.\:\)\-]\s*|\s*(?=[a-dA-D](?:$|[\s,;.\)\]]))\s*)(.+?)(?=(?:[\s,;]+(?:câu\s*)?\d+(?:\s*[\.\:\)\-]|\s*[a-dA-D](?:$|[\s,;.\)\]])))|[\n\r,;]|$)/gi;
-      const numberedMatches = Array.from(cleanedText.matchAll(numberedItemPattern));
-
-      if (numberedMatches.length >= 2) {
-        tokens = numberedMatches.map(m => m[2].trim()).filter(Boolean);
-      } else if ((mode === 'mcq' || mode === 'auto') && /^[a-dA-D\s,;]+$/.test(cleanedText)) {
-        tokens = cleanedText.replace(/[\s,;]+/g, '').toUpperCase().split('');
-      } else {
-        tokens = cleanedText
-          .split(/[\n\r,;]+/)
-          .map(t => t.trim().replace(/^(?:câu\s*)?\d+(?:\s*[\.\:\)\-]\s*|\s+|(?=[a-dA-D]$))/i, '').trim())
-          .filter(Boolean);
-      }
-
-      if (tokens.length === 0) return;
-
-      const perPoint = +(10 / tokens.length).toFixed(2);
-      const prevSheet = [...builderAnswerSheet];
-      builderAnswerSheet = tokens.map((ans, idx) => {
-        const normalizedSingle = ans.trim().replace(/^[\(\[\{]+|[\)\]\}\.]+$/g, '').trim();
-        const isSingleMcqLetter = /^[a-dA-D]$/.test(normalizedSingle);
-
-        let qType = 'fill';
-        if (mode === 'mcq') qType = 'mcq';
-        else if (mode === 'short') qType = 'fill';
-        else qType = isSingleMcqLetter ? 'mcq' : 'fill';
-
-        return {
-          questionId: prevSheet[idx]?.questionId,
-          index: idx + 1,
-          type: qType,
-          answer: qType === 'mcq' ? (isSingleMcqLetter ? normalizedSingle.toUpperCase() : '') : ans.trim(),
-          points: perPoint
-        };
+      const numberedPairs = [];
+      normalizedLines.forEach(line => {
+        const regex = /(?:câu\s*)?(\d+)\s*[\.\:\)\-]\s*([^\d\n]+?)(?=(?:\s+(?:câu\s*)?\d+\s*[\.\:\)\-])|$)/gi;
+        let m;
+        while ((m = regex.exec(line)) !== null) {
+          const qNum = parseInt(m[1], 10);
+          const ansVal = m[2].trim();
+          if (qNum > 0 && ansVal) {
+            numberedPairs.push({ qNum, ansVal });
+          }
+        }
       });
 
-      renderBuilderAnswerSheet();
-      showUndoToast(`Đã điền ${tokens.length} đáp án vào phiếu trả lời!`);
+      if (numberedPairs.length > 0) {
+        const maxQ = Math.max(...numberedPairs.map(p => p.qNum));
+        while (builderAnswerSheet.length < maxQ) {
+          builderAnswerSheet.push({ index: builderAnswerSheet.length + 1, type: 'mcq', answer: '', points: 0.5 });
+        }
+        numberedPairs.forEach(({ qNum, ansVal }) => {
+          const slot = builderAnswerSheet[qNum - 1];
+          if (!slot) return;
+          const cleanUpper = ansVal.toUpperCase().replace(/[\.\)]$/, '');
+          const isSingleMcq = /^[A-D]$/.test(cleanUpper);
+          if (mode === 'mcq' || (mode === 'auto' && isSingleMcq)) {
+            slot.type = 'mcq';
+            slot.answer = /^[A-D]$/.test(cleanUpper) ? cleanUpper : cleanUpper.charAt(0);
+          } else {
+            slot.type = 'fill';
+            slot.answer = ansVal;
+          }
+        });
+        renderBuilderAnswerSheet();
+        showUndoToast(`Đã điền ${numberedPairs.length} đáp án vào phiếu!`);
+        return;
+      }
+
+      const compact = raw.replace(/\s+/g, '').toUpperCase();
+      if (/^[A-D]+$/.test(compact) && mode !== 'short') {
+        while (builderAnswerSheet.length < compact.length) {
+          builderAnswerSheet.push({ index: builderAnswerSheet.length + 1, type: 'mcq', answer: '', points: 0.5 });
+        }
+        for (let i = 0; i < compact.length; i++) {
+          builderAnswerSheet[i].type = 'mcq';
+          builderAnswerSheet[i].answer = compact[i];
+        }
+        renderBuilderAnswerSheet();
+        showUndoToast(`Đã điền chuỗi ${compact.length} đáp án trắc nghiệm!`);
+        return;
+      }
+
+      if (normalizedLines.length > 0) {
+        while (builderAnswerSheet.length < normalizedLines.length) {
+          builderAnswerSheet.push({ index: builderAnswerSheet.length + 1, type: 'fill', answer: '', points: 0.5 });
+        }
+        normalizedLines.forEach((ansVal, idx) => {
+          const cleanUpper = ansVal.toUpperCase();
+          const isSingleMcq = /^[A-D]$/.test(cleanUpper);
+          if (mode === 'mcq' || (mode === 'auto' && isSingleMcq)) {
+            builderAnswerSheet[idx].type = 'mcq';
+            builderAnswerSheet[idx].answer = cleanUpper.charAt(0);
+          } else {
+            builderAnswerSheet[idx].type = 'fill';
+            builderAnswerSheet[idx].answer = ansVal;
+          }
+        });
+        renderBuilderAnswerSheet();
+        showUndoToast(`Đã điền ${normalizedLines.length} dòng đáp án!`);
+      }
     }
 
-    function handleSaveAssignment(e) {
+    async function handleSaveAssignment(e) {
       e.preventDefault();
       const classId = document.getElementById('assignmentClassSelect')?.value || classesList[0]?.id;
       const title = document.getElementById('assignmentTitleInput')?.value.trim();
@@ -8036,6 +8568,55 @@
         correctAnswer: item.answer || '',
         points: perPoint
       }));
+
+      if (activeWorkspaceMode === 'shared') {
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id) {
+          showUndoToast('Không xác định được không gian chia sẻ để lưu bài tập.');
+          return;
+        }
+        const isUpdate = Boolean(editingHomeworkId);
+        const existingHw = isUpdate ? homeworks.find(h => h.id === editingHomeworkId) : null;
+        const hwPayload = {
+          ...(existingHw || {}),
+          id: isUpdate ? editingHomeworkId : `HW_${Date.now()}`,
+          classId,
+          title,
+          deadline,
+          description,
+          totalPoints: 10,
+          examPaper: currentExamPaperData,
+          questions
+        };
+
+        try {
+          const { data, error } = await supabaseClient.rpc('member_manage_homework', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_action: isUpdate ? 'update' : 'create',
+            p_homework: hwPayload,
+            p_homework_id: hwPayload.id
+          });
+
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Không thể lưu bài tập lên máy chủ.');
+            return;
+          }
+
+          if (isUpdate) {
+            const idx = homeworks.findIndex(h => h.id === editingHomeworkId);
+            if (idx >= 0) homeworks[idx] = hwPayload;
+          } else {
+            homeworks.unshift(hwPayload);
+          }
+          editingHomeworkId = null;
+          closeModal('modalCreateAssignment');
+          renderHomeworkTab();
+          renderHomeTab();
+          showUndoToast(isUpdate ? `Đã cập nhật bài tập "${title}"!` : `Đã giao bài tập "${title}"!`);
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi lưu bài tập.');
+        }
+        return;
+      }
 
       if (editingHomeworkId) {
         const existingIdx = homeworks.findIndex(h => h.id === editingHomeworkId);
@@ -8121,7 +8702,33 @@
     }
 
     function deleteHomeworkItem(hwId) {
-      openConfirmModal('Xóa bài tập này?', 'Toàn bộ phiếu câu hỏi của bài tập này sẽ bị xóa.', () => {
+      openConfirmModal('Xóa bài tập này?', 'Toàn bộ phiếu câu hỏi của bài tập này sẽ bị xóa.', async () => {
+        if (activeWorkspaceMode === 'shared') {
+          if (!supabaseClient || !activeSharedWorkspace?.owner_id) {
+            showUndoToast('Không xác định được không gian chia sẻ để xóa bài tập.');
+            return;
+          }
+          try {
+            const { data, error } = await supabaseClient.rpc('member_manage_homework', {
+              p_owner_id: activeSharedWorkspace.owner_id,
+              p_action: 'delete',
+              p_homework: null,
+              p_homework_id: hwId
+            });
+            if (error || !data?.ok) {
+              showUndoToast(data?.message || error?.message || 'Không thể xóa bài tập trên máy chủ.');
+              return;
+            }
+            homeworks = homeworks.filter(h => h.id !== hwId);
+            renderHomeworkTab();
+            renderHomeTab();
+            showUndoToast('Đã xóa bài tập!');
+          } catch (err) {
+            showUndoToast('Lỗi kết nối khi xóa bài tập.');
+          }
+          return;
+        }
+
         homeworks = homeworks.filter(h => h.id !== hwId);
         saveAllToLocalStorage(true);
         renderHomeworkTab();
@@ -8309,37 +8916,111 @@
       container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Đang tải danh sách bài nộp mới nhất...</div>`;
       openModal('modalGradeHomework');
 
-      if (currentUser && currentUser.id) {
-        await loadUserDataFromCloud(currentUser, false);
+      if (supabaseClient && currentUser?.id && activeWorkspaceMode === 'own') {
+        try {
+          const { data: row } = await supabaseClient
+            .from('user_app_data')
+            .select('data')
+            .eq('user_id', currentUser.id)
+            .maybeSingle();
+          const remoteSubs = row?.data?.homeworkSubmissions;
+          if (Array.isArray(remoteSubs)) {
+            const mergedMap = new Map();
+            remoteSubs.forEach(s => { if (s && s.id) mergedMap.set(s.id, s); });
+            homeworkSubmissions.forEach(s => { if (s && s.id) mergedMap.set(s.id, s); });
+            homeworkSubmissions = Array.from(mergedMap.values());
+            saveAllToLocalStorage(false);
+          }
+        } catch (err) {}
+      } else if (activeWorkspaceMode === 'shared' && activeSharedWorkspace?.owner_id) {
+        await reloadActiveSharedWorkspaceQuietly();
       }
 
       const subs = homeworkSubmissions.filter(s => s.homeworkId === hwId);
-
       if (subs.length === 0) {
-        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Chưa có học sinh nào nộp bài tập này.</div>`;
-      } else {
-        container.innerHTML = subs.map((sub, idx) => `
-          <div class="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/70 space-y-2.5 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="font-extrabold text-slate-900">${escapeHtml(sub.studentName)}</span>
-              <span class="text-slate-500">Nộp lúc: ${escapeHtml(sub.submittedAt)}</span>
+        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">Chưa có học sinh nào nộp bài tập này.</div>`;
+        return;
+      }
+
+      container.innerHTML = subs.map((sub, idx) => `
+        <div class="bg-slate-50/90 rounded-2xl border border-slate-200 p-3.5 space-y-2.5 text-xs">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 pb-2">
+            <div>
+              <span class="font-extrabold text-sm text-slate-900">${escapeHtml(sub.studentName || 'Học sinh')}</span>
+              <span class="text-[11px] text-slate-500 ml-2">Nộp lúc: ${escapeHtml(sub.submittedAt || '--')}</span>
             </div>
-            <div class="flex items-center gap-2">
-              <label class="font-bold text-slate-700">Điểm số:</label>
-              <input type="number" step="0.5" min="0" max="10" value="${sub.score}" id="gradeScoreInput_${idx}" class="w-20 px-2 py-1 rounded-lg border border-slate-300 font-extrabold text-emerald-700 bg-white">
-              <input type="text" value="${escapeHtml(sub.teacherComment || '')}" id="gradeCommentInput_${idx}" placeholder="Nhập lời phê của giáo viên..." class="flex-1 px-2.5 py-1 rounded-lg border border-slate-300 bg-white">
-              <button type="button" onclick="saveTeacherGrade('${sub.id}', ${idx})" class="px-3 py-1 rounded-lg bg-indigo-600 text-white font-bold">Lưu</button>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold">Điểm: ${sub.score}/10</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-end">
+            <div class="sm:col-span-3">
+              <label class="block text-[10.5px] font-bold text-slate-600 mb-1">Chỉnh điểm (0–10)</label>
+              <input
+                type="number"
+                id="gradeScoreInput_${idx}"
+                step="0.1"
+                min="0"
+                max="10"
+                value="${sub.score ?? 0}"
+                class="w-full px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white font-extrabold text-indigo-700"
+              >
+            </div>
+            <div class="sm:col-span-7">
+              <label class="block text-[10.5px] font-bold text-slate-600 mb-1">Lời phê / Nhận xét của giáo viên</label>
+              <input
+                type="text"
+                id="gradeCommentInput_${idx}"
+                value="${escapeHtml(sub.teacherComment || '')}"
+                placeholder="Nhập nhận xét cho học sinh..."
+                class="w-full px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white font-medium"
+              >
+            </div>
+            <div class="sm:col-span-2">
+              <button
+                type="button"
+                onclick="saveTeacherGrade('${escapeHtml(sub.id)}', ${idx})"
+                class="w-full py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold shadow-sm transition active:scale-95"
+              >
+                Lưu
+              </button>
             </div>
           </div>
-        `).join('');
-      }
+        </div>
+      `).join('');
     }
 
-    function saveTeacherGrade(subId, idx) {
+    async function saveTeacherGrade(subId, idx) {
       const sub = homeworkSubmissions.find(s => s.id === subId);
       if (!sub) return;
       const scoreVal = Number(document.getElementById(`gradeScoreInput_${idx}`)?.value);
       const commentVal = document.getElementById(`gradeCommentInput_${idx}`)?.value || '';
+
+      if (activeWorkspaceMode === 'shared') {
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id) {
+          showUndoToast('Không xác định được không gian chia sẻ để lưu điểm.');
+          return;
+        }
+        const finalScore = !Number.isNaN(scoreVal) ? scoreVal : sub.score;
+        try {
+          const { data, error } = await supabaseClient.rpc('member_grade_submission', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_submission_id: subId,
+            p_score: finalScore,
+            p_comment: commentVal
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Lỗi lưu điểm & nhận xét bài nộp.');
+            return;
+          }
+          sub.score = finalScore;
+          sub.teacherComment = commentVal;
+          showUndoToast(`Đã lưu điểm & nhận xét cho ${sub.studentName}!`);
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi lưu điểm bài nộp.');
+        }
+        return;
+      }
+
       if (!Number.isNaN(scoreVal)) sub.score = scoreVal;
       sub.teacherComment = commentVal;
       saveAllToLocalStorage(true);
@@ -8527,56 +9208,6 @@
       renderFinanceDatesModalList();
     }
 
-    function applyQuickRangeThisMonth() {
-      const fromInput = document.getElementById('financeDateFromInput');
-      const toInput = document.getElementById('financeDateToInput');
-      const now = new Date();
-      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-      const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-      if (fromInput) fromInput.value = `${firstDay.getFullYear()}-${String(firstDay.getMonth() + 1).padStart(2, '0')}-${String(firstDay.getDate()).padStart(2, '0')}`;
-      if (toInput) toInput.value = `${lastDay.getFullYear()}-${String(lastDay.getMonth() + 1).padStart(2, '0')}-${String(lastDay.getDate()).padStart(2, '0')}`;
-      onFinanceDateRangeChange();
-    }
-
-    function updateFinanceDateBadge() {
-      const badge = document.getElementById('customDatesCountBadge');
-      if (badge) badge.innerText = `Chọn buổi (${selectedFinanceDates.length} buổi)`;
-    }
-
-    function openSelectFinanceDatesModal() {
-      tempSelectedFinanceDates = [...selectedFinanceDates];
-      const container = document.getElementById('financeDatesListContainer');
-      if (!container) return;
-      const classDates = getAllKnownDatesForCurrentScope();
-      container.innerHTML = classDates.map(d => {
-        const isChecked = tempSelectedFinanceDates.includes(d);
-        const parts = d.split('/');
-        return `
-          <label class="flex items-center justify-between p-2 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer text-xs">
-            <div class="flex items-center gap-2">
-              <input type="checkbox" class="rounded text-indigo-600" ${isChecked ? 'checked' : ''} onchange="toggleTempFinanceDate('${d}', this.checked)">
-              <span class="font-bold text-slate-800">${d}</span>
-            </div>
-            <span class="text-[10px] text-slate-400 font-mono">T.${parts[1]}</span>
-          </label>
-        `;
-      }).join('');
-      openModal('modalSelectFinanceDates');
-    }
-
-    function toggleTempFinanceDate(dateStr, checked) {
-      if (checked) {
-        if (!tempSelectedFinanceDates.includes(dateStr)) tempSelectedFinanceDates.push(dateStr);
-      } else {
-        tempSelectedFinanceDates = tempSelectedFinanceDates.filter(d => d !== dateStr);
-      }
-    }
-
-    function selectAllFinanceDatesModal(val) {
-      tempSelectedFinanceDates = val ? [...getAllKnownDatesForCurrentScope()] : [];
-      openSelectFinanceDatesModal();
-    }
-
     function applyCustomFinanceDates() {
       if (tempSelectedFinanceDates.length === 0) {
         showUndoToast('Vui lòng chọn ít nhất 1 buổi để tính tiền...');
@@ -8691,10 +9322,12 @@
               ${fee.attendedDateLabels.length > 0 ? `<div class="text-[9.5px] font-mono text-indigo-600/80 leading-tight max-w-[90px] mx-auto truncate">${fee.attendedDateLabels.join(', ')}</div>` : ''}
             </td>
             <td class="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right">
-              <button type="button" onclick="openEditFeePriceModal('${s.id}')" class="text-slate-800 hover:text-indigo-700 font-mono text-[11px] sm:text-sm font-semibold inline-flex items-center gap-1">
-                <span>${formatMoneyK(fee.price)}</span>
-                <i data-lucide="pencil" class="w-2.5 h-2.5 text-slate-400"></i>
-              </button>
+              ${activeWorkspaceMode === 'shared'
+                ? `<span class="text-slate-700 font-mono text-[11px] sm:text-sm font-semibold">${formatMoneyK(fee.price)}</span>`
+                : `<button type="button" onclick="openEditFeePriceModal('${s.id}')" class="text-slate-800 hover:text-indigo-700 font-mono text-[11px] sm:text-sm font-semibold inline-flex items-center gap-1">
+                    <span>${formatMoneyK(fee.price)}</span>
+                    <i data-lucide="pencil" class="w-2.5 h-2.5 text-slate-400"></i>
+                  </button>`}
             </td>
             <td class="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-extrabold text-slate-900 font-mono text-xs sm:text-[15px]">${formatMoneyK(fee.finalAmount)}</td>
             <td class="py-2.5 sm:py-3 px-1.5 sm:px-3 text-right font-bold text-emerald-600 font-mono text-xs sm:text-[15px]">${formatMoneyK(fee.paid)}</td>
@@ -8733,6 +9366,7 @@
         `;
       }).join('');
       updateFinanceBulkActionBar();
+      applySharedWorkspaceUiRestrictions();
       safeCreateIcons();
     }
 
@@ -8769,8 +9403,70 @@
       openConfirmModal(
         `Thu đủ học phí hàng loạt (${count} học sinh)?`,
         `Xác nhận đánh dấu ĐÃ THU ĐỦ học phí kỳ đang chọn cho ${count} học sinh đã tích chọn?`,
-        () => {
+        async () => {
           const targetDates = selectedFinanceDates.length > 0 ? selectedFinanceDates : getAllKnownDatesForCurrentScope();
+
+          if (activeWorkspaceMode === 'shared') {
+            if (!activeSharedWorkspace?.can_manage_finance) {
+              showUndoToast('Bạn không có quyền quản lý học phí ở không gian này.');
+              return;
+            }
+            const updates = [];
+            const affectedStudents = [];
+            selectedStudentIds.forEach(studentId => {
+              const found = findStudentAndClassById(studentId);
+              const s = found ? found.student : students.find(x => x.id === studentId);
+              if (!s) return;
+              const history = s.attendanceHistory || {};
+              const presentDatesToPay = targetDates.filter(d => history[d] === 'present');
+              if (presentDatesToPay.length === 0) return;
+              const clsId = found?.classId || s._classId || currentClassId;
+              if (!clsId) return;
+              updates.push({
+                class_id: clsId,
+                student_id: s.id,
+                add_dates: presentDatesToPay,
+                remove_dates: []
+              });
+              affectedStudents.push({ student: s, dates: presentDatesToPay });
+            });
+
+            if (updates.length === 0) {
+              clearFinanceSelection();
+              renderFinanceTab();
+              showUndoToast('Chưa có buổi đi học nào để thu');
+              return;
+            }
+
+            try {
+              const { data, error } = await supabaseClient.rpc('member_update_tuition', {
+                p_owner_id: activeSharedWorkspace.owner_id,
+                p_updates: updates,
+                p_remark_updates: {}
+              });
+              if (error || !data?.ok) {
+                showUndoToast(data?.message || error?.message || 'Lỗi cập nhật thu học phí hàng loạt.');
+                await reloadActiveSharedWorkspaceQuietly();
+                return;
+              }
+              affectedStudents.forEach(({ student, dates }) => {
+                if (!Array.isArray(student.paidSessions)) student.paidSessions = [];
+                dates.forEach(d => {
+                  if (!student.paidSessions.includes(d)) student.paidSessions.push(d);
+                });
+              });
+              students = getStudentsForClass(currentClassId);
+              clearFinanceSelection();
+              renderFinanceTab();
+              renderHomeTab();
+              showUndoToast(`Đã đánh dấu thu đủ học phí cho ${affectedStudents.length} học sinh!`);
+            } catch (err) {
+              showUndoToast('Lỗi kết nối khi thu học phí hàng loạt.');
+              await reloadActiveSharedWorkspaceQuietly();
+            }
+            return;
+          }
+
           let updatedStudentsCount = 0;
 
           selectedStudentIds.forEach(studentId => {
@@ -8810,9 +9506,62 @@
       openConfirmModal(
         `Hủy thu học phí hàng loạt (${count} học sinh)?`,
         `Xác nhận hủy trạng thái đã đóng học phí kỳ đang chọn cho ${count} học sinh đã tích chọn?`,
-        () => {
+        async () => {
           const periodKey = getActiveFinancePeriodKey();
           const datesToClear = selectedFinanceDates.length > 0 ? selectedFinanceDates : getAllKnownDatesForCurrentScope();
+
+          if (activeWorkspaceMode === 'shared') {
+            if (!activeSharedWorkspace?.can_manage_finance) {
+              showUndoToast('Bạn không có quyền quản lý học phí ở không gian này.');
+              return;
+            }
+            const updates = [];
+            const targetStudents = [];
+            selectedStudentIds.forEach(studentId => {
+              const found = findStudentAndClassById(studentId);
+              const s = found ? found.student : students.find(x => x.id === studentId);
+              const clsId = found?.classId || s?._classId || currentClassId;
+              if (!s || !clsId) return;
+              updates.push({
+                class_id: clsId,
+                student_id: s.id,
+                add_dates: [],
+                remove_dates: datesToClear
+              });
+              targetStudents.push(s);
+            });
+
+            if (updates.length === 0) {
+              clearFinanceSelection();
+              return;
+            }
+
+            try {
+              const { data, error } = await supabaseClient.rpc('member_update_tuition', {
+                p_owner_id: activeSharedWorkspace.owner_id,
+                p_updates: updates,
+                p_remark_updates: {}
+              });
+              if (error || !data?.ok) {
+                showUndoToast(data?.message || error?.message || 'Lỗi hủy thu học phí hàng loạt.');
+                await reloadActiveSharedWorkspaceQuietly();
+                return;
+              }
+              targetStudents.forEach(s => {
+                s.paidPeriods = (s.paidPeriods || []).filter(p => p !== periodKey);
+                s.paidSessions = (s.paidSessions || []).filter(d => !datesToClear.includes(d));
+              });
+              students = getStudentsForClass(currentClassId);
+              clearFinanceSelection();
+              renderFinanceTab();
+              renderHomeTab();
+              showUndoToast(`Đã hủy thu học phí kỳ đang chọn cho ${targetStudents.length} học sinh!`);
+            } catch (err) {
+              showUndoToast('Lỗi kết nối khi hủy thu học phí.');
+              await reloadActiveSharedWorkspaceQuietly();
+            }
+            return;
+          }
 
           selectedStudentIds.forEach(studentId => {
             const found = findStudentAndClassById(studentId);
@@ -8843,7 +9592,7 @@
       renderFinanceTab();
     }
 
-    function markFullyPaidForStudent(studentId) {
+    async function markFullyPaidForStudent(studentId) {
       const found = findStudentAndClassById(studentId);
       const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
@@ -8854,6 +9603,45 @@
         showUndoToast('Chưa có buổi đi học nào để thu');
         return;
       }
+
+      if (activeWorkspaceMode === 'shared') {
+        if (!activeSharedWorkspace?.can_manage_finance) {
+          showUndoToast('Bạn không có quyền quản lý học phí ở không gian này.');
+          return;
+        }
+        const clsId = found?.classId || s._classId || currentClassId;
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id || !clsId) return;
+        try {
+          const { data, error } = await supabaseClient.rpc('member_update_tuition', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_updates: [{
+              class_id: clsId,
+              student_id: s.id,
+              add_dates: presentDatesToPay,
+              remove_dates: []
+            }],
+            p_remark_updates: {}
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Lỗi lưu trạng thái thu học phí.');
+            await reloadActiveSharedWorkspaceQuietly();
+            return;
+          }
+          if (!Array.isArray(s.paidSessions)) s.paidSessions = [];
+          presentDatesToPay.forEach(d => {
+            if (!s.paidSessions.includes(d)) s.paidSessions.push(d);
+          });
+          students = getStudentsForClass(currentClassId);
+          renderFinanceTab();
+          renderHomeTab();
+          showUndoToast(`Đã thu tiền học phí của ${s.name}!`);
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi thu học phí.');
+          await reloadActiveSharedWorkspaceQuietly();
+        }
+        return;
+      }
+
       if (!Array.isArray(s.paidSessions)) s.paidSessions = [];
       presentDatesToPay.forEach(d => {
         if (!s.paidSessions.includes(d)) s.paidSessions.push(d);
@@ -8864,13 +9652,50 @@
       showUndoToast(`Đã thu tiền học phí của ${s.name}!`);
     }
 
-    function resetPaidSessionsForStudent(studentId) {
+    async function resetPaidSessionsForStudent(studentId) {
       const found = findStudentAndClassById(studentId);
       const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
       const periodKey = getActiveFinancePeriodKey();
-      s.paidPeriods = (s.paidPeriods || []).filter(p => p !== periodKey);
       const datesToClear = selectedFinanceDates.length > 0 ? selectedFinanceDates : getAllKnownDatesForCurrentScope();
+
+      if (activeWorkspaceMode === 'shared') {
+        if (!activeSharedWorkspace?.can_manage_finance) {
+          showUndoToast('Bạn không có quyền quản lý học phí ở không gian này.');
+          return;
+        }
+        const clsId = found?.classId || s._classId || currentClassId;
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id || !clsId) return;
+        try {
+          const { data, error } = await supabaseClient.rpc('member_update_tuition', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_updates: [{
+              class_id: clsId,
+              student_id: s.id,
+              add_dates: [],
+              remove_dates: datesToClear
+            }],
+            p_remark_updates: {}
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Lỗi hủy thu học phí.');
+            await reloadActiveSharedWorkspaceQuietly();
+            return;
+          }
+          s.paidPeriods = (s.paidPeriods || []).filter(p => p !== periodKey);
+          s.paidSessions = (s.paidSessions || []).filter(d => !datesToClear.includes(d));
+          students = getStudentsForClass(currentClassId);
+          renderFinanceTab();
+          renderHomeTab();
+          showUndoToast(`Đã hủy thu tiền học phí của ${s.name}!`);
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi hủy thu học phí.');
+          await reloadActiveSharedWorkspaceQuietly();
+        }
+        return;
+      }
+
+      s.paidPeriods = (s.paidPeriods || []).filter(p => p !== periodKey);
       s.paidSessions = (s.paidSessions || []).filter(d => !datesToClear.includes(d));
       students = getStudentsForClass(currentClassId);
       saveAllToLocalStorage(true);
@@ -8879,6 +9704,10 @@
     }
 
     function openEditFeePriceModal(studentId = null) {
+      if (activeWorkspaceMode === 'shared') {
+        showUndoToast('Thành viên phụ không có quyền sửa đơn giá học phí.');
+        return;
+      }
       activePriceEditTarget = studentId;
       const title = document.getElementById('editFeePriceModalTitle');
       const input = document.getElementById('modalCustomFeePriceInput');
@@ -8896,6 +9725,10 @@
 
     function handleSaveCustomFeePrice(e) {
       e.preventDefault();
+      if (activeWorkspaceMode === 'shared') {
+        showUndoToast('Thành viên phụ không có quyền sửa đơn giá học phí.');
+        return;
+      }
       const newPrice = Number(document.getElementById('modalCustomFeePriceInput')?.value) || 40000;
       if (activePriceEditTarget) {
         const found = findStudentAndClassById(activePriceEditTarget);
@@ -9153,6 +9986,7 @@
     }
 
     function openTuitionNoticeModal(studentId) {
+      if (currentRole === 'teacher' && activeWorkspaceMode === 'shared' && !activeSharedWorkspace?.can_manage_finance) { showUndoToast('Bạn không có quyền xem phiếu báo thu ở không gian này.'); return; }
       const found = findStudentAndClassById(studentId);
       const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
@@ -9230,71 +10064,101 @@
             <img src="${teacherPaymentQr.imageData}" alt="Mã QR thanh toán" class="w-full h-full object-contain">
           </div>
         `;
-      } else if (currentRole === 'parent') {
+      } else {
+        const emptyQrMessage = activeWorkspaceMode === 'shared'
+          ? 'Chủ lớp chưa tải mã QR thanh toán'
+          : 'Bấm "Sửa" ở góc trên để tải mã QR ngân hàng';
         qrWrapper.innerHTML = `
-          <div class="w-48 h-48 sm:w-52 sm:h-52 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center justify-center p-3 text-center">
-            <svg viewBox="0 0 100 100" class="w-24 h-24 text-slate-300" fill="currentColor">
-              <path d="M10 10h30v30H10V10zm6 6v18h18V16H16zm6 6h6v6h-6v-6zm38-12h30v30H60V10zm6 6v18h18V16H66zm6 6h6v6h-6v-6zM10 60h30v30H10V60zm6 6v18h18V66H16zm6 6h6v6h-6v-6zm38-12h10v10H60V60zm15 0h15v10H75V60zm-15 15h15v15H60V75zm20 5h10v10H80V80z"/>
-            </svg>
-            <span class="text-[10.5px] font-bold text-slate-500 mt-1.5 leading-snug">Giáo viên chưa cập nhật mã QR</span>
+          <div class="w-36 h-36 rounded-xl bg-slate-50 border border-dashed border-slate-200 flex flex-col items-center justify-center p-2 text-center gap-1">
+            <i data-lucide="qr-code" class="w-6 h-6 text-slate-300"></i>
+            <span class="text-[10px] text-slate-400 font-semibold leading-tight">${emptyQrMessage}</span>
           </div>
         `;
-      } else {
-        qrWrapper.innerHTML = `
-          <div onclick="setTuitionEditPanelState(true)" class="w-48 h-48 sm:w-52 sm:h-52 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center justify-center p-2 cursor-pointer hover:bg-slate-100 transition" title="Bấm Sửa để tải ảnh mã QR của bạn lên">
-            <svg viewBox="0 0 100 100" class="w-28 h-28 text-slate-800" fill="currentColor">
-              <path d="M10 10h30v30H10V10zm6 6v18h18V16H16zm6 6h6v6h-6v-6zm38-12h30v30H60V10zm6 6v18h18V16H66zm6 6h6v6h-6v-6zM10 60h30v30H10V60zm6 6v18h18V66H16zm6 6h6v6h-6v-6zm38-12h10v10H60V60zm15 0h15v10H75V60zm-15 15h15v15H60V75zm20 5h10v10H80V80z"/>
-            </svg>
-            <span class="text-[10px] font-bold text-slate-400 mt-1.5">Bấm Sửa để thêm QR</span>
-          </div>
-        `;
-      }
-    }
-
-    function setTuitionEditPanelState(isEditing) {
-      const panel = document.getElementById('tuitionTeacherEditPanel');
-      const btn = document.getElementById('btnToggleTuitionEdit');
-      const icon = document.getElementById('iconToggleTuitionEdit');
-      const label = document.getElementById('labelToggleTuitionEdit');
-      if (!panel || !btn) return;
-
-      if (isEditing) {
-        panel.classList.remove('hidden');
-        btn.className = 'px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-600 text-[11px] font-bold transition flex items-center gap-1 shadow-sm';
-        if (icon) icon.setAttribute('data-lucide', 'check');
-        if (label) label.innerText = 'Xong';
-      } else {
-        panel.classList.add('hidden');
-        btn.className = 'px-2.5 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold transition flex items-center gap-1';
-        if (icon) icon.setAttribute('data-lucide', 'edit-3');
-        if (label) label.innerText = 'Sửa';
       }
       safeCreateIcons();
     }
 
-    function toggleTuitionEditPanel() {
+    let isTuitionEditPanelOpen = false;
+    function setTuitionEditPanelState(isOpen) {
+      isTuitionEditPanelOpen = Boolean(isOpen);
       const panel = document.getElementById('tuitionTeacherEditPanel');
-      const isCurrentlyHidden = panel?.classList.contains('hidden');
-      if (isCurrentlyHidden) {
-        setTuitionEditPanelState(true);
-      } else {
-        setTuitionEditPanelState(false);
-        saveAllToLocalStorage(true);
-        showUndoToast('Đã lưu nội dung phiếu báo học phí!');
-      }
+      const label = document.getElementById('labelToggleTuitionEdit');
+      if (panel) panel.classList.toggle('hidden', !isTuitionEditPanelOpen);
+      if (label) label.innerText = isTuitionEditPanelOpen ? 'Xong' : 'Sửa';
     }
+
+    function toggleTuitionEditPanel() {
+      setTuitionEditPanelState(!isTuitionEditPanelOpen);
+    }
+
+    let sharedTuitionRemarkDebounceTimer = null;
 
     function handleTuitionRemarkChange(val) {
       if (!activeTuitionStudentId) return;
       const key = getTuitionRemarkStorageKey(activeTuitionStudentId);
       tuitionRemarksMap[key] = val;
       updateTuitionRemarkSectionVisibility(val);
+
+      if (activeWorkspaceMode === 'shared') {
+        if (!activeSharedWorkspace?.can_manage_finance) return;
+        clearTimeout(sharedTuitionRemarkDebounceTimer);
+        sharedTuitionRemarkDebounceTimer = setTimeout(async () => {
+          if (!supabaseClient || !activeSharedWorkspace?.owner_id) return;
+          try {
+            const { data, error } = await supabaseClient.rpc('member_update_tuition', {
+              p_owner_id: activeSharedWorkspace.owner_id,
+              p_updates: [],
+              p_remark_updates: { [key]: val }
+            });
+            if (error || !data?.ok) {
+              showUndoToast(data?.message || error?.message || 'Lỗi lưu nhận xét phiếu báo thu.');
+            }
+          } catch (err) {
+            showUndoToast('Lỗi kết nối khi lưu nhận xét.');
+          }
+        }, 600);
+        return;
+      }
+
       saveAllToLocalStorage();
     }
 
-    function applyRemarkToWholeClass() {
+    async function applyRemarkToWholeClass() {
       const val = document.getElementById('tuitionRemarkInput')?.value || '';
       const period = getActiveFinancePeriodKey();
+
+      if (activeWorkspaceMode === 'shared') {
+        if (!activeSharedWorkspace?.can_manage_finance) {
+          showUndoToast('Bạn không có quyền quản lý học phí ở không gian này.');
+          return;
+        }
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id) return;
+        clearTimeout(sharedTuitionRemarkDebounceTimer);
+        const remarkUpdates = {};
+        students.forEach(st => {
+          const k = `${st.id}_${period}`;
+          remarkUpdates[k] = val;
+        });
+
+        try {
+          const { data, error } = await supabaseClient.rpc('member_update_tuition', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_updates: [],
+            p_remark_updates: remarkUpdates
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Lỗi áp dụng nhận xét cho cả lớp.');
+            return;
+          }
+          Object.assign(tuitionRemarksMap, remarkUpdates);
+          updateTuitionRemarkSectionVisibility(val);
+          showUndoToast(`Đã áp dụng nhận xét này cho toàn bộ ${students.length} học sinh!`);
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi lưu nhận xét cả lớp.');
+        }
+        return;
+      }
+
       students.forEach(st => {
         tuitionRemarksMap[`${st.id}_${period}`] = val;
       });
@@ -9304,6 +10168,11 @@
     }
 
     function handleTeacherQrUpload(e) {
+      if (activeWorkspaceMode === 'shared') {
+        if (e?.target) e.target.value = '';
+        showUndoToast('Thành viên phụ không có quyền thay đổi mã QR thanh toán.');
+        return;
+      }
       const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
@@ -9386,6 +10255,7 @@
     }
 
     function switchTab(tabKey) {
+      if (tabKey === 'finance' && activeWorkspaceMode === 'shared' && !activeSharedWorkspace?.can_manage_finance) { tabKey = 'home'; }
       currentTab = tabKey;
       saveUiNavigationState();
 
@@ -9425,78 +10295,117 @@
       if (tabKey === 'finance') { syncFinanceDatesForCurrentClass(); renderFinanceTab(); }
       if (tabKey === 'homework') renderHomeworkTab();
       if (tabKey === 'classes') renderClassesManagementTab();
+      applySharedWorkspaceUiRestrictions();
       safeCreateIcons();
     }
 
-    // ==================== HỒ SƠ HỌC SINH & QUẢN LÝ LỚP & VAI TRÒ ====================
     let activeDetailStudent = null;
 
     function openStudentDetailModal(studentId) {
       const found = findStudentAndClassById(studentId);
       const s = found ? found.student : students.find(x => x.id === studentId);
       if (!s) return;
-      if (!s.studentCode) {
-        s.studentCode = generateUniqueStudentCode();
-        saveAllToLocalStorage(true);
-      }
       activeDetailStudent = s;
 
-      document.getElementById('detailStudentHeaderTitle').innerText = s.name;
-      const codeBadge = document.getElementById('detailStudentCodeBadge');
-      if (codeBadge) codeBadge.innerText = s.studentCode;
+      document.getElementById('detailStudentHeaderTitle').innerText = `Hồ sơ: ${s.name}`;
+      document.getElementById('detailStudentCodeBadge').innerText = s.studentCode || '--';
       document.getElementById('editStudentName').value = s.name || '';
       document.getElementById('editStudentFeePerSession').value = s.pricePerSession || 40000;
       document.getElementById('editStudentParentPhone').value = s.parentPhone || '';
       document.getElementById('editStudentParentName').value = s.parentName || '';
 
-      const grid = document.getElementById('detailSessionHistoryGrid');
-      if (grid) {
-        if (!s.attendanceHistory) s.attendanceHistory = {};
-        const targetClsId = found ? found.classId : currentClassId;
-        const allClassDates = getCurrentClassSessionDates(targetClsId);
-        const activeMonthTag = (currentFinanceMonth && currentFinanceMonth !== 'all')
-          ? `/${currentFinanceMonth}`
-          : `/${String(new Date().getMonth() + 1).padStart(2, '0')}/${new Date().getFullYear()}`;
-        const monthDates = allClassDates.filter(d => d.includes(activeMonthTag));
-        const displayDates = monthDates.length > 0 ? monthDates : allClassDates.slice(-12);
+      const isShared = activeWorkspaceMode === 'shared';
+      document.getElementById('editStudentName').disabled = isShared;
+      document.getElementById('editStudentFeePerSession').disabled = isShared;
+      document.getElementById('editStudentParentPhone').disabled = isShared;
+      document.getElementById('editStudentParentName').disabled = isShared;
+      document.querySelector('#modalStudentDetail form button[type="submit"]')?.classList.toggle('hidden', isShared);
 
-        grid.innerHTML = displayDates.map((dateStr, idx) => {
-          const st = s.attendanceHistory[dateStr] || 'unrecorded';
-          const isP = st === 'present';
-          const isA = st === 'absent';
-          return `
-            <div onclick="toggleDetailStudentHistory('${dateStr}')" class="p-2 rounded-xl border text-center cursor-pointer transition select-none ${
-              isP ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : (isA ? 'bg-rose-50 border-rose-300 text-rose-900' : 'bg-slate-50 border-slate-200 text-slate-500')
-            }">
-              <div class="text-[9.5px] font-bold">Buổi ${idx + 1}</div>
-              <div class="font-mono text-[10.5px] font-bold mt-0.5">${dateStr}</div>
-              <div class="text-[11px] font-extrabold mt-1 ${isP ? 'text-emerald-700' : (isA ? 'text-rose-600' : 'text-slate-400')}">
-                ${isP ? '✓ Đi học' : (isA ? '✗ Vắng' : '-- Trống')}
-              </div>
-            </div>
-          `;
-        }).join('');
+      const grid = document.getElementById('detailSessionHistoryGrid');
+      const targetClassId = found ? found.classId : (s._classId || currentClassId);
+      const classDates = getCurrentClassSessionDates(targetClassId);
+      const hist = s.attendanceHistory || {};
+
+      if (grid) {
+        if (classDates.length === 0) {
+          grid.innerHTML = `<div class="col-span-full text-xs text-slate-400 italic">Chưa có buổi học nào trong lịch.</div>`;
+        } else {
+          grid.innerHTML = classDates.slice(-16).map(d => {
+            const st = hist[d] || 'unrecorded';
+            const clsStyle = st === 'present'
+              ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
+              : (st === 'absent' ? 'bg-rose-50 border-rose-300 text-rose-800' : 'bg-slate-50 border-slate-200 text-slate-500');
+            const label = st === 'present' ? '✓ Đi học' : (st === 'absent' ? '✗ Vắng' : 'Chưa ghi');
+            return `
+              <button
+                type="button"
+                onclick="toggleDetailStudentHistory('${d}')"
+                class="p-2 rounded-xl border text-center text-xs transition hover:scale-[1.02] active:scale-95 ${clsStyle}"
+              >
+                <div class="font-mono font-bold">${d.slice(0, 5)}</div>
+                <div class="font-extrabold text-[11px] mt-0.5">${label}</div>
+              </button>
+            `;
+          }).join('');
+        }
       }
+
+      applySharedWorkspaceUiRestrictions();
       openModal('modalStudentDetail');
     }
 
     function copyDetailStudentCode() {
-      if (!activeDetailStudent || !activeDetailStudent.studentCode) return;
-      const code = activeDetailStudent.studentCode;
-      const tempInp = document.createElement('input');
-      tempInp.value = code;
-      document.body.appendChild(tempInp);
-      tempInp.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(tempInp);
-      showUndoToast(`Đã sao chép mã học sinh: ${code}`);
+      const code = document.getElementById('detailStudentCodeBadge')?.innerText || '';
+      if (!code || code === '--') return;
+      copyTextToClipboardFallback(code, `Đã sao chép mã học sinh: ${code}`);
     }
 
-    function toggleDetailStudentHistory(dateStr) {
+    async function toggleDetailStudentHistory(dateStr) {
       if (!activeDetailStudent) return;
       if (!activeDetailStudent.attendanceHistory) activeDetailStudent.attendanceHistory = {};
       const cur = activeDetailStudent.attendanceHistory[dateStr] || 'unrecorded';
       const nextStatus = cur === 'unrecorded' ? 'present' : (cur === 'present' ? 'absent' : 'unrecorded');
+
+      if (activeWorkspaceMode === 'shared') {
+        const found = findStudentAndClassById(activeDetailStudent.id);
+        const targetClassId = found?.classId || activeDetailStudent._classId || currentClassId;
+        if (!supabaseClient || !activeSharedWorkspace?.owner_id || !targetClassId) return;
+        try {
+          const { data, error } = await supabaseClient.rpc('member_update_attendance', {
+            p_owner_id: activeSharedWorkspace.owner_id,
+            p_updates: [{
+              class_id: targetClassId,
+              student_id: activeDetailStudent.id,
+              date: dateStr,
+              status: nextStatus
+            }]
+          });
+          if (error || !data?.ok) {
+            showUndoToast(data?.message || error?.message || 'Lỗi cập nhật điểm danh.');
+            await reloadActiveSharedWorkspaceQuietly();
+            return;
+          }
+          activeDetailStudent.attendanceHistory[dateStr] = nextStatus;
+          if (nextStatus !== 'present' && Array.isArray(activeDetailStudent.paidSessions)) {
+            activeDetailStudent.paidSessions = activeDetailStudent.paidSessions.filter(d => d !== dateStr);
+          }
+          students = getStudentsForClass(currentClassId);
+          syncFinanceDatesForCurrentClass();
+          if (nextStatus === 'present' && !selectedFinanceDates.includes(dateStr)) {
+            selectedFinanceDates.push(dateStr);
+            updateFinanceDateBadge();
+          }
+          openStudentDetailModal(activeDetailStudent.id);
+          renderAttendanceTab();
+          renderFinanceTab();
+          renderHomeTab();
+        } catch (err) {
+          showUndoToast('Lỗi kết nối khi cập nhật điểm danh.');
+          await reloadActiveSharedWorkspaceQuietly();
+        }
+        return;
+      }
+
       activeDetailStudent.attendanceHistory[dateStr] = nextStatus;
       if (nextStatus !== 'present' && Array.isArray(activeDetailStudent.paidSessions)) {
         activeDetailStudent.paidSessions = activeDetailStudent.paidSessions.filter(d => d !== dateStr);
@@ -9515,6 +10424,10 @@
 
     function handleSaveStudentProfile(e) {
       e.preventDefault();
+      if (activeWorkspaceMode === 'shared') {
+        showUndoToast('Thành viên phụ không có quyền chỉnh sửa hồ sơ học sinh.');
+        return;
+      }
       if (!activeDetailStudent) return;
       activeDetailStudent.name = document.getElementById('editStudentName').value.trim();
       activeDetailStudent.pricePerSession = Number(document.getElementById('editStudentFeePerSession').value) || 40000;
@@ -9528,6 +10441,7 @@
     }
 
     function openConfirmSingleDeleteModal() {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       if (!activeDetailStudent) return;
       const target = activeDetailStudent;
       openConfirmModal(`Xóa học sinh ${target.name}?`, 'Học sinh này sẽ bị xóa khỏi lớp hiện tại.', () => {
@@ -9543,40 +10457,725 @@
     }
 
     function renderClassesManagementTab() {
-      const tbody = document.getElementById('classesManagementList');
-      if (!tbody) return;
-      if (classesList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-xs text-slate-400">Chưa có lớp học nào. Bấm "+ Tạo lớp" để thêm mới.</td></tr>`;
-        return;
+      const btnWsMembers = document.getElementById('btnOpenWorkspaceMembers');
+      if (btnWsMembers) {
+        const canShowMembersBtn = Boolean(currentUser && currentUser.id && activeWorkspaceMode === 'own');
+        btnWsMembers.classList.toggle('hidden', !canShowMembersBtn);
       }
-      tbody.innerHTML = classesList.map(cls => {
-        const count = (classStudentsMap[cls.id] || []).length;
-        const hasPwd = Boolean(cls.classPassword && cls.classPassword.trim());
-        return `
-          <tr onclick="onClassChange('${cls.id}'); switchTab('attendance');" class="bg-white text-slate-800 hover:bg-slate-50 cursor-pointer transition">
-            <td class="py-2.5 px-3 sm:px-4 font-bold text-slate-900">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="break-words whitespace-normal leading-tight line-clamp-2">${escapeHtml(cls.class_name)}</span>
-                ${hasPwd ? `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 text-[9.5px] font-bold" title="Lớp có đặt mật khẩu bảo vệ"><i data-lucide="lock" class="w-2.5 h-2.5"></i> Có MK</span>` : ''}
-              </div>
-            </td>
-            <td class="py-2.5 px-2 sm:px-3 text-center font-mono text-indigo-700 font-semibold">${escapeHtml(cls.timeSlot || '18h00 - 19h30')}</td>
-            <td class="py-2.5 px-1 sm:px-2 text-center font-bold text-slate-800">${count} HS</td>
-            <td class="py-2.5 px-2 text-right">
+
+      const container = document.getElementById('classesManagementList');
+      if (!container) return;
+
+      const isShared = activeWorkspaceMode === 'shared';
+      const canSeeFee = !isShared || activeSharedWorkspace?.can_manage_finance === true;
+
+      if (classesList.length === 0) {
+        const emptyMsg = isShared
+          ? 'Chủ lớp chưa phân công lớp nào cho bạn'
+          : "Chưa có lớp học nào. Bấm 'Tạo lớp' để thêm mới.";
+        container.innerHTML = `
+          <div class="col-span-full bg-white rounded-2xl border-2 border-dashed border-slate-200 p-8 text-center space-y-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+              <i data-lucide="layout-grid" class="w-5 h-5"></i>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-500">${escapeHtml(emptyMsg)}</p>
+            ${isShared ? '' : `
               <button
                 type="button"
-                onclick="event.stopPropagation(); openEditClassModal('${cls.id}');"
-                class="px-2 py-1 rounded-lg bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200/80 text-[11px] font-bold inline-flex items-center gap-1 transition"
+                onclick="openCreateClassModal()"
+                class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition active:scale-95 inline-flex items-center gap-1.5"
+              >
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Tạo lớp đầu tiên</span>
+              </button>
+            `}
+          </div>
+        `;
+        applySharedWorkspaceUiRestrictions();
+        safeCreateIcons();
+        return;
+      }
+
+      container.innerHTML = [...classesList].sort((a, b) => String(a.class_name || '').localeCompare(String(b.class_name || ''), 'vi', { numeric: true, sensitivity: 'base' })).map(cls => {
+        const count = (classStudentsMap[cls.id] || []).length;
+        const schedules = Array.isArray(cls.schedules) && cls.schedules.length > 0
+          ? cls.schedules
+          : [];
+        const scheduleText = schedules.length > 0
+          ? schedules.map(s => `${s.day} (${String(s.startTime || '').replace(':', 'h')} - ${String(s.endTime || '').replace(':', 'h')})`).join(' • ')
+          : (cls.timeSlot || 'Chưa xếp lịch');
+
+        return `
+          <div
+            onclick="onClassChange('${escapeHtml(cls.id)}'); switchTab('attendance');"
+            class="rounded-2xl border p-3.5 shadow-sm hover:shadow-md transition cursor-pointer flex items-center justify-between gap-3 ${cls.colorBg || 'bg-white border-slate-200'}"
+          >
+            <div class="min-w-0 flex-1 space-y-1">
+              <h4 class="text-sm sm:text-base font-extrabold text-slate-900 truncate">
+                ${escapeHtml(cls.class_name)}
+              </h4>
+              <div class="text-xs font-semibold text-slate-700 truncate">
+                ${escapeHtml(scheduleText)}
+              </div>
+              <div class="text-[11px] font-bold text-slate-500">
+                ${count} học sinh${cls.room ? ` • ${escapeHtml(cls.room)}` : ''}
+              </div>
+            </div>
+
+            ${isShared ? '' : `
+              <button
+                type="button"
+                onclick="event.stopPropagation(); openEditClassModal('${escapeHtml(cls.id)}');"
+                class="px-3 py-1.5 rounded-xl bg-white/95 hover:bg-white text-slate-800 border border-black/15 text-xs font-extrabold inline-flex items-center gap-1 shadow-2xs transition active:scale-95 shrink-0"
                 title="Chỉnh sửa lớp học"
               >
-                <i data-lucide="pencil" class="w-3 h-3"></i>
+                <i data-lucide="pencil" class="w-3 h-3 text-violet-600"></i>
                 <span>Sửa</span>
               </button>
-            </td>
-          </tr>
+            `}
+          </div>
         `;
       }).join('');
+
+      applySharedWorkspaceUiRestrictions();
       safeCreateIcons();
+    }
+
+    // ==================== CHUYỂN ĐỔI KHÔNG GIAN LÀM VIỆC (GIÁO VIÊN PHỤ) ====================
+    async function loadMySharedWorkspaces() {
+      if (!supabaseClient || !currentUser?.id) {
+        mySharedWorkspacesList = [];
+        renderWorkspaceSwitcherUI();
+        return;
+      }
+      try {
+        const { data, error } = await supabaseClient.rpc('get_my_shared_workspaces');
+        if (!error && Array.isArray(data)) {
+          mySharedWorkspacesList = data;
+        } else {
+          mySharedWorkspacesList = [];
+        }
+      } catch (err) {
+        console.warn('Lỗi tải danh sách không gian chia sẻ:', err);
+        mySharedWorkspacesList = [];
+      }
+      renderWorkspaceSwitcherUI();
+      applySharedWorkspaceUiRestrictions();
+    }
+
+    function renderWorkspaceSwitcherUI() {
+      const box = document.getElementById('workspaceSwitcherBox');
+      const select = document.getElementById('workspaceSwitcherSelect');
+      if (!box || !select) return;
+
+      const shouldShow = currentRole === 'teacher' && Array.isArray(mySharedWorkspacesList) && mySharedWorkspacesList.length > 0;
+      box.classList.toggle('hidden', !shouldShow);
+      if (!shouldShow) return;
+
+      const currentVal = (activeWorkspaceMode === 'shared' && activeSharedWorkspace?.owner_id)
+        ? String(activeSharedWorkspace.owner_id)
+        : 'own';
+
+      select.innerHTML = [
+        `<option value="own" ${currentVal === 'own' ? 'selected' : ''}>Lớp cá nhân của tôi</option>`,
+        ...mySharedWorkspacesList.map(ws => {
+          const ownerId = String(ws.owner_id || '');
+          const ownerName = ws.owner_name || ws.owner_email || 'Chủ lớp';
+          const lockedTag = ws.is_owner_vip_active === false ? ' (Tạm khóa)' : '';
+          return `<option value="${escapeHtml(ownerId)}" ${currentVal === ownerId ? 'selected' : ''}>Lớp của ${escapeHtml(ownerName)}${lockedTag}</option>`;
+        })
+      ].join('');
+    }
+
+    async function reloadActiveSharedWorkspaceQuietly() {
+      if (activeWorkspaceMode !== 'shared' || !activeSharedWorkspace?.owner_id || !supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.rpc('get_shared_workspace_data', {
+          p_owner_id: activeSharedWorkspace.owner_id
+        });
+        if (!error && data && data.ok === true && data.data) {
+          activeSharedWorkspace = data.workspace || activeSharedWorkspace;
+          const sharedPayload = data.data;
+          classesList = Array.isArray(sharedPayload.classesList) ? sharedPayload.classesList : [];
+          classStudentsMap = (sharedPayload.classStudentsMap && typeof sharedPayload.classStudentsMap === 'object') ? sharedPayload.classStudentsMap : {};
+          homeworks = Array.isArray(sharedPayload.homeworks) ? sharedPayload.homeworks : [];
+          homeworkSubmissions = Array.isArray(sharedPayload.homeworkSubmissions) ? sharedPayload.homeworkSubmissions : [];
+          teacherPaymentQr = (sharedPayload.teacherPaymentQr && typeof sharedPayload.teacherPaymentQr === 'object')
+            ? sharedPayload.teacherPaymentQr
+            : { imageData: '', bankName: 'BIDV' };
+          tuitionRemarksMap = (sharedPayload.tuitionRemarksMap && typeof sharedPayload.tuitionRemarksMap === 'object')
+            ? sharedPayload.tuitionRemarksMap
+            : {};
+          if (currentClassId && !classesList.some(c => c.id === currentClassId)) {
+            currentClassId = classesList.length > 0 ? classesList[0].id : null;
+          }
+          students = getStudentsForClass(currentClassId);
+          syncActiveAttendanceDateForCurrentClass();
+          syncFinanceDatesForCurrentClass();
+          renderAll();
+        }
+      } catch (err) {
+        console.warn('Lỗi tải lại dữ liệu không gian chia sẻ:', err);
+      }
+    }
+
+    async function switchActiveWorkspace(targetValue, isSilent = false) {
+      const val = String(targetValue || 'own').trim();
+      const switcherSel = document.getElementById('workspaceSwitcherSelect');
+
+      if (val === 'own') {
+        activeWorkspaceMode = 'own';
+        activeSharedWorkspace = null;
+        isClassSelected = false;
+        selectedStudentIds = [];
+        selectedAttendanceStudentIds = [];
+        loadScopedUserData();
+        renderWorkspaceSwitcherUI();
+        applySharedWorkspaceUiRestrictions();
+        if (!isSilent) {
+          switchTab('home');
+        }
+        renderAll();
+        if (currentUser?.id) {
+          await loadUserDataFromCloud(currentUser, false);
+        }
+        if (!isSilent) {
+          showUndoToast('Đã chuyển về không gian lớp cá nhân của bạn.');
+        }
+        return;
+      }
+
+      if (!supabaseClient || !currentUser?.id) {
+        if (!isSilent) showUndoToast('Vui lòng đăng nhập để truy cập không gian chia sẻ.');
+        if (switcherSel) switcherSel.value = 'own';
+        return;
+      }
+
+      try {
+        const { data, error } = await supabaseClient.rpc('get_shared_workspace_data', {
+          p_owner_id: val
+        });
+
+        if (error || !data || data.ok !== true || !data.data) {
+          if (!isSilent) {
+            const errMsg = data?.message || error?.message || 'Không thể mở không gian lớp được chia sẻ.';
+            showUndoToast(errMsg);
+          }
+          renderWorkspaceSwitcherUI();
+          return;
+        }
+
+        const prevClassId = currentClassId;
+        activeWorkspaceMode = 'shared';
+        activeSharedWorkspace = data.workspace || mySharedWorkspacesList.find(w => String(w.owner_id) === val) || { owner_id: val };
+        const sharedPayload = data.data;
+
+        classesList = Array.isArray(sharedPayload.classesList) ? sharedPayload.classesList : [];
+        classStudentsMap = (sharedPayload.classStudentsMap && typeof sharedPayload.classStudentsMap === 'object') ? sharedPayload.classStudentsMap : {};
+        homeworks = Array.isArray(sharedPayload.homeworks) ? sharedPayload.homeworks : [];
+        homeworkSubmissions = Array.isArray(sharedPayload.homeworkSubmissions) ? sharedPayload.homeworkSubmissions : [];
+        teacherPaymentQr = (sharedPayload.teacherPaymentQr && typeof sharedPayload.teacherPaymentQr === 'object')
+          ? sharedPayload.teacherPaymentQr
+          : { imageData: '', bankName: 'BIDV' };
+        tuitionRemarksMap = (sharedPayload.tuitionRemarksMap && typeof sharedPayload.tuitionRemarksMap === 'object')
+          ? sharedPayload.tuitionRemarksMap
+          : {};
+        teacherNotebookNotes = [];
+        editingNotebookNoteId = null;
+
+        if (isSilent && prevClassId && classesList.some(c => c.id === prevClassId)) {
+          currentClassId = prevClassId;
+        } else {
+          selectedStudentIds = [];
+          selectedAttendanceStudentIds = [];
+          currentClassId = classesList.length > 0 ? classesList[0].id : null;
+          isClassSelected = false;
+        }
+        students = getStudentsForClass(currentClassId);
+
+        syncActiveAttendanceDateForCurrentClass();
+        syncFinanceDatesForCurrentClass();
+        renderWorkspaceSwitcherUI();
+        applySharedWorkspaceUiRestrictions();
+        if (!isSilent) {
+          switchTab('home');
+        }
+        renderAll();
+
+        if (!isSilent) {
+          const ownerLabel = activeSharedWorkspace?.owner_name || activeSharedWorkspace?.owner_email || 'Chủ lớp';
+          showUndoToast(`Đã chuyển sang không gian lớp của ${ownerLabel}.`);
+        }
+      } catch (err) {
+        console.warn('Lỗi chuyển không gian chia sẻ:', err);
+        if (!isSilent) showUndoToast('Lỗi kết nối khi mở không gian chia sẻ.');
+        renderWorkspaceSwitcherUI();
+      }
+    }
+
+    function applySharedWorkspaceUiRestrictions() {
+      const isShared = activeWorkspaceMode === 'shared';
+      const canManageFinance = !isShared || Boolean(activeSharedWorkspace?.can_manage_finance);
+      const canViewContacts = !isShared || Boolean(activeSharedWorkspace?.can_view_contacts);
+
+      // 1. Các thành phần chỉ dành cho Chủ lớp
+      const headerVipBtn = document.getElementById('btnHeaderVipPlan');
+      if (headerVipBtn) {
+        headerVipBtn.classList.toggle('hidden', isShared);
+        headerVipBtn.classList.toggle('sm:inline-flex', !isShared);
+      }
+      document.getElementById('homeHeroVipPill')?.classList.toggle('hidden', isShared);
+      document.getElementById('btnOpenEditClass')?.classList.toggle('hidden', isShared || currentClassId === ALL_CLASSES_ID);
+      const btnWsMembers = document.getElementById('btnOpenWorkspaceMembers');
+      if (btnWsMembers) {
+        btnWsMembers.classList.toggle('hidden', isShared || !(currentUser && currentUser.id));
+      }
+      document.getElementById('homeQuickNotebookBtn')?.classList.toggle('hidden', isShared);
+      document.getElementById('btnClassesCreateClass')?.classList.toggle('hidden', isShared);
+      document.getElementById('btnAttendanceAddStudent')?.classList.toggle('hidden', isShared);
+      document.getElementById('btnDeleteSingleStudentModal')?.classList.toggle('hidden', isShared);
+      document.querySelector('#modalStudentDetail form button[type="submit"]')?.classList.toggle('hidden', isShared);
+      document.getElementById('homeStatRevenueCard')?.classList.toggle('hidden', isShared);
+
+      // Menu tạo mới nhanh: giữ "Thêm bài tập", ẩn "Thêm học sinh" & "Thêm lớp học"
+      document.getElementById('quickMenuAddStudentBtn')?.classList.toggle('hidden', isShared);
+      document.getElementById('quickMenuAddClassBtn')?.classList.toggle('hidden', isShared);
+
+      // Thanh xóa hàng loạt ở Điểm danh
+      if (isShared) {
+        document.getElementById('attendanceBulkActionBar')?.classList.add('hidden');
+      }
+
+      updateHomeVipBannerVisibility();
+
+      // 2. Phân quyền Tab Học phí & Phiếu báo thu
+      document.getElementById('tabFinanceBtn')?.classList.toggle('hidden', !canManageFinance);
+      document.getElementById('mobileBottomTabFinance')?.classList.toggle('hidden', !canManageFinance);
+      document.getElementById('btnStudentDetailTuitionNotice')?.classList.toggle('hidden', !canManageFinance);
+      document.getElementById('tuitionTeacherQrUploadSection')?.classList.toggle('hidden', isShared);
+
+      if (isShared && !canManageFinance && currentTab === 'finance' && currentRole === 'teacher') {
+        switchTab('home');
+      }
+
+      // 3. Phân quyền SĐT phụ huynh & Xuất Excel
+      document.getElementById('btnAttendanceExportExcel')?.classList.toggle('hidden', !canViewContacts);
+      document.getElementById('studentDetailContactFieldsRow')?.classList.toggle('hidden', !canViewContacts);
+    }
+
+    // ==================== QUẢN LÝ GIÁO VIÊN PHỤ (WORKSPACE MEMBERS) ====================
+    function getEffectiveMaxTeachersForCurrentPlan() {
+      enforcePaidVipExpirationIfNeeded();
+      enforceTrialExpirationIfNeeded();
+      const activePlan = getActiveVipPlan();
+      return Math.max(1, Number(activePlan?.maxTeachers) || 1);
+    }
+
+    function updateWorkspaceMemberQuotaUI() {
+      const activePlan = getActiveVipPlan();
+      const maxTeachers = getEffectiveMaxTeachersForCurrentPlan();
+      const usedCount = 1 + (Array.isArray(workspaceMembersList) ? workspaceMembersList.filter(m => m.is_active !== false).length : 0);
+      const isPlanLocked = maxTeachers <= 1;
+
+      const quotaEl = document.getElementById('workspaceMemberQuotaText');
+      const planTagEl = document.getElementById('workspaceMemberPlanTag');
+      const upgradeNotice = document.getElementById('workspaceMemberUpgradeNotice');
+
+      if (quotaEl) {
+        quotaEl.innerText = `Đang dùng ${usedCount} / ${maxTeachers} giáo viên (gồm chủ lớp)`;
+      }
+      if (planTagEl) {
+        planTagEl.innerText = `Gói ${activePlan.name}`;
+      }
+      if (upgradeNotice) {
+        upgradeNotice.classList.toggle('hidden', !isPlanLocked);
+      }
+
+      const emailInp = document.getElementById('wsMemberEmailInput');
+      const nameInp = document.getElementById('wsMemberNameInput');
+      const allClsCb = document.getElementById('wsMemberAllClassesCheckbox');
+      const finCb = document.getElementById('wsMemberCanFinanceCheckbox');
+      const conCb = document.getElementById('wsMemberCanContactsCheckbox');
+      const saveBtn = document.getElementById('btnSaveWorkspaceMember');
+
+      const disableForm = isPlanLocked && !editingWorkspaceMemberEmail;
+      if (emailInp) emailInp.disabled = disableForm || Boolean(editingWorkspaceMemberEmail);
+      if (nameInp) nameInp.disabled = disableForm;
+      if (allClsCb) allClsCb.disabled = disableForm;
+      if (finCb) finCb.disabled = disableForm;
+      if (conCb) conCb.disabled = disableForm;
+      if (saveBtn) saveBtn.disabled = disableForm;
+
+      renderWorkspaceMemberClassCheckboxes(disableForm);
+    }
+
+    function renderWorkspaceMemberClassCheckboxes(isDisabled = false) {
+      const container = document.getElementById('wsMemberClassesCheckboxList');
+      const allCb = document.getElementById('wsMemberAllClassesCheckbox');
+      const isAllSelected = Array.isArray(wsMemberAssignedClassIds) && wsMemberAssignedClassIds.includes('*');
+
+      if (allCb) {
+        allCb.checked = isAllSelected;
+        allCb.disabled = isDisabled;
+      }
+      if (!container) return;
+
+      if (!Array.isArray(classesList) || classesList.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-[11px] text-slate-400 italic py-1">Chưa có lớp học nào.</div>`;
+        return;
+      }
+
+      container.innerHTML = classesList.map(cls => {
+        const checked = isAllSelected || wsMemberAssignedClassIds.includes(cls.id);
+        const disabledAttr = (isDisabled || isAllSelected) ? 'disabled' : '';
+        return `
+          <label class="flex items-center gap-1.5 px-2 py-1 rounded-lg border ${checked ? 'border-indigo-200 bg-indigo-50/50' : 'border-slate-100 bg-slate-50/50'} text-[11px] font-semibold text-slate-800 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              class="w-3.5 h-3.5 rounded text-indigo-600 border-slate-300 cursor-pointer"
+              ${checked ? 'checked' : ''}
+              ${disabledAttr}
+              onchange="toggleWorkspaceMemberSingleClass('${escapeHtml(cls.id)}', this.checked)"
+            >
+            <span class="truncate">${escapeHtml(cls.class_name)}</span>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function toggleWorkspaceMemberAllClasses(checked) {
+      if (checked) {
+        wsMemberAssignedClassIds = ['*'];
+      } else {
+        wsMemberAssignedClassIds = [];
+      }
+      const isPlanLocked = getEffectiveMaxTeachersForCurrentPlan() <= 1 && !editingWorkspaceMemberEmail;
+      renderWorkspaceMemberClassCheckboxes(isPlanLocked);
+    }
+
+    function toggleWorkspaceMemberSingleClass(classId, checked) {
+      if (!Array.isArray(wsMemberAssignedClassIds)) wsMemberAssignedClassIds = [];
+      wsMemberAssignedClassIds = wsMemberAssignedClassIds.filter(id => id !== '*');
+      if (checked) {
+        if (!wsMemberAssignedClassIds.includes(classId)) {
+          wsMemberAssignedClassIds.push(classId);
+        }
+      } else {
+        wsMemberAssignedClassIds = wsMemberAssignedClassIds.filter(id => id !== classId);
+      }
+      const isPlanLocked = getEffectiveMaxTeachersForCurrentPlan() <= 1 && !editingWorkspaceMemberEmail;
+      renderWorkspaceMemberClassCheckboxes(isPlanLocked);
+    }
+
+    function resetWorkspaceMemberForm() {
+      editingWorkspaceMemberEmail = null;
+      wsMemberEditingIsActive = true;
+      wsMemberAssignedClassIds = ['*'];
+
+      const formTitle = document.getElementById('workspaceMemberFormTitle');
+      const cancelBtn = document.getElementById('btnCancelEditWorkspaceMember');
+      const saveLbl = document.getElementById('btnSaveWorkspaceMemberLabel');
+      const emailInp = document.getElementById('wsMemberEmailInput');
+      const nameInp = document.getElementById('wsMemberNameInput');
+      const finCb = document.getElementById('wsMemberCanFinanceCheckbox');
+      const conCb = document.getElementById('wsMemberCanContactsCheckbox');
+
+      if (formTitle) formTitle.innerText = 'Thêm giáo viên phụ mới';
+      cancelBtn?.classList.add('hidden');
+      if (saveLbl) saveLbl.innerText = 'Lưu giáo viên';
+      if (emailInp) emailInp.value = '';
+      if (nameInp) nameInp.value = '';
+      if (finCb) finCb.checked = false;
+      if (conCb) conCb.checked = false;
+
+      updateWorkspaceMemberQuotaUI();
+    }
+
+    function openWorkspaceMembersModal() {
+      if (!currentUser || !currentUser.id) {
+        openAuthModal('signin');
+        showUndoToast('Vui lòng đăng nhập để quản lý giáo viên phụ.');
+        return;
+      }
+      if (activeWorkspaceMode === 'shared') {
+        showUndoToast('Chỉ chủ không gian lớp học mới có thể quản lý giáo viên phụ.');
+        return;
+      }
+      resetWorkspaceMemberForm();
+      openModal('modalWorkspaceMembers');
+      loadWorkspaceMembers(false);
+    }
+
+    async function checkOwnerHasActiveMembers() {
+      if (!supabaseClient || !currentUser?.id) {
+        ownerHasActiveMembers = false;
+        return false;
+      }
+      if (getEffectiveMaxTeachersForCurrentPlan() <= 1) {
+        ownerHasActiveMembers = false;
+        return false;
+      }
+      try {
+        const { data, error } = await supabaseClient
+          .from('workspace_members')
+          .select('id, is_active')
+          .eq('owner_id', currentUser.id)
+          .eq('is_active', true)
+          .limit(1);
+        if (!error && Array.isArray(data)) {
+          ownerHasActiveMembers = data.length > 0;
+        }
+      } catch (err) {
+        console.warn('Lỗi kiểm tra thành viên phụ đang hoạt động:', err);
+      }
+      return ownerHasActiveMembers;
+    }
+
+    async function loadWorkspaceMembers(showToast = false) {
+      if (!supabaseClient || !currentUser?.id || isLoadingWorkspaceMembers) return;
+      isLoadingWorkspaceMembers = true;
+      const container = document.getElementById('workspaceMembersListContainer');
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('workspace_members')
+          .select('*')
+          .eq('owner_id', currentUser.id)
+          .order('created_at', { ascending: true });
+
+        if (error) {
+          if (container) {
+            container.innerHTML = `<div class="p-4 text-center text-xs font-bold text-rose-600 bg-rose-50 rounded-2xl border border-rose-200">Lỗi tải danh sách giáo viên: ${escapeHtml(error.message)}</div>`;
+          }
+          return;
+        }
+
+        workspaceMembersList = Array.isArray(data) ? data : [];
+        ownerHasActiveMembers = workspaceMembersList.some(m => m.is_active !== false);
+        updateWorkspaceMemberQuotaUI();
+        renderWorkspaceMembersList();
+        if (showToast) showUndoToast(`Đã cập nhật ${workspaceMembersList.length} giáo viên phụ.`);
+      } catch (err) {
+        console.warn('Lỗi tải workspace_members:', err);
+      } finally {
+        isLoadingWorkspaceMembers = false;
+      }
+    }
+
+    function renderWorkspaceMembersList() {
+      const container = document.getElementById('workspaceMembersListContainer');
+      if (!container) return;
+
+      if (!Array.isArray(workspaceMembersList) || workspaceMembersList.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+            Chưa có giáo viên phụ nào được thêm.
+          </div>
+        `;
+        return;
+      }
+
+      const classNameMap = {};
+      classesList.forEach(c => { classNameMap[c.id] = c.class_name; });
+
+      container.innerHTML = workspaceMembersList.map(m => {
+        const emailStr = String(m.member_email || '').trim().toLowerCase();
+        const displayName = String(m.member_name || '').trim() || emailStr.split('@')[0] || 'Giáo viên phụ';
+        const assignedIds = Array.isArray(m.assigned_class_ids) ? m.assigned_class_ids : [];
+        const isAllClasses = assignedIds.includes('*');
+        const classNamesText = isAllClasses
+          ? 'Tất cả các lớp'
+          : (assignedIds.length > 0
+              ? assignedIds.map(id => classNameMap[id] || id).join(', ')
+              : 'Chưa phân lớp');
+        const isActive = m.is_active !== false;
+        const canFinance = Boolean(m.can_manage_finance);
+        const canContacts = Boolean(m.can_view_contacts);
+
+        return `
+          <div class="rounded-2xl border p-3 space-y-2 transition ${isActive ? 'bg-white border-slate-200/90' : 'bg-slate-50/90 border-slate-200 opacity-75'}">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(displayName)}</span>
+                  ${isActive
+                    ? `<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-extrabold">Đang bật</span>`
+                    : `<span class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-[10px] font-bold">Đã tắt</span>`}
+                </div>
+                <div class="text-[11px] font-mono text-slate-500 truncate mt-0.5">${escapeHtml(emailStr)}</div>
+              </div>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onclick="startEditWorkspaceMember('${escapeHtml(emailStr)}')"
+                  class="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold transition"
+                >
+                  Sửa
+                </button>
+                <button
+                  type="button"
+                  onclick="toggleWorkspaceMemberActive('${escapeHtml(emailStr)}', ${!isActive})"
+                  class="px-2 py-1 rounded-lg ${isActive ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-600 hover:bg-emerald-700 text-white'} text-[10.5px] font-bold transition"
+                >
+                  ${isActive ? 'Tắt' : 'Bật'}
+                </button>
+                <button
+                  type="button"
+                  onclick="deleteWorkspaceMember('${escapeHtml(emailStr)}')"
+                  class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[10.5px] font-bold transition"
+                >
+                  Xóa
+                </button>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-600 font-medium">
+              <span class="text-slate-400 font-bold">Lớp phụ trách:</span>
+              <strong class="text-slate-800">${escapeHtml(classNamesText)}</strong>
+            </div>
+
+            <div class="flex items-center gap-1.5 flex-wrap">
+              ${canFinance ? `<span class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-extrabold">Quyền Học phí</span>` : ''}
+              ${canContacts ? `<span class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-extrabold">Xem SĐT &amp; Xuất Excel</span>` : ''}
+              ${(!canFinance && !canContacts) ? `<span class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-500 text-[10px] font-semibold">Chỉ Điểm danh &amp; Bài tập</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      safeCreateIcons();
+    }
+
+    function startEditWorkspaceMember(memberEmail) {
+      const m = workspaceMembersList.find(x => String(x.member_email || '').trim().toLowerCase() === String(memberEmail || '').trim().toLowerCase());
+      if (!m) return;
+
+      editingWorkspaceMemberEmail = String(m.member_email || '').trim().toLowerCase();
+      wsMemberEditingIsActive = m.is_active !== false;
+      wsMemberAssignedClassIds = Array.isArray(m.assigned_class_ids) && m.assigned_class_ids.length > 0
+        ? [...m.assigned_class_ids]
+        : [];
+
+      const formTitle = document.getElementById('workspaceMemberFormTitle');
+      const cancelBtn = document.getElementById('btnCancelEditWorkspaceMember');
+      const saveLbl = document.getElementById('btnSaveWorkspaceMemberLabel');
+      const emailInp = document.getElementById('wsMemberEmailInput');
+      const nameInp = document.getElementById('wsMemberNameInput');
+      const finCb = document.getElementById('wsMemberCanFinanceCheckbox');
+      const conCb = document.getElementById('wsMemberCanContactsCheckbox');
+
+      if (formTitle) formTitle.innerText = `Chỉnh sửa: ${editingWorkspaceMemberEmail}`;
+      cancelBtn?.classList.remove('hidden');
+      if (saveLbl) saveLbl.innerText = 'Cập nhật giáo viên';
+      if (emailInp) emailInp.value = editingWorkspaceMemberEmail;
+      if (nameInp) nameInp.value = m.member_name || '';
+      if (finCb) finCb.checked = Boolean(m.can_manage_finance);
+      if (conCb) conCb.checked = Boolean(m.can_view_contacts);
+
+      updateWorkspaceMemberQuotaUI();
+    }
+
+    async function handleSaveWorkspaceMember(e) {
+      e.preventDefault();
+      if (!supabaseClient || !currentUser?.id) return;
+
+      const emailInp = document.getElementById('wsMemberEmailInput');
+      const nameInp = document.getElementById('wsMemberNameInput');
+      const finCb = document.getElementById('wsMemberCanFinanceCheckbox');
+      const conCb = document.getElementById('wsMemberCanContactsCheckbox');
+      const saveBtn = document.getElementById('btnSaveWorkspaceMember');
+
+      const memberEmail = String(editingWorkspaceMemberEmail || emailInp?.value || '').trim().toLowerCase();
+      if (!memberEmail) {
+        showUndoToast('Vui lòng nhập email giáo viên phụ.');
+        return;
+      }
+      if (memberEmail === String(currentUser.email || '').trim().toLowerCase()) {
+        showUndoToast('Không thể tự thêm email chủ lớp làm giáo viên phụ.');
+        return;
+      }
+      if (!Array.isArray(wsMemberAssignedClassIds) || wsMemberAssignedClassIds.length === 0) {
+        showUndoToast('Vui lòng chọn ít nhất 1 lớp phụ trách hoặc tích "Tất cả các lớp".');
+        return;
+      }
+
+      if (saveBtn) saveBtn.disabled = true;
+
+      try {
+        const ownerDisplayName = currentUser.full_name || currentUser.email?.split('@')[0] || 'Chủ lớp';
+        const { data, error } = await supabaseClient.rpc('manage_workspace_member', {
+          p_action: 'upsert',
+          p_member_email: memberEmail,
+          p_member_name: String(nameInp?.value || '').trim() || null,
+          p_assigned_class_ids: wsMemberAssignedClassIds,
+          p_can_manage_finance: Boolean(finCb?.checked),
+          p_can_view_contacts: Boolean(conCb?.checked),
+          p_is_active: editingWorkspaceMemberEmail ? wsMemberEditingIsActive : true,
+          p_owner_name: ownerDisplayName
+        });
+
+        if (error || (data && data.ok === false)) {
+          showUndoToast(data?.message || error?.message || 'Không thể lưu giáo viên phụ.');
+          return;
+        }
+
+        showUndoToast(editingWorkspaceMemberEmail ? `Đã cập nhật giáo viên ${memberEmail}!` : `Đã thêm giáo viên ${memberEmail}!`);
+        resetWorkspaceMemberForm();
+        await loadWorkspaceMembers(false);
+      } catch (err) {
+        showUndoToast('Lỗi kết nối khi lưu giáo viên phụ.');
+      } finally {
+        updateWorkspaceMemberQuotaUI();
+      }
+    }
+
+    async function toggleWorkspaceMemberActive(memberEmail, nextActive) {
+      if (!supabaseClient || !currentUser?.id || !memberEmail) return;
+      try {
+        const { data, error } = await supabaseClient.rpc('manage_workspace_member', {
+          p_action: 'toggle',
+          p_member_email: memberEmail,
+          p_is_active: Boolean(nextActive)
+        });
+
+        if (error || (data && data.ok === false)) {
+          showUndoToast(data?.message || error?.message || 'Không thể đổi trạng thái giáo viên.');
+          return;
+        }
+        showUndoToast(nextActive ? `Đã BẬT quyền truy cập cho ${memberEmail}!` : `Đã TẮT quyền truy cập cho ${memberEmail}.`);
+        await loadWorkspaceMembers(false);
+      } catch (err) {
+        showUndoToast('Lỗi kết nối khi cập nhật trạng thái giáo viên.');
+      }
+    }
+
+    function deleteWorkspaceMember(memberEmail) {
+      if (!supabaseClient || !currentUser?.id || !memberEmail) return;
+      openConfirmModal(
+        `Xóa giáo viên ${memberEmail}?`,
+        `Giáo viên "${memberEmail}" sẽ không còn quyền truy cập vào không gian lớp học của bạn.`,
+        async () => {
+          try {
+            const { data, error } = await supabaseClient.rpc('manage_workspace_member', {
+              p_action: 'delete',
+              p_member_email: memberEmail
+            });
+
+            if (error || (data && data.ok === false)) {
+              showUndoToast(data?.message || error?.message || 'Không thể xóa giáo viên phụ.');
+              return;
+            }
+            if (editingWorkspaceMemberEmail === memberEmail) {
+              resetWorkspaceMemberForm();
+            }
+            showUndoToast(`Đã xóa giáo viên ${memberEmail}.`);
+            await loadWorkspaceMembers(false);
+          } catch (err) {
+            showUndoToast('Lỗi kết nối khi xóa giáo viên phụ.');
+          }
+        }
+      );
     }
 
     let selectedParentStudentId = (() => {
@@ -9859,6 +11458,7 @@
         parentSec?.classList.add('hidden');
         if (subBanner) subBanner.classList.remove('hidden');
         teacherClassBox?.classList.toggle('hidden', currentTab === 'home');
+        renderWorkspaceSwitcherUI();
         updateHomeVipBannerVisibility();
         parentBox?.classList.add('hidden');
         mobileNav?.classList.remove('hidden');
@@ -9866,10 +11466,12 @@
         teacherBtn?.classList.remove('text-slate-500');
         parentBtn?.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
         parentBtn?.classList.add('text-slate-500');
+        applySharedWorkspaceUiRestrictions();
       } else {
         teacherSec?.classList.add('hidden');
         parentSec?.classList.remove('hidden');
         subBanner?.classList.remove('hidden');
+        document.getElementById('workspaceSwitcherBox')?.classList.add('hidden');
         teacherClassBox?.classList.add('hidden');
         updateHomeVipBannerVisibility();
         parentBox?.classList.remove('hidden');
@@ -9926,17 +11528,14 @@
       if (modal && !modal.classList.contains('hidden')) {
         renderNotebookNotesList();
       }
+      renderWorkspaceSwitcherUI();
+      applySharedWorkspaceUiRestrictions();
       safeCreateIcons();
     }
 
     // ==================== SỔ TAY GHI CHÚ NHANH ====================
     function openNotebookModal() {
-      cancelEditNotebookNote();
-      renderNotebookNotesList();
-      openModal('modalNotebook');
-    }
-
-    function cancelEditNotebookNote() {
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       editingNotebookNoteId = null;
       const titleInp = document.getElementById('notebookNoteTitleInput');
       const contentInp = document.getElementById('notebookNoteContentInput');
@@ -9946,30 +11545,89 @@
       if (contentInp) contentInp.value = '';
       cancelBtn?.classList.add('hidden');
       if (saveLbl) saveLbl.innerText = 'Lưu ghi chú';
+      renderNotebookNotesList();
+      openModal('modalNotebook');
+    }
+
+    function renderNotebookNotesList() {
+      const container = document.getElementById('notebookNotesListContainer');
+      if (!container) return;
+
+      if (!Array.isArray(teacherNotebookNotes) || teacherNotebookNotes.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+            Chưa có ghi chú nào. Nhập nội dung phía trên để lưu ghi chú đầu tiên.
+          </div>
+        `;
+        return;
+      }
+
+      const sortedNotes = [...teacherNotebookNotes].sort((a, b) => {
+        const pinDiff = (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        if (pinDiff !== 0) return pinDiff;
+        return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime();
+      });
+
+      container.innerHTML = sortedNotes.map(note => {
+        const timeStr = note.updatedAt
+          ? new Date(note.updatedAt).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' })
+          : '';
+        return `
+          <div class="rounded-2xl border p-3 space-y-1.5 transition ${note.pinned ? 'bg-amber-50/70 border-amber-300 shadow-sm' : 'bg-white border-slate-200/90'}">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                ${note.title ? `<h5 class="font-extrabold text-xs text-slate-900 truncate">${escapeHtml(note.title)}</h5>` : ''}
+                <p class="text-xs text-slate-700 whitespace-pre-line break-words leading-relaxed ${note.title ? 'mt-0.5' : ''}">${escapeHtml(note.content || '')}</p>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onclick="togglePinNotebookNote('${escapeHtml(note.id)}')"
+                  class="px-2 py-1 rounded-lg text-[10.5px] font-bold border transition ${note.pinned ? 'bg-amber-500 text-white border-amber-500' : 'bg-slate-50 hover:bg-amber-50 text-slate-600 border-slate-200'}"
+                  title="${note.pinned ? 'Bỏ ghim' : 'Ghim lên đầu'}"
+                >
+                  ${note.pinned ? 'Bỏ ghim' : 'Ghim'}
+                </button>
+                <button
+                  type="button"
+                  onclick="editNotebookNote('${escapeHtml(note.id)}')"
+                  class="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold transition"
+                >
+                  Sửa
+                </button>
+                <button
+                  type="button"
+                  onclick="deleteNotebookNote('${escapeHtml(note.id)}')"
+                  class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-[10.5px] font-bold transition"
+                >
+                  Xóa
+                </button>
+              </div>
+            </div>
+            ${timeStr ? `<div class="text-[10px] text-slate-400 font-medium">Cập nhật: ${escapeHtml(timeStr)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
     }
 
     function handleSaveNotebookNote(e) {
       e.preventDefault();
+      if (activeWorkspaceMode === 'shared') { showUndoToast('Chỉ chủ lớp mới có quyền thực hiện thao tác này.'); return; }
       const titleInp = document.getElementById('notebookNoteTitleInput');
       const contentInp = document.getElementById('notebookNoteContentInput');
-      const title = (titleInp?.value || '').trim();
-      const content = (contentInp?.value || '').trim();
-      if (!content) {
-        showUndoToast('Vui lòng nhập nội dung ghi chú!');
-        return;
-      }
+      const title = String(titleInp?.value || '').trim();
+      const content = String(contentInp?.value || '').trim();
+      if (!content) return;
 
       const nowIso = new Date().toISOString();
       if (editingNotebookNoteId) {
-        const idx = teacherNotebookNotes.findIndex(n => n.id === editingNotebookNoteId);
-        if (idx >= 0) {
-          teacherNotebookNotes[idx] = {
-            ...teacherNotebookNotes[idx],
-            title,
-            content,
-            updatedAt: nowIso
-          };
+        const target = teacherNotebookNotes.find(n => n.id === editingNotebookNoteId);
+        if (target) {
+          target.title = title;
+          target.content = content;
+          target.updatedAt = nowIso;
         }
+        editingNotebookNoteId = null;
         showUndoToast('Đã cập nhật ghi chú!');
       } else {
         teacherNotebookNotes.unshift({
@@ -9982,12 +11640,17 @@
         showUndoToast('Đã lưu ghi chú mới!');
       }
 
-      cancelEditNotebookNote();
+      if (titleInp) titleInp.value = '';
+      if (contentInp) contentInp.value = '';
+      document.getElementById('btnCancelNotebookEdit')?.classList.add('hidden');
+      const saveLbl = document.getElementById('btnSaveNotebookNoteLabel');
+      if (saveLbl) saveLbl.innerText = 'Lưu ghi chú';
+
       saveAllToLocalStorage(true);
       renderNotebookNotesList();
     }
 
-    function startEditNotebookNote(noteId) {
+    function editNotebookNote(noteId) {
       const note = teacherNotebookNotes.find(n => n.id === noteId);
       if (!note) return;
       editingNotebookNoteId = note.id;
@@ -10004,141 +11667,60 @@
       if (saveLbl) saveLbl.innerText = 'Cập nhật ghi chú';
     }
 
+    function cancelEditNotebookNote() {
+      editingNotebookNoteId = null;
+      const titleInp = document.getElementById('notebookNoteTitleInput');
+      const contentInp = document.getElementById('notebookNoteContentInput');
+      const cancelBtn = document.getElementById('btnCancelNotebookEdit');
+      const saveLbl = document.getElementById('btnSaveNotebookNoteLabel');
+      if (titleInp) titleInp.value = '';
+      if (contentInp) contentInp.value = '';
+      cancelBtn?.classList.add('hidden');
+      if (saveLbl) saveLbl.innerText = 'Lưu ghi chú';
+    }
+
     function togglePinNotebookNote(noteId) {
       const note = teacherNotebookNotes.find(n => n.id === noteId);
       if (!note) return;
       note.pinned = !note.pinned;
       saveAllToLocalStorage(true);
       renderNotebookNotesList();
-      showUndoToast(note.pinned ? 'Đã ghim ghi chú lên đầu!' : 'Đã bỏ ghim ghi chú.');
     }
 
     function deleteNotebookNote(noteId) {
       const note = teacherNotebookNotes.find(n => n.id === noteId);
       if (!note) return;
-      openConfirmModal(
-        'Xóa ghi chú này?',
-        `Bạn có chắc chắn muốn xóa ghi chú "${note.title || 'Không tiêu đề'}"?`,
-        () => {
-          teacherNotebookNotes = teacherNotebookNotes.filter(n => n.id !== noteId);
-          if (editingNotebookNoteId === noteId) {
-            cancelEditNotebookNote();
-          }
-          saveAllToLocalStorage(true);
-          renderNotebookNotesList();
-          showUndoToast('Đã xóa ghi chú.');
+      openConfirmModal('Xóa ghi chú này?', 'Ghi chú sẽ bị xóa vĩnh viễn khỏi sổ tay của bạn.', () => {
+        teacherNotebookNotes = teacherNotebookNotes.filter(n => n.id !== noteId);
+        if (editingNotebookNoteId === noteId) {
+          cancelEditNotebookNote();
         }
-      );
-    }
-
-    function renderNotebookNotesList() {
-      const container = document.getElementById('notebookNotesListContainer');
-      if (!container) return;
-
-      if (!Array.isArray(teacherNotebookNotes) || teacherNotebookNotes.length === 0) {
-        container.innerHTML = `
-          <div class="py-8 px-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 text-center space-y-1.5">
-            <div class="w-9 h-9 rounded-2xl bg-white border border-slate-200 text-slate-400 mx-auto flex items-center justify-center shadow-sm">
-              <i data-lucide="notebook-pen" class="w-4 h-4"></i>
-            </div>
-            <div class="text-xs font-bold text-slate-600">Chưa có ghi chú nào</div>
-            <p class="text-[11px] text-slate-400">Nhập ghi chú phía trên để lưu dặn dò lớp học hoặc lịch trình quan trọng.</p>
-          </div>
-        `;
-        safeCreateIcons();
-        return;
-      }
-
-      const sortedNotes = [...teacherNotebookNotes].sort((a, b) => {
-        if (Boolean(a.pinned) !== Boolean(b.pinned)) {
-          return a.pinned ? -1 : 1;
-        }
-        return new Date(b.updatedAt || 0).getTime() - new Date(a.updatedAt || 0).getTime();
+        saveAllToLocalStorage(true);
+        renderNotebookNotesList();
+        showUndoToast('Đã xóa ghi chú.');
       });
-
-      container.innerHTML = sortedNotes.map(note => {
-        const isPinned = Boolean(note.pinned);
-        let timeStr = '';
-        if (note.updatedAt) {
-          const d = new Date(note.updatedAt);
-          if (!Number.isNaN(d.getTime())) {
-            timeStr = d.toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
-          }
-        }
-        return `
-          <div class="rounded-2xl border p-3 space-y-1.5 transition ${isPinned ? 'bg-amber-50/60 border-amber-200/90 shadow-sm' : 'bg-white border-slate-200/90 hover:border-slate-300'}">
-            <div class="flex items-start justify-between gap-2">
-              <div class="min-w-0 flex-1 flex items-center gap-1.5 flex-wrap">
-                ${isPinned ? `<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-extrabold shrink-0"><i data-lucide="pin" class="w-2.5 h-2.5"></i> Đã ghim</span>` : ''}
-                ${note.title ? `<h5 class="font-extrabold text-xs text-slate-900 break-words">${escapeHtml(note.title)}</h5>` : `<span class="text-[11px] font-bold text-slate-400 italic">Ghi chú nhanh</span>`}
-              </div>
-
-              <div class="flex items-center gap-1 shrink-0">
-                <button
-                  type="button"
-                  onclick="togglePinNotebookNote('${note.id}')"
-                  class="px-2 py-1 rounded-lg text-[10.5px] font-bold transition inline-flex items-center gap-1 ${isPinned ? 'bg-amber-200/80 text-amber-900' : 'bg-slate-100 hover:bg-amber-50 text-slate-600 hover:text-amber-700'}"
-                  title="${isPinned ? 'Bỏ ghim' : 'Ghim lên đầu'}"
-                >
-                  <i data-lucide="pin" class="w-3 h-3"></i>
-                  <span>${isPinned ? 'Bỏ ghim' : 'Ghim'}</span>
-                </button>
-                <button
-                  type="button"
-                  onclick="startEditNotebookNote('${note.id}')"
-                  class="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[10.5px] font-bold transition inline-flex items-center gap-1"
-                  title="Sửa ghi chú"
-                >
-                  <i data-lucide="pencil" class="w-3 h-3"></i>
-                  <span>Sửa</span>
-                </button>
-                <button
-                  type="button"
-                  onclick="deleteNotebookNote('${note.id}')"
-                  class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-[10.5px] font-bold transition inline-flex items-center gap-1"
-                  title="Xóa ghi chú"
-                >
-                  <i data-lucide="trash-2" class="w-3 h-3"></i>
-                  <span>Xóa</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="text-xs text-slate-700 leading-relaxed whitespace-pre-line break-words font-medium">${escapeHtml(note.content)}</div>
-
-            ${timeStr ? `<div class="text-[10px] text-slate-400 font-medium pt-0.5">Cập nhật: ${timeStr}</div>` : ''}
-          </div>
-        `;
-      }).join('');
-
-      safeCreateIcons();
     }
 
-    function initApp() {
-      try {
-        initSupabaseClient();
-        loadPioneerPromoSettings();
-        loadVipPlansSettingsFromCloud();
-        loadScopedUserData();
-        loadVipSubscriptionState();
-        startTrialExpirationWatcher();
-        setupAutoCloudSyncListeners();
-        const today = getCurrentDayOfWeekInfo();
-        const bannerDate = document.getElementById('currentDateDisplayBanner');
-        if (bannerDate) bannerDate.innerText = `${today.dayName}, ${today.dateFormatted}`;
-        const mobileTodayLabel = document.getElementById('mobileTodayBtnLabel');
-        if (mobileTodayLabel) mobileTodayLabel.innerText = `Hôm nay ${today.dayName}`;
-
-        switchTab(currentTab);
-        switchRole(currentRole);
-        renderAll();
-      } catch (err) {
-        console.error('Lỗi khởi tạo:', err);
+    // ==================== KHỞI TẠO ỨNG DỤNG ====================
+    window.onload = function () {
+      const todayInfo = getCurrentDayOfWeekInfo();
+      const bannerDateEl = document.getElementById('currentDateDisplayBanner');
+      if (bannerDateEl) {
+        bannerDateEl.innerText = `${todayInfo.dayName}, ${todayInfo.dateFormatted}`;
       }
-    }
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
-    else initApp();
+      loadScopedUserData();
+      loadVipSubscriptionState();
+      switchTab(currentTab || 'home');
+      switchRole(currentRole || 'teacher');
+      renderAll();
+      startTrialExpirationWatcher();
+      setupAutoCloudSyncListeners();
+      initSupabaseClient();
+      loadVipPlansSettingsFromCloud();
+      loadPioneerPromoSettings();
+      safeCreateIcons();
+    };
   </script>
 </body>
 </html>
