@@ -14,6 +14,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Thư viện mammoth.js để đọc file Word (.docx) trực tiếp trên trình duyệt -->
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+  <!-- Thư viện PDF.js để đọc nội dung file PDF trực tiếp trên trình duyệt -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
   <!-- Thư viện html2canvas để lưu/sao chép phiếu báo học phí thành ảnh gửi Zalo cho phụ huynh -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <!-- Google Fonts -->
@@ -1580,12 +1582,12 @@
             </div>
 
             <label class="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-3 border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-white rounded-xl cursor-pointer transition text-center group min-h-[88px]">
-              <input type="file" id="assignmentExamFileInput" accept=".docx, .txt" onchange="handleExamPaperUpload(event)" class="sr-only">
+              <input type="file" id="assignmentExamFileInput" accept=".pdf, .doc, .docx, .txt" onchange="handleExamPaperUpload(event)" class="sr-only">
               <div class="flex items-center gap-1.5 text-indigo-600 group-hover:scale-105 transition-transform">
                 <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i>
-                <span class="text-[11px] sm:text-xs font-bold">Chọn tệp đề bài (.DOCX, .TXT)</span>
+                <span class="text-[11px] sm:text-xs font-bold">Chọn tệp đề bài (.PDF, .DOC, .DOCX, .TXT)</span>
               </div>
-              <span class="text-[10px] text-slate-400 mt-1 line-clamp-2">Giới hạn dưới 1MB • Cho phép sửa, viết thêm hoặc xóa trực tiếp</span>
+              <span class="text-[10px] text-slate-400 mt-1 line-clamp-2">Giới hạn dưới 5MB • Cho phép sửa, viết thêm hoặc xóa trực tiếp</span>
             </label>
 
             <div id="assignmentExamPreviewWrapper" class="hidden space-y-1">
@@ -1611,13 +1613,13 @@
                 </div>
                 <div class="min-w-0">
                   <h4 class="font-extrabold text-[11px] sm:text-xs text-amber-950 truncate">Điền đáp án & tải đáp án lên</h4>
-                  <p id="answerFileStatusText" class="text-[10px] text-amber-800/80 truncate">File dưới 1MB (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi</p>
+                  <p id="answerFileStatusText" class="text-[10px] text-amber-800/80 truncate">File dưới 5MB (.PDF, .DOCX, .XLSX, .TXT) hoặc gõ chuỗi</p>
                 </div>
               </div>
 
               <div class="flex items-center gap-1 shrink-0">
                 <label class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[10px] sm:text-[10.5px] font-bold shadow-sm cursor-pointer transition active:scale-95">
-                  <input type="file" id="assignmentAnswerFileInput" accept=".docx, .xlsx, .xls, .csv, .txt" onchange="handleAnswerFileUpload(event)" class="sr-only">
+                  <input type="file" id="assignmentAnswerFileInput" accept=".pdf, .doc, .docx, .xlsx, .xls, .csv, .txt" onchange="handleAnswerFileUpload(event)" class="sr-only">
                   <i data-lucide="file-check-2" class="w-3 h-3 shrink-0"></i>
                   <span class="hidden sm:inline">Tải đáp án</span>
                   <span class="sm:hidden">Up file</span>
@@ -8606,26 +8608,79 @@
     async function handleStudentFileUpload(e) {
       const file = e.target.files?.[0];
       if (!file) return;
-      const name = file.name.toLowerCase();
-      if (name.endsWith('.xlsx') || name.endsWith('.xls') || name.endsWith('.csv')) {
+      const fileName = file.name.toLowerCase();
+
+      if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || fileName.endsWith('.csv')) {
         const buf = await file.arrayBuffer();
         const wb = XLSX.read(new Uint8Array(buf), { type: 'array' });
         const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
-        parsedBatchStudents = rows.slice(1).map(r => ({
-          selected: true,
-          name: String(r[1] || r[0] || '').trim(),
-          phone: String(r[2] || '').trim(),
-          parentName: String(r[3] || '').trim(),
-          dob: String(r[4] || '').trim(),
-          school: String(r[5] || '').trim()
-        })).filter(x => x.name && isNaN(x.name));
+
+        const norm = (s) => String(s ?? '')
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+          .toLowerCase().replace(/\s+/g, ' ').trim();
+
+        const isNameHeader = (t) =>
+          !/(phu huynh|truong|lop)/.test(t) &&
+          (/(ho va ten|ho ten|ten hoc sinh|hoc sinh|full name)/.test(t) || t === 'ten' || t === 'name');
+
+        let headerRowIdx = -1;
+        for (let i = 0; i < Math.min(15, rows.length); i++) {
+          const cells = (rows[i] || []).map(norm);
+          const hasFull = cells.some(isNameHeader);
+          const hasSplit = cells.some(t => ['ho', 'ho dem', 'ho va ten dem'].includes(t)) &&
+                           cells.some(t => ['ten', 'ten goi', 'ten hs'].includes(t));
+          if (hasFull || hasSplit) { headerRowIdx = i; break; }
+        }
+
+        const skipNames = new Set(['ho va ten', 'ho ten', 'lop', 'stt', 'tong', 'tong cong', 'cong']);
+
+        if (headerRowIdx >= 0) {
+          const hdr = (rows[headerRowIdx] || []).map(norm);
+          const nameIdx = hdr.findIndex(isNameHeader);
+          const hoIdx = nameIdx === -1 ? hdr.findIndex(t => ['ho', 'ho dem', 'ho va ten dem'].includes(t)) : -1;
+          const tenIdx = nameIdx === -1 ? hdr.findIndex(t => ['ten', 'ten goi', 'ten hs'].includes(t)) : -1;
+          const phoneIdx = hdr.findIndex(t => /(sdt|so dien thoai|dien thoai|phone|zalo|lien he)/.test(t));
+          const parentIdx = hdr.findIndex(t => /(phu huynh|bo me|cha me|parent)/.test(t));
+          const dobIdx = hdr.findIndex(t => /(ngay sinh|nam sinh|sinh nhat|dob)/.test(t));
+          const schoolIdx = hdr.findIndex(t => /(truong|ghi chu|note|school)/.test(t));
+
+          parsedBatchStudents = rows.slice(headerRowIdx + 1).map(r => {
+            const rawName = nameIdx >= 0
+              ? String(r[nameIdx] ?? '').trim()
+              : `${String(r[hoIdx] ?? '').trim()} ${String(r[tenIdx] ?? '').trim()}`.trim();
+            return {
+              selected: true,
+              name: rawName,
+              phone: phoneIdx >= 0 ? String(r[phoneIdx] ?? '').trim() : '',
+              parentName: parentIdx >= 0 ? String(r[parentIdx] ?? '').trim() : '',
+              dob: dobIdx >= 0 ? String(r[dobIdx] ?? '').trim() : '',
+              school: schoolIdx >= 0 ? String(r[schoolIdx] ?? '').trim() : ''
+            };
+          });
+        } else {
+          parsedBatchStudents = rows.map(r => {
+            const cells = (r || []).map(c => String(c ?? '').trim()).filter(Boolean);
+            const phone = cells.find(c => /^(0|84)\d{8,10}$/.test(c.replace(/[\s.\-]/g, ''))) || '';
+            const name = cells.find(c => c !== phone && isNaN(Number(c.replace(/[\s.,]/g, '')))) || '';
+            return { selected: true, name, phone, parentName: '', dob: '', school: '' };
+          });
+        }
+
+        parsedBatchStudents = parsedBatchStudents.filter(x => {
+          const n = norm(x.name);
+          return x.name && !skipNames.has(n) && !/^\d+$/.test(x.name.replace(/[\s.,]/g, ''));
+        });
+
         renderBatchPreviewTable();
-      } else if (name.endsWith('.docx') && typeof mammoth !== 'undefined') {
+      } else if (fileName.endsWith('.docx') && typeof mammoth !== 'undefined') {
         const buf = await file.arrayBuffer();
         const res = await mammoth.extractRawText({ arrayBuffer: buf });
         document.getElementById('batchStudentPasteTextarea').value = res.value || '';
         handleStudentPasteInput();
       }
+
+      e.target.value = '';
     }
 
     function handleStudentPasteInput() {
