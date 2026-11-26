@@ -8963,31 +8963,87 @@
       renderBuilderAnswerSheet();
     }
 
-    const MAX_ASSIGNMENT_FILE_BYTES = 1 * 1024 * 1024;
+    const MAX_ASSIGNMENT_FILE_BYTES = 5 * 1024 * 1024;
 
     async function extractFullDocumentText(file) {
       const lower = file.name.toLowerCase();
-      if (lower.endsWith('.docx') && typeof mammoth !== 'undefined') {
-        const buf = await file.arrayBuffer();
-        try {
-          const htmlRes = await mammoth.convertToHtml({ arrayBuffer: buf });
-          if (htmlRes && htmlRes.value) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = htmlRes.value
-              .replace(/<\/(p|div|h[1-6]|li|tr|br\s*\/?)>/gi, '</$1>\n')
-              .replace(/<\/(td|th)>/gi, '</$1>\t');
-            const extracted = (tempDiv.textContent || tempDiv.innerText || '')
-              .replace(/\t+\n/g, '\n')
-              .replace(/\n{3,}/g, '\n\n')
-              .trim();
-            if (extracted) return extracted;
-          }
-        } catch (err) {
-          console.warn('Fallback extractRawText:', err);
+
+      if (lower.endsWith('.pdf')) {
+        if (typeof pdfjsLib === 'undefined') {
+          showUndoToast('Thư viện đọc PDF đang tải, vui lòng thử lại sau vài giây.');
+          return '';
         }
-        const rawRes = await mammoth.extractRawText({ arrayBuffer: buf });
-        return (rawRes.value || '').trim();
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+        const pages = [];
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          let pageText = '';
+          let lastY = null;
+          for (const item of content.items) {
+            const y = Array.isArray(item.transform) ? item.transform[5] : null;
+            if (lastY !== null && y !== null && Math.abs(y - lastY) > 5) {
+              pageText += '\n';
+            }
+            pageText += item.str || '';
+            if (item.hasEOL) pageText += '\n';
+            else pageText += ' ';
+            if (y !== null) lastY = y;
+          }
+          pages.push(pageText.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim());
+        }
+
+        const fullPdfText = pages.filter(Boolean).join('\n\n').trim();
+        if (!fullPdfText) {
+          showUndoToast('File PDF này là dạng ảnh scan không có chữ. Vui lòng chuyển sang PDF văn bản hoặc file .DOCX!');
+          return '';
+        }
+        return fullPdfText;
       }
+
+      if (lower.endsWith('.docx') || lower.endsWith('.doc')) {
+        const buf = await file.arrayBuffer();
+        const h = new Uint8Array(buf.slice(0, 4));
+
+        if (h[0] === 0x50 && h[1] === 0x4B) {
+          if (typeof mammoth !== 'undefined') {
+            try {
+              const htmlRes = await mammoth.convertToHtml({ arrayBuffer: buf });
+              if (htmlRes && htmlRes.value) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlRes.value
+                  .replace(/<\/(p|div|h[1-6]|li|tr|br\s*\/?)>/gi, '</$1>\n')
+                  .replace(/<\/(td|th)>/gi, '</$1>\t');
+                const extracted = (tempDiv.textContent || tempDiv.innerText || '')
+                  .replace(/\t+\n/g, '\n')
+                  .replace(/\n{3,}/g, '\n\n')
+                  .trim();
+                if (extracted) return extracted;
+              }
+            } catch (err) {
+              console.warn('Fallback extractRawText:', err);
+            }
+            const rawRes = await mammoth.extractRawText({ arrayBuffer: buf });
+            return (rawRes.value || '').trim();
+          }
+        }
+
+        if (h[0] === 0xD0 && h[1] === 0xCF && h[2] === 0x11 && h[3] === 0xE0) {
+          showUndoToast('File .doc định dạng Word 97-2003 cũ chưa hỗ trợ đọc trực tiếp. Vui lòng mở file và Lưu dưới dạng .DOCX hoặc .PDF rồi tải lên!');
+          return '';
+        }
+
+        const rawText = await file.text();
+        if (/<[a-z][\s\S]*>/i.test(rawText)) {
+          const doc = new DOMParser().parseFromString(rawText, 'text/html');
+          return (doc.body?.textContent || '').replace(/\n{3,}/g, '\n\n').trim();
+        }
+        return (rawText || '').trim();
+      }
+
       const txt = await file.text();
       return (txt || '').trim();
     }
@@ -8997,7 +9053,7 @@
       if (!file) return;
       if (file.size > MAX_ASSIGNMENT_FILE_BYTES) {
         e.target.value = '';
-        showUndoToast('File đề bài vượt quá 1MB! Vui lòng chọn file dưới 1MB.');
+        showUndoToast('File đề bài vượt quá 5MB! Vui lòng chọn file dưới 5MB.');
         return;
       }
 
@@ -9049,7 +9105,7 @@
       if (!file) return;
       if (file.size > MAX_ASSIGNMENT_FILE_BYTES) {
         e.target.value = '';
-        showUndoToast('File đáp án vượt quá 1MB! Vui lòng chọn file dưới 1MB.');
+        showUndoToast('File đáp án vượt quá 5MB! Vui lòng chọn file dưới 5MB.');
         return;
       }
 
@@ -9079,7 +9135,7 @@
       if (inp) inp.value = '';
       document.getElementById('btnClearAnswerFile')?.classList.add('hidden');
       const statusEl = document.getElementById('answerFileStatusText');
-      if (statusEl) statusEl.innerText = 'File dưới 1MB (.DOCX, .XLSX, .TXT) hoặc gõ chuỗi';
+      if (statusEl) statusEl.innerText = 'File dưới 5MB (.PDF, .DOCX, .XLSX, .TXT) hoặc gõ chuỗi';
     }
 
     function handleQuickAnswerInputApply() {
