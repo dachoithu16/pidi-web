@@ -1042,15 +1042,17 @@
       <!-- Nội dung sau khi xác thực Mã học sinh thành công -->
       <div id="parentAuthenticatedContent" class="hidden space-y-3.5">
         <div id="parentLinkedClassesSection" class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-4 shadow-sm space-y-2.5"></div>
-        <div id="parentScheduleSection" class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3"></div>
-        <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <h4 class="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
-              <i data-lucide="book-open-check" class="w-4 h-4 text-amber-500"></i>
-              <span id="studentHomeworkSectionTitle">Bài tập & Phiếu trả lời Online</span>
-            </h4>
+        <div class="flex flex-col lg:flex-row gap-4 items-stretch">
+          <div id="parentScheduleSection" class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3 w-full lg:flex-[3] min-w-0"></div>
+          <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3 w-full lg:flex-[2] min-w-0 flex flex-col">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
+                <i data-lucide="book-open-check" class="w-4 h-4 text-amber-500"></i>
+                <span id="studentHomeworkSectionTitle">Bài tập & Phiếu trả lời Online</span>
+              </h4>
+            </div>
+            <div id="studentHomeworkCardsList" class="space-y-2"></div>
           </div>
-          <div id="studentHomeworkCardsList" class="space-y-2"></div>
         </div>
         <div class="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-sm space-y-3">
           <h4 class="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
