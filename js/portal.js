@@ -674,11 +674,16 @@
 
     function renderStudentScheduleSection() {
       const container = document.getElementById('parentScheduleSection');
+      const weeklyContainer = document.getElementById('parentWeeklyScheduleSection');
       if (!container) return;
 
       if (!currentUser || !currentUser.id) {
         container.classList.add('hidden');
         container.innerHTML = '';
+        if (weeklyContainer) {
+          weeklyContainer.classList.add('hidden');
+          weeklyContainer.innerHTML = '';
+        }
         return;
       }
 
@@ -718,6 +723,10 @@
           </h4>
           <div class="text-xs text-slate-400 italic">Các lớp đã liên kết hiện chưa xếp lịch học hàng tuần.</div>
         `;
+        if (weeklyContainer) {
+          weeklyContainer.classList.add('hidden');
+          weeklyContainer.innerHTML = '';
+        }
         return;
       }
 
@@ -893,9 +902,15 @@
           </button>
         </div>
         ${nextCardHtml}
-        ${conflictHtml}
-        ${weeklyHtml}
       `;
+
+      if (weeklyContainer) {
+        weeklyContainer.classList.remove('hidden');
+        weeklyContainer.innerHTML = `
+          ${weeklyHtml}
+          ${conflictHtml}
+        `;
+      }
     }
 
     function renderParentView() {
