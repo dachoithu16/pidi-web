@@ -2,6 +2,8 @@
     let activeTakingSessionKey = null;
     let activeStudentAnswersMap = {};
     let isPreviewingHomework = false;
+    let studentLinksRefreshSeq = 0;
+    let isLoadingStudentLinkedSessions = false;
 
     function openTakeHomeworkModal(hwId, isPreview = false) {
       isPreviewingHomework = Boolean(isPreview);
@@ -376,13 +378,19 @@
     }
 
     async function refreshAllStudentLinkedSessions() {
+      const mySeq = ++studentLinksRefreshSeq;
+      const myUserId = currentUser?.id || null;
       if (!Array.isArray(studentClassLinks) || studentClassLinks.length === 0) {
+        isLoadingStudentLinkedSessions = false;
         studentLinkedSessions = [];
         activeStudentLinkCode = null;
         parentPortalSession = null;
         if (currentRole === 'parent') renderParentView();
         return;
       }
+
+      isLoadingStudentLinkedSessions = true;
+      if (currentRole === 'parent') renderParentView();
 
       const results = await Promise.all(studentClassLinks.map(async (item) => {
         let res = null;
@@ -433,6 +441,11 @@
         };
       }));
 
+      if (mySeq !== studentLinksRefreshSeq || (currentUser?.id || null) !== myUserId) {
+        if (mySeq === studentLinksRefreshSeq) isLoadingStudentLinkedSessions = false;
+        return;
+      }
+
       studentLinkedSessions = results;
 
       const activeEntry = studentLinkedSessions.find(x => x.code === activeStudentLinkCode && x.status === 'ok')
@@ -444,6 +457,7 @@
       parentPortalSession = (activeEntry && activeEntry.status === 'ok') ? activeEntry.session : null;
       selectedParentStudentId = parentPortalSession?.student?.id || null;
 
+      isLoadingStudentLinkedSessions = false;
       if (currentRole === 'parent') renderParentView();
     }
 
@@ -485,6 +499,8 @@
         `Gỡ lớp ${clsName}?`,
         `Bạn có chắc chắn muốn gỡ mã ${code} khỏi danh sách lớp đang theo dõi?`,
         async () => {
+          studentLinksRefreshSeq++;
+          isLoadingStudentLinkedSessions = false;
           studentClassLinks = studentClassLinks.filter(x => x.code !== code);
           saveLocalStudentLinks(studentClassLinks);
 
@@ -575,6 +591,8 @@
       }
 
       errBox?.classList.add('hidden');
+      studentLinksRefreshSeq++;
+      isLoadingStudentLinkedSessions = false;
 
       const existingIdx = studentClassLinks.findIndex(x => x.code === codeVal);
       if (existingIdx >= 0) studentClassLinks[existingIdx] = { code: codeVal, password: pwdVal };
@@ -826,6 +844,7 @@
       gateCard?.classList.add('hidden');
       authContent?.classList.remove('hidden');
 
+      const isLoadingLinks = hasAnyLink && (isLoadingStudentLinkedSessions || studentLinkedSessions.length === 0);
       const activeEntry = studentLinkedSessions.find(x => x.code === activeStudentLinkCode) || studentLinkedSessions[0] || null;
       const activeSession = (activeEntry && activeEntry.status === 'ok') ? activeEntry.session : null;
       parentPortalSession = activeSession;
@@ -858,7 +877,11 @@
         linkedSec.innerHTML = `
           <div class="flex flex-row flex-wrap items-center justify-between gap-3 py-1">
             <div class="flex flex-row flex-wrap items-center gap-2 shrink-0">
-              ${studentLinkedSessions.map(item => {
+              ${studentLinkedSessions.length === 0 && isLoadingLinks ? `
+                <div class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs sm:text-sm text-slate-500 font-semibold">
+                  <span>Đang tải dữ liệu lớp học...</span>
+                </div>
+              ` : studentLinkedSessions.map(item => {
                 const isAct = item.code === activeStudentLinkCode;
                 const isOk = item.status === 'ok';
                 const label = isOk ? (item.session?.classObj?.class_name || item.code) : `Mã ${item.code} (Cần xác thực)`;
@@ -898,7 +921,11 @@
 
       if (hwList) {
         if (!st || !activeSession) {
-          hwList.innerHTML = `<div class="text-xs text-rose-600 font-semibold">Lớp này cần xác thực lại mã/mật khẩu để xem bài tập.</div>`;
+          if (isLoadingLinks) {
+            hwList.innerHTML = `<div class="text-xs text-slate-500 font-semibold italic">Đang tải dữ liệu lớp học...</div>`;
+          } else {
+            hwList.innerHTML = `<div class="text-xs text-rose-600 font-semibold">Lớp này cần xác thực lại mã/mật khẩu để xem bài tập.</div>`;
+          }
         } else {
           const classHws = Array.isArray(activeSession.homeworks) ? activeSession.homeworks : [];
           const sessionSubs = Array.isArray(activeSession.submissions) ? activeSession.submissions : [];
@@ -927,10 +954,18 @@
 
       if (attGrid) {
         if (!st) {
-          attGrid.innerHTML = `<div class="col-span-full text-xs text-slate-400 italic">Chưa có dữ liệu điểm danh.</div>`;
+          attGrid.innerHTML = isLoadingLinks
+            ? `<div class="col-span-full text-xs text-slate-400 italic">Đang tải dữ liệu lớp học...</div>`
+            : `<div class="col-span-full text-xs text-slate-400 italic">Chưa có dữ liệu điểm danh.</div>`;
         } else {
           const history = st.attendanceHistory || {};
-          const dates = Object.keys(history).filter(d => history[d] === 'present' || history[d] === 'absent');
+          const dates = Object.keys(history)
+            .filter(d => history[d] === 'present' || history[d] === 'absent')
+            .sort((a, b) => {
+              const [d1, m1, y1] = a.split('/').map(Number);
+              const [d2, m2, y2] = b.split('/').map(Number);
+              return new Date(y1, m1 - 1, d1) - new Date(y2, m2 - 1, d2);
+            });
           attGrid.innerHTML = dates.length === 0
             ? `<div class="col-span-full text-xs text-slate-400 italic">Chưa có dữ liệu điểm danh.</div>`
             : dates.map(d => {

@@ -723,6 +723,7 @@
 
     // ==================== ĐỒNG BỘ ĐÁM MÂY QUA BẢNG user_app_data ====================
     let isSyncingCloud = false;
+    let pendingCloudSync = false;
     let cloudSyncDebounceTimer = null;
 
     function buildAppDataPayload() {
@@ -772,20 +773,23 @@
       if (!currentUser || !currentUser.id) return;
       clearTimeout(cloudSyncDebounceTimer);
       cloudSyncDebounceTimer = setTimeout(() => {
+        cloudSyncDebounceTimer = null;
         syncUserDataToCloud(false);
       }, 1500);
     }
 
     async function loadUserDataFromCloud(userObj, showToastFeedback = false) {
-      const userId = userObj?.id || currentUser?.id;
-      if (!supabaseClient || !userId) return;
+      const targetUserId = userObj?.id || currentUser?.id || null;
+      if (!supabaseClient || !targetUserId) return;
       try {
         setCloudSyncBadge('syncing');
         const { data: row, error } = await supabaseClient
           .from('user_app_data')
           .select('data')
-          .eq('user_id', userId)
+          .eq('user_id', targetUserId)
           .maybeSingle();
+
+        if ((currentUser?.id || null) !== targetUserId) return;
 
         if (error) {
           console.warn('Lỗi đọc bảng user_app_data:', error.message);
@@ -912,8 +916,13 @@
     }
 
     async function syncUserDataToCloud(showToastFeedback = false) {
+      const syncUserId = currentUser?.id || null;
       if (activeWorkspaceMode === 'shared') return;
-      if (!supabaseClient || !currentUser?.id || isSyncingCloud) return;
+      if (!supabaseClient || !syncUserId) return;
+      if (isSyncingCloud) {
+        pendingCloudSync = true;
+        return;
+      }
       isSyncingCloud = true;
       setCloudSyncBadge('syncing');
       try {
@@ -921,8 +930,10 @@
           const { data: remoteRow } = await supabaseClient
             .from('user_app_data')
             .select('data')
-            .eq('user_id', currentUser.id)
+            .eq('user_id', syncUserId)
             .maybeSingle();
+
+          if ((currentUser?.id || null) !== syncUserId) return;
 
           const remoteData = remoteRow?.data;
           if (remoteData && typeof remoteData === 'object') {
@@ -989,14 +1000,18 @@
           console.warn('Bỏ qua bước gộp dữ liệu từ xa:', mergeErr);
         }
 
+        if ((currentUser?.id || null) !== syncUserId) return;
+
         const appData = buildAppDataPayload();
         const { error } = await supabaseClient
           .from('user_app_data')
           .upsert({
-            user_id: currentUser.id,
+            user_id: syncUserId,
             data: appData,
             updated_at: new Date().toISOString()
           }, { onConflict: 'user_id' });
+
+        if ((currentUser?.id || null) !== syncUserId) return;
 
         if (error) {
           console.warn('Sync cloud error:', error.message);
@@ -1012,6 +1027,10 @@
         setCloudSyncBadge('local', 'Lưu cục bộ');
       } finally {
         isSyncingCloud = false;
+        if (pendingCloudSync && (currentUser?.id || null) === syncUserId) {
+          pendingCloudSync = false;
+          syncUserDataToCloud(false);
+        }
       }
     }
 
@@ -1056,7 +1075,7 @@
 
         if (activeWorkspaceMode === 'shared' && activeSharedWorkspace?.owner_id) {
           switchActiveWorkspace(activeSharedWorkspace.owner_id, true);
-        } else if (activeWorkspaceMode === 'own' && ownerHasActiveMembers === true && !isSyncingCloud && currentUser?.id) {
+        } else if (activeWorkspaceMode === 'own' && ownerHasActiveMembers === true && !isSyncingCloud && !cloudSyncDebounceTimer && !pendingCloudSync && currentUser?.id) {
           loadUserDataFromCloud(currentUser, false);
         }
       });

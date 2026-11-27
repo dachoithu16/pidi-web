@@ -137,7 +137,6 @@
 
       loadScopedUserData();
       loadVipSubscriptionState();
-      studentClassLinks = getLocalStudentLinks();
       switchTab(currentTab || 'home');
       switchRole(currentRole || 'teacher');
       renderAll();
@@ -149,6 +148,7 @@
       // Luồng tải liên kết học sinh chỉ chạy sau khi xác thực xong (applyUserSession -> syncStudentLinksWithCloud).
       // Chỉ khi Supabase SDK không khởi tạo được (sẽ không có sự kiện xác thực nào) mới tải trực tiếp 1 lần.
       if (!supabaseClient) {
+        studentClassLinks = getLocalStudentLinks();
         refreshAllStudentLinkedSessions();
       }
       loadVipPlansSettingsFromCloud();
