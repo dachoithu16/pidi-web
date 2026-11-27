@@ -4,6 +4,17 @@
     let isPreviewingHomework = false;
     let studentLinksRefreshSeq = 0;
     let isLoadingStudentLinkedSessions = false;
+    let studentScheduleViewMode = 'week';
+
+    function getStudentGivenName(fullName) {
+      return String(fullName || '').trim().split(/\s+/).pop() || '';
+    }
+
+    function toggleStudentScheduleViewMode(mode) {
+      studentScheduleViewMode = mode === 'today' ? 'today' : 'week';
+      renderStudentScheduleSection();
+      safeCreateIcons();
+    }
 
     function openTakeHomeworkModal(hwId, isPreview = false) {
       isPreviewingHomework = Boolean(isPreview);
@@ -327,7 +338,10 @@
     async function syncStudentLinksWithCloud() {
       // Chốt tài khoản ngay từ đầu để các bước await phía sau không ghi nhầm sang tài khoản khác.
       const syncUserId = currentUser?.id || null;
-      const localLinks = getLocalStudentLinks(syncUserId);
+      let localLinks = getLocalStudentLinks(syncUserId);
+      if (!syncUserId && localLinks.length > 1) {
+        localLinks = localLinks.slice(-1);
+      }
       const mergedMap = new Map();
       localLinks.forEach(l => mergedMap.set(l.code, l));
 
@@ -594,28 +608,35 @@
       studentLinksRefreshSeq++;
       isLoadingStudentLinkedSessions = false;
 
-      const existingIdx = studentClassLinks.findIndex(x => x.code === codeVal);
-      if (existingIdx >= 0) studentClassLinks[existingIdx] = { code: codeVal, password: pwdVal };
-      else studentClassLinks.push({ code: codeVal, password: pwdVal });
-      saveLocalStudentLinks(studentClassLinks);
-
-      if (supabaseClient && currentUser?.id) {
-        try {
-          await supabaseClient.from('student_class_links').upsert({
-            user_id: currentUser.id,
-            student_code: codeVal,
-            class_password: pwdVal || null,
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'user_id,student_code' });
-        } catch (err) {
-          console.warn('Lỗi lưu student_class_links lên Supabase:', err);
-        }
-      }
-
-      const sessIdx = studentLinkedSessions.findIndex(x => x.code === codeVal);
       const newEntry = { code: codeVal, password: pwdVal, status: 'ok', errorMessage: '', session: verifiedSession };
-      if (sessIdx >= 0) studentLinkedSessions[sessIdx] = newEntry;
-      else studentLinkedSessions.push(newEntry);
+
+      if (!currentUser || !currentUser.id) {
+        studentClassLinks = [{ code: codeVal, password: pwdVal }];
+        studentLinkedSessions = [newEntry];
+        saveLocalStudentLinks(studentClassLinks);
+      } else {
+        const existingIdx = studentClassLinks.findIndex(x => x.code === codeVal);
+        if (existingIdx >= 0) studentClassLinks[existingIdx] = { code: codeVal, password: pwdVal };
+        else studentClassLinks.push({ code: codeVal, password: pwdVal });
+        saveLocalStudentLinks(studentClassLinks);
+
+        if (supabaseClient && currentUser?.id) {
+          try {
+            await supabaseClient.from('student_class_links').upsert({
+              user_id: currentUser.id,
+              student_code: codeVal,
+              class_password: pwdVal || null,
+              updated_at: new Date().toISOString()
+            }, { onConflict: 'user_id,student_code' });
+          } catch (err) {
+            console.warn('Lỗi lưu student_class_links lên Supabase:', err);
+          }
+        }
+
+        const sessIdx = studentLinkedSessions.findIndex(x => x.code === codeVal);
+        if (sessIdx >= 0) studentLinkedSessions[sessIdx] = newEntry;
+        else studentLinkedSessions.push(newEntry);
+      }
 
       activeStudentLinkCode = codeVal;
       parentPortalSession = verifiedSession;
@@ -767,39 +788,96 @@
       ` : '';
 
       const todayName = getCurrentDayOfWeekInfo().dayName;
-      const activeDays = DAYS_OF_WEEK.filter(d => allSlots.some(s => s.day === d));
+      const isTodayMode = studentScheduleViewMode === 'today';
+      const todaySlots = allSlots.filter(s => s.day === todayName).sort((a, b) => a.startMin - b.startMin);
 
-      const weeklyHtml = `
-        <div class="space-y-2">
-          <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wide">Lịch học cố định hàng tuần (gộp ${okSessions.length} lớp)</div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            ${activeDays.map(day => {
-              const isToday = day === todayName;
-              const daySlots = allSlots.filter(s => s.day === day).sort((a, b) => a.startMin - b.startMin);
+      const scheduleBodyHtml = isTodayMode ? (
+        todaySlots.length === 0 ? `
+          <div class="rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 p-4 text-center text-xs font-semibold text-slate-400 italic">
+            Hôm nay không có lịch học
+          </div>
+        ` : `
+          <div class="space-y-2">
+            ${todaySlots.map(s => {
+              const isConflict = conflictSlotKeys.has(`${todayName}_${s.code}_${s.startTime}`);
               return `
-                <div class="rounded-2xl border p-2.5 space-y-1.5 ${isToday ? 'bg-amber-50/60 border-amber-300' : 'bg-slate-50/70 border-slate-200'}">
-                  <div class="flex items-center justify-between text-xs font-extrabold ${isToday ? 'text-amber-900' : 'text-slate-700'}">
-                    <span>${day}</span>
-                    ${isToday ? `<span class="px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9.5px]">Hôm nay</span>` : ''}
+                <div class="p-3 rounded-2xl border text-xs flex items-center justify-between gap-2 ${isConflict ? 'bg-rose-50 border-rose-300 ring-1 ring-rose-300' : s.colorBg}">
+                  <div class="min-w-0 space-y-0.5">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="font-mono font-extrabold text-[11.5px] ${isConflict ? 'text-rose-700' : 'text-indigo-700'}">${escapeHtml(s.startTime.replace(':', 'h'))} - ${escapeHtml(s.endTime.replace(':', 'h'))}</span>
+                      ${s.room ? `<span class="text-[10px] font-mono text-slate-600 bg-white/80 px-1.5 py-0.5 rounded">${escapeHtml(s.room)}</span>` : ''}
+                      ${isConflict ? `<span class="px-1.5 py-0.5 rounded bg-rose-600 text-white text-[9.5px] font-extrabold">Trùng giờ</span>` : ''}
+                    </div>
+                    <div class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(s.className)}</div>
                   </div>
-                  <div class="space-y-1.5">
-                    ${daySlots.map(s => {
-                      const isConflict = conflictSlotKeys.has(`${day}_${s.code}_${s.startTime}`);
-                      return `
-                        <div class="p-2 rounded-xl border text-xs ${isConflict ? 'bg-rose-50 border-rose-300 ring-1 ring-rose-300' : s.colorBg}">
-                          <div class="flex items-center justify-between gap-1">
-                            <span class="font-mono font-extrabold text-[11px] ${isConflict ? 'text-rose-700' : 'text-indigo-700'}">${escapeHtml(s.startTime.replace(':', 'h'))} - ${escapeHtml(s.endTime.replace(':', 'h'))}</span>
-                            ${isConflict ? `<span class="px-1.5 py-0.5 rounded bg-rose-600 text-white text-[9px] font-extrabold">Trùng giờ</span>` : (s.room ? `<span class="text-[10px] font-mono text-slate-600 bg-white/80 px-1 rounded">${escapeHtml(s.room)}</span>` : '')}
-                          </div>
-                          <div class="font-extrabold text-slate-900 truncate mt-0.5">${escapeHtml(s.className)}</div>
-                        </div>
-                      `;
-                    }).join('')}
-                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-black shrink-0">Hôm nay</span>
                 </div>
               `;
             }).join('')}
           </div>
+        `
+      ) : `
+        <div class="overflow-x-auto rounded-xl border border-slate-200 scrollbar-none shadow-inner">
+          <div class="min-w-[700px] grid grid-cols-7 divide-x divide-slate-200 bg-slate-50 text-xs">
+            ${DAYS_OF_WEEK.map(day => {
+              const isToday = day === todayName;
+              const daySlots = allSlots.filter(s => s.day === day).sort((a, b) => a.startMin - b.startMin);
+              return `
+                <div class="flex flex-col ${isToday ? 'bg-amber-50/40' : ''}">
+                  <div class="px-2 py-2 text-center border-b border-slate-200 flex items-center justify-center gap-1 ${isToday ? 'bg-amber-500 text-slate-950 font-black' : 'bg-[#0f172a] text-slate-100 font-bold'}">
+                    <span>${day}</span>
+                    ${isToday ? `<span class="px-1.5 py-0.5 rounded-full bg-slate-950/15 text-slate-950 text-[9px] font-black uppercase">Hôm nay</span>` : ''}
+                  </div>
+                  ${daySlots.length === 0 ? `
+                    <div class="flex-1 p-2 flex items-center justify-center min-h-[88px] text-[11px] font-semibold text-slate-400 italic">Nghỉ</div>
+                  ` : `
+                    <div class="flex-1 p-1.5 space-y-1.5 min-h-[88px]">
+                      ${daySlots.map(s => {
+                        const isConflict = conflictSlotKeys.has(`${day}_${s.code}_${s.startTime}`);
+                        return `
+                          <div class="p-2 rounded-xl border text-xs space-y-1 ${isConflict ? 'bg-rose-50 border-rose-300 ring-1 ring-rose-300' : s.colorBg}">
+                            <div class="flex items-center justify-between gap-1 flex-wrap">
+                              <span class="font-mono font-extrabold text-[10.5px] ${isConflict ? 'text-rose-700' : 'text-indigo-700'}">${escapeHtml(s.startTime.replace(':', 'h'))} - ${escapeHtml(s.endTime.replace(':', 'h'))}</span>
+                              ${s.room ? `<span class="text-[9.5px] font-mono text-slate-600 bg-white/80 px-1 rounded">${escapeHtml(s.room)}</span>` : ''}
+                            </div>
+                            <div class="font-extrabold text-[11px] text-slate-900 leading-snug break-words">${escapeHtml(s.className)}</div>
+                            ${isConflict ? `<div><span class="inline-block px-1.5 py-0.5 rounded bg-rose-600 text-white text-[9px] font-extrabold">Trùng giờ</span></div>` : ''}
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  `}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      const weeklyHtml = `
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wide">Thời khóa biểu cố định (gộp ${okSessions.length} lớp)</div>
+            <div class="flex items-center gap-1 bg-slate-100/90 p-0.5 sm:p-1 rounded-xl border border-slate-200/80">
+              <button
+                type="button"
+                onclick="toggleStudentScheduleViewMode('today')"
+                class="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[11px] sm:text-xs transition flex items-center gap-1 ${isTodayMode ? 'font-bold bg-white text-indigo-700 shadow-sm' : 'font-semibold text-slate-600 hover:text-slate-900'}"
+              >
+                <i data-lucide="zap" class="w-3.5 h-3.5 ${isTodayMode ? 'text-amber-500 fill-amber-500' : 'text-slate-400'}"></i>
+                <span>Hôm nay</span>
+              </button>
+              <button
+                type="button"
+                onclick="toggleStudentScheduleViewMode('week')"
+                class="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[11px] sm:text-xs transition flex items-center gap-1 ${!isTodayMode ? 'font-bold bg-white text-indigo-700 shadow-sm' : 'font-semibold text-slate-600 hover:text-slate-900'}"
+              >
+                <i data-lucide="calendar" class="w-3.5 h-3.5 ${!isTodayMode ? 'text-indigo-600' : 'text-slate-500'}"></i>
+                <span>Cả tuần</span>
+              </button>
+            </div>
+          </div>
+          ${scheduleBodyHtml}
         </div>
       `;
 
@@ -830,6 +908,11 @@
       const hwList = document.getElementById('studentHomeworkCardsList');
       const attGrid = document.getElementById('parentAttendanceGrid');
 
+      const bannerAddBtn = document.getElementById('btnParentAddClassBanner');
+      if (bannerAddBtn) {
+        bannerAddBtn.innerText = currentUser?.id ? '+ Thêm lớp' : 'Đổi lớp';
+      }
+
       const hasAnyLink = Array.isArray(studentClassLinks) && studentClassLinks.length > 0;
 
       if (!hasAnyLink || isShowingAddStudentLinkForm) {
@@ -852,7 +935,10 @@
       const cls = activeSession?.classObj || null;
 
       if (bannerBadge) {
-        bannerBadge.innerText = st ? `${st.name} • ${studentLinkedSessions.length} lớp` : `${studentClassLinks.length} lớp đã liên kết`;
+        const shortStudentName = st ? getStudentGivenName(st.name) : '';
+        bannerBadge.innerText = st
+          ? (cls?.class_name ? `${cls.class_name} • ${shortStudentName}` : `${shortStudentName} • ${studentLinkedSessions.length} lớp`)
+          : `${studentClassLinks.length} lớp đã liên kết`;
       }
 
       if (linkedSec) {
@@ -885,7 +971,7 @@
                 const isAct = item.code === activeStudentLinkCode;
                 const isOk = item.status === 'ok';
                 const label = isOk ? (item.session?.classObj?.class_name || item.code) : `Mã ${item.code} (Cần xác thực)`;
-                const subName = isOk ? (item.session?.student?.name || '') : (item.errorMessage || 'Lỗi xác thực');
+                const subName = isOk ? getStudentGivenName(item.session?.student?.name) : (item.errorMessage || 'Lỗi xác thực');
                 return `
                   <div class="inline-flex items-center gap-2.5 rounded-2xl border px-3.5 py-2.5 text-xs sm:text-sm transition shrink-0 ${
                     !isOk
@@ -906,8 +992,8 @@
             </div>
             ${inlineLoginCardHtml}
             <button type="button" onclick="openAddStudentLinkForm()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-xs transition active:scale-95 inline-flex items-center justify-center gap-1.5 shrink-0 ml-auto">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-              <span>Thêm lớp</span>
+              <i data-lucide="${currentUser?.id ? 'plus' : 'refresh-cw'}" class="w-3.5 h-3.5"></i>
+              <span>${currentUser?.id ? 'Thêm lớp' : 'Đổi lớp'}</span>
             </button>
           </div>
         `;
